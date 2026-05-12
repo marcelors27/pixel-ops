@@ -1,119 +1,291 @@
 # Pokemon Plugin
 
-The Pokemon plugin renders a classic handheld RPG-style operations dashboard for a TURZX/Turing/UsbMonitor 3.5" display.
+The Pokemon plugin turns Pixel OPs into a classic handheld RPG-style operations dashboard for a 320x480 TURZX/Turing Smart Screen-style USB display. It combines time zones, meetings, pull requests, and work events with Pokemon encounters, map movement, sprites, and a game text box.
 
-Display communication uses the minimal internal transport in `pixel_ops/hardware/`.
+![Pokemon plugin preview](../../output/preview.png)
 
-## Local Preview
+## What It Renders
+
+- A FireRed/LeafGreen-inspired overworld scene.
+- Ash walking through clean split map regions.
+- A compact operations HUD with local time, team time zones, next meeting, and GitHub pull requests.
+- Pokemon encounters triggered by meetings, pull requests, incidents, merges, reviews, and ambient events.
+- Day/night palette changes based on the primary configured timezone.
+- Preview PNG, animated GIF, or live TURZX USB output.
+
+![Animated preview](../../output/preview.gif)
+
+## Quick Start
+
+Render a single PNG preview:
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --output preview
 ```
 
-Output:
-
-```text
-pixel_ops/output/preview.png
-```
-
-## Local GIF
+Render an animated GIF:
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --output gif --seconds 8
 ```
 
-## Display
-
-```bash
-python pixel_ops/main.py --plugin pokemon --output turzx --seconds 30 --fps 12
-```
-
-Run continuously:
+Run on the USB display:
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --output turzx --forever --fps 10 --offline
 ```
 
-Legacy aliases still work:
+Run with local calendar data:
 
-- `--preview` is equivalent to `--output preview`
-- `--gif` is equivalent to `--output gif`
-- `--display` is equivalent to `--output turzx`
+```bash
+python pixel_ops/main.py --plugin pokemon --output preview --ics path/to/calendar.ics
+```
 
 ## Outputs
 
-The core generates `PIL.Image` frames. File and hardware transports are isolated behind the `DisplayOutput.start/send/stop` interface.
+The plugin renders `PIL.Image` frames. Pixel OPs core sends those frames to the selected output target:
 
 ```text
-core/render -> PIL.Image -> DisplayOutput.send(frame)
+PokemonPlugin -> OverworldScene -> PIL.Image -> DisplayOutput.send(frame)
 ```
 
-Current outputs:
+Available output targets:
 
-- `preview`: saves a local PNG without hardware.
-- `gif`: saves a short animated GIF.
-- `turzx`: sends frames to TURZX/Turing via USB bulk.
+- `preview`: writes one PNG to `pixel_ops/output/preview.png`.
+- `gif`: writes an animated GIF to `pixel_ops/output/preview.gif`.
+- `turzx`: sends frames to the TURZX/Turing USB display backend.
 
-## Config
+Legacy aliases still work:
 
-- People and time zones: `pixel_ops/config/people.yaml`
-- Display/FPS/palette: `pixel_ops/config/display.yaml`
-- Game loop/scene: `pixel_ops/plugins/pokemon/game.yaml`
-- PokeAPI/cache/sprites: `pixel_ops/plugins/pokemon/pokemon.yaml`
+- `--preview` is equivalent to `--output preview`.
+- `--gif` is equivalent to `--output gif`.
+- `--display` is equivalent to `--output turzx`.
 
-## Overworld Scene
+## Main Config Files
 
-The plugin runs `scenes/overworld_scene.py`, split into:
-
-- `game/state_machine.py`: `WALKING -> ENCOUNTER_START -> POKEMON_APPEARS -> ASH_THROWS -> BALL_SHAKE -> CAUGHT -> RESUME_WALKING`
-- `game/encounter.py`: random spawn flow for the original 151 Pokemon
-- `game/world.py`: simple scrolling/parallax and area switching between town, route, grass, village, and Pokemon Center-like areas
-- `game/day_night.py`: palettes based on the primary local time
-- `render/hud.py`: compact time zone and next-meeting HUD
-- `render/text_box.py`: game-style text box
-- `render/tiles.py`: generated tile/prop visual fallbacks
-
-Local validation:
-
-```bash
-python pixel_ops/main.py --plugin pokemon --gif --seconds 12 --fps 10 --offline
-```
-
-## Map Sheets
-
-Original map sheets are kept in:
+The plugin uses core Pixel OPs configuration plus two Pokemon-specific YAML files.
 
 ```text
-pixel_ops/plugins/pokemon/assets/maps/firered_leafgreen/
+pixel_ops/config/display.yaml
+pixel_ops/config/people.yaml
+pixel_ops/plugins/pokemon/game.yaml
+pixel_ops/plugins/pokemon/pokemon.yaml
+pixel_ops/plugins/pokemon/assets/sprites/ash/manifest.yaml
 ```
 
-Runtime uses split map-only PNGs from:
+## Display Config
+
+File: `pixel_ops/config/display.yaml`
+
+Example:
+
+```yaml
+display:
+  width: 320
+  height: 480
+  backend: usb_bulk_rev_a
+  fps: 12
+  preview_output: pixel_ops/output/preview.png
+  gif_output: pixel_ops/output/preview.gif
+  scanlines: false
+  timezone_primary: America/Sao_Paulo
+```
+
+Fields:
+
+- `width`, `height`: target frame size. The current plugin is tuned for `320x480`.
+- `backend`: hardware backend name. Current USB backend is `usb_bulk_rev_a`.
+- `fps`: default frames per second when `--fps` is not provided.
+- `preview_output`: PNG output path.
+- `gif_output`: GIF output path.
+- `scanlines`: overlays a subtle handheld-screen scanline effect when enabled.
+- `timezone_primary`: timezone used for the main clock and day/night palette.
+
+## People And Time Zones
+
+File: `pixel_ops/config/people.yaml`
+
+Example:
+
+```yaml
+people:
+  - key: BRT
+    name: Marcelo, Time
+    country: BR
+    timezone: America/Sao_Paulo
+    timezone_label: Brazil
+    work_start: "09:00"
+    work_end: "18:00"
+  - key: PT
+    name: Product Team
+    country: US
+    timezone: America/Los_Angeles
+    timezone_label: Pacific
+    standard_key: PST
+    daylight_key: PDT
+    work_start: "09:00"
+    work_end: "17:00"
+```
+
+Fields:
+
+- `key`: short label rendered in the HUD.
+- `name`: people or team names for that timezone.
+- `country`: compact country label.
+- `timezone`: IANA timezone name.
+- `timezone_label`: human-friendly label.
+- `standard_key`, `daylight_key`: optional seasonal abbreviations.
+- `work_start`, `work_end`: workday window used by the HUD status.
+
+## Game Config
+
+File: `pixel_ops/plugins/pokemon/game.yaml`
+
+Current full example:
+
+```yaml
+game:
+  fps: 10
+  static_background: true
+  require_ash_sprite: false
+  ash_sprite_source: https://www.spriters-resource.com/game_boy_advance/pokemonfireredleafgreen/asset/52432/
+  ash_sprite_file: pixel_ops/plugins/pokemon/assets/sprites/ash/ash_overworld.png
+  world_speed_px: 0
+  map_switch_seconds: 300
+  ash_x: 118
+  ash_y: 292
+  walk_start_x: 28
+  encounter_x: 132
+  walk_exit_x: 258
+  route_speed_px: 6.4
+  pokemon_x: 220
+  pokemon_y: 280
+  hud_height: 212
+  text_box_height: 76
+  encounter:
+    walking_seconds: 1.5
+    start_seconds: 1.4
+    appears_seconds: 1.1
+    throw_seconds: 0.8
+    shake_seconds: 1.0
+    caught_seconds: 0.9
+  events:
+    mock_events: false
+    queue_limit: 6
+    event_pokemon_types:
+      pull_request:
+        - bug
+        - electric
+        - fighting
+      meeting:
+        - psychic
+        - fairy
+    repo_biomes:
+      backend:
+        - rock
+        - steel
+        - ground
+      frontend:
+        - electric
+        - psychic
+        - fairy
+      infra:
+        - dragon
+        - ghost
+        - dark
+```
+
+Scene fields:
+
+- `fps`: plugin default FPS.
+- `static_background`: keeps the map fixed while Ash moves.
+- `world_speed_px`: fallback generated-world scrolling speed. Current map mode uses `0`.
+- `map_switch_seconds`: how often the scene picks another split map area.
+- `ash_x`, `ash_y`: default Ash position for encounter scenes.
+- `walk_start_x`, `encounter_x`, `walk_exit_x`: horizontal route positions for the encounter loop.
+- `route_speed_px`: Ash movement speed in pixels per frame.
+- `pokemon_x`, `pokemon_y`: encounter Pokemon position.
+- `hud_height`: top HUD height.
+- `text_box_height`: bottom text box height.
+
+Encounter timing fields:
+
+- `walking_seconds`: time spent walking before an encounter starts.
+- `start_seconds`: pre-encounter pause.
+- `appears_seconds`: Pokemon reveal duration.
+- `throw_seconds`: trainer throw animation duration.
+- `shake_seconds`: Poke Ball shake duration.
+- `caught_seconds`: caught confirmation duration.
+
+Event fields:
+
+- `mock_events`: enables generated demo events when no real source is configured.
+- `queue_limit`: maximum pending work events in the encounter queue.
+- `event_pokemon_types`: maps event categories to preferred Pokemon types.
+- `repo_biomes`: maps repository keywords to Pokemon type pools.
+
+Supported event categories:
 
 ```text
-pixel_ops/plugins/pokemon/assets/maps/firered_leafgreen_clean/
+pull_request
+meeting
+build_broken
+deploy_started
+deploy_completed
+review_requested
+message_important
+incident
+merge
+pr_approved
+ambient
 ```
 
-Regenerate the clean maps after adding or replacing sheets:
+## Pokemon API And Cache Config
 
-```bash
-python pixel_ops/plugins/pokemon/tools/split_map_sheets.py
+File: `pixel_ops/plugins/pokemon/pokemon.yaml`
+
+Example:
+
+```yaml
+pokemon:
+  api_base_url: https://pokeapi.co/api/v2
+  sprite_base_url: https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon
+  cache_dir: pixel_ops/plugins/pokemon/assets/cache
+  generation_limit: 151
+  sprite_style: animated
+  network_timeout_seconds: 8
+  lazy_download: true
 ```
 
-## Pokemon Assets And Cache
+Fields:
 
-Download/cache official PokeAPI metadata plus front and animated sprites for the original 151 Pokemon:
+- `api_base_url`: PokeAPI base URL.
+- `sprite_base_url`: sprite repository base URL.
+- `cache_dir`: local metadata and sprite cache directory.
+- `generation_limit`: default Pokemon range. `151` keeps the plugin focused on Gen 1.
+- `sprite_style`: `animated` or `front`.
+- `network_timeout_seconds`: request timeout for API and sprite downloads.
+- `lazy_download`: downloads missing data during runtime unless `--offline` is used.
+
+Warm the complete Gen 1 cache:
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --warm-cache
 ```
 
-Limit the cache warmup during development:
+Warm a smaller development cache:
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --warm-cache --pokemon-limit 25
 ```
 
-Local cache:
+Run only with cached assets:
+
+```bash
+python pixel_ops/main.py --plugin pokemon --output preview --offline
+```
+
+Cache layout:
 
 ```text
 pixel_ops/plugins/pokemon/assets/cache/api/
@@ -121,58 +293,206 @@ pixel_ops/plugins/pokemon/assets/cache/pokemon/front/
 pixel_ops/plugins/pokemon/assets/cache/pokemon/animated/
 ```
 
-Run without network access:
+## Maps
 
-```bash
-python pixel_ops/main.py --plugin pokemon --display --offline
+Original map sheets live here:
+
+```text
+pixel_ops/plugins/pokemon/assets/maps/firered_leafgreen/
 ```
 
-Sprite sources:
+Runtime uses cleaned map-only PNG files generated from the original sheets:
 
-- Front: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png`
-- Animated Gen V: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/{id}.gif`
+```text
+pixel_ops/plugins/pokemon/assets/maps/firered_leafgreen_clean/
+```
 
-## Trainer And UI Sprites
+Example clean map:
 
-The trainer and battle UI sprites used by the Pokemon plugin are already included under:
+![Clean map example](assets/maps/firered_leafgreen_clean/towns/game-boy-advance-pokemon-firered-leafgreen-maps-towns-buildings-etc-viridian-city__map-01.png)
+
+Regenerate clean maps after adding or replacing sheets:
+
+```bash
+python pixel_ops/plugins/pokemon/tools/split_map_sheets.py
+```
+
+The map route manager scans every clean PNG, detects usable map bounds, creates viewport crops, and generates walkable routes from the resulting map image.
+
+## Trainer Sprites
+
+The bundled Ash sprite assets live here:
 
 ```text
 pixel_ops/plugins/pokemon/assets/sprites/ash/
 ```
 
-No manual download is required to run the plugin. The shipped `manifest.yaml` points at the bundled sheets.
+Current extracted overworld sprite:
 
-If you replace the bundled trainer sheet and need to regenerate `ash_overworld.png` plus `manifest.yaml`, use the extractor:
+![Ash overworld sprite](assets/sprites/ash/ash_overworld.png)
+
+Sprite manifest example:
+
+```yaml
+scale: 2
+frame_width: 16
+frame_height: 20
+transparent_color:
+  - 255
+  - 127
+  - 39
+animations:
+  walk_down:
+    file: Game Boy Advance - Pokemon FireRed _ LeafGreen - Playable Characters - Player Sprites.png
+    boxes:
+      - [8, 53, 16, 20]
+      - [25, 53, 16, 20]
+      - [42, 53, 16, 20]
+      - [25, 53, 16, 20]
+    fps: 6
+  catch:
+    file: Game Boy Advance - Pokemon FireRed _ LeafGreen - Playable Characters - Player Sprites.png
+    boxes:
+      - [248, 52, 16, 20]
+      - [281, 52, 16, 20]
+      - [314, 52, 16, 20]
+    fps: 8
+```
+
+Regenerate `ash_overworld.png` and `manifest.yaml` from a replacement sheet:
 
 ```bash
 python pixel_ops/plugins/pokemon/tools/extract_ash_from_sheet.py path/to/player_sprites.png
 ```
 
-If no trainer sheet exists, the plugin can fall back to generated pixel sprites so preview/display still run. To fail fast instead, set `require_ash_sprite: true` in `pixel_ops/plugins/pokemon/game.yaml`.
+If no trainer sprite exists, the plugin can fall back to generated pixel sprites. To fail fast instead, set:
 
-## Calendar
+```yaml
+game:
+  require_ash_sprite: true
+```
 
-Current event sources:
+## Calendar Events
 
-- automatic mock events for development
-- local `.ics` file via `--ics path/to/calendar.ics`
+Local one-off `.ics` file:
 
-Google Calendar API support can be added later in `data_sources/calendar.py` without changing the scene or display backend.
+```bash
+python pixel_ops/main.py --plugin pokemon --output preview --ics path/to/calendar.ics
+```
 
-## GitHub
+Persistent calendar config through `.env`:
 
-To list open PRs in the HUD and generate review encounters, configure:
+```env
+PIXEL_OPS_ICS_ENABLED=true
+PIXEL_OPS_ICS_PATH=/absolute/path/to/calendar.ics
+PIXEL_OPS_ICS_POLL_SECONDS=300
+```
+
+Remote `.ics` URL:
+
+```env
+PIXEL_OPS_ICS_ENABLED=true
+PIXEL_OPS_ICS_URL=https://example.com/calendar.ics
+PIXEL_OPS_ICS_POLL_SECONDS=300
+```
+
+Multiple paths or URLs can be comma-separated:
+
+```env
+PIXEL_OPS_ICS_PATH=/path/team.ics,/path/personal.ics
+PIXEL_OPS_ICS_URL=https://example.com/a.ics,https://example.com/b.ics
+```
+
+Calendar events become `meeting` work events and can trigger psychic/fairy-style Pokemon encounters by default.
+
+## GitHub Events
+
+Configure GitHub pull requests in `.env`:
 
 ```env
 PIXEL_OPS_GITHUB_ENABLED=true
 PIXEL_OPS_GITHUB_TOKEN=github_pat_...
-PIXEL_OPS_GITHUB_REPOS=owner/repo
+PIXEL_OPS_GITHUB_REPOS=owner/repo,owner/another-repo
 PIXEL_OPS_GITHUB_POLL_SECONDS=60
 PIXEL_OPS_GITHUB_MAX_PRS=4
 ```
 
-The token only needs read access to the configured repositories.
+The token only needs read access to the configured repositories. GitHub pull requests appear in the HUD and can trigger `pull_request`, `review_requested`, `pr_approved`, and `merge` encounters.
+
+## Mock Events
+
+Enable demo events without calendar or GitHub:
+
+```env
+PIXEL_OPS_MOCK_EVENTS=true
+```
+
+Or enable mock events in the plugin config:
+
+```yaml
+game:
+  events:
+    mock_events: true
+```
+
+## Common Recipes
+
+Fast local preview with cached assets:
+
+```bash
+python pixel_ops/main.py --plugin pokemon --output preview --offline
+```
+
+Longer GIF for documentation:
+
+```bash
+python pixel_ops/main.py --plugin pokemon --output gif --seconds 16 --fps 10 --offline
+```
+
+USB display with full-frame writes:
+
+```bash
+python pixel_ops/main.py --plugin pokemon --output turzx --forever --fps 10 --full-frame --offline
+```
+
+Faster Ash movement:
+
+```yaml
+game:
+  route_speed_px: 12.8
+```
+
+Shorter encounter loop:
+
+```yaml
+game:
+  encounter:
+    walking_seconds: 0.8
+    start_seconds: 0.6
+    appears_seconds: 0.8
+    throw_seconds: 0.5
+    shake_seconds: 0.7
+    caught_seconds: 0.6
+```
+
+Different primary timezone:
+
+```yaml
+display:
+  timezone_primary: America/New_York
+```
+
+Animated sprites disabled:
+
+```yaml
+pokemon:
+  sprite_style: front
+```
 
 ## Credits
+
+Pokemon metadata and Pokemon sprites are downloaded from [PokeAPI](https://pokeapi.co/) and the public PokeAPI sprite repository when cache warming or lazy download is enabled.
+
+FireRed/LeafGreen-style map and trainer sheets are stored as plugin assets for this local dashboard experience. Pixel OPs keeps them isolated inside the Pokemon plugin so future plugins can use different games or themes without depending on Pokemon-specific files.
 
 The display protocol layer used by Pixel OPs is adapted from [`mathoudebine/turing-smart-screen-python`](https://github.com/mathoudebine/turing-smart-screen-python), which decoded and implemented support for Turing Smart Screen style devices.

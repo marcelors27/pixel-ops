@@ -30,6 +30,10 @@ pixel_ops/output/preview.gif
 
 ## Plugins
 
+The Pokemon plugin has its own full documentation with images, configuration examples, cache commands, maps, sprites, calendar setup, and GitHub setup:
+
+- [Pokemon plugin documentation](pixel_ops/plugins/pokemon/README.md)
+
 Plugins live in `pixel_ops/plugins/<name>/` and expose a plugin class with:
 
 - `name`
@@ -83,6 +87,20 @@ PIXEL_OPS_GITHUB_MAX_PRS=4
 ## Hardware
 
 Display transport is isolated in `pixel_ops/hardware/`. It contains only the minimal USB bulk transport needed by Pixel OPs.
+
+The current reference device is a TURZX/Turing Smart Screen-style 3.5-inch USB display:
+
+- Size: 3.5-inch portrait display
+- Resolution: 320x480
+- Protocol: Rev. A-compatible USB bulk transport (`1a86:5722`)
+- Backend: `usb_bulk_rev_a`
+
+Purchase links:
+
+- Brazil: [TURZX 3.5-inch secondary USB monitor on Mercado Livre](https://www.mercadolivre.com.br/tela-ips-monitoramento-35-polegadas-secundaria-usb-monitor-turzx-telinha-auxiliar-aida-64-mini-tela-pc/p/MLB29751860)
+- United States: [TURZX 3.5-inch USB monitor search on Amazon](https://www.amazon.com/s?k=TURZX+3.5+inch+USB+monitor)
+
+Listings change frequently. Match a 3.5-inch TURZX/Turing Smart Screen/USB monitor with 320x480 resolution before buying.
 
 ## Credits
 
