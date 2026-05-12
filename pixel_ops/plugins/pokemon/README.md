@@ -1,24 +1,22 @@
 # Pokemon Plugin
 
-App isolado para renderizar um dashboard estilo RPG portatil classico em um
-TURZX/Turing/UsbMonitor 3.5".
+The Pokemon plugin renders a classic handheld RPG-style operations dashboard for a TURZX/Turing/UsbMonitor 3.5" display.
 
-A comunicacao com o display usa a lib interna minima em
-`pixel_ops/hardware/`.
+Display communication uses the minimal internal transport in `pixel_ops/hardware/`.
 
-## Preview local
+## Local Preview
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --output preview
 ```
 
-Saida:
+Output:
 
 ```text
 pixel_ops/output/preview.png
 ```
 
-## GIF local
+## Local GIF
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --output gif --seconds 8
@@ -30,67 +28,72 @@ python pixel_ops/main.py --plugin pokemon --output gif --seconds 8
 python pixel_ops/main.py --plugin pokemon --output turzx --seconds 30 --fps 12
 ```
 
-Para rodar sem parar:
+Run continuously:
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --output turzx --forever --fps 10 --offline
 ```
 
-Os flags antigos continuam funcionando como aliases:
+Legacy aliases still work:
 
-- `--preview` equivale a `--output preview`
-- `--gif` equivale a `--output gif`
-- `--display` equivale a `--output turzx`
+- `--preview` is equivalent to `--output preview`
+- `--gif` is equivalent to `--output gif`
+- `--display` is equivalent to `--output turzx`
 
 ## Outputs
 
-O core gera frames `PIL.Image`. Transporte para hardware ou arquivo fica
-isolado em `outputs/` pela interface `DisplayOutput.start/send/stop`.
+The core generates `PIL.Image` frames. File and hardware transports are isolated behind the `DisplayOutput.start/send/stop` interface.
 
 ```text
 core/render -> PIL.Image -> DisplayOutput.send(frame)
 ```
 
-Outputs atuais:
+Current outputs:
 
-- `preview`: salva PNG local sem hardware.
-- `gif`: salva uma animacao GIF curta.
-- `turzx`: envia frames para TURZX/Turing via USB bulk.
+- `preview`: saves a local PNG without hardware.
+- `gif`: saves a short animated GIF.
+- `turzx`: sends frames to TURZX/Turing via USB bulk.
 
 ## Config
 
-- Pessoas e fusos: `config/people.yaml`
-- Display/FPS/paleta: `config/display.yaml`
-- Loop de jogo/cena: `pixel_ops/plugins/pokemon/game.yaml`
+- People and time zones: `pixel_ops/config/people.yaml`
+- Display/FPS/palette: `pixel_ops/config/display.yaml`
+- Game loop/scene: `pixel_ops/plugins/pokemon/game.yaml`
 - PokeAPI/cache/sprites: `pixel_ops/plugins/pokemon/pokemon.yaml`
 
-## Cena overworld
+## Overworld Scene
 
-O app roda a cena `scenes/overworld_scene.py`, que separa a experiencia em:
+The plugin runs `scenes/overworld_scene.py`, split into:
 
-- `game/state_machine.py`: fluxo `WALKING -> ENCOUNTER_START -> POKEMON_APPEARS -> ASH_THROWS -> BALL_SHAKE -> CAUGHT -> RESUME_WALKING`
-- `game/encounter.py`: spawn aleatorio dos 151 Pokemon classicos
-- `game/world.py`: scroll/parallax simples e alternancia entre cidade, rota, grama, vila e Pokemon Center
-- `game/day_night.py`: paletas por horario local principal
-- `render/hud.py`: HUD compacto de timezones e proxima reuniao
-- `render/text_box.py`: caixa de texto estilo jogo
-- `render/tiles.py`: tiles/props gerados como fallback visual
+- `game/state_machine.py`: `WALKING -> ENCOUNTER_START -> POKEMON_APPEARS -> ASH_THROWS -> BALL_SHAKE -> CAUGHT -> RESUME_WALKING`
+- `game/encounter.py`: random spawn flow for the original 151 Pokemon
+- `game/world.py`: simple scrolling/parallax and area switching between town, route, grass, village, and Pokemon Center-like areas
+- `game/day_night.py`: palettes based on the primary local time
+- `render/hud.py`: compact time zone and next-meeting HUD
+- `render/text_box.py`: game-style text box
+- `render/tiles.py`: generated tile/prop visual fallbacks
 
-O primeiro alvo e validar localmente com PNG/GIF:
+Local validation:
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --gif --seconds 12 --fps 10 --offline
 ```
 
-## Pokemon API e cache
+## Pokemon Assets And Cache
 
-Baixar metadata e sprites oficiais da PokeAPI para os 151 classicos:
+Download/cache official PokeAPI metadata plus front and animated sprites for the original 151 Pokemon:
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --warm-cache
 ```
 
-Cache local:
+Limit the cache warmup during development:
+
+```bash
+python pixel_ops/main.py --plugin pokemon --warm-cache --pokemon-limit 25
+```
+
+Local cache:
 
 ```text
 pixel_ops/plugins/pokemon/assets/cache/api/
@@ -98,89 +101,58 @@ pixel_ops/plugins/pokemon/assets/cache/pokemon/front/
 pixel_ops/plugins/pokemon/assets/cache/pokemon/animated/
 ```
 
-Rodar sem rede, usando apenas o cache:
+Run without network access:
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --display --offline
 ```
 
-Sprites usados:
+Sprite sources:
 
 - Front: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png`
 - Animated Gen V: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/{id}.gif`
 
-## Sprites do Ash
+## Trainer And UI Sprites
 
-O renderer agora suporta spritesheets locais para o Ash/trainer. Coloque os
-PNGs em:
+The trainer and battle UI sprites used by the Pokemon plugin are already included under:
 
 ```text
 pixel_ops/plugins/pokemon/assets/sprites/ash/
 ```
 
-Arquivos simples suportados sem configuracao:
+No manual download is required to run the plugin. The shipped `manifest.yaml` points at the bundled sheets.
 
-```text
-walk_right.png
-idle.png
-catch.png
-```
-
-Para rips com frames 16x20, spacing, margin ou multiplas linhas, crie
-`assets/sprites/ash/manifest.yaml`. Veja o exemplo em
-`assets/sprites/ash/README.md`.
-
-Fontes para baixar manualmente:
-
-- The Spriters Resource > Pokemon FireRed / LeafGreen overworld sprites
-- The Spriters Resource > Pokemon Emerald overworld sprites
-
-O app nao baixa nem redistribui esses rips automaticamente. Se nenhum PNG do
-Ash existir, ele usa um fallback gerado para manter preview/display rodando.
-Para exigir uma spritesheet real/local do Ash, ajuste `require_ash_sprite: true`
-em `config/game.yaml`.
-
-Fonte configurada para o Ash/Red overworld:
-
-```text
-https://www.spriters-resource.com/game_boy_advance/pokemonfireredleafgreen/asset/52432/
-```
-
-Baixe o PNG dessa pagina e salve como:
-
-```text
-pixel_ops/plugins/pokemon/assets/sprites/ash/ash_overworld.png
-```
-
-Depois copie `manifest.example.yaml` para `manifest.yaml` e ajuste os indices
-dos frames conforme a linha/coluna da sheet baixada.
-
-Tambem ha um extrator para separar os primeiros sprites do Ash/Red:
+If you replace the bundled trainer sheet and need to regenerate `ash_overworld.png` plus `manifest.yaml`, use the extractor:
 
 ```bash
-python pixel_ops/plugins/pokemon/tools/extract_ash_from_sheet.py caminho/para/player_sprites.png
+python pixel_ops/plugins/pokemon/tools/extract_ash_from_sheet.py path/to/player_sprites.png
 ```
 
-## Calendario
+If no trainer sheet exists, the plugin can fall back to generated pixel sprites so preview/display still run. To fail fast instead, set `require_ash_sprite: true` in `pixel_ops/plugins/pokemon/game.yaml`.
 
-Hoje ha duas fontes:
+## Calendar
 
-- mock automatico, para desenvolvimento
-- arquivo `.ics` local via `--ics caminho/calendario.ics`
+Current event sources:
 
-Google Calendar API pode ser adicionada depois em `data_sources/calendar.py`
-sem mexer na cena ou no backend do display.
+- automatic mock events for development
+- local `.ics` file via `--ics path/to/calendar.ics`
+
+Google Calendar API support can be added later in `data_sources/calendar.py` without changing the scene or display backend.
 
 ## GitHub
 
-Para listar PRs abertos no HUD e gerar encontros de revisao, configure:
+To list open PRs in the HUD and generate review encounters, configure:
 
 ```env
 PIXEL_OPS_GITHUB_ENABLED=true
 PIXEL_OPS_GITHUB_TOKEN=github_pat_...
-PIXEL_OPS_GITHUB_REPOS=The-Fitness-Doctor/tfd-monorepo
+PIXEL_OPS_GITHUB_REPOS=owner/repo
 PIXEL_OPS_GITHUB_POLL_SECONDS=60
 PIXEL_OPS_GITHUB_MAX_PRS=4
 ```
 
-O token precisa apenas de leitura dos repositorios configurados.
+The token only needs read access to the configured repositories.
+
+## Credits
+
+The display protocol layer used by Pixel OPs is adapted from [`mathoudebine/turing-smart-screen-python`](https://github.com/mathoudebine/turing-smart-screen-python), which decoded and implemented support for Turing Smart Screen style devices.

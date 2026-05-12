@@ -1,8 +1,8 @@
 # Pixel OPs
 
-Runtime para dashboards pixel-art operacionais. O core cuida de outputs, eventos e hardware; as interfaces visuais ficam em plugins. O plugin padrao atual e `pokemon`.
+Pixel OPs is a plugin-based runtime for small pixel-art operations dashboards. The core owns outputs, event sources, shared data, and display hardware; visual interfaces live in plugins. The default plugin today is `pokemon`.
 
-## Rodar
+## Run
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --output preview
@@ -10,23 +10,23 @@ python pixel_ops/main.py --plugin pokemon --output gif --seconds 8
 python pixel_ops/main.py --plugin pokemon --output turzx --forever --fps 10 --offline
 ```
 
-Saidas locais:
+Local outputs:
 
 ```text
 pixel_ops/output/preview.png
 pixel_ops/output/preview.gif
 ```
 
-## Configuracao
+## Configuration
 
-- Pessoas e fusos: `pixel_ops/config/people.yaml`
-- Display/FPS: `pixel_ops/config/display.yaml`
-- Plugin Pokemon: `pixel_ops/plugins/pokemon/game.yaml`
+- People and time zones: `pixel_ops/config/people.yaml`
+- Display/FPS/output paths: `pixel_ops/config/display.yaml`
+- Pokemon plugin scene: `pixel_ops/plugins/pokemon/game.yaml`
 - PokeAPI/cache/sprites: `pixel_ops/plugins/pokemon/pokemon.yaml`
 
 ## Plugins
 
-Plugins ficam em `pixel_ops/plugins/<nome>/` e expõem uma classe com:
+Plugins live in `pixel_ops/plugins/<name>/` and expose a plugin class with:
 
 - `name`
 - `add_arguments(parser)`
@@ -36,31 +36,37 @@ Plugins ficam em `pixel_ops/plugins/<nome>/` e expõem uma classe com:
 - `event_config(config)`
 - `build_app(...)`
 
-Para registrar uma nova interface, adicione o plugin em `pixel_ops/plugins/registry.py`.
+Register new interfaces in `pixel_ops/plugins/registry.py`.
 
-## Cache Pokemon
+## Pokemon Cache
 
-Baixar metadata e sprites dos 151 Pokemon classicos:
+Download/cache PokeAPI metadata plus front and animated sprites for the original 151 Pokemon:
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --warm-cache
 ```
 
-Rodar sem rede:
+For a smaller development cache:
+
+```bash
+python pixel_ops/main.py --plugin pokemon --warm-cache --pokemon-limit 25
+```
+
+Run without network access:
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --output preview --offline
 ```
 
-## Eventos
+## Events
 
-Calendario via `.ics`:
+Calendar via local `.ics`:
 
 ```bash
-python pixel_ops/main.py --ics caminho/calendario.ics
+python pixel_ops/main.py --ics path/to/calendar.ics
 ```
 
-GitHub PRs no HUD:
+GitHub pull requests in the HUD:
 
 ```env
 PIXEL_OPS_GITHUB_ENABLED=true
@@ -72,4 +78,8 @@ PIXEL_OPS_GITHUB_MAX_PRS=4
 
 ## Hardware
 
-O envio para display fica isolado em `pixel_ops/hardware/`. Essa lib contem apenas o transporte USB bulk minimo usado pelo app, sem depender do projeto upstream original.
+Display transport is isolated in `pixel_ops/hardware/`. It contains only the minimal USB bulk transport needed by Pixel OPs.
+
+## Credits
+
+Pixel OPs was originally built from a local fork of [`mathoudebine/turing-smart-screen-python`](https://github.com/mathoudebine/turing-smart-screen-python). The upstream project provided the original USB display protocol research and Python driver foundation for Turing Smart Screen style devices. The current repository keeps a minimal adapted USB bulk transport and RGB565 serializer; the full upstream system monitor, theme library, configuration tools, and bundled app are not included.
