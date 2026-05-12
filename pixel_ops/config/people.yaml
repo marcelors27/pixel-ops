@@ -1,0 +1,76 @@
+people:
+  - key: BRT
+    name: Marcelo, Time
+    country: BR
+    timezone: America/Sao_Paulo
+    timezone_label: Brazil
+    work_start: "09:00"
+    work_end: "18:00"
+  - key: MCT
+    name: Sinaí, Nahomi, Michel
+    country: MX
+    timezone: America/Mexico_City
+    timezone_label: Mexico City
+    work_start: "09:00"
+    work_end: "17:00"
+  - key: Ariz.
+    name: Patricia, Robbie, Jon, Scott
+    country: US
+    timezone: America/Phoenix
+    timezone_label: Arizona
+    standard_key: Ariz.
+    daylight_key: Ariz.
+    work_start: "09:00"
+    work_end: "17:00"
+  - key: PT
+    name: ""
+    country: US
+    timezone: America/Los_Angeles
+    timezone_label: Pacific
+    standard_key: PST
+    daylight_key: PDT
+    work_start: "09:00"
+    work_end: "17:00"
+  - key: MT
+    name: ""
+    country: US
+    timezone: America/Denver
+    timezone_label: Mountain
+    standard_key: MST
+    daylight_key: MDT
+    work_start: "09:00"
+    work_end: "17:00"
+  - key: CT
+    name: ""
+    country: US
+    timezone: America/Chicago
+    timezone_label: Central
+    standard_key: CST
+    daylight_key: CDT
+    work_start: "09:00"
+    work_end: "17:00"
+  - key: ET
+    name: ""
+    country: US
+    timezone: America/New_York
+    timezone_label: Eastern
+    standard_key: EST
+    daylight_key: EDT
+    work_start: "09:00"
+    work_end: "17:00"
+  - key: IST
+    name: Anirudh, Hari
+    country: IN
+    timezone: Asia/Kolkata
+    timezone_label: India
+    work_start: "09:00"
+    work_end: "18:00"
+  - key: PRT
+    name: Marino
+    country: PT
+    timezone: Europe/Lisbon
+    timezone_label: Portugal
+    standard_key: WET
+    daylight_key: WEST
+    work_start: "09:00"
+    work_end: "18:00"

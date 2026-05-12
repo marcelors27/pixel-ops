@@ -1,0 +1,8 @@
+pokemon:
+  api_base_url: https://pokeapi.co/api/v2
+  sprite_base_url: https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon
+  cache_dir: pixel_ops/plugins/pokemon/assets/cache
+  generation_limit: 151
+  sprite_style: animated
+  network_timeout_seconds: 8
+  lazy_download: true

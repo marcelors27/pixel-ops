@@ -1,0 +1,9 @@
+display:
+  width: 320
+  height: 480
+  backend: usb_bulk_rev_a
+  fps: 12
+  preview_output: pixel_ops/output/preview.png
+  gif_output: pixel_ops/output/preview.gif
+  scanlines: false
+  timezone_primary: America/Sao_Paulo

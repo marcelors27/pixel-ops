@@ -1,0 +1,74 @@
+scale: 2
+frame_width: 16
+frame_height: 20
+spacing: 0
+margin: 0
+transparent_color:
+- 255
+- 127
+- 39
+animations:
+  walk_down:
+    file: Game Boy Advance - Pokemon FireRed _ LeafGreen - Playable Characters - Player Sprites.png
+    boxes:
+    - [8, 53, 16, 20]
+    - [25, 53, 16, 20]
+    - [42, 53, 16, 20]
+    - [25, 53, 16, 20]
+    fps: 6
+  walk_up:
+    file: Game Boy Advance - Pokemon FireRed _ LeafGreen - Playable Characters - Player Sprites.png
+    boxes:
+    - [8, 86, 16, 20]
+    - [25, 86, 16, 20]
+    - [42, 86, 16, 20]
+    - [25, 86, 16, 20]
+    fps: 6
+  walk_left:
+    file: Game Boy Advance - Pokemon FireRed _ LeafGreen - Playable Characters - Player Sprites.png
+    boxes:
+    - [8, 119, 16, 20]
+    - [25, 119, 16, 20]
+    - [42, 119, 16, 20]
+    - [25, 119, 16, 20]
+    fps: 6
+  walk_right:
+    file: Game Boy Advance - Pokemon FireRed _ LeafGreen - Playable Characters - Player Sprites.png
+    boxes:
+    - [8, 153, 16, 20]
+    - [25, 153, 16, 20]
+    - [42, 153, 16, 20]
+    - [25, 153, 16, 20]
+    fps: 6
+  idle:
+    file: Game Boy Advance - Pokemon FireRed _ LeafGreen - Playable Characters - Player Sprites.png
+    boxes:
+    - [8, 53, 16, 20]
+    fps: 1
+  idle_down:
+    file: Game Boy Advance - Pokemon FireRed _ LeafGreen - Playable Characters - Player Sprites.png
+    boxes:
+    - [8, 53, 16, 20]
+    fps: 1
+  idle_up:
+    file: Game Boy Advance - Pokemon FireRed _ LeafGreen - Playable Characters - Player Sprites.png
+    boxes:
+    - [8, 86, 16, 20]
+    fps: 1
+  idle_left:
+    file: Game Boy Advance - Pokemon FireRed _ LeafGreen - Playable Characters - Player Sprites.png
+    boxes:
+    - [8, 119, 16, 20]
+    fps: 1
+  idle_right:
+    file: Game Boy Advance - Pokemon FireRed _ LeafGreen - Playable Characters - Player Sprites.png
+    boxes:
+    - [8, 153, 16, 20]
+    fps: 1
+  catch:
+    file: Game Boy Advance - Pokemon FireRed _ LeafGreen - Playable Characters - Player Sprites.png
+    boxes:
+    - [248, 52, 16, 20]
+    - [281, 52, 16, 20]
+    - [314, 52, 16, 20]
+    fps: 8

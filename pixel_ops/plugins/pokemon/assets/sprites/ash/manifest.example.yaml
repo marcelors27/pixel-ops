@@ -1,0 +1,32 @@
+scale: 3
+frame_width: 16
+frame_height: 20
+spacing: 0
+margin: 0
+transparent_color: [0, 255, 0]
+animations:
+  walk_right:
+    file: ash_overworld.png
+    frames: [0, 1, 2, 3]
+    fps: 6
+  idle:
+    file: ash_overworld.png
+    frames: [0]
+    fps: 1
+  catch:
+    file: ash_overworld.png
+    frames: [4, 5, 6]
+    fps: 8
+
+# For full sheets that are not regular grids, use boxes instead of frames.
+# Each box is [x, y, width, height] in source PNG pixels.
+#
+# animations:
+#   walk_right:
+#     file: ash_overworld.png
+#     boxes:
+#       - [0, 0, 16, 20]
+#       - [16, 0, 16, 20]
+#       - [32, 0, 16, 20]
+#       - [48, 0, 16, 20]
+#     fps: 6
