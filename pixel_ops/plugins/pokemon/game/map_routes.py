@@ -132,8 +132,16 @@ class MapRouteManager:
         width, height = image.size
         left, top, right, bottom = 0, 0, width, height
 
-        # Most Spriters Resource sheets have a white header label before the map.
-        header_sample = [image.getpixel((x, 8)) for x in range(0, width, max(1, width // 80))] if height > 20 else []
+        # Original Spriters Resource sheets have a white frame/header around the maps.
+        # Clean split maps do not, so only apply header trimming when the outer border is mostly light.
+        border_sample = []
+        if height > 20:
+            border_sample.extend(image.getpixel((x, 0)) for x in range(0, width, max(1, width // 80)))
+            border_sample.extend(image.getpixel((x, height - 1)) for x in range(0, width, max(1, width // 80)))
+            border_sample.extend(image.getpixel((0, y)) for y in range(0, height, max(1, height // 80)))
+            border_sample.extend(image.getpixel((width - 1, y)) for y in range(0, height, max(1, height // 80)))
+        has_light_border = bool(border_sample) and sum(1 for pixel in border_sample if self._is_light(pixel)) > len(border_sample) * 0.7
+        header_sample = [image.getpixel((x, 8)) for x in range(0, width, max(1, width // 80))] if has_light_border else []
         if header_sample and sum(1 for pixel in header_sample if self._is_light(pixel)) > len(header_sample) * 0.5:
             top = min(18, height - 1)
         for y in range(top, min(40, height)):

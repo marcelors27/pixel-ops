@@ -38,7 +38,7 @@ class GitHubEventSource:
         max_pull_requests: int = 4,
     ):
         self.enabled = enabled
-        self.token = token or os.environ.get("PIXEL_OPS_GITHUB_TOKEN", "")
+        self.token = token or os.environ.get("PIXEL_OPS_GITHUB_TOKEN") or os.environ.get("POKEMON_DASHBOARD_GITHUB_TOKEN", "")
         self.repos = repos or []
         self.poll_seconds = poll_seconds
         self.max_pull_requests = max_pull_requests

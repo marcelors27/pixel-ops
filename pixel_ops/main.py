@@ -46,7 +46,7 @@ def load_env(path: Path) -> dict[str, str]:
 
 
 def env_bool(name: str, default: bool = False) -> bool:
-    value = os.environ.get(name)
+    value = env_value(name)
     if value is None:
         return default
     return value.strip().lower() in ("1", "true", "yes", "on")
@@ -54,9 +54,19 @@ def env_bool(name: str, default: bool = False) -> bool:
 
 def env_int(name: str, default: int) -> int:
     try:
-        return int(os.environ.get(name, str(default)))
+        return int(env_value(name) or str(default))
     except ValueError:
         return default
+
+
+def env_value(name: str, default: str | None = None) -> str | None:
+    value = os.environ.get(name)
+    if value is not None:
+        return value
+    if name.startswith("PIXEL_OPS_"):
+        legacy_name = f"POKEMON_DASHBOARD_{name.removeprefix('PIXEL_OPS_')}"
+        return os.environ.get(legacy_name, default)
+    return default
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -87,12 +97,12 @@ def calendar_paths_from_env(root_dir: Path) -> list[Path]:
         return []
 
     paths: list[Path] = []
-    for ics_path in split_env_list(os.environ.get("PIXEL_OPS_ICS_PATH", "")):
+    for ics_path in split_env_list(env_value("PIXEL_OPS_ICS_PATH", "") or ""):
         path = Path(ics_path).expanduser()
         if path.exists():
             paths.append(path)
 
-    for index, ics_url in enumerate(split_env_list(os.environ.get("PIXEL_OPS_ICS_URL", "")), start=1):
+    for index, ics_url in enumerate(split_env_list(env_value("PIXEL_OPS_ICS_URL", "") or ""), start=1):
         cache_path = root_dir / f"pixel_ops/cache/calendar/calendar_{index}.ics"
         downloaded = download_ics(ics_url, cache_path)
         if downloaded:
@@ -105,10 +115,10 @@ def calendar_cache_paths_from_env(root_dir: Path) -> list[Path]:
         return []
     paths = [
         Path(ics_path).expanduser()
-        for ics_path in split_env_list(os.environ.get("PIXEL_OPS_ICS_PATH", ""))
+        for ics_path in split_env_list(env_value("PIXEL_OPS_ICS_PATH", "") or "")
         if Path(ics_path).expanduser().exists()
     ]
-    for index, _ in enumerate(split_env_list(os.environ.get("PIXEL_OPS_ICS_URL", "")), start=1):
+    for index, _ in enumerate(split_env_list(env_value("PIXEL_OPS_ICS_URL", "") or ""), start=1):
         cache_path = root_dir / f"pixel_ops/cache/calendar/calendar_{index}.ics"
         if cache_path.exists():
             paths.append(cache_path)
@@ -120,9 +130,9 @@ def calendar_sources_from_env(root_dir: Path) -> list[CalendarEventSource]:
         return []
     poll_seconds = env_int("PIXEL_OPS_ICS_POLL_SECONDS", 300)
     sources: list[CalendarEventSource] = []
-    for ics_path in split_env_list(os.environ.get("PIXEL_OPS_ICS_PATH", "")):
+    for ics_path in split_env_list(env_value("PIXEL_OPS_ICS_PATH", "") or ""):
         sources.append(CalendarEventSource(enabled=True, path=Path(ics_path).expanduser(), poll_seconds=poll_seconds))
-    for index, ics_url in enumerate(split_env_list(os.environ.get("PIXEL_OPS_ICS_URL", "")), start=1):
+    for index, ics_url in enumerate(split_env_list(env_value("PIXEL_OPS_ICS_URL", "") or ""), start=1):
         cache_path = root_dir / f"pixel_ops/cache/calendar/calendar_{index}.ics"
         sources.append(CalendarEventSource(enabled=True, url=ics_url, cache_path=cache_path, poll_seconds=poll_seconds))
     return sources
@@ -203,7 +213,7 @@ def main() -> int:
     ]
     github_source = GitHubEventSource(
         enabled=env_bool("PIXEL_OPS_GITHUB_ENABLED", False),
-        repos=split_env_list(os.environ.get("PIXEL_OPS_GITHUB_REPOS", "")),
+        repos=split_env_list(env_value("PIXEL_OPS_GITHUB_REPOS", "") or ""),
         poll_seconds=env_int("PIXEL_OPS_GITHUB_POLL_SECONDS", 300),
         max_pull_requests=env_int("PIXEL_OPS_GITHUB_MAX_PRS", 4),
     )

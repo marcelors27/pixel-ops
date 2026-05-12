@@ -79,6 +79,26 @@ Local validation:
 python pixel_ops/main.py --plugin pokemon --gif --seconds 12 --fps 10 --offline
 ```
 
+## Map Sheets
+
+Original map sheets are kept in:
+
+```text
+pixel_ops/plugins/pokemon/assets/maps/firered_leafgreen/
+```
+
+Runtime uses split map-only PNGs from:
+
+```text
+pixel_ops/plugins/pokemon/assets/maps/firered_leafgreen_clean/
+```
+
+Regenerate the clean maps after adding or replacing sheets:
+
+```bash
+python pixel_ops/plugins/pokemon/tools/split_map_sheets.py
+```
+
 ## Pokemon Assets And Cache
 
 Download/cache official PokeAPI metadata plus front and animated sprites for the original 151 Pokemon:

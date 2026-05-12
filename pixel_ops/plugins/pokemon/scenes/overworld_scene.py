@@ -67,6 +67,7 @@ class OverworldScene:
         self.walk_start_x = int(cfg.get("walk_start_x", 28))
         self.encounter_x = int(cfg.get("encounter_x", 132))
         self.walk_exit_x = int(cfg.get("walk_exit_x", 258))
+        self.route_speed_px = float(cfg.get("route_speed_px", 2.6))
         self.hud_height = int(cfg.get("hud_height", 72))
         self.text_box_height = int(cfg.get("text_box_height", 76))
         self.static_background = bool(cfg.get("static_background", True))
@@ -97,7 +98,7 @@ class OverworldScene:
         )
         map_viewport = (self.renderer.width, self.text_box[1] - self.hud_height - 4)
         self.map_routes = MapRouteManager(
-            Path(__file__).resolve().parents[1] / "assets/maps/firered_leafgreen",
+            Path(__file__).resolve().parents[1] / "assets/maps/firered_leafgreen_clean",
             map_viewport,
             switch_seconds=int(cfg.get("map_switch_seconds", 300)),
         )
@@ -558,6 +559,10 @@ class OverworldScene:
 
     def _ash_pose_for_phase(self, phase: GamePhase) -> tuple[int, int, str | None]:
         if phase in (GamePhase.WALKING, GamePhase.RESUME_WALKING) and self.current_map_area:
-            (x, y), direction = self.map_routes.pose_on_route(self.current_map_area, self.overworld_walk_frame)
+            (x, y), direction = self.map_routes.pose_on_route(
+                self.current_map_area,
+                self.overworld_walk_frame,
+                self.route_speed_px,
+            )
             return x, self.hud_height + y, direction
         return self._ash_x_for_phase(phase), self.ash_y, None

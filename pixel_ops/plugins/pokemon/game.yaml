@@ -11,17 +11,18 @@ game:
   walk_start_x: 28
   encounter_x: 132
   walk_exit_x: 258
+  route_speed_px: 6.4
   pokemon_x: 220
   pokemon_y: 280
   hud_height: 212
   text_box_height: 76
   encounter:
-    walking_seconds: 5.0
+    walking_seconds: 1.5
     start_seconds: 1.4
     appears_seconds: 1.1
     throw_seconds: 0.8
     shake_seconds: 1.0
-    caught_seconds: 2.6
+    caught_seconds: 0.9
   events:
     mock_events: false
     queue_limit: 6

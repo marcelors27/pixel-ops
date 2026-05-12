@@ -2,6 +2,10 @@
 
 Pixel OPs is a plugin-based runtime for small pixel-art operations dashboards. The core owns outputs, event sources, shared data, and display hardware; visual interfaces live in plugins. The default plugin today is `pokemon`.
 
+Pixel OPs treats a tiny secondary screen as an eidetic display: a persistent, glanceable surface that turns operational context into a memorable visual scene. Instead of another dense dashboard tab, it keeps the next meeting, teammate time zones, open pull requests, and ambient work signals in a compact image your brain can recognize quickly.
+
+The project also uses game-like interfaces to make routine operations easier to notice and remember. Meetings become encounters, pull requests become world events, and status changes become part of a playful loop. The goal is not to hide important work behind decoration; it is to make recurring signals more legible, emotionally lighter, and easier to keep in peripheral awareness.
+
 ## Run
 
 ```bash
