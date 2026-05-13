@@ -1,6 +1,11 @@
 # Pixel OPs
 
-![Pixel OPs logo](pixel_ops/assets/logo/pixel_ops_gaco_logo.jpg)
+[![License](https://img.shields.io/github/license/marcelors27/pixel-ops)](LICENSE)
+![Last commit](https://img.shields.io/github/last-commit/marcelors27/pixel-ops)
+![Repo size](https://img.shields.io/github/repo-size/marcelors27/pixel-ops)
+![Python](https://img.shields.io/badge/python-3.9%2B-3776AB?logo=python&logoColor=white)
+
+<img src="pixel_ops/assets/logo/pixel_ops_gaco_logo.jpg" alt="Pixel OPs logo" width="180">
 
 Pixel OPs is a plugin-based runtime for small pixel-art operations dashboards. The core owns outputs, event sources, shared data, and display hardware; visual interfaces live in plugins. The default plugin today is `pokemon`.
 
