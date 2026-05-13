@@ -34,11 +34,11 @@ class PokeApiClient:
     def get(self, number: int, allow_download: bool = True) -> Pokemon:
         fallback = get_pokemon(number - 1)
         data = self._load_metadata(number, allow_download=allow_download)
-        if not data:
-            return fallback
-
-        name = str(data.get("name", fallback.name)).title()
-        types = tuple(slot["type"]["name"] for slot in data.get("types", []) if "type" in slot)
+        name = fallback.name
+        types = fallback.types
+        if data:
+            name = str(data.get("name", fallback.name)).title()
+            types = tuple(slot["type"]["name"] for slot in data.get("types", []) if "type" in slot)
         front = self.ensure_sprite(number, "front", allow_download=allow_download)
         animated = self.ensure_sprite(number, "animated", allow_download=allow_download)
         return Pokemon(

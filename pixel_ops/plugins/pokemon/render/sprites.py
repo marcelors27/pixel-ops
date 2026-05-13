@@ -364,7 +364,10 @@ class PokemonSpriteStore:
             try:
                 with Image.open(path) as image:
                     frames = [frame.convert("RGBA") for frame in ImageSequence.Iterator(image)]
+                    frames = [frame for frame in frames if frame.getbbox()]
             except OSError:
+                frames = [pokemon_blob(number, step)]
+            if not frames:
                 frames = [pokemon_blob(number, step)]
             self._frames[path] = frames
 

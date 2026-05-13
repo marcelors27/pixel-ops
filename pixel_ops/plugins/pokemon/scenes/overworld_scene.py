@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 from PIL import Image, ImageDraw
 
 from pixel_ops.data_sources.calendar import CalendarEvent
+from pixel_ops.data_sources.weather import WeatherState
 from pixel_ops.plugins.pokemon.pokemon_api import PokeApiClient
 from pixel_ops.data_sources.timezones import PersonTime
 from pixel_ops.plugins.pokemon.game.day_night import day_night_palette
@@ -17,6 +18,7 @@ from pixel_ops.plugins.pokemon.game.map_routes import MapArea, MapRouteManager
 from pixel_ops.plugins.pokemon.game.pokemon_selector import PokemonSelector
 from pixel_ops.plugins.pokemon.game.state_machine import GamePhase, GameStateMachine
 from pixel_ops.plugins.pokemon.game.world import World
+from pixel_ops.render.fonts import font
 from pixel_ops.render.hud import draw_hud
 from pixel_ops.render.renderer import PixelRenderer
 from pixel_ops.plugins.pokemon.render.sprites import (
@@ -144,10 +146,11 @@ class OverworldScene:
         event: CalendarEvent | None,
         now: datetime | None = None,
         pull_requests: list[PullRequestSummary] | None = None,
+        weather: WeatherState | None = None,
     ):
         base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
         phase = self.advance(base_now)
-        return self.render_full(people, event, base_now, phase, pull_requests=pull_requests)
+        return self.render_full(people, event, base_now, phase, pull_requests=pull_requests, weather=weather)
 
     def render_full(
         self,
@@ -156,11 +159,12 @@ class OverworldScene:
         now: datetime | None = None,
         phase: GamePhase | None = None,
         pull_requests: list[PullRequestSummary] | None = None,
+        weather: WeatherState | None = None,
     ) -> Image.Image:
         phase = phase or self.state.phase
         base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
         pal = day_night_palette(base_now.hour)
-        img = self.render_base(people, event, base_now, pull_requests=pull_requests)
+        img = self.render_base(people, event, base_now, pull_requests=pull_requests, weather=weather)
         if self._is_battle_phase(phase):
             self._draw_battle_scene(img, phase, pal)
         else:
@@ -176,6 +180,7 @@ class OverworldScene:
         event: CalendarEvent | None,
         now: datetime | None = None,
         pull_requests: list[PullRequestSummary] | None = None,
+        weather: WeatherState | None = None,
     ) -> Image.Image:
         base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
         pal = day_night_palette(base_now.hour)
@@ -183,7 +188,7 @@ class OverworldScene:
         draw = ImageDraw.Draw(img)
 
         self._draw_sky(draw, pal)
-        self._draw_world(img, draw, pal, base_now)
+        self._draw_world(img, draw, pal, base_now, weather)
         draw_hud(draw, people, event, base_now, pal, pull_requests=pull_requests)
         return img
 
@@ -265,12 +270,14 @@ class OverworldScene:
         else:
             draw.ellipse((252, 144, 286, 178), fill=pal.light, outline=pal.panel_shadow)
 
-    def _draw_world(self, img, draw: ImageDraw.ImageDraw, pal, now: datetime) -> None:
+    def _draw_world(self, img, draw: ImageDraw.ImageDraw, pal, now: datetime, weather: WeatherState | None = None) -> None:
         area = self.map_routes.area_for_timestamp(now.timestamp())
         if area:
             self.current_map_area = area
             self.current_map_timestamp = now.timestamp()
             img.paste(self._map_background_image(area, pal), (0, self.hud_height))
+            if weather:
+                self._draw_weather_effects(img, weather, area)
             return
 
         top = self.hud_height + 40
@@ -289,6 +296,8 @@ class OverworldScene:
                 img.paste(tiles[name], (x, y))
 
         self._draw_static_props(draw, pal, top, trail_top)
+        if weather:
+            self._draw_weather_effects(img, weather, None)
 
     def _tile_row_for_biome(self) -> list[str]:
         biome = self.world.biome
@@ -327,11 +336,108 @@ class OverworldScene:
         draw.rectangle((0, trail_top - 4, self.renderer.width, trail_top - 1), fill=pal.path_dark)
         draw.rectangle((0, trail_top + 56, self.renderer.width, trail_top + 59), fill=pal.path_dark)
 
+    def _draw_weather_effects(self, img: Image.Image, weather: WeatherState, area: MapArea | None) -> None:
+        effects = set(weather.effects)
+        outdoor = area is None or not area.sheltered
+        x0, y0, x1, y1 = self.map_box
+        box = (x0, y0, x1, y1)
+        if outdoor and "cloudy" in effects:
+            self._blend_map_region(img, box, (112, 128, 144), 0.16)
+        if "cold" in effects:
+            self._blend_map_region(img, box, (176, 216, 248), 0.10)
+        if "hot" in effects:
+            self._blend_map_region(img, box, (248, 176, 88), 0.11)
+
+        draw = ImageDraw.Draw(img)
+        if outdoor and "wind" in effects:
+            self._draw_wind(draw, box)
+        if outdoor and "rain" in effects:
+            self._draw_rain(draw, box)
+        if outdoor and "snow" in effects:
+            self._draw_snow(draw, box)
+        self._draw_weather_badge(draw, weather)
+
+    @staticmethod
+    def _blend_map_region(img: Image.Image, box: tuple[int, int, int, int], color: tuple[int, int, int], alpha: float) -> None:
+        region = img.crop(box)
+        tinted = Image.blend(region, Image.new("RGB", region.size, color), alpha)
+        img.paste(tinted, box)
+
+    def _draw_rain(self, draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int]) -> None:
+        x0, y0, x1, y1 = box
+        offset = (self.frame * 3) % 18
+        for x in range(x0 - 24, x1 + 24, 18):
+            for y in range(y0 - 18, y1 + 18, 24):
+                sx = x + ((y // 24) % 2) * 8
+                sy = y + offset
+                draw.line((sx, sy, sx - 5, sy + 10), fill=(128, 184, 232), width=1)
+
+    def _draw_snow(self, draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int]) -> None:
+        x0, y0, x1, y1 = box
+        offset = (self.frame // 2) % 20
+        for x in range(x0 + 8, x1, 24):
+            for y in range(y0 + 4, y1, 28):
+                sx = x + ((y // 28) % 3) * 5
+                sy = y + offset
+                if sy >= y1:
+                    sy -= y1 - y0
+                draw.point((sx, sy), fill=(232, 248, 255))
+                draw.point((sx + 1, sy), fill=(232, 248, 255))
+
+    def _draw_wind(self, draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int]) -> None:
+        x0, y0, x1, y1 = box
+        offset = (self.frame * 2) % 42
+        for y in range(y0 + 34, y1 - 16, 44):
+            start = x0 + 14 + offset
+            for x in range(start - 42, x1, 86):
+                draw.arc((x, y, x + 38, y + 12), 190, 350, fill=(224, 232, 216), width=1)
+                draw.line((x + 20, y + 7, x + 42, y + 7), fill=(224, 232, 216), width=1)
+
+    def _draw_weather_badge(self, draw: ImageDraw.ImageDraw, weather: WeatherState) -> None:
+        effect_label, temp_label, range_label = self._weather_labels(weather)
+        effect_font = font(8)
+        temp_font = font(14)
+        range_font = font(7)
+        effect_box = draw.textbbox((0, 0), effect_label, font=effect_font)
+        temp_box = draw.textbbox((0, 0), temp_label, font=temp_font)
+        range_box = draw.textbbox((0, 0), range_label, font=range_font)
+        width = max(
+            66,
+            effect_box[2] - effect_box[0] + temp_box[2] - temp_box[0] + 18,
+            range_box[2] - range_box[0] + 12,
+        )
+        x1 = self.renderer.width - 8
+        x0 = max(182, x1 - width)
+        y0 = max(self.hud_height + 6, 216)
+        y1 = y0 + 28
+        draw.rectangle((x0 + 2, y0 + 2, x1 + 2, y1 + 2), fill=(16, 24, 32))
+        draw.rectangle((x0, y0, x1, y1), fill=(236, 232, 208), outline=(40, 48, 56))
+        draw.text((x0 + 5, y0 + 4), effect_label, font=effect_font, fill=(64, 72, 88))
+        draw.text((x1 - (temp_box[2] - temp_box[0]) - 5, y0 + 1), temp_label, font=temp_font, fill=(32, 40, 56))
+        draw.text((x0 + 5, y0 + 18), range_label, font=range_font, fill=(72, 88, 112))
+
+    @staticmethod
+    def _weather_labels(weather: WeatherState) -> tuple[str, str, str]:
+        labels = {
+            "rain": "RAIN",
+            "cloudy": "CLOUD",
+            "wind": "WIND",
+            "snow": "SNOW",
+            "cold": "COLD",
+            "hot": "HOT",
+            "clear": "CLEAR",
+        }
+        effect = labels.get(weather.primary_effect, weather.primary_effect.upper())
+        temp = f"{round(weather.temperature_c):d}C"
+        low = "--" if weather.temperature_min_c is None else f"{round(weather.temperature_min_c):d}"
+        high = "--" if weather.temperature_max_c is None else f"{round(weather.temperature_max_c):d}"
+        return effect, temp, f"L {low}  H {high}"
+
     def _map_background_image(self, area: MapArea, pal) -> Image.Image:
         return self.map_routes.background_for_area(
             area,
             pal.phase,
-            None if pal.phase == "morning" else lambda image: self._tint_for_day_phase(image, pal),
+            None if pal.phase == "morning" else lambda image: self._tint_for_day_phase(image, pal, area),
         )
 
     @property
@@ -380,7 +486,9 @@ class OverworldScene:
         self._battle_backgrounds[pal.phase] = background
         return background
 
-    def _tint_for_day_phase(self, image: Image.Image, pal) -> Image.Image:
+    def _tint_for_day_phase(self, image: Image.Image, pal, area: MapArea | None = None) -> Image.Image:
+        if pal.phase == "night" and area and area.environment == "indoor":
+            return self._warm_indoor_light(image)
         if pal.phase == "night":
             alpha = 0.46
         elif pal.phase == "dawn":
@@ -390,11 +498,30 @@ class OverworldScene:
         overlay = Image.new("RGB", image.size, pal.sky_top)
         return Image.blend(image, overlay, alpha)
 
+    @staticmethod
+    def _warm_indoor_light(image: Image.Image) -> Image.Image:
+        warmed = Image.blend(image, Image.new("RGB", image.size, (255, 210, 132)), 0.12)
+        pixels = warmed.load()
+        for y in range(warmed.height):
+            for x in range(warmed.width):
+                r, g, b = pixels[x, y]
+                pixels[x, y] = (
+                    min(255, int(r * 1.04) + 4),
+                    min(255, int(g * 1.03) + 3),
+                    min(255, int(b * 0.96)),
+                )
+        return warmed
+
     def _battle_sprite_layers(self, phase: GamePhase) -> list[tuple[Image.Image, int, int]]:
         layers: list[tuple[Image.Image, int, int]] = []
         _, y0, _, y1 = self.battle_box
         pokemon_base_y = self._battle_pokemon_base_y()
         sprite_path = self.encounter.pokemon.animated_sprite_path or self.encounter.pokemon.sprite_path
+        ball_layer: tuple[Image.Image, int, int] | None = None
+        if phase in (GamePhase.ASH_THROWS, GamePhase.BALL_SHAKE):
+            ball = scale_sprite(pokeball(self.frame), 2)
+            ball_layer = (ball, *self._battle_ball_position(phase, ball, pokemon_base_y, y1))
+
         if phase != GamePhase.CAUGHT:
             if phase == GamePhase.ENCOUNTER_START:
                 pokemon_step = 0
@@ -402,37 +529,73 @@ class OverworldScene:
                 pokemon_step = self.state.frame_in_phase * 3
             else:
                 pokemon_step = self.state.durations[GamePhase.POKEMON_APPEARS] * 3
-            poke = self.pokemon_sprites.sprite_for(sprite_path, self.encounter.pokemon.number, pokemon_step, scale=1, loop=False)
+            pokemon_scale = 1 if sprite_path and sprite_path.exists() else 2
+            poke = self.pokemon_sprites.sprite_for(
+                sprite_path,
+                self.encounter.pokemon.number,
+                pokemon_step,
+                scale=pokemon_scale,
+                loop=False,
+            )
+            pokemon_x = BATTLE_POKEMON_X - poke.width // 2
+            pokemon_y = pokemon_base_y - poke.height
             if phase == GamePhase.ENCOUNTER_START:
-                appear_progress = self.state.progress
-                y_shift = int(10 * (1 - appear_progress))
-                layers.append((poke, BATTLE_POKEMON_X - poke.width // 2, pokemon_base_y - poke.height + y_shift))
-            else:
-                layers.append((poke, BATTLE_POKEMON_X - poke.width // 2, pokemon_base_y - poke.height))
+                pokemon_y += int(10 * (1 - self.state.progress))
+            ball_touched_pokemon = bool(
+                phase in (GamePhase.ASH_THROWS, GamePhase.BALL_SHAKE)
+                and ball_layer
+                and self._boxes_overlap(
+                    (pokemon_x, pokemon_y, pokemon_x + poke.width, pokemon_y + poke.height),
+                    (
+                        ball_layer[1],
+                        ball_layer[2],
+                        ball_layer[1] + ball_layer[0].width,
+                        ball_layer[2] + ball_layer[0].height,
+                    ),
+                )
+            )
+            if not ball_touched_pokemon:
+                layers.append((poke, pokemon_x, pokemon_y))
 
         if phase == GamePhase.ASH_THROWS:
-            ash_step = 1 + min(3, int(self.state.progress * 4))
+            ash_step = 1 + int(self.state.progress * 16)
         else:
             ash_step = 1
         ash = scale_sprite(battle_ash_frame(ash_step), 2)
         layers.append((ash, BATTLE_ASH_X, y1 - ash.height - BATTLE_ASH_BOTTOM_PAD))
 
-        if phase in (GamePhase.ASH_THROWS, GamePhase.BALL_SHAKE):
-            ball = scale_sprite(pokeball(self.frame), 2)
-            if phase == GamePhase.ASH_THROWS:
-                progress = self.state.progress
-                start_x = 112
-                start_y = y1 - 108
-                end_x = BATTLE_POKEMON_X - 6
-                end_y = pokemon_base_y - 2
-                bx = int(start_x + (end_x - start_x) * progress)
-                by = int(start_y + (end_y - start_y) * progress - 42 * progress * (1 - progress))
-            else:
-                shake = (-5, 5, 0, -3, 3, 0)[(self.frame // 2) % 6]
-                bx = BATTLE_POKEMON_X - 6 + shake
-                by = pokemon_base_y + 2
-            layers.append((ball, bx, by))
+        if ball_layer:
+            layers.append(ball_layer)
         return layers
+
+    def _battle_ball_position(
+        self,
+        phase: GamePhase,
+        ball: Image.Image,
+        pokemon_base_y: int,
+        battle_y1: int,
+    ) -> tuple[int, int]:
+        if phase == GamePhase.ASH_THROWS:
+            progress = self.state.progress
+            start_x = 112
+            start_y = battle_y1 - 108
+            end_x = BATTLE_POKEMON_X - ball.width // 2
+            end_y = pokemon_base_y - ball.height // 2
+            x = int(start_x + (end_x - start_x) * progress)
+            y = int(start_y + (end_y - start_y) * progress - 42 * progress * (1 - progress))
+            return x, y
+
+        shake = (-5, 5, 0, -3, 3, 0)[(self.frame // 2) % 6]
+        return BATTLE_POKEMON_X - ball.width // 2 + shake, pokemon_base_y - ball.height // 2
+
+    @staticmethod
+    def _boxes_overlap(first: tuple[int, int, int, int], second: tuple[int, int, int, int]) -> bool:
+        return (
+            first[0] < second[2]
+            and first[2] > second[0]
+            and first[1] < second[3]
+            and first[3] > second[1]
+        )
 
     def _draw_battle_sprites(self, img: Image.Image, phase: GamePhase, offset: tuple[int, int] = (0, 0)) -> None:
         ox, oy = offset

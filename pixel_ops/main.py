@@ -16,12 +16,14 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from pixel_ops.data_sources.calendar import download_ics, next_ics_event, next_mock_event
+from pixel_ops.data_sources.weather import OpenMeteoWeatherSource
 from pixel_ops.events.calendar_events import CalendarEventSource
 from pixel_ops.events.github_events import GitHubEventSource
 from pixel_ops.events.mock_events import MockEventSource
 from pixel_ops.outputs import GifOutput, PreviewOutput, TURZXOutput
 from pixel_ops.outputs.base import DisplayOutput
 from pixel_ops.plugins.registry import available_plugins, get_plugin
+from pixel_ops.render.splash import render_splash, splash_frame_count, splash_seconds
 
 APP_DIR = Path(__file__).resolve().parent
 
@@ -217,6 +219,13 @@ def main() -> int:
         poll_seconds=env_int("PIXEL_OPS_GITHUB_POLL_SECONDS", 300),
         max_pull_requests=env_int("PIXEL_OPS_GITHUB_MAX_PRS", 4),
     )
+    weather_cfg = display_cfg.get("weather", {})
+    weather_source = OpenMeteoWeatherSource(
+        enabled=env_bool("PIXEL_OPS_WEATHER_ENABLED", bool(weather_cfg.get("enabled", True))),
+        city=env_value("PIXEL_OPS_WEATHER_CITY", weather_cfg.get("city", "Porto Alegre")) or "Porto Alegre",
+        country_code=env_value("PIXEL_OPS_WEATHER_COUNTRY", weather_cfg.get("country_code", "BR")) or "BR",
+        poll_seconds=env_int("PIXEL_OPS_WEATHER_POLL_SECONDS", int(weather_cfg.get("poll_seconds", 900))),
+    )
     event_sources.append(github_source)
     for source in calendar_sources:
         source.warm_cache()
@@ -233,6 +242,7 @@ def main() -> int:
         people_config=people_cfg,
         next_event=lambda now: next_event(args, now, env_ics_paths),
         github_source=github_source,
+        weather_source=weather_source,
         event_sources=event_sources,
     )
 
@@ -246,13 +256,29 @@ def main() -> int:
             return 0
 
         frame_delay = 1 / fps
+        splash_frame = render_splash(ROOT_DIR, display_cfg, width, height)
+        splash_frames = splash_frame_count(display_cfg, fps) if splash_frame else 0
         if output_name == "gif":
             started = datetime.now(ZoneInfo(primary_tz))
             total_frames = max(1, int(args.seconds * fps))
             for frame_index in range(total_frames):
-                now = started + timedelta(seconds=frame_index / fps)
-                output.send(app.render_frame(now))
+                if frame_index < splash_frames:
+                    output.send(splash_frame)
+                else:
+                    now = started + timedelta(seconds=(frame_index - splash_frames) / fps)
+                    output.send(app.render_frame(now))
             return 0
+
+        if splash_frame:
+            splash_end_at = time.perf_counter() + splash_seconds(display_cfg)
+            while time.perf_counter() < splash_end_at:
+                loop_started = time.perf_counter()
+                output.send(splash_frame)
+                elapsed = time.perf_counter() - loop_started
+                remaining = splash_end_at - time.perf_counter()
+                if remaining <= 0:
+                    break
+                time.sleep(min(frame_delay, remaining, max(0, frame_delay - elapsed)))
 
         end_at = None if args.forever or args.seconds <= 0 else time.perf_counter() + args.seconds
         while end_at is None or time.perf_counter() < end_at:

@@ -15,6 +15,9 @@ class MapArea:
     crop_box: tuple[int, int, int, int]
     source_bounds: tuple[int, int, int, int]
     route: tuple[tuple[int, int], ...]
+    environment: str = "outdoor"
+    sheltered: bool = False
+    location_kind: str = "outdoor"
 
 
 class MapRouteManager:
@@ -125,8 +128,48 @@ class MapRouteManager:
                 area_id = f"{path.stem}:{index}"
                 route = self._route_for_crop(source.crop(box))
                 if route:
-                    areas.append(MapArea(area_id, path, box, bounds, route))
+                    environment, sheltered, location_kind = self._classify_area(path)
+                    areas.append(
+                        MapArea(
+                            area_id,
+                            path,
+                            box,
+                            bounds,
+                            route,
+                            environment=environment,
+                            sheltered=sheltered,
+                            location_kind=location_kind,
+                        )
+                    )
         return areas
+
+    @staticmethod
+    def _classify_area(path: Path) -> tuple[str, bool, str]:
+        stem = path.stem
+        parent = path.parent.name
+        if parent == "nature":
+            if "altering-cave" in stem:
+                return "cave", True, "cave"
+            if stem.endswith("__map-02"):
+                return "indoor", True, "interior"
+            return "outdoor", False, "nature"
+
+        if "__map-01" in stem:
+            return "outdoor", False, "town"
+
+        return "indoor", True, MapRouteManager._indoor_kind(stem)
+
+    @staticmethod
+    def _indoor_kind(stem: str) -> str:
+        if "__map-03" in stem or "__map-04" in stem:
+            return "pokemon_center"
+        if "pewter-city__map-05" in stem or "vermilion-city__map-02" in stem or "viridian-city__map-02" in stem:
+            return "gym"
+        if "pewter-city__map-06" in stem or "pewter-city__map-07" in stem:
+            return "museum"
+        if "__map-02" in stem:
+            return "shop"
+        return "house"
 
     def _main_map_bounds(self, image: Image.Image) -> tuple[int, int, int, int]:
         width, height = image.size

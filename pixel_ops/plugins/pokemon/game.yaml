@@ -56,6 +56,9 @@ game:
       merge:
         - dragon
         - normal
+      pr_closed:
+        - ghost
+        - normal
       pr_approved:
         - electric
         - fairy

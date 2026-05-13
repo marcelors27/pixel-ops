@@ -8,11 +8,12 @@ from PIL import Image
 
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.timezones import build_people_times
+from pixel_ops.data_sources.weather import OpenMeteoWeatherSource
 from pixel_ops.events.github_events import GitHubEventSource
 
 
 class PixelOpsScene(Protocol):
-    def render(self, people_times, next_event, now: datetime, pull_requests) -> Image.Image:
+    def render(self, people_times, next_event, now: datetime, pull_requests, weather) -> Image.Image:
         ...
 
 
@@ -25,11 +26,13 @@ class PixelOpsApp:
         people_config: list[dict],
         next_event: Callable[[datetime], CalendarEvent | None],
         github_source: GitHubEventSource,
+        weather_source: OpenMeteoWeatherSource | None = None,
     ):
         self.scene = scene
         self.people_config = people_config
         self.next_event = next_event
         self.github_source = github_source
+        self.weather_source = weather_source
 
     def render_frame(self, now: datetime) -> Image.Image:
         return self.scene.render(
@@ -37,4 +40,5 @@ class PixelOpsApp:
             self.next_event(now),
             now,
             self.github_source.open_pull_requests(now),
+            self.weather_source.current(now) if self.weather_source else None,
         )

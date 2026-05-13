@@ -50,6 +50,7 @@ class EncounterContext:
             EventCategory.MESSAGE_IMPORTANT: "MESSAGE noted",
             EventCategory.INCIDENT: "INCIDENT escalated",
             EventCategory.MERGE: "MERGE recorded",
+            EventCategory.PR_CLOSED: "PR CLOSED recorded",
             EventCategory.PR_APPROVED: "APPROVAL recorded",
         }
         return labels.get(self.event.category, "EVENT recorded")

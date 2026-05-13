@@ -7,6 +7,7 @@ from pathlib import Path
 
 from pixel_ops.core import PixelOpsApp
 from pixel_ops.data_sources.calendar import CalendarEvent
+from pixel_ops.data_sources.weather import OpenMeteoWeatherSource
 from pixel_ops.events.base import EventSource
 from pixel_ops.events.github_events import GitHubEventSource
 from pixel_ops.plugins.pokemon.pokemon_api import PokeApiClient
@@ -54,6 +55,7 @@ class PokemonPlugin:
         people_config: list[dict],
         next_event: Callable[[datetime], CalendarEvent | None],
         github_source: GitHubEventSource,
+        weather_source: OpenMeteoWeatherSource | None,
         event_sources: list[EventSource],
     ) -> PixelOpsApp:
         pokemon_cfg = config["pokemon"]
@@ -74,6 +76,7 @@ class PokemonPlugin:
             people_config=people_config,
             next_event=next_event,
             github_source=github_source,
+            weather_source=weather_source,
         )
 
     def _pokemon_api(self, args: argparse.Namespace, root_dir: Path, pokemon_cfg: dict) -> PokeApiClient:

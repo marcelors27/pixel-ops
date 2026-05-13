@@ -16,6 +16,7 @@ class EventCategory(str, Enum):
     MESSAGE_IMPORTANT = "message_important"
     INCIDENT = "incident"
     MERGE = "merge"
+    PR_CLOSED = "pr_closed"
     PR_APPROVED = "pr_approved"
     AMBIENT = "ambient"
 

@@ -7,3 +7,13 @@ display:
   gif_output: pixel_ops/output/preview.gif
   scanlines: false
   timezone_primary: America/Sao_Paulo
+  weather:
+    enabled: true
+    city: Porto Alegre
+    country_code: BR
+    poll_seconds: 900
+  splash:
+    enabled: true
+    seconds: 2
+    logo_path: pixel_ops/assets/logo/pixel_ops_gaco_logo.jpg
+    background: [8, 10, 18]

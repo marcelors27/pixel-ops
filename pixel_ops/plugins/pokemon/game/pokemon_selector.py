@@ -39,6 +39,7 @@ DEFAULT_EVENT_TYPES = {
     EventCategory.MESSAGE_IMPORTANT.value: ("electric", "normal"),
     EventCategory.INCIDENT.value: ("ghost", "dark", "legendary"),
     EventCategory.MERGE.value: ("dragon", "normal"),
+    EventCategory.PR_CLOSED.value: ("ghost", "normal"),
     EventCategory.PR_APPROVED.value: ("electric", "fairy"),
     EventCategory.AMBIENT.value: ("grass", "normal"),
 }
@@ -47,6 +48,7 @@ PR_EVOLUTION = {
     EventCategory.PULL_REQUEST: (4, 5, 6),
     EventCategory.REVIEW_REQUESTED: (5,),
     EventCategory.MERGE: (6,),
+    EventCategory.PR_CLOSED: (6,),
 }
 
 

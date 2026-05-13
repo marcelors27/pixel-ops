@@ -89,6 +89,16 @@ display:
   gif_output: pixel_ops/output/preview.gif
   scanlines: false
   timezone_primary: America/Sao_Paulo
+  weather:
+    enabled: true
+    city: Porto Alegre
+    country_code: BR
+    poll_seconds: 900
+  splash:
+    enabled: true
+    seconds: 2
+    logo_path: pixel_ops/assets/logo/pixel_ops_gaco_logo.jpg
+    background: [8, 10, 18]
 ```
 
 Fields:
@@ -100,6 +110,11 @@ Fields:
 - `gif_output`: GIF output path.
 - `scanlines`: overlays a subtle handheld-screen scanline effect when enabled.
 - `timezone_primary`: timezone used for the main clock and day/night palette.
+- `weather`: Open-Meteo polling config for map weather effects and the map weather badge.
+- `splash.enabled`: shows the Pixel OPs logo before GIF and live display output.
+- `splash.seconds`: splash duration.
+- `splash.logo_path`: explicit image used for the splash logo.
+- `splash.background`: RGB splash background color.
 
 ## People And Time Zones
 
