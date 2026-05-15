@@ -17,9 +17,20 @@ The project also uses game-like interfaces to make routine operations easier to 
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --output preview
+python pixel_ops/main.py --plugin pokemon --output window --forever
 python pixel_ops/main.py --plugin pokemon --output gif --seconds 8
 python pixel_ops/main.py --plugin pokemon --output turzx --forever --fps 10 --offline
 ```
+
+Window mode renders the live dashboard in a desktop window instead of writing a file or using the USB display:
+
+```bash
+python pixel_ops/main.py --plugin pokemon --window --forever
+python pixel_ops/main.py --plugin pokemon --window --window-scale 1 --forever
+python pixel_ops/main.py --plugin pokemon --window --window-scale 3 --forever
+```
+
+`--window-scale 1` shows the native 320x480 frame. Higher integer scales enlarge the window with nearest-neighbor pixel scaling.
 
 Local outputs:
 

@@ -17,12 +17,12 @@ game:
   hud_height: 212
   text_box_height: 96
   encounter:
-    walking_seconds: 1.5
-    start_seconds: 1.4
-    appears_seconds: 1.1
-    throw_seconds: 0.8
-    shake_seconds: 1.0
-    caught_seconds: 0.9
+    walking_seconds: 2.0
+    start_seconds: 3.0
+    appears_seconds: 7.0
+    throw_seconds: 1.4
+    shake_seconds: 3.0
+    caught_seconds: 5.0
   events:
     mock_events: false
     queue_limit: 6

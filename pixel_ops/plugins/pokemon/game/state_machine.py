@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
 
 
@@ -14,27 +15,28 @@ class GamePhase(str, Enum):
     RESUME_WALKING = "resume_walking"
 
 
-DEFAULT_DURATIONS = {
-    GamePhase.WALKING: 50,
-    GamePhase.ENCOUNTER_START: 14,
-    GamePhase.POKEMON_APPEARS: 20,
-    GamePhase.ASH_THROWS: 14,
-    GamePhase.BALL_SHAKE: 20,
-    GamePhase.CAUGHT: 26,
-    GamePhase.RESUME_WALKING: 12,
+DEFAULT_DURATIONS_SECONDS = {
+    GamePhase.WALKING: 5.0,
+    GamePhase.ENCOUNTER_START: 1.4,
+    GamePhase.POKEMON_APPEARS: 2.0,
+    GamePhase.ASH_THROWS: 1.4,
+    GamePhase.BALL_SHAKE: 2.0,
+    GamePhase.CAUGHT: 2.6,
+    GamePhase.RESUME_WALKING: 1.2,
 }
 
 
 @dataclass
 class GameStateMachine:
-    fps: int
-    durations: dict[GamePhase, int]
+    animation_fps: int
+    durations: dict[GamePhase, float]
     phase: GamePhase = GamePhase.WALKING
-    frame_in_phase: int = 0
+    phase_started_at: datetime | None = None
+    elapsed_seconds: float = 0.0
 
     @classmethod
     def from_seconds(cls, fps: int, seconds_config: dict | None = None) -> "GameStateMachine":
-        durations = dict(DEFAULT_DURATIONS)
+        durations = dict(DEFAULT_DURATIONS_SECONDS)
         aliases = {
             GamePhase.ENCOUNTER_START: "start_seconds",
             GamePhase.POKEMON_APPEARS: "appears_seconds",
@@ -44,20 +46,31 @@ class GameStateMachine:
         for phase in GamePhase:
             key = f"{phase.value}_seconds"
             if seconds_config and key in seconds_config:
-                durations[phase] = max(1, int(float(seconds_config[key]) * fps))
+                durations[phase] = max(0.05, float(seconds_config[key]))
             alias = aliases.get(phase)
             if seconds_config and alias in seconds_config:
-                durations[phase] = max(1, int(float(seconds_config[alias]) * fps))
-        return cls(fps=fps, durations=durations)
+                durations[phase] = max(0.05, float(seconds_config[alias]))
+        return cls(animation_fps=fps, durations=durations)
 
-    def tick(self) -> tuple[GamePhase, bool]:
-        self.frame_in_phase += 1
-        if self.frame_in_phase < self.durations[self.phase]:
+    def tick(self, now: datetime) -> tuple[GamePhase, bool]:
+        if self.phase_started_at is None:
+            self.phase_started_at = now
+            self.elapsed_seconds = 0.0
+            return self.phase, False
+
+        self.elapsed_seconds = max(0.0, (now - self.phase_started_at).total_seconds())
+        if self.elapsed_seconds < self.durations[self.phase]:
             return self.phase, False
 
         self.phase = self._next_phase(self.phase)
-        self.frame_in_phase = 0
+        self.phase_started_at = now
+        self.elapsed_seconds = 0.0
         return self.phase, True
+
+    def set_phase(self, phase: GamePhase, now: datetime) -> None:
+        self.phase = phase
+        self.phase_started_at = now
+        self.elapsed_seconds = 0.0
 
     @staticmethod
     def _next_phase(phase: GamePhase) -> GamePhase:
@@ -75,4 +88,8 @@ class GameStateMachine:
 
     @property
     def progress(self) -> float:
-        return min(1.0, self.frame_in_phase / max(1, self.durations[self.phase]))
+        return min(1.0, self.elapsed_seconds / max(0.001, self.durations[self.phase]))
+
+    @property
+    def frame_in_phase(self) -> int:
+        return max(0, int(self.elapsed_seconds * self.animation_fps))

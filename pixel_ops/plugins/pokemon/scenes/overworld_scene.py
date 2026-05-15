@@ -123,17 +123,15 @@ class OverworldScene:
 
     def advance(self, now: datetime | None = None, weather: WeatherState | None = None) -> GamePhase:
         self.frame += 1
-        if now:
-            self.encounter_system.poll(now)
-        phase, changed = self.state.tick()
+        base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
+        self.encounter_system.poll(base_now)
+        phase, changed = self.state.tick(base_now)
         if changed and phase == GamePhase.ENCOUNTER_START:
-            base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
             pal = day_night_palette(base_now.hour)
             encounter = self.encounter_system.next_encounter(pal.phase, now=base_now, weather=weather)
             if encounter is None:
                 self.encounter = self.encounter_system.ambient_context(pal.phase, now=base_now, weather=weather)
-                self.state.phase = GamePhase.WALKING
-                self.state.frame_in_phase = 0
+                self.state.set_phase(GamePhase.WALKING, base_now)
                 return GamePhase.WALKING
             self.encounter = encounter
         moving = phase in (GamePhase.WALKING, GamePhase.RESUME_WALKING)
@@ -561,7 +559,7 @@ class OverworldScene:
             elif phase == GamePhase.POKEMON_APPEARS:
                 pokemon_step = self.state.frame_in_phase * 3
             else:
-                pokemon_step = self.state.durations[GamePhase.POKEMON_APPEARS] * 3
+                pokemon_step = int(self.state.durations[GamePhase.POKEMON_APPEARS] * self.scene_fps) * 3
             pokemon_scale = 1 if sprite_path and sprite_path.exists() else 2
             poke = self.pokemon_sprites.sprite_for(
                 sprite_path,

@@ -29,6 +29,13 @@ Render an animated GIF:
 python pixel_ops/main.py --plugin pokemon --output gif --seconds 8
 ```
 
+Run in a desktop window:
+
+```bash
+python pixel_ops/main.py --plugin pokemon --output window --forever
+python pixel_ops/main.py --plugin pokemon --window --window-scale 2 --forever
+```
+
 Run on the USB display:
 
 ```bash
@@ -52,14 +59,18 @@ PokemonPlugin -> OverworldScene -> PIL.Image -> DisplayOutput.send(frame)
 Available output targets:
 
 - `preview`: writes one PNG to `pixel_ops/output/preview.png`.
+- `window`: renders live frames in a desktop window.
 - `gif`: writes an animated GIF to `pixel_ops/output/preview.gif`.
 - `turzx`: sends frames to the TURZX/Turing USB display backend.
 
 Legacy aliases still work:
 
 - `--preview` is equivalent to `--output preview`.
+- `--window` is equivalent to `--output window`.
 - `--gif` is equivalent to `--output gif`.
 - `--display` is equivalent to `--output turzx`.
+
+Window mode accepts `--window-scale N` to resize the 320x480 frame with nearest-neighbor pixel scaling. Use `--window-scale 1` for native size, `2` for 640x960, or `3` for 960x1440.
 
 ## Main Config Files
 
