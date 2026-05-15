@@ -12,6 +12,14 @@ display:
     city: Porto Alegre
     country_code: BR
     poll_seconds: 900
+  ai:
+    enabled: true
+    provider: openai_chatgpt
+    model: gpt-5.2-chat-latest
+    api_key_env: OPENAI_API_KEY
+    timeout_seconds: 8
+    cache_enabled: true
+    cache_dir: pixel_ops/cache/ai_decisions
   splash:
     enabled: true
     seconds: 2

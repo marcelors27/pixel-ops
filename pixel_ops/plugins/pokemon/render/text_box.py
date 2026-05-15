@@ -32,20 +32,20 @@ def draw_text_box(image: Image.Image, box: tuple[int, int, int, int], text: str,
         image.paste(asset, (x0, y0))
         text_fill = (248, 248, 248)
         cursor_fill = (248, 248, 248)
-        text_x = x0 + 16
-        text_y = y0 + 15
+        text_x = x0 + 14
+        text_y = y0 + 13
     else:
         PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
         text_fill = pal.ink
         cursor_fill = pal.red
-        text_x = x0 + 16
-        text_y = y0 + 15
+        text_x = x0 + 14
+        text_y = y0 + 13
 
-    text_font = font(16)
+    text_font = font(14)
     words = text.split()
     lines: list[str] = []
     current = ""
-    max_text_width = x1 - x0 - 38
+    max_text_width = x1 - x0 - 34
     for word in words:
         candidate = f"{current} {word}".strip()
         if draw.textbbox((0, 0), candidate, font=text_font)[2] > max_text_width:
@@ -58,10 +58,26 @@ def draw_text_box(image: Image.Image, box: tuple[int, int, int, int], text: str,
         lines.append(current)
 
     y = text_y
-    max_lines = max(2, (y1 - y0 - 30) // 21)
-    for line in lines[:max_lines]:
+    line_height = 18
+    max_lines = max(2, (y1 - y0 - 28) // line_height)
+    visible_lines = _scroll_lines(lines, max_lines, frame)
+    for line in visible_lines:
         draw.text((text_x, y), line, font=text_font, fill=text_fill)
-        y += 21
+        y += line_height
     if frame % 20 < 10:
         cursor_y = y1 - 25
         draw.polygon([(x1 - 24, cursor_y), (x1 - 14, cursor_y + 7), (x1 - 24, cursor_y + 14)], fill=cursor_fill)
+
+
+def _scroll_lines(lines: list[str], max_lines: int, frame: int) -> list[str]:
+    if len(lines) <= max_lines:
+        return lines[:max_lines]
+    hold_frames = 24
+    step_frames = 16
+    cycle = hold_frames + (len(lines) - max_lines) * step_frames + hold_frames
+    position = frame % max(1, cycle)
+    if position < hold_frames:
+        start = 0
+    else:
+        start = min(len(lines) - max_lines, (position - hold_frames) // step_frames + 1)
+    return lines[start : start + max_lines]

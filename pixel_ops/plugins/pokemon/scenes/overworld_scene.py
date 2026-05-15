@@ -13,6 +13,7 @@ from pixel_ops.data_sources.timezones import PersonTime
 from pixel_ops.plugins.pokemon.game.day_night import day_night_palette
 from pixel_ops.events.base import WorkEvent
 from pixel_ops.events.github_events import PullRequestSummary
+from pixel_ops.plugins.ai.plugin import AiDecisionPlugin
 from pixel_ops.plugins.pokemon.game.encounter_system import EncounterSystem
 from pixel_ops.plugins.pokemon.game.map_routes import MapArea, MapRouteManager
 from pixel_ops.plugins.pokemon.game.pokemon_selector import PokemonSelector
@@ -50,6 +51,7 @@ class OverworldScene:
         game_config: dict | None = None,
         ash_assets_dir: Path | None = None,
         event_sources: list | None = None,
+        ai_plugin: AiDecisionPlugin | None = None,
     ):
         cfg = game_config or {}
         encounter_cfg = cfg.get("encounter", {})
@@ -80,6 +82,7 @@ class OverworldScene:
                 pokemon_api,
                 lazy_download=lazy_download,
                 config=cfg.get("events", {}),
+                ai_plugin=ai_plugin,
             ),
             sources=event_sources or [],
             queue_limit=int(cfg.get("events", {}).get("queue_limit", 6)),
@@ -118,7 +121,7 @@ class OverworldScene:
     def map_box(self) -> tuple[int, int, int, int]:
         return (0, self.hud_height, self.renderer.width, self.text_box[1] - 4)
 
-    def advance(self, now: datetime | None = None) -> GamePhase:
+    def advance(self, now: datetime | None = None, weather: WeatherState | None = None) -> GamePhase:
         self.frame += 1
         if now:
             self.encounter_system.poll(now)
@@ -126,9 +129,9 @@ class OverworldScene:
         if changed and phase == GamePhase.ENCOUNTER_START:
             base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
             pal = day_night_palette(base_now.hour)
-            encounter = self.encounter_system.next_encounter(pal.phase)
+            encounter = self.encounter_system.next_encounter(pal.phase, now=base_now, weather=weather)
             if encounter is None:
-                self.encounter = self.encounter_system.ambient_context(pal.phase)
+                self.encounter = self.encounter_system.ambient_context(pal.phase, now=base_now, weather=weather)
                 self.state.phase = GamePhase.WALKING
                 self.state.frame_in_phase = 0
                 return GamePhase.WALKING
@@ -149,7 +152,7 @@ class OverworldScene:
         weather: WeatherState | None = None,
     ):
         base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
-        phase = self.advance(base_now)
+        phase = self.advance(base_now, weather=weather)
         return self.render_full(people, event, base_now, phase, pull_requests=pull_requests, weather=weather)
 
     def render_full(
@@ -277,7 +280,7 @@ class OverworldScene:
             self.current_map_timestamp = now.timestamp()
             img.paste(self._map_background_image(area, pal), (0, self.hud_height))
             if weather:
-                self._draw_weather_effects(img, weather, area)
+                self._draw_weather_effects(img, weather, area, pal)
             return
 
         top = self.hud_height + 40
@@ -297,7 +300,7 @@ class OverworldScene:
 
         self._draw_static_props(draw, pal, top, trail_top)
         if weather:
-            self._draw_weather_effects(img, weather, None)
+            self._draw_weather_effects(img, weather, None, pal)
 
     def _tile_row_for_biome(self) -> list[str]:
         biome = self.world.biome
@@ -336,7 +339,7 @@ class OverworldScene:
         draw.rectangle((0, trail_top - 4, self.renderer.width, trail_top - 1), fill=pal.path_dark)
         draw.rectangle((0, trail_top + 56, self.renderer.width, trail_top + 59), fill=pal.path_dark)
 
-    def _draw_weather_effects(self, img: Image.Image, weather: WeatherState, area: MapArea | None) -> None:
+    def _draw_weather_effects(self, img: Image.Image, weather: WeatherState, area: MapArea | None, pal) -> None:
         effects = set(weather.effects)
         outdoor = area is None or not area.sheltered
         x0, y0, x1, y1 = self.map_box
@@ -355,7 +358,7 @@ class OverworldScene:
             self._draw_rain(draw, box)
         if outdoor and "snow" in effects:
             self._draw_snow(draw, box)
-        self._draw_weather_badge(draw, weather)
+        self._draw_weather_badge(draw, weather, pal)
 
     @staticmethod
     def _blend_map_region(img: Image.Image, box: tuple[int, int, int, int], color: tuple[int, int, int], alpha: float) -> None:
@@ -393,17 +396,15 @@ class OverworldScene:
                 draw.arc((x, y, x + 38, y + 12), 190, 350, fill=(224, 232, 216), width=1)
                 draw.line((x + 20, y + 7, x + 42, y + 7), fill=(224, 232, 216), width=1)
 
-    def _draw_weather_badge(self, draw: ImageDraw.ImageDraw, weather: WeatherState) -> None:
-        effect_label, temp_label, range_label = self._weather_labels(weather)
-        effect_font = font(8)
+    def _draw_weather_badge(self, draw: ImageDraw.ImageDraw, weather: WeatherState, pal) -> None:
+        temp_label, range_label = self._weather_labels(weather)
         temp_font = font(14)
         range_font = font(7)
-        effect_box = draw.textbbox((0, 0), effect_label, font=effect_font)
         temp_box = draw.textbbox((0, 0), temp_label, font=temp_font)
         range_box = draw.textbbox((0, 0), range_label, font=range_font)
         width = max(
-            66,
-            effect_box[2] - effect_box[0] + temp_box[2] - temp_box[0] + 18,
+            72,
+            22 + temp_box[2] - temp_box[0] + 16,
             range_box[2] - range_box[0] + 12,
         )
         x1 = self.renderer.width - 8
@@ -412,26 +413,58 @@ class OverworldScene:
         y1 = y0 + 28
         draw.rectangle((x0 + 2, y0 + 2, x1 + 2, y1 + 2), fill=(16, 24, 32))
         draw.rectangle((x0, y0, x1, y1), fill=(236, 232, 208), outline=(40, 48, 56))
-        draw.text((x0 + 5, y0 + 4), effect_label, font=effect_font, fill=(64, 72, 88))
+        self._draw_weather_icon(draw, weather.primary_effect, x0 + 6, y0 + 2, pal.phase)
         draw.text((x1 - (temp_box[2] - temp_box[0]) - 5, y0 + 1), temp_label, font=temp_font, fill=(32, 40, 56))
         draw.text((x0 + 5, y0 + 18), range_label, font=range_font, fill=(72, 88, 112))
 
+    def _draw_weather_icon(self, draw: ImageDraw.ImageDraw, effect: str, x: int, y: int, day_phase: str) -> None:
+        if effect == "rain":
+            self._draw_cloud_icon(draw, x, y, rain=True)
+        elif effect == "cloudy":
+            self._draw_cloud_icon(draw, x, y)
+        elif effect == "wind":
+            draw.arc((x, y + 2, x + 14, y + 10), 200, 350, fill=(64, 88, 112), width=1)
+            draw.line((x + 6, y + 7, x + 18, y + 7), fill=(64, 88, 112), width=1)
+            draw.arc((x + 2, y + 7, x + 16, y + 15), 200, 350, fill=(64, 88, 112), width=1)
+            draw.line((x + 7, y + 12, x + 17, y + 12), fill=(64, 88, 112), width=1)
+        elif effect == "snow":
+            self._draw_cloud_icon(draw, x, y, snow=True)
+        elif effect == "cold":
+            draw.line((x + 9, y, x + 9, y + 16), fill=(64, 128, 184), width=1)
+            draw.line((x + 2, y + 4, x + 16, y + 12), fill=(64, 128, 184), width=1)
+            draw.line((x + 16, y + 4, x + 2, y + 12), fill=(64, 128, 184), width=1)
+            draw.ellipse((x + 7, y + 6, x + 11, y + 10), fill=(232, 248, 255), outline=(64, 128, 184))
+        elif effect == "hot":
+            draw.ellipse((x + 4, y + 2, x + 16, y + 14), fill=(248, 192, 64), outline=(176, 96, 48))
+            for x1, y1, x2, y2 in ((10, 0, 10, 3), (10, 13, 10, 17), (1, 8, 4, 8), (16, 8, 19, 8)):
+                draw.line((x + x1, y + y1, x + x2, y + y2), fill=(176, 96, 48), width=1)
+        elif day_phase == "night":
+            draw.ellipse((x + 5, y + 2, x + 16, y + 13), fill=(232, 232, 184), outline=(112, 112, 128))
+            draw.ellipse((x + 10, y, x + 19, y + 11), fill=(236, 232, 208))
+        else:
+            draw.ellipse((x + 4, y + 2, x + 16, y + 14), fill=(248, 200, 72), outline=(176, 120, 48))
+
     @staticmethod
-    def _weather_labels(weather: WeatherState) -> tuple[str, str, str]:
-        labels = {
-            "rain": "RAIN",
-            "cloudy": "CLOUD",
-            "wind": "WIND",
-            "snow": "SNOW",
-            "cold": "COLD",
-            "hot": "HOT",
-            "clear": "CLEAR",
-        }
-        effect = labels.get(weather.primary_effect, weather.primary_effect.upper())
+    def _draw_cloud_icon(draw: ImageDraw.ImageDraw, x: int, y: int, rain: bool = False, snow: bool = False) -> None:
+        cloud = (104, 120, 136)
+        light = (224, 232, 232)
+        draw.ellipse((x + 2, y + 5, x + 10, y + 13), fill=light, outline=cloud)
+        draw.ellipse((x + 7, y + 2, x + 16, y + 12), fill=light, outline=cloud)
+        draw.rectangle((x + 5, y + 8, x + 18, y + 14), fill=light, outline=cloud)
+        if rain:
+            for dx in (5, 10, 15):
+                draw.line((x + dx, y + 15, x + dx - 2, y + 18), fill=(64, 128, 200), width=1)
+        if snow:
+            for dx in (5, 11, 17):
+                draw.point((x + dx, y + 17), fill=(64, 128, 184))
+                draw.point((x + dx + 1, y + 17), fill=(64, 128, 184))
+
+    @staticmethod
+    def _weather_labels(weather: WeatherState) -> tuple[str, str]:
         temp = f"{round(weather.temperature_c):d}C"
         low = "--" if weather.temperature_min_c is None else f"{round(weather.temperature_min_c):d}"
         high = "--" if weather.temperature_max_c is None else f"{round(weather.temperature_max_c):d}"
-        return effect, temp, f"L {low}  H {high}"
+        return temp, f"L {low}  H {high}"
 
     def _map_background_image(self, area: MapArea, pal) -> Image.Image:
         return self.map_routes.background_for_area(

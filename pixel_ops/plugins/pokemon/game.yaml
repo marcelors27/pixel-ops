@@ -15,7 +15,7 @@ game:
   pokemon_x: 220
   pokemon_y: 280
   hud_height: 212
-  text_box_height: 76
+  text_box_height: 96
   encounter:
     walking_seconds: 1.5
     start_seconds: 1.4
@@ -26,6 +26,11 @@ game:
   events:
     mock_events: false
     queue_limit: 6
+    knowledge_path: pixel_ops/plugins/pokemon/assets/knowledge/gen1_lore.json
+    ai_selector:
+      enabled: true
+      ambient: false
+      candidate_limit: 8
     event_pokemon_types:
       pull_request:
         - bug

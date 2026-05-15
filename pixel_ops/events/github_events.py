@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -36,16 +37,23 @@ class GitHubEventSource:
         repos: list[str] | None = None,
         poll_seconds: int = 300,
         max_pull_requests: int = 4,
+        fetch_pull_requests: int | None = None,
+        timeout_seconds: int = 20,
     ):
         self.enabled = enabled
         self.token = token or os.environ.get("PIXEL_OPS_GITHUB_TOKEN") or os.environ.get("POKEMON_DASHBOARD_GITHUB_TOKEN", "")
         self.repos = repos or []
         self.poll_seconds = poll_seconds
         self.max_pull_requests = max_pull_requests
+        self.fetch_pull_requests = fetch_pull_requests or max(max_pull_requests, 20)
+        self.timeout_seconds = timeout_seconds
         self._last_poll_at: datetime | None = None
+        self._last_open_fetch_at: datetime | None = None
+        self._open_pull_requests: list[PullRequestSummary] = []
         self._pull_requests: list[PullRequestSummary] = []
         self._pending_events: list[WorkEvent] = []
         self._seen: set[str] = set()
+        self.debug = _env_bool("PIXEL_OPS_DEBUG_EVENTS") or _env_bool("POKEMON_DASHBOARD_DEBUG_EVENTS")
 
     def poll(self, now: datetime) -> list[WorkEvent]:
         self._refresh(now)
@@ -55,7 +63,7 @@ class GitHubEventSource:
 
     def open_pull_requests(self, now: datetime | None = None) -> list[PullRequestSummary]:
         if now:
-            self._refresh(now)
+            self._refresh_hud(now)
         return list(self._pull_requests)
 
     def _refresh(self, now: datetime) -> None:
@@ -66,10 +74,11 @@ class GitHubEventSource:
 
         previous_poll_at = self._last_poll_at
         self._last_poll_at = now
-        pull_requests = self._fetch_open_pull_requests()
+        pull_requests = self._refresh_open_pull_requests(now)
         self._pull_requests = pull_requests[: self.max_pull_requests]
+        self._debug(f"open_prs fetched={len(pull_requests)} hud={len(self._pull_requests)}")
 
-        for pr in self._pull_requests:
+        for pr in pull_requests:
             key = f"{pr.repo}#{pr.number}"
             if key in self._seen:
                 continue
@@ -87,18 +96,29 @@ class GitHubEventSource:
                     occurred_at=now,
                 )
             )
+            self._debug(f"queued {self._pending_events[-1].category.value} {key}")
         since = previous_poll_at or now - timedelta(seconds=self.poll_seconds)
         self._pending_events.extend(self._fetch_closed_pull_request_events(now, since))
+
+    def _refresh_hud(self, now: datetime) -> None:
+        if not self.enabled or not self.token or not self.repos:
+            return
+        self._pull_requests = self._refresh_open_pull_requests(now)[: self.max_pull_requests]
+
+    def _refresh_open_pull_requests(self, now: datetime) -> list[PullRequestSummary]:
+        if self._last_open_fetch_at and (now - self._last_open_fetch_at).total_seconds() < self.poll_seconds:
+            return list(self._open_pull_requests)
+        self._last_open_fetch_at = now
+        self._open_pull_requests = self._fetch_open_pull_requests()
+        return list(self._open_pull_requests)
 
     def _fetch_open_pull_requests(self) -> list[PullRequestSummary]:
         pull_requests: list[PullRequestSummary] = []
         for repo in self.repos:
             encoded_repo = urllib.parse.quote(repo, safe="/")
-            url = f"https://api.github.com/repos/{encoded_repo}/pulls?state=open&per_page={self.max_pull_requests}"
+            url = f"https://api.github.com/repos/{encoded_repo}/pulls?state=open&sort=created&direction=desc&per_page={self.fetch_pull_requests}"
             try:
                 for item in self._request_json(url):
-                    if item.get("draft", False):
-                        continue
                     pull_requests.append(
                         PullRequestSummary(
                             repo=repo.split("/")[-1],
@@ -109,7 +129,8 @@ class GitHubEventSource:
                             review_state="review",
                         )
                     )
-            except (urllib.error.URLError, KeyError, ValueError, TypeError):
+            except (urllib.error.URLError, KeyError, ValueError, TypeError) as error:
+                self._debug(f"open_prs error repo={repo}: {type(error).__name__}: {error}")
                 continue
         return pull_requests
 
@@ -150,7 +171,8 @@ class GitHubEventSource:
                             metadata={"state": state},
                         )
                     )
-            except (urllib.error.URLError, KeyError, ValueError, TypeError):
+            except (urllib.error.URLError, KeyError, ValueError, TypeError) as error:
+                self._debug(f"closed_prs error repo={repo}: {type(error).__name__}: {error}")
                 continue
         return events
 
@@ -170,5 +192,13 @@ class GitHubEventSource:
                 "X-GitHub-Api-Version": "2022-11-28",
             },
         )
-        with urllib.request.urlopen(request, timeout=8) as response:
+        with urllib.request.urlopen(request, timeout=self.timeout_seconds) as response:
             return json.loads(response.read().decode("utf-8"))
+
+    def _debug(self, message: str) -> None:
+        if self.debug:
+            print(f"[pixel-ops github] {message}", file=sys.stderr)
+
+
+def _env_bool(name: str) -> bool:
+    return os.environ.get(name, "").strip().lower() in ("1", "true", "yes", "on")

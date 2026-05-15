@@ -1,0 +1,3135 @@
+{
+  "pokemon": [
+    {
+      "number": 1,
+      "name": "Bulbasaur",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "keywords": [
+        "grass",
+        "poison",
+        "growth",
+        "planning",
+        "maintenance",
+        "queue",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "starter growth",
+        "special attack"
+      ],
+      "lore": "Bulbasaur carries growth, care, and gradual progress and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like overgrow, chlorophyll, it fits starter growth when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 2,
+      "name": "Ivysaur",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "keywords": [
+        "grass",
+        "poison",
+        "growth",
+        "planning",
+        "maintenance",
+        "queue",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "maturing growth",
+        "special attack"
+      ],
+      "lore": "Ivysaur carries growth, care, and gradual progress and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like overgrow, chlorophyll, it fits maturing growth when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 3,
+      "name": "Venusaur",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "keywords": [
+        "grass",
+        "poison",
+        "growth",
+        "planning",
+        "maintenance",
+        "queue",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "large-scale growth",
+        "special attack"
+      ],
+      "lore": "Venusaur carries growth, care, and gradual progress and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like overgrow, chlorophyll, it fits large-scale growth when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 4,
+      "name": "Charmander",
+      "types": [
+        "fire"
+      ],
+      "keywords": [
+        "fire",
+        "deploy",
+        "release",
+        "launch",
+        "momentum",
+        "small launch energy",
+        "speed",
+        "blaze",
+        "solar power"
+      ],
+      "lore": "Charmander carries release heat and forward momentum. Drawing on public Pok\u00e9dex-style traits like blaze, solar power, it fits small launch energy when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 5,
+      "name": "Charmeleon",
+      "types": [
+        "fire"
+      ],
+      "keywords": [
+        "fire",
+        "deploy",
+        "release",
+        "launch",
+        "momentum",
+        "building release pressure",
+        "special attack",
+        "blaze",
+        "solar power"
+      ],
+      "lore": "Charmeleon carries release heat and forward momentum. Drawing on public Pok\u00e9dex-style traits like blaze, solar power, it fits building release pressure when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 6,
+      "name": "Charizard",
+      "types": [
+        "fire",
+        "flying"
+      ],
+      "keywords": [
+        "fire",
+        "flying",
+        "deploy",
+        "release",
+        "launch",
+        "momentum",
+        "handoff",
+        "visibility",
+        "routing",
+        "full release momentum",
+        "special attack",
+        "blaze"
+      ],
+      "lore": "Charizard carries release heat and forward momentum and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like blaze, solar power, it fits full release momentum when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 7,
+      "name": "Squirtle",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "calm startup flow",
+        "defense",
+        "torrent",
+        "rain dish"
+      ],
+      "lore": "Squirtle carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like torrent, rain dish, it fits calm startup flow when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 8,
+      "name": "Wartortle",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "controlled operational flow",
+        "defense",
+        "torrent",
+        "rain dish"
+      ],
+      "lore": "Wartortle carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like torrent, rain dish, it fits controlled operational flow when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 9,
+      "name": "Blastoise",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "heavy defensive flow",
+        "special defense",
+        "torrent",
+        "rain dish"
+      ],
+      "lore": "Blastoise carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like torrent, rain dish, it fits heavy defensive flow when the dashboard needs resilience against noisy conditions."
+    },
+    {
+      "number": 10,
+      "name": "Caterpie",
+      "types": [
+        "bug"
+      ],
+      "keywords": [
+        "bug",
+        "regression",
+        "small task",
+        "triage",
+        "tiny regression tracking",
+        "hp",
+        "shield dust",
+        "run away"
+      ],
+      "lore": "Caterpie carries small signals, regressions, and iteration. Drawing on public Pok\u00e9dex-style traits like shield dust, run away, it fits tiny regression tracking when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 11,
+      "name": "Metapod",
+      "types": [
+        "bug"
+      ],
+      "keywords": [
+        "bug",
+        "regression",
+        "small task",
+        "triage",
+        "quiet waiting state",
+        "defense",
+        "shed skin"
+      ],
+      "lore": "Metapod carries small signals, regressions, and iteration. Drawing on public Pok\u00e9dex-style traits like shed skin, it fits quiet waiting state when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 12,
+      "name": "Butterfree",
+      "types": [
+        "bug",
+        "flying"
+      ],
+      "keywords": [
+        "bug",
+        "flying",
+        "regression",
+        "small task",
+        "triage",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "visible transformation",
+        "special attack",
+        "compound eyes"
+      ],
+      "lore": "Butterfree carries small signals, regressions, and iteration and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like compound eyes, tinted lens, it fits visible transformation when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 13,
+      "name": "Weedle",
+      "types": [
+        "bug",
+        "poison"
+      ],
+      "keywords": [
+        "bug",
+        "poison",
+        "regression",
+        "small task",
+        "triage",
+        "risk",
+        "cleanup",
+        "hidden",
+        "small defect signal",
+        "speed",
+        "shield dust",
+        "run away"
+      ],
+      "lore": "Weedle carries small signals, regressions, and iteration and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like shield dust, run away, it fits small defect signal when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 14,
+      "name": "Kakuna",
+      "types": [
+        "bug",
+        "poison"
+      ],
+      "keywords": [
+        "bug",
+        "poison",
+        "regression",
+        "small task",
+        "triage",
+        "risk",
+        "cleanup",
+        "hidden",
+        "staged transformation",
+        "defense",
+        "shed skin"
+      ],
+      "lore": "Kakuna carries small signals, regressions, and iteration and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like shed skin, it fits staged transformation when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 15,
+      "name": "Beedrill",
+      "types": [
+        "bug",
+        "poison"
+      ],
+      "keywords": [
+        "bug",
+        "poison",
+        "regression",
+        "small task",
+        "triage",
+        "risk",
+        "cleanup",
+        "hidden",
+        "sharp escalation",
+        "attack",
+        "swarm",
+        "sniper"
+      ],
+      "lore": "Beedrill carries small signals, regressions, and iteration and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like swarm, sniper, it fits sharp escalation when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 16,
+      "name": "Pidgey",
+      "types": [
+        "normal",
+        "flying"
+      ],
+      "keywords": [
+        "normal",
+        "flying",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "lightweight routing",
+        "speed",
+        "keen eye"
+      ],
+      "lore": "Pidgey carries steady routine energy and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like keen eye, tangled feet, it fits lightweight routing when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 17,
+      "name": "Pidgeotto",
+      "types": [
+        "normal",
+        "flying"
+      ],
+      "keywords": [
+        "normal",
+        "flying",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "mid-flight routing",
+        "speed",
+        "keen eye"
+      ],
+      "lore": "Pidgeotto carries steady routine energy and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like keen eye, tangled feet, it fits mid-flight routing when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 18,
+      "name": "Pidgeot",
+      "types": [
+        "normal",
+        "flying"
+      ],
+      "keywords": [
+        "normal",
+        "flying",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "broad visibility",
+        "speed",
+        "keen eye"
+      ],
+      "lore": "Pidgeot carries steady routine energy and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like keen eye, tangled feet, it fits broad visibility when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 19,
+      "name": "Rattata",
+      "types": [
+        "normal"
+      ],
+      "keywords": [
+        "normal",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "quick routine noise",
+        "speed",
+        "run away",
+        "guts"
+      ],
+      "lore": "Rattata carries steady routine energy. Drawing on public Pok\u00e9dex-style traits like run away, guts, it fits quick routine noise when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 20,
+      "name": "Raticate",
+      "types": [
+        "normal"
+      ],
+      "keywords": [
+        "normal",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "persistent routine pressure",
+        "speed",
+        "run away",
+        "guts"
+      ],
+      "lore": "Raticate carries steady routine energy. Drawing on public Pok\u00e9dex-style traits like run away, guts, it fits persistent routine pressure when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 21,
+      "name": "Spearow",
+      "types": [
+        "normal",
+        "flying"
+      ],
+      "keywords": [
+        "normal",
+        "flying",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "small alert movement",
+        "speed",
+        "keen eye"
+      ],
+      "lore": "Spearow carries steady routine energy and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like keen eye, sniper, it fits small alert movement when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 22,
+      "name": "Fearow",
+      "types": [
+        "normal",
+        "flying"
+      ],
+      "keywords": [
+        "normal",
+        "flying",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "aggressive routing",
+        "speed",
+        "keen eye"
+      ],
+      "lore": "Fearow carries steady routine energy and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like keen eye, sniper, it fits aggressive routing when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 23,
+      "name": "Ekans",
+      "types": [
+        "poison"
+      ],
+      "keywords": [
+        "poison",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "hidden risk",
+        "attack",
+        "intimidate",
+        "shed skin"
+      ],
+      "lore": "Ekans carries hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like intimidate, shed skin, it fits hidden risk when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 24,
+      "name": "Arbok",
+      "types": [
+        "poison"
+      ],
+      "keywords": [
+        "poison",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "coiled escalation",
+        "attack",
+        "intimidate",
+        "shed skin"
+      ],
+      "lore": "Arbok carries hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like intimidate, shed skin, it fits coiled escalation when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 25,
+      "name": "Pikachu",
+      "types": [
+        "electric"
+      ],
+      "keywords": [
+        "electric",
+        "alert",
+        "frontend",
+        "review",
+        "fast",
+        "fast visible alert",
+        "speed",
+        "static",
+        "lightning rod"
+      ],
+      "lore": "Pikachu carries quick signals and charged attention. Drawing on public Pok\u00e9dex-style traits like static, lightning rod, it fits fast visible alert when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 26,
+      "name": "Raichu",
+      "types": [
+        "electric"
+      ],
+      "keywords": [
+        "electric",
+        "alert",
+        "frontend",
+        "review",
+        "fast",
+        "strong charged response",
+        "speed",
+        "static",
+        "lightning rod"
+      ],
+      "lore": "Raichu carries quick signals and charged attention. Drawing on public Pok\u00e9dex-style traits like static, lightning rod, it fits strong charged response when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 27,
+      "name": "Sandshrew",
+      "types": [
+        "ground"
+      ],
+      "keywords": [
+        "ground",
+        "infrastructure",
+        "database",
+        "foundation",
+        "migration",
+        "grounded defense",
+        "defense",
+        "sand veil",
+        "sand rush"
+      ],
+      "lore": "Sandshrew carries foundation work and grounded infrastructure. Drawing on public Pok\u00e9dex-style traits like sand veil, sand rush, it fits grounded defense when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 28,
+      "name": "Sandslash",
+      "types": [
+        "ground"
+      ],
+      "keywords": [
+        "ground",
+        "infrastructure",
+        "database",
+        "foundation",
+        "migration",
+        "hardened defense",
+        "defense",
+        "sand veil",
+        "sand rush"
+      ],
+      "lore": "Sandslash carries foundation work and grounded infrastructure. Drawing on public Pok\u00e9dex-style traits like sand veil, sand rush, it fits hardened defense when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 29,
+      "name": "Nidoran F",
+      "types": [
+        "poison"
+      ],
+      "keywords": [
+        "poison",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "careful protection",
+        "hp",
+        "poison point",
+        "rivalry"
+      ],
+      "lore": "Nidoran F carries hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like poison point, rivalry, it fits careful protection when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 30,
+      "name": "Nidorina",
+      "types": [
+        "poison"
+      ],
+      "keywords": [
+        "poison",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "growing protection",
+        "hp",
+        "poison point",
+        "rivalry"
+      ],
+      "lore": "Nidorina carries hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like poison point, rivalry, it fits growing protection when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 31,
+      "name": "Nidoqueen",
+      "types": [
+        "poison",
+        "ground"
+      ],
+      "keywords": [
+        "poison",
+        "ground",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "infrastructure",
+        "database",
+        "foundation",
+        "migration",
+        "commanding protection",
+        "attack"
+      ],
+      "lore": "Nidoqueen carries hidden risk and cleanup work and foundation work and grounded infrastructure. Drawing on public Pok\u00e9dex-style traits like poison point, rivalry, it fits commanding protection when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 32,
+      "name": "Nidoran M",
+      "types": [
+        "poison"
+      ],
+      "keywords": [
+        "poison",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "pointed pressure",
+        "attack",
+        "poison point",
+        "rivalry"
+      ],
+      "lore": "Nidoran M carries hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like poison point, rivalry, it fits pointed pressure when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 33,
+      "name": "Nidorino",
+      "types": [
+        "poison"
+      ],
+      "keywords": [
+        "poison",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "building pressure",
+        "attack",
+        "poison point",
+        "rivalry"
+      ],
+      "lore": "Nidorino carries hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like poison point, rivalry, it fits building pressure when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 34,
+      "name": "Nidoking",
+      "types": [
+        "poison",
+        "ground"
+      ],
+      "keywords": [
+        "poison",
+        "ground",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "infrastructure",
+        "database",
+        "foundation",
+        "migration",
+        "commanding pressure",
+        "attack"
+      ],
+      "lore": "Nidoking carries hidden risk and cleanup work and foundation work and grounded infrastructure. Drawing on public Pok\u00e9dex-style traits like poison point, rivalry, it fits commanding pressure when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 35,
+      "name": "Clefairy",
+      "types": [
+        "fairy"
+      ],
+      "keywords": [
+        "fairy",
+        "approval",
+        "support",
+        "meeting",
+        "polish",
+        "supportive approval",
+        "hp",
+        "cute charm",
+        "magic guard"
+      ],
+      "lore": "Clefairy carries support, polish, and approvals. Drawing on public Pok\u00e9dex-style traits like cute charm, magic guard, it fits supportive approval when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 36,
+      "name": "Clefable",
+      "types": [
+        "fairy"
+      ],
+      "keywords": [
+        "fairy",
+        "approval",
+        "support",
+        "meeting",
+        "polish",
+        "polished support",
+        "hp",
+        "cute charm",
+        "magic guard"
+      ],
+      "lore": "Clefable carries support, polish, and approvals. Drawing on public Pok\u00e9dex-style traits like cute charm, magic guard, it fits polished support when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 37,
+      "name": "Vulpix",
+      "types": [
+        "fire"
+      ],
+      "keywords": [
+        "fire",
+        "deploy",
+        "release",
+        "launch",
+        "momentum",
+        "contained release heat",
+        "special defense",
+        "flash fire",
+        "drought"
+      ],
+      "lore": "Vulpix carries release heat and forward momentum. Drawing on public Pok\u00e9dex-style traits like flash fire, drought, it fits contained release heat when the dashboard needs resilience against noisy conditions."
+    },
+    {
+      "number": 38,
+      "name": "Ninetales",
+      "types": [
+        "fire"
+      ],
+      "keywords": [
+        "fire",
+        "deploy",
+        "release",
+        "launch",
+        "momentum",
+        "elegant release heat",
+        "special defense",
+        "flash fire",
+        "drought"
+      ],
+      "lore": "Ninetales carries release heat and forward momentum. Drawing on public Pok\u00e9dex-style traits like flash fire, drought, it fits elegant release heat when the dashboard needs resilience against noisy conditions."
+    },
+    {
+      "number": 39,
+      "name": "Jigglypuff",
+      "types": [
+        "normal",
+        "fairy"
+      ],
+      "keywords": [
+        "normal",
+        "fairy",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "approval",
+        "support",
+        "meeting",
+        "polish",
+        "soft meeting buffer",
+        "hp"
+      ],
+      "lore": "Jigglypuff carries steady routine energy and support, polish, and approvals. Drawing on public Pok\u00e9dex-style traits like cute charm, competitive, it fits soft meeting buffer when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 40,
+      "name": "Wigglytuff",
+      "types": [
+        "normal",
+        "fairy"
+      ],
+      "keywords": [
+        "normal",
+        "fairy",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "approval",
+        "support",
+        "meeting",
+        "polish",
+        "large support buffer",
+        "hp"
+      ],
+      "lore": "Wigglytuff carries steady routine energy and support, polish, and approvals. Drawing on public Pok\u00e9dex-style traits like cute charm, competitive, it fits large support buffer when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 41,
+      "name": "Zubat",
+      "types": [
+        "poison",
+        "flying"
+      ],
+      "keywords": [
+        "poison",
+        "flying",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "noisy night signal",
+        "speed"
+      ],
+      "lore": "Zubat carries hidden risk and cleanup work and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like inner focus, infiltrator, it fits noisy night signal when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 42,
+      "name": "Golbat",
+      "types": [
+        "poison",
+        "flying"
+      ],
+      "keywords": [
+        "poison",
+        "flying",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "expanded hidden signal",
+        "speed"
+      ],
+      "lore": "Golbat carries hidden risk and cleanup work and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like inner focus, infiltrator, it fits expanded hidden signal when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 43,
+      "name": "Oddish",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "keywords": [
+        "grass",
+        "poison",
+        "growth",
+        "planning",
+        "maintenance",
+        "queue",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "small growth task",
+        "special attack"
+      ],
+      "lore": "Oddish carries growth, care, and gradual progress and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like chlorophyll, run away, it fits small growth task when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 44,
+      "name": "Gloom",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "keywords": [
+        "grass",
+        "poison",
+        "growth",
+        "planning",
+        "maintenance",
+        "queue",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "messy growth task",
+        "special attack"
+      ],
+      "lore": "Gloom carries growth, care, and gradual progress and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like chlorophyll, stench, it fits messy growth task when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 45,
+      "name": "Vileplume",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "keywords": [
+        "grass",
+        "poison",
+        "growth",
+        "planning",
+        "maintenance",
+        "queue",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "full bloom delivery",
+        "special attack"
+      ],
+      "lore": "Vileplume carries growth, care, and gradual progress and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like chlorophyll, effect spore, it fits full bloom delivery when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 46,
+      "name": "Paras",
+      "types": [
+        "bug",
+        "grass"
+      ],
+      "keywords": [
+        "bug",
+        "grass",
+        "regression",
+        "small task",
+        "triage",
+        "growth",
+        "planning",
+        "maintenance",
+        "queue",
+        "attached dependency",
+        "attack",
+        "effect spore"
+      ],
+      "lore": "Paras carries small signals, regressions, and iteration and growth, care, and gradual progress. Drawing on public Pok\u00e9dex-style traits like effect spore, dry skin, it fits attached dependency when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 47,
+      "name": "Parasect",
+      "types": [
+        "bug",
+        "grass"
+      ],
+      "keywords": [
+        "bug",
+        "grass",
+        "regression",
+        "small task",
+        "triage",
+        "growth",
+        "planning",
+        "maintenance",
+        "queue",
+        "deep dependency",
+        "attack",
+        "effect spore"
+      ],
+      "lore": "Parasect carries small signals, regressions, and iteration and growth, care, and gradual progress. Drawing on public Pok\u00e9dex-style traits like effect spore, dry skin, it fits deep dependency when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 48,
+      "name": "Venonat",
+      "types": [
+        "bug",
+        "poison"
+      ],
+      "keywords": [
+        "bug",
+        "poison",
+        "regression",
+        "small task",
+        "triage",
+        "risk",
+        "cleanup",
+        "hidden",
+        "fuzzy bug report",
+        "hp",
+        "compound eyes",
+        "tinted lens"
+      ],
+      "lore": "Venonat carries small signals, regressions, and iteration and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like compound eyes, tinted lens, it fits fuzzy bug report when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 49,
+      "name": "Venomoth",
+      "types": [
+        "bug",
+        "poison"
+      ],
+      "keywords": [
+        "bug",
+        "poison",
+        "regression",
+        "small task",
+        "triage",
+        "risk",
+        "cleanup",
+        "hidden",
+        "wide bug sweep",
+        "special attack",
+        "shield dust",
+        "tinted lens"
+      ],
+      "lore": "Venomoth carries small signals, regressions, and iteration and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like shield dust, tinted lens, it fits wide bug sweep when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 50,
+      "name": "Diglett",
+      "types": [
+        "ground"
+      ],
+      "keywords": [
+        "ground",
+        "infrastructure",
+        "database",
+        "foundation",
+        "migration",
+        "underground change",
+        "speed",
+        "sand veil",
+        "arena trap"
+      ],
+      "lore": "Diglett carries foundation work and grounded infrastructure. Drawing on public Pok\u00e9dex-style traits like sand veil, arena trap, it fits underground change when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 51,
+      "name": "Dugtrio",
+      "types": [
+        "ground"
+      ],
+      "keywords": [
+        "ground",
+        "infrastructure",
+        "database",
+        "foundation",
+        "migration",
+        "clustered underground change",
+        "speed",
+        "sand veil",
+        "arena trap"
+      ],
+      "lore": "Dugtrio carries foundation work and grounded infrastructure. Drawing on public Pok\u00e9dex-style traits like sand veil, arena trap, it fits clustered underground change when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 52,
+      "name": "Meowth",
+      "types": [
+        "normal"
+      ],
+      "keywords": [
+        "normal",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "small opportunistic update",
+        "speed",
+        "pickup",
+        "technician"
+      ],
+      "lore": "Meowth carries steady routine energy. Drawing on public Pok\u00e9dex-style traits like pickup, technician, it fits small opportunistic update when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 53,
+      "name": "Persian",
+      "types": [
+        "normal"
+      ],
+      "keywords": [
+        "normal",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "polished opportunistic update",
+        "speed",
+        "limber",
+        "technician"
+      ],
+      "lore": "Persian carries steady routine energy. Drawing on public Pok\u00e9dex-style traits like limber, technician, it fits polished opportunistic update when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 54,
+      "name": "Psyduck",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "confused calendar pressure",
+        "special attack",
+        "damp",
+        "cloud nine"
+      ],
+      "lore": "Psyduck carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like damp, cloud nine, it fits confused calendar pressure when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 55,
+      "name": "Golduck",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "clearer flow under pressure",
+        "special attack",
+        "damp",
+        "cloud nine"
+      ],
+      "lore": "Golduck carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like damp, cloud nine, it fits clearer flow under pressure when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 56,
+      "name": "Mankey",
+      "types": [
+        "fighting"
+      ],
+      "keywords": [
+        "fighting",
+        "review",
+        "pushback",
+        "ownership",
+        "effort",
+        "restless review energy",
+        "attack",
+        "vital spirit",
+        "anger point"
+      ],
+      "lore": "Mankey carries hands-on effort and review pressure. Drawing on public Pok\u00e9dex-style traits like vital spirit, anger point, it fits restless review energy when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 57,
+      "name": "Primeape",
+      "types": [
+        "fighting"
+      ],
+      "keywords": [
+        "fighting",
+        "review",
+        "pushback",
+        "ownership",
+        "effort",
+        "focused review pressure",
+        "attack",
+        "vital spirit",
+        "anger point"
+      ],
+      "lore": "Primeape carries hands-on effort and review pressure. Drawing on public Pok\u00e9dex-style traits like vital spirit, anger point, it fits focused review pressure when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 58,
+      "name": "Growlithe",
+      "types": [
+        "fire"
+      ],
+      "keywords": [
+        "fire",
+        "deploy",
+        "release",
+        "launch",
+        "momentum",
+        "loyal alert",
+        "attack",
+        "intimidate",
+        "flash fire"
+      ],
+      "lore": "Growlithe carries release heat and forward momentum. Drawing on public Pok\u00e9dex-style traits like intimidate, flash fire, it fits loyal alert when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 59,
+      "name": "Arcanine",
+      "types": [
+        "fire"
+      ],
+      "keywords": [
+        "fire",
+        "deploy",
+        "release",
+        "launch",
+        "momentum",
+        "protective incident response",
+        "attack",
+        "intimidate",
+        "flash fire"
+      ],
+      "lore": "Arcanine carries release heat and forward momentum. Drawing on public Pok\u00e9dex-style traits like intimidate, flash fire, it fits protective incident response when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 60,
+      "name": "Poliwag",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "small recurring flow",
+        "speed",
+        "water absorb",
+        "damp"
+      ],
+      "lore": "Poliwag carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like water absorb, damp, it fits small recurring flow when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 61,
+      "name": "Poliwhirl",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "controlled recurring flow",
+        "speed",
+        "water absorb",
+        "damp"
+      ],
+      "lore": "Poliwhirl carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like water absorb, damp, it fits controlled recurring flow when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 62,
+      "name": "Poliwrath",
+      "types": [
+        "water",
+        "fighting"
+      ],
+      "keywords": [
+        "water",
+        "fighting",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "review",
+        "pushback",
+        "ownership",
+        "effort",
+        "strong coordinated flow",
+        "attack"
+      ],
+      "lore": "Poliwrath carries adaptive flow and cool control and hands-on effort and review pressure. Drawing on public Pok\u00e9dex-style traits like water absorb, damp, it fits strong coordinated flow when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 63,
+      "name": "Abra",
+      "types": [
+        "psychic"
+      ],
+      "keywords": [
+        "psychic",
+        "meeting",
+        "planning",
+        "decision",
+        "architecture",
+        "early planning signal",
+        "special attack",
+        "synchronize",
+        "inner focus"
+      ],
+      "lore": "Abra carries planning, foresight, and decisions. Drawing on public Pok\u00e9dex-style traits like synchronize, inner focus, it fits early planning signal when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 64,
+      "name": "Kadabra",
+      "types": [
+        "psychic"
+      ],
+      "keywords": [
+        "psychic",
+        "meeting",
+        "planning",
+        "decision",
+        "architecture",
+        "sharpened planning signal",
+        "special attack",
+        "synchronize",
+        "inner focus"
+      ],
+      "lore": "Kadabra carries planning, foresight, and decisions. Drawing on public Pok\u00e9dex-style traits like synchronize, inner focus, it fits sharpened planning signal when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 65,
+      "name": "Alakazam",
+      "types": [
+        "psychic"
+      ],
+      "keywords": [
+        "psychic",
+        "meeting",
+        "planning",
+        "decision",
+        "architecture",
+        "clear architectural decision",
+        "special attack",
+        "synchronize",
+        "inner focus"
+      ],
+      "lore": "Alakazam carries planning, foresight, and decisions. Drawing on public Pok\u00e9dex-style traits like synchronize, inner focus, it fits clear architectural decision when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 66,
+      "name": "Machop",
+      "types": [
+        "fighting"
+      ],
+      "keywords": [
+        "fighting",
+        "review",
+        "pushback",
+        "ownership",
+        "effort",
+        "hands-on work",
+        "attack",
+        "guts",
+        "no guard"
+      ],
+      "lore": "Machop carries hands-on effort and review pressure. Drawing on public Pok\u00e9dex-style traits like guts, no guard, it fits hands-on work when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 67,
+      "name": "Machoke",
+      "types": [
+        "fighting"
+      ],
+      "keywords": [
+        "fighting",
+        "review",
+        "pushback",
+        "ownership",
+        "effort",
+        "strong implementation push",
+        "attack",
+        "guts",
+        "no guard"
+      ],
+      "lore": "Machoke carries hands-on effort and review pressure. Drawing on public Pok\u00e9dex-style traits like guts, no guard, it fits strong implementation push when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 68,
+      "name": "Machamp",
+      "types": [
+        "fighting"
+      ],
+      "keywords": [
+        "fighting",
+        "review",
+        "pushback",
+        "ownership",
+        "effort",
+        "team-sized implementation push",
+        "attack",
+        "guts",
+        "no guard"
+      ],
+      "lore": "Machamp carries hands-on effort and review pressure. Drawing on public Pok\u00e9dex-style traits like guts, no guard, it fits team-sized implementation push when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 69,
+      "name": "Bellsprout",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "keywords": [
+        "grass",
+        "poison",
+        "growth",
+        "planning",
+        "maintenance",
+        "queue",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "incoming growth queue",
+        "attack"
+      ],
+      "lore": "Bellsprout carries growth, care, and gradual progress and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like chlorophyll, gluttony, it fits incoming growth queue when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 70,
+      "name": "Weepinbell",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "keywords": [
+        "grass",
+        "poison",
+        "growth",
+        "planning",
+        "maintenance",
+        "queue",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "active growth queue",
+        "attack"
+      ],
+      "lore": "Weepinbell carries growth, care, and gradual progress and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like chlorophyll, gluttony, it fits active growth queue when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 71,
+      "name": "Victreebel",
+      "types": [
+        "grass",
+        "poison"
+      ],
+      "keywords": [
+        "grass",
+        "poison",
+        "growth",
+        "planning",
+        "maintenance",
+        "queue",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "sharp delivery queue",
+        "attack"
+      ],
+      "lore": "Victreebel carries growth, care, and gradual progress and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like chlorophyll, gluttony, it fits sharp delivery queue when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 72,
+      "name": "Tentacool",
+      "types": [
+        "water",
+        "poison"
+      ],
+      "keywords": [
+        "water",
+        "poison",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "floating risk",
+        "special defense"
+      ],
+      "lore": "Tentacool carries adaptive flow and cool control and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like clear body, liquid ooze, it fits floating risk when the dashboard needs resilience against noisy conditions."
+    },
+    {
+      "number": 73,
+      "name": "Tentacruel",
+      "types": [
+        "water",
+        "poison"
+      ],
+      "keywords": [
+        "water",
+        "poison",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "wide-area risk",
+        "special defense"
+      ],
+      "lore": "Tentacruel carries adaptive flow and cool control and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like clear body, liquid ooze, it fits wide-area risk when the dashboard needs resilience against noisy conditions."
+    },
+    {
+      "number": 74,
+      "name": "Geodude",
+      "types": [
+        "rock",
+        "ground"
+      ],
+      "keywords": [
+        "rock",
+        "ground",
+        "stability",
+        "infrastructure",
+        "blocking",
+        "foundation",
+        "database",
+        "migration",
+        "small blocker",
+        "defense",
+        "rock head",
+        "sturdy"
+      ],
+      "lore": "Geodude carries durability, blockers, and structure and foundation work and grounded infrastructure. Drawing on public Pok\u00e9dex-style traits like rock head, sturdy, it fits small blocker when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 75,
+      "name": "Graveler",
+      "types": [
+        "rock",
+        "ground"
+      ],
+      "keywords": [
+        "rock",
+        "ground",
+        "stability",
+        "infrastructure",
+        "blocking",
+        "foundation",
+        "database",
+        "migration",
+        "heavy blocker",
+        "defense",
+        "rock head",
+        "sturdy"
+      ],
+      "lore": "Graveler carries durability, blockers, and structure and foundation work and grounded infrastructure. Drawing on public Pok\u00e9dex-style traits like rock head, sturdy, it fits heavy blocker when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 76,
+      "name": "Golem",
+      "types": [
+        "rock",
+        "ground"
+      ],
+      "keywords": [
+        "rock",
+        "ground",
+        "stability",
+        "infrastructure",
+        "blocking",
+        "foundation",
+        "database",
+        "migration",
+        "massive blocker",
+        "defense",
+        "rock head",
+        "sturdy"
+      ],
+      "lore": "Golem carries durability, blockers, and structure and foundation work and grounded infrastructure. Drawing on public Pok\u00e9dex-style traits like rock head, sturdy, it fits massive blocker when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 77,
+      "name": "Ponyta",
+      "types": [
+        "fire"
+      ],
+      "keywords": [
+        "fire",
+        "deploy",
+        "release",
+        "launch",
+        "momentum",
+        "fast release spark",
+        "speed",
+        "run away",
+        "flash fire"
+      ],
+      "lore": "Ponyta carries release heat and forward momentum. Drawing on public Pok\u00e9dex-style traits like run away, flash fire, it fits fast release spark when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 78,
+      "name": "Rapidash",
+      "types": [
+        "fire"
+      ],
+      "keywords": [
+        "fire",
+        "deploy",
+        "release",
+        "launch",
+        "momentum",
+        "accelerated launch",
+        "speed",
+        "run away",
+        "flash fire"
+      ],
+      "lore": "Rapidash carries release heat and forward momentum. Drawing on public Pok\u00e9dex-style traits like run away, flash fire, it fits accelerated launch when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 79,
+      "name": "Slowpoke",
+      "types": [
+        "water",
+        "psychic"
+      ],
+      "keywords": [
+        "water",
+        "psychic",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "meeting",
+        "planning",
+        "decision",
+        "architecture",
+        "slow planning thread",
+        "hp"
+      ],
+      "lore": "Slowpoke carries adaptive flow and cool control and planning, foresight, and decisions. Drawing on public Pok\u00e9dex-style traits like oblivious, own tempo, it fits slow planning thread when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 80,
+      "name": "Slowbro",
+      "types": [
+        "water",
+        "psychic"
+      ],
+      "keywords": [
+        "water",
+        "psychic",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "meeting",
+        "planning",
+        "decision",
+        "architecture",
+        "heavy decision thread",
+        "defense"
+      ],
+      "lore": "Slowbro carries adaptive flow and cool control and planning, foresight, and decisions. Drawing on public Pok\u00e9dex-style traits like oblivious, own tempo, it fits heavy decision thread when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 81,
+      "name": "Magnemite",
+      "types": [
+        "electric",
+        "steel"
+      ],
+      "keywords": [
+        "electric",
+        "steel",
+        "alert",
+        "frontend",
+        "review",
+        "fast",
+        "infrastructure",
+        "stability",
+        "hardening",
+        "deploy",
+        "machine signal",
+        "special attack"
+      ],
+      "lore": "Magnemite carries quick signals and charged attention and hardening, systems, and reliability. Drawing on public Pok\u00e9dex-style traits like magnet pull, sturdy, it fits machine signal when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 82,
+      "name": "Magneton",
+      "types": [
+        "electric",
+        "steel"
+      ],
+      "keywords": [
+        "electric",
+        "steel",
+        "alert",
+        "frontend",
+        "review",
+        "fast",
+        "infrastructure",
+        "stability",
+        "hardening",
+        "deploy",
+        "clustered machine signal",
+        "special attack"
+      ],
+      "lore": "Magneton carries quick signals and charged attention and hardening, systems, and reliability. Drawing on public Pok\u00e9dex-style traits like magnet pull, sturdy, it fits clustered machine signal when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 83,
+      "name": "Farfetchd",
+      "types": [
+        "normal",
+        "flying"
+      ],
+      "keywords": [
+        "normal",
+        "flying",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "odd handoff",
+        "attack",
+        "keen eye"
+      ],
+      "lore": "Farfetchd carries steady routine energy and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like keen eye, inner focus, it fits odd handoff when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 84,
+      "name": "Doduo",
+      "types": [
+        "normal",
+        "flying"
+      ],
+      "keywords": [
+        "normal",
+        "flying",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "split routing",
+        "attack",
+        "run away"
+      ],
+      "lore": "Doduo carries steady routine energy and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like run away, early bird, it fits split routing when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 85,
+      "name": "Dodrio",
+      "types": [
+        "normal",
+        "flying"
+      ],
+      "keywords": [
+        "normal",
+        "flying",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "many-headed routing",
+        "attack",
+        "run away"
+      ],
+      "lore": "Dodrio carries steady routine energy and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like run away, early bird, it fits many-headed routing when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 86,
+      "name": "Seel",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "cool support flow",
+        "special defense",
+        "thick fat",
+        "hydration"
+      ],
+      "lore": "Seel carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like thick fat, hydration, it fits cool support flow when the dashboard needs resilience against noisy conditions."
+    },
+    {
+      "number": 87,
+      "name": "Dewgong",
+      "types": [
+        "water",
+        "ice"
+      ],
+      "keywords": [
+        "water",
+        "ice",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "freeze",
+        "stability",
+        "blocked",
+        "frozen support flow",
+        "special defense",
+        "thick fat"
+      ],
+      "lore": "Dewgong carries adaptive flow and cool control and cool focus and frozen blockers. Drawing on public Pok\u00e9dex-style traits like thick fat, hydration, it fits frozen support flow when the dashboard needs resilience against noisy conditions."
+    },
+    {
+      "number": 88,
+      "name": "Grimer",
+      "types": [
+        "poison"
+      ],
+      "keywords": [
+        "poison",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "messy cleanup",
+        "hp",
+        "stench",
+        "sticky hold"
+      ],
+      "lore": "Grimer carries hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like stench, sticky hold, it fits messy cleanup when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 89,
+      "name": "Muk",
+      "types": [
+        "poison"
+      ],
+      "keywords": [
+        "poison",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "major cleanup",
+        "hp",
+        "stench",
+        "sticky hold"
+      ],
+      "lore": "Muk carries hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like stench, sticky hold, it fits major cleanup when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 90,
+      "name": "Shellder",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "closed shell state",
+        "defense",
+        "shell armor",
+        "skill link"
+      ],
+      "lore": "Shellder carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like shell armor, skill link, it fits closed shell state when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 91,
+      "name": "Cloyster",
+      "types": [
+        "water",
+        "ice"
+      ],
+      "keywords": [
+        "water",
+        "ice",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "freeze",
+        "stability",
+        "blocked",
+        "armored shell state",
+        "defense",
+        "shell armor"
+      ],
+      "lore": "Cloyster carries adaptive flow and cool control and cool focus and frozen blockers. Drawing on public Pok\u00e9dex-style traits like shell armor, skill link, it fits armored shell state when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 92,
+      "name": "Gastly",
+      "types": [
+        "ghost",
+        "poison"
+      ],
+      "keywords": [
+        "ghost",
+        "poison",
+        "incident",
+        "hidden",
+        "night",
+        "failure",
+        "bug",
+        "risk",
+        "cleanup",
+        "invisible failure",
+        "special attack",
+        "levitate"
+      ],
+      "lore": "Gastly carries hidden failures and late surprises and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like levitate, it fits invisible failure when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 93,
+      "name": "Haunter",
+      "types": [
+        "ghost",
+        "poison"
+      ],
+      "keywords": [
+        "ghost",
+        "poison",
+        "incident",
+        "hidden",
+        "night",
+        "failure",
+        "bug",
+        "risk",
+        "cleanup",
+        "active hidden failure",
+        "special attack",
+        "levitate"
+      ],
+      "lore": "Haunter carries hidden failures and late surprises and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like levitate, it fits active hidden failure when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 94,
+      "name": "Gengar",
+      "types": [
+        "ghost",
+        "poison"
+      ],
+      "keywords": [
+        "ghost",
+        "poison",
+        "incident",
+        "hidden",
+        "night",
+        "failure",
+        "bug",
+        "risk",
+        "cleanup",
+        "major hidden failure",
+        "special attack",
+        "cursed body"
+      ],
+      "lore": "Gengar carries hidden failures and late surprises and hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like cursed body, it fits major hidden failure when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 95,
+      "name": "Onix",
+      "types": [
+        "rock",
+        "ground"
+      ],
+      "keywords": [
+        "rock",
+        "ground",
+        "stability",
+        "infrastructure",
+        "blocking",
+        "foundation",
+        "database",
+        "migration",
+        "long blocking dependency",
+        "defense",
+        "rock head",
+        "sturdy"
+      ],
+      "lore": "Onix carries durability, blockers, and structure and foundation work and grounded infrastructure. Drawing on public Pok\u00e9dex-style traits like rock head, sturdy, it fits long blocking dependency when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 96,
+      "name": "Drowzee",
+      "types": [
+        "psychic"
+      ],
+      "keywords": [
+        "psychic",
+        "meeting",
+        "planning",
+        "decision",
+        "architecture",
+        "sleepy meeting drift",
+        "special defense",
+        "insomnia",
+        "forewarn"
+      ],
+      "lore": "Drowzee carries planning, foresight, and decisions. Drawing on public Pok\u00e9dex-style traits like insomnia, forewarn, it fits sleepy meeting drift when the dashboard needs resilience against noisy conditions."
+    },
+    {
+      "number": 97,
+      "name": "Hypno",
+      "types": [
+        "psychic"
+      ],
+      "keywords": [
+        "psychic",
+        "meeting",
+        "planning",
+        "decision",
+        "architecture",
+        "deep meeting drift",
+        "special defense",
+        "insomnia",
+        "forewarn"
+      ],
+      "lore": "Hypno carries planning, foresight, and decisions. Drawing on public Pok\u00e9dex-style traits like insomnia, forewarn, it fits deep meeting drift when the dashboard needs resilience against noisy conditions."
+    },
+    {
+      "number": 98,
+      "name": "Krabby",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "pinching small issue",
+        "attack",
+        "hyper cutter",
+        "shell armor"
+      ],
+      "lore": "Krabby carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like hyper cutter, shell armor, it fits pinching small issue when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 99,
+      "name": "Kingler",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "hard-clamping issue",
+        "attack",
+        "hyper cutter",
+        "shell armor"
+      ],
+      "lore": "Kingler carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like hyper cutter, shell armor, it fits hard-clamping issue when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 100,
+      "name": "Voltorb",
+      "types": [
+        "electric"
+      ],
+      "keywords": [
+        "electric",
+        "alert",
+        "frontend",
+        "review",
+        "fast",
+        "volatile signal",
+        "speed",
+        "soundproof",
+        "static"
+      ],
+      "lore": "Voltorb carries quick signals and charged attention. Drawing on public Pok\u00e9dex-style traits like soundproof, static, it fits volatile signal when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 101,
+      "name": "Electrode",
+      "types": [
+        "electric"
+      ],
+      "keywords": [
+        "electric",
+        "alert",
+        "frontend",
+        "review",
+        "fast",
+        "explosive signal",
+        "speed",
+        "soundproof",
+        "static"
+      ],
+      "lore": "Electrode carries quick signals and charged attention. Drawing on public Pok\u00e9dex-style traits like soundproof, static, it fits explosive signal when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 102,
+      "name": "Exeggcute",
+      "types": [
+        "grass",
+        "psychic"
+      ],
+      "keywords": [
+        "grass",
+        "psychic",
+        "growth",
+        "planning",
+        "maintenance",
+        "queue",
+        "meeting",
+        "decision",
+        "architecture",
+        "clustered planning seeds",
+        "defense",
+        "chlorophyll"
+      ],
+      "lore": "Exeggcute carries growth, care, and gradual progress and planning, foresight, and decisions. Drawing on public Pok\u00e9dex-style traits like chlorophyll, harvest, it fits clustered planning seeds when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 103,
+      "name": "Exeggutor",
+      "types": [
+        "grass",
+        "psychic"
+      ],
+      "keywords": [
+        "grass",
+        "psychic",
+        "growth",
+        "planning",
+        "maintenance",
+        "queue",
+        "meeting",
+        "decision",
+        "architecture",
+        "large planning outcome",
+        "special attack",
+        "chlorophyll"
+      ],
+      "lore": "Exeggutor carries growth, care, and gradual progress and planning, foresight, and decisions. Drawing on public Pok\u00e9dex-style traits like chlorophyll, harvest, it fits large planning outcome when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 104,
+      "name": "Cubone",
+      "types": [
+        "ground"
+      ],
+      "keywords": [
+        "ground",
+        "infrastructure",
+        "database",
+        "foundation",
+        "migration",
+        "lonely blocker",
+        "defense",
+        "rock head",
+        "lightning rod"
+      ],
+      "lore": "Cubone carries foundation work and grounded infrastructure. Drawing on public Pok\u00e9dex-style traits like rock head, lightning rod, it fits lonely blocker when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 105,
+      "name": "Marowak",
+      "types": [
+        "ground"
+      ],
+      "keywords": [
+        "ground",
+        "infrastructure",
+        "database",
+        "foundation",
+        "migration",
+        "resolved blocker memory",
+        "defense",
+        "rock head",
+        "lightning rod"
+      ],
+      "lore": "Marowak carries foundation work and grounded infrastructure. Drawing on public Pok\u00e9dex-style traits like rock head, lightning rod, it fits resolved blocker memory when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 106,
+      "name": "Hitmonlee",
+      "types": [
+        "fighting"
+      ],
+      "keywords": [
+        "fighting",
+        "review",
+        "pushback",
+        "ownership",
+        "effort",
+        "precise kickback",
+        "attack",
+        "limber",
+        "reckless"
+      ],
+      "lore": "Hitmonlee carries hands-on effort and review pressure. Drawing on public Pok\u00e9dex-style traits like limber, reckless, it fits precise kickback when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 107,
+      "name": "Hitmonchan",
+      "types": [
+        "fighting"
+      ],
+      "keywords": [
+        "fighting",
+        "review",
+        "pushback",
+        "ownership",
+        "effort",
+        "precise punchback",
+        "special defense",
+        "keen eye",
+        "iron fist"
+      ],
+      "lore": "Hitmonchan carries hands-on effort and review pressure. Drawing on public Pok\u00e9dex-style traits like keen eye, iron fist, it fits precise punchback when the dashboard needs resilience against noisy conditions."
+    },
+    {
+      "number": 108,
+      "name": "Lickitung",
+      "types": [
+        "normal"
+      ],
+      "keywords": [
+        "normal",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "strange recurring task",
+        "hp",
+        "own tempo",
+        "oblivious"
+      ],
+      "lore": "Lickitung carries steady routine energy. Drawing on public Pok\u00e9dex-style traits like own tempo, oblivious, it fits strange recurring task when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 109,
+      "name": "Koffing",
+      "types": [
+        "poison"
+      ],
+      "keywords": [
+        "poison",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "toxic alert",
+        "defense",
+        "levitate",
+        "neutralizing gas"
+      ],
+      "lore": "Koffing carries hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like levitate, neutralizing gas, it fits toxic alert when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 110,
+      "name": "Weezing",
+      "types": [
+        "poison"
+      ],
+      "keywords": [
+        "poison",
+        "bug",
+        "risk",
+        "cleanup",
+        "hidden",
+        "spreading toxic alert",
+        "defense",
+        "levitate",
+        "neutralizing gas"
+      ],
+      "lore": "Weezing carries hidden risk and cleanup work. Drawing on public Pok\u00e9dex-style traits like levitate, neutralizing gas, it fits spreading toxic alert when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 111,
+      "name": "Rhyhorn",
+      "types": [
+        "ground",
+        "rock"
+      ],
+      "keywords": [
+        "ground",
+        "rock",
+        "infrastructure",
+        "database",
+        "foundation",
+        "migration",
+        "stability",
+        "blocking",
+        "charging infrastructure",
+        "defense",
+        "lightning rod",
+        "rock head"
+      ],
+      "lore": "Rhyhorn carries foundation work and grounded infrastructure and durability, blockers, and structure. Drawing on public Pok\u00e9dex-style traits like lightning rod, rock head, it fits charging infrastructure when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 112,
+      "name": "Rhydon",
+      "types": [
+        "ground",
+        "rock"
+      ],
+      "keywords": [
+        "ground",
+        "rock",
+        "infrastructure",
+        "database",
+        "foundation",
+        "migration",
+        "stability",
+        "blocking",
+        "armored infrastructure",
+        "attack",
+        "lightning rod",
+        "rock head"
+      ],
+      "lore": "Rhydon carries foundation work and grounded infrastructure and durability, blockers, and structure. Drawing on public Pok\u00e9dex-style traits like lightning rod, rock head, it fits armored infrastructure when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 113,
+      "name": "Chansey",
+      "types": [
+        "normal"
+      ],
+      "keywords": [
+        "normal",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "healing support",
+        "hp",
+        "natural cure",
+        "serene grace"
+      ],
+      "lore": "Chansey carries steady routine energy. Drawing on public Pok\u00e9dex-style traits like natural cure, serene grace, it fits healing support when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 114,
+      "name": "Tangela",
+      "types": [
+        "grass"
+      ],
+      "keywords": [
+        "grass",
+        "growth",
+        "planning",
+        "maintenance",
+        "queue",
+        "tangled dependency",
+        "defense",
+        "chlorophyll",
+        "leaf guard"
+      ],
+      "lore": "Tangela carries growth, care, and gradual progress. Drawing on public Pok\u00e9dex-style traits like chlorophyll, leaf guard, it fits tangled dependency when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 115,
+      "name": "Kangaskhan",
+      "types": [
+        "normal"
+      ],
+      "keywords": [
+        "normal",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "protective delivery",
+        "hp",
+        "early bird",
+        "scrappy"
+      ],
+      "lore": "Kangaskhan carries steady routine energy. Drawing on public Pok\u00e9dex-style traits like early bird, scrappy, it fits protective delivery when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 116,
+      "name": "Horsea",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "small stream signal",
+        "defense",
+        "swift swim",
+        "sniper"
+      ],
+      "lore": "Horsea carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like swift swim, sniper, it fits small stream signal when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 117,
+      "name": "Seadra",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "strong stream signal",
+        "defense",
+        "poison point",
+        "sniper"
+      ],
+      "lore": "Seadra carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like poison point, sniper, it fits strong stream signal when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 118,
+      "name": "Goldeen",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "minor water signal",
+        "attack",
+        "swift swim",
+        "water veil"
+      ],
+      "lore": "Goldeen carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like swift swim, water veil, it fits minor water signal when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 119,
+      "name": "Seaking",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "ornamental escalation",
+        "attack",
+        "swift swim",
+        "water veil"
+      ],
+      "lore": "Seaking carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like swift swim, water veil, it fits ornamental escalation when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 120,
+      "name": "Staryu",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "star-shaped signal",
+        "speed",
+        "illuminate",
+        "natural cure"
+      ],
+      "lore": "Staryu carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like illuminate, natural cure, it fits star-shaped signal when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 121,
+      "name": "Starmie",
+      "types": [
+        "water",
+        "psychic"
+      ],
+      "keywords": [
+        "water",
+        "psychic",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "meeting",
+        "planning",
+        "decision",
+        "architecture",
+        "focused signal core",
+        "speed"
+      ],
+      "lore": "Starmie carries adaptive flow and cool control and planning, foresight, and decisions. Drawing on public Pok\u00e9dex-style traits like illuminate, natural cure, it fits focused signal core when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 122,
+      "name": "Mr Mime",
+      "types": [
+        "psychic",
+        "fairy"
+      ],
+      "keywords": [
+        "psychic",
+        "fairy",
+        "meeting",
+        "planning",
+        "decision",
+        "architecture",
+        "approval",
+        "support",
+        "polish",
+        "formal meeting pressure",
+        "special defense",
+        "soundproof"
+      ],
+      "lore": "Mr Mime carries planning, foresight, and decisions and support, polish, and approvals. Drawing on public Pok\u00e9dex-style traits like soundproof, filter, it fits formal meeting pressure when the dashboard needs resilience against noisy conditions."
+    },
+    {
+      "number": 123,
+      "name": "Scyther",
+      "types": [
+        "bug",
+        "flying"
+      ],
+      "keywords": [
+        "bug",
+        "flying",
+        "regression",
+        "small task",
+        "triage",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "sharp cutting review",
+        "attack",
+        "swarm"
+      ],
+      "lore": "Scyther carries small signals, regressions, and iteration and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like swarm, technician, it fits sharp cutting review when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 124,
+      "name": "Jynx",
+      "types": [
+        "ice",
+        "psychic"
+      ],
+      "keywords": [
+        "ice",
+        "psychic",
+        "freeze",
+        "stability",
+        "cooldown",
+        "blocked",
+        "meeting",
+        "planning",
+        "decision",
+        "architecture",
+        "icy handoff",
+        "special attack"
+      ],
+      "lore": "Jynx carries cool focus and frozen blockers and planning, foresight, and decisions. Drawing on public Pok\u00e9dex-style traits like oblivious, forewarn, it fits icy handoff when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 125,
+      "name": "Electabuzz",
+      "types": [
+        "electric"
+      ],
+      "keywords": [
+        "electric",
+        "alert",
+        "frontend",
+        "review",
+        "fast",
+        "charged specialist",
+        "speed",
+        "static",
+        "vital spirit"
+      ],
+      "lore": "Electabuzz carries quick signals and charged attention. Drawing on public Pok\u00e9dex-style traits like static, vital spirit, it fits charged specialist when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 126,
+      "name": "Magmar",
+      "types": [
+        "fire"
+      ],
+      "keywords": [
+        "fire",
+        "deploy",
+        "release",
+        "launch",
+        "momentum",
+        "hot specialist",
+        "special attack",
+        "flame body",
+        "vital spirit"
+      ],
+      "lore": "Magmar carries release heat and forward momentum. Drawing on public Pok\u00e9dex-style traits like flame body, vital spirit, it fits hot specialist when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 127,
+      "name": "Pinsir",
+      "types": [
+        "bug"
+      ],
+      "keywords": [
+        "bug",
+        "regression",
+        "small task",
+        "triage",
+        "strong bug squeeze",
+        "attack",
+        "hyper cutter",
+        "mold breaker"
+      ],
+      "lore": "Pinsir carries small signals, regressions, and iteration. Drawing on public Pok\u00e9dex-style traits like hyper cutter, mold breaker, it fits strong bug squeeze when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 128,
+      "name": "Tauros",
+      "types": [
+        "normal"
+      ],
+      "keywords": [
+        "normal",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "direct force",
+        "speed",
+        "intimidate",
+        "anger point"
+      ],
+      "lore": "Tauros carries steady routine energy. Drawing on public Pok\u00e9dex-style traits like intimidate, anger point, it fits direct force when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 129,
+      "name": "Magikarp",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "weak noisy placeholder",
+        "speed",
+        "swift swim",
+        "rattled"
+      ],
+      "lore": "Magikarp carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like swift swim, rattled, it fits weak noisy placeholder when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 130,
+      "name": "Gyarados",
+      "types": [
+        "water",
+        "flying"
+      ],
+      "keywords": [
+        "water",
+        "flying",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "visibility",
+        "routing",
+        "release",
+        "storm escalation",
+        "attack",
+        "intimidate"
+      ],
+      "lore": "Gyarados carries adaptive flow and cool control and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like intimidate, moxie, it fits storm escalation when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 131,
+      "name": "Lapras",
+      "types": [
+        "water",
+        "ice"
+      ],
+      "keywords": [
+        "water",
+        "ice",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "freeze",
+        "stability",
+        "blocked",
+        "calm transport layer",
+        "hp",
+        "water absorb"
+      ],
+      "lore": "Lapras carries adaptive flow and cool control and cool focus and frozen blockers. Drawing on public Pok\u00e9dex-style traits like water absorb, shell armor, it fits calm transport layer when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 132,
+      "name": "Ditto",
+      "types": [
+        "normal"
+      ],
+      "keywords": [
+        "normal",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "shape-shifting requirement",
+        "hp",
+        "limber",
+        "imposter"
+      ],
+      "lore": "Ditto carries steady routine energy. Drawing on public Pok\u00e9dex-style traits like limber, imposter, it fits shape-shifting requirement when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 133,
+      "name": "Eevee",
+      "types": [
+        "normal"
+      ],
+      "keywords": [
+        "normal",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "adaptable baseline",
+        "special defense",
+        "run away",
+        "adaptability"
+      ],
+      "lore": "Eevee carries steady routine energy. Drawing on public Pok\u00e9dex-style traits like run away, adaptability, it fits adaptable baseline when the dashboard needs resilience against noisy conditions."
+    },
+    {
+      "number": 134,
+      "name": "Vaporeon",
+      "types": [
+        "water"
+      ],
+      "keywords": [
+        "water",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "water adaptation",
+        "hp",
+        "water absorb",
+        "hydration"
+      ],
+      "lore": "Vaporeon carries adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like water absorb, hydration, it fits water adaptation when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 135,
+      "name": "Jolteon",
+      "types": [
+        "electric"
+      ],
+      "keywords": [
+        "electric",
+        "alert",
+        "frontend",
+        "review",
+        "fast",
+        "electric adaptation",
+        "speed",
+        "volt absorb",
+        "quick feet"
+      ],
+      "lore": "Jolteon carries quick signals and charged attention. Drawing on public Pok\u00e9dex-style traits like volt absorb, quick feet, it fits electric adaptation when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 136,
+      "name": "Flareon",
+      "types": [
+        "fire"
+      ],
+      "keywords": [
+        "fire",
+        "deploy",
+        "release",
+        "launch",
+        "momentum",
+        "fire adaptation",
+        "attack",
+        "flash fire",
+        "guts"
+      ],
+      "lore": "Flareon carries release heat and forward momentum. Drawing on public Pok\u00e9dex-style traits like flash fire, guts, it fits fire adaptation when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 137,
+      "name": "Porygon",
+      "types": [
+        "normal"
+      ],
+      "keywords": [
+        "normal",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "digital artifact",
+        "special attack",
+        "trace",
+        "download"
+      ],
+      "lore": "Porygon carries steady routine energy. Drawing on public Pok\u00e9dex-style traits like trace, download, it fits digital artifact when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 138,
+      "name": "Omanyte",
+      "types": [
+        "rock",
+        "water"
+      ],
+      "keywords": [
+        "rock",
+        "water",
+        "stability",
+        "infrastructure",
+        "blocking",
+        "foundation",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "old system shell",
+        "defense"
+      ],
+      "lore": "Omanyte carries durability, blockers, and structure and adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like swift swim, shell armor, it fits old system shell when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 139,
+      "name": "Omastar",
+      "types": [
+        "rock",
+        "water"
+      ],
+      "keywords": [
+        "rock",
+        "water",
+        "stability",
+        "infrastructure",
+        "blocking",
+        "foundation",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "old system armor",
+        "defense"
+      ],
+      "lore": "Omastar carries durability, blockers, and structure and adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like swift swim, shell armor, it fits old system armor when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 140,
+      "name": "Kabuto",
+      "types": [
+        "rock",
+        "water"
+      ],
+      "keywords": [
+        "rock",
+        "water",
+        "stability",
+        "infrastructure",
+        "blocking",
+        "foundation",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "ancient issue",
+        "defense"
+      ],
+      "lore": "Kabuto carries durability, blockers, and structure and adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like swift swim, battle armor, it fits ancient issue when the dashboard needs stability, guardrails, and safer changes."
+    },
+    {
+      "number": 141,
+      "name": "Kabutops",
+      "types": [
+        "rock",
+        "water"
+      ],
+      "keywords": [
+        "rock",
+        "water",
+        "stability",
+        "infrastructure",
+        "blocking",
+        "foundation",
+        "flow",
+        "calendar",
+        "handoff",
+        "cooldown",
+        "ancient sharp issue",
+        "attack"
+      ],
+      "lore": "Kabutops carries durability, blockers, and structure and adaptive flow and cool control. Drawing on public Pok\u00e9dex-style traits like swift swim, battle armor, it fits ancient sharp issue when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 142,
+      "name": "Aerodactyl",
+      "types": [
+        "rock",
+        "flying"
+      ],
+      "keywords": [
+        "rock",
+        "flying",
+        "stability",
+        "infrastructure",
+        "blocking",
+        "foundation",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "rare airborne escalation",
+        "speed"
+      ],
+      "lore": "Aerodactyl carries durability, blockers, and structure and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like rock head, pressure, it fits rare airborne escalation when the dashboard needs fast feedback and quick turnarounds."
+    },
+    {
+      "number": 143,
+      "name": "Snorlax",
+      "types": [
+        "normal"
+      ],
+      "keywords": [
+        "normal",
+        "routine",
+        "steady",
+        "baseline",
+        "handoff",
+        "large sleeping blocker",
+        "hp",
+        "immunity",
+        "thick fat"
+      ],
+      "lore": "Snorlax carries steady routine energy. Drawing on public Pok\u00e9dex-style traits like immunity, thick fat, it fits large sleeping blocker when the dashboard needs endurance and long-running work."
+    },
+    {
+      "number": 144,
+      "name": "Articuno",
+      "types": [
+        "ice",
+        "flying"
+      ],
+      "keywords": [
+        "ice",
+        "flying",
+        "freeze",
+        "stability",
+        "cooldown",
+        "blocked",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "cold legendary control",
+        "special defense"
+      ],
+      "lore": "Articuno carries cool focus and frozen blockers and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like pressure, snow cloak, it fits cold legendary control when the dashboard needs resilience against noisy conditions."
+    },
+    {
+      "number": 145,
+      "name": "Zapdos",
+      "types": [
+        "electric",
+        "flying"
+      ],
+      "keywords": [
+        "electric",
+        "flying",
+        "alert",
+        "frontend",
+        "review",
+        "fast",
+        "handoff",
+        "visibility",
+        "routing",
+        "release",
+        "electric legendary pressure",
+        "special attack"
+      ],
+      "lore": "Zapdos carries quick signals and charged attention and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like pressure, static, it fits electric legendary pressure when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 146,
+      "name": "Moltres",
+      "types": [
+        "fire",
+        "flying"
+      ],
+      "keywords": [
+        "fire",
+        "flying",
+        "deploy",
+        "release",
+        "launch",
+        "momentum",
+        "handoff",
+        "visibility",
+        "routing",
+        "fire legendary recovery",
+        "special attack",
+        "pressure"
+      ],
+      "lore": "Moltres carries release heat and forward momentum and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like pressure, flame body, it fits fire legendary recovery when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 147,
+      "name": "Dratini",
+      "types": [
+        "dragon"
+      ],
+      "keywords": [
+        "dragon",
+        "critical",
+        "scale",
+        "release",
+        "escalation",
+        "small dragon-scale signal",
+        "attack",
+        "shed skin",
+        "marvel scale"
+      ],
+      "lore": "Dratini carries scale, pressure, and rare escalation. Drawing on public Pok\u00e9dex-style traits like shed skin, marvel scale, it fits small dragon-scale signal when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 148,
+      "name": "Dragonair",
+      "types": [
+        "dragon"
+      ],
+      "keywords": [
+        "dragon",
+        "critical",
+        "scale",
+        "release",
+        "escalation",
+        "growing dragon-scale signal",
+        "attack",
+        "shed skin",
+        "marvel scale"
+      ],
+      "lore": "Dragonair carries scale, pressure, and rare escalation. Drawing on public Pok\u00e9dex-style traits like shed skin, marvel scale, it fits growing dragon-scale signal when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 149,
+      "name": "Dragonite",
+      "types": [
+        "dragon",
+        "flying"
+      ],
+      "keywords": [
+        "dragon",
+        "flying",
+        "critical",
+        "scale",
+        "release",
+        "escalation",
+        "handoff",
+        "visibility",
+        "routing",
+        "full dragon-scale response",
+        "attack",
+        "inner focus"
+      ],
+      "lore": "Dragonite carries scale, pressure, and rare escalation and movement, visibility, and routing. Drawing on public Pok\u00e9dex-style traits like inner focus, multiscale, it fits full dragon-scale response when the dashboard needs direct action and decisive pushes."
+    },
+    {
+      "number": 150,
+      "name": "Mewtwo",
+      "types": [
+        "psychic"
+      ],
+      "keywords": [
+        "psychic",
+        "meeting",
+        "planning",
+        "decision",
+        "architecture",
+        "critical psychic escalation",
+        "special attack",
+        "pressure",
+        "unnerve"
+      ],
+      "lore": "Mewtwo carries planning, foresight, and decisions. Drawing on public Pok\u00e9dex-style traits like pressure, unnerve, it fits critical psychic escalation when the dashboard needs focused signals and high-impact insight."
+    },
+    {
+      "number": 151,
+      "name": "Mew",
+      "types": [
+        "psychic"
+      ],
+      "keywords": [
+        "psychic",
+        "meeting",
+        "planning",
+        "decision",
+        "architecture",
+        "mythical unknown signal",
+        "hp",
+        "synchronize"
+      ],
+      "lore": "Mew carries planning, foresight, and decisions. Drawing on public Pok\u00e9dex-style traits like synchronize, it fits mythical unknown signal when the dashboard needs endurance and long-running work."
+    }
+  ]
+}

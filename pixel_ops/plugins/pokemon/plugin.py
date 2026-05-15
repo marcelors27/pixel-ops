@@ -10,6 +10,7 @@ from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.weather import OpenMeteoWeatherSource
 from pixel_ops.events.base import EventSource
 from pixel_ops.events.github_events import GitHubEventSource
+from pixel_ops.plugins.ai.plugin import AiDecisionPlugin
 from pixel_ops.plugins.pokemon.pokemon_api import PokeApiClient
 from pixel_ops.plugins.pokemon.scenes.overworld_scene import OverworldScene
 
@@ -56,6 +57,7 @@ class PokemonPlugin:
         next_event: Callable[[datetime], CalendarEvent | None],
         github_source: GitHubEventSource,
         weather_source: OpenMeteoWeatherSource | None,
+        ai_plugin: AiDecisionPlugin | None,
         event_sources: list[EventSource],
     ) -> PixelOpsApp:
         pokemon_cfg = config["pokemon"]
@@ -70,6 +72,7 @@ class PokemonPlugin:
             scene_fps=fps,
             game_config=config["game"],
             event_sources=event_sources,
+            ai_plugin=ai_plugin,
         )
         return PixelOpsApp(
             scene=scene,

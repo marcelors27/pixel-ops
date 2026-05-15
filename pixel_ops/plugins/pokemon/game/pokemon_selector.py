@@ -1,12 +1,18 @@
 from __future__ import annotations
 
 import random
+from collections import deque
 from dataclasses import dataclass
+from datetime import datetime
 
+from pixel_ops.data_sources.weather import WeatherState
 from pixel_ops.plugins.pokemon.pokemon import Pokemon, get_pokemon
 from pixel_ops.plugins.pokemon.pokemon_api import PokeApiClient
 from pixel_ops.events.base import EventCategory, EventPriority, WorkEvent
+from pixel_ops.plugins.ai.plugin import AiDecisionPlugin
+from pixel_ops.plugins.pokemon.game.ai_selector import PokemonAiPromptBuilder
 from pixel_ops.plugins.pokemon.game.biome_system import repo_types, time_types
+from pixel_ops.plugins.pokemon.game.knowledge import PokemonKnowledgeBase
 from pixel_ops.plugins.pokemon.game.rarity import RARITY_POKEMON, rarity_for_priority
 
 
@@ -46,7 +52,6 @@ DEFAULT_EVENT_TYPES = {
 
 PR_EVOLUTION = {
     EventCategory.PULL_REQUEST: (4, 5, 6),
-    EventCategory.REVIEW_REQUESTED: (5,),
     EventCategory.MERGE: (6,),
     EventCategory.PR_CLOSED: (6,),
 }
@@ -57,6 +62,7 @@ class PokemonSelection:
     pokemon: Pokemon
     rarity: str
     types_used: tuple[str, ...]
+    appeared_message: str = ""
 
 
 class PokemonSelector:
@@ -65,35 +71,71 @@ class PokemonSelector:
         pokemon_api: PokeApiClient | None,
         lazy_download: bool = True,
         config: dict | None = None,
+        ai_plugin: AiDecisionPlugin | None = None,
         seed: int = 421,
     ):
         self.pokemon_api = pokemon_api
         self.lazy_download = lazy_download
         self.config = config or {}
         self.rng = random.Random(seed)
+        self.ai_selector = PokemonAiPromptBuilder(self.config.get("ai_selector", {}), ai_plugin=ai_plugin)
+        self.knowledge = PokemonKnowledgeBase.from_path(self.config.get("knowledge_path"), TYPE_FALLBACKS)
+        repeat_window = int(self.config.get("repeat_window", 5))
+        self.recent_numbers: deque[int] = deque(maxlen=max(0, repeat_window))
 
-    def select(self, event: WorkEvent, day_phase: str) -> PokemonSelection:
-        if event.category in PR_EVOLUTION and event.metadata.get("evolution", "true") != "false":
-            numbers = PR_EVOLUTION[event.category]
-            number = numbers[min(len(numbers) - 1, self._priority_index(event.priority))]
-            return PokemonSelection(self._load(number), "workflow", ("fire",))
-
-        rarity = rarity_for_priority(event.priority, self.rng)
+    def select(
+        self,
+        event: WorkEvent,
+        day_phase: str,
+        now: datetime | None = None,
+        weather: WeatherState | None = None,
+    ) -> PokemonSelection:
         primary_types = self._primary_types_for_event(event)
         type_names = self._types_for_event(event, day_phase)
+        candidates = self.knowledge.search(
+            event,
+            type_names,
+            day_phase,
+            weather=weather,
+            limit=int(self.config.get("ai_selector", {}).get("candidate_limit", 8)),
+        )
+        ai_candidates = self._without_recent_candidates(candidates)
+        ai_choice = self.ai_selector.choose(
+            event,
+            day_phase,
+            ai_candidates,
+            now=now,
+            weather=weather,
+            recent_numbers=tuple(self.recent_numbers),
+        )
+        if ai_choice:
+            return self._selection(ai_choice.number, "ai", ("ai",), ai_choice.appeared_message)
+
+        if event.category in PR_EVOLUTION and event.metadata.get("evolution", "true") != "false":
+            number = self._workflow_number(event)
+            if number is not None:
+                return self._selection(number, "workflow", ("fire",))
+
+        rarity = rarity_for_priority(event.priority, self.rng)
         candidates = self._candidate_numbers(primary_types, rarity) if primary_types else ()
         if not candidates:
             candidates = self._candidate_numbers(type_names, rarity)
+        candidates = self._without_recent_numbers(candidates)
         number = self.rng.choice(candidates)
-        return PokemonSelection(self._load(number), rarity, type_names)
+        return self._selection(number, rarity, type_names)
 
-    def select_ambient(self, day_phase: str) -> PokemonSelection:
+    def select_ambient(
+        self,
+        day_phase: str,
+        now: datetime | None = None,
+        weather: WeatherState | None = None,
+    ) -> PokemonSelection:
         event = WorkEvent(
             category=EventCategory.AMBIENT,
             title="ASH is looking for Pokemon.",
             priority=EventPriority.LOW,
         )
-        return self.select(event, day_phase)
+        return self.select(event, day_phase, now=now, weather=weather)
 
     def _types_for_event(self, event: WorkEvent, day_phase: str) -> tuple[str, ...]:
         event_types = self._primary_types_for_event(event)
@@ -123,6 +165,36 @@ class PokemonSelector:
         if filtered:
             return tuple(filtered)
         return tuple(numbers)
+
+    def _workflow_number(self, event: WorkEvent) -> int | None:
+        numbers = PR_EVOLUTION[event.category]
+        preferred = numbers[min(len(numbers) - 1, self._priority_index(event.priority))]
+        if preferred not in self.recent_numbers:
+            return preferred
+        alternatives = tuple(number for number in numbers if number not in self.recent_numbers)
+        return alternatives[0] if alternatives else None
+
+    def _without_recent_candidates(self, candidates: list[PokemonKnowledge]) -> list[PokemonKnowledge]:
+        if not self.recent_numbers:
+            return candidates
+        filtered = [candidate for candidate in candidates if candidate.number not in self.recent_numbers]
+        return filtered or candidates
+
+    def _without_recent_numbers(self, numbers: tuple[int, ...]) -> tuple[int, ...]:
+        if not self.recent_numbers:
+            return numbers
+        filtered = tuple(number for number in numbers if number not in self.recent_numbers)
+        return filtered or numbers
+
+    def _selection(
+        self,
+        number: int,
+        rarity: str,
+        types_used: tuple[str, ...],
+        appeared_message: str = "",
+    ) -> PokemonSelection:
+        self.recent_numbers.append(number)
+        return PokemonSelection(self._load(number), rarity, types_used, appeared_message)
 
     def _load(self, number: int) -> Pokemon:
         if self.pokemon_api:

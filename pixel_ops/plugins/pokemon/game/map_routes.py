@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import random
 from dataclasses import dataclass
 from pathlib import Path
@@ -38,9 +39,20 @@ class MapRouteManager:
     def area_for_timestamp(self, timestamp: float) -> MapArea | None:
         if not self.areas:
             return None
+        areas = self._filtered_areas_for_mock() or self.areas
         bucket = int(timestamp // max(1, self.switch_seconds))
         rng = random.Random(bucket)
-        return self.areas[rng.randrange(len(self.areas))]
+        return areas[rng.randrange(len(areas))]
+
+    def _filtered_areas_for_mock(self) -> list[MapArea]:
+        environment = os.environ.get("PIXEL_OPS_MAP_MOCK_ENVIRONMENT", "").strip().lower()
+        if not environment:
+            return []
+        if environment == "sheltered":
+            return [area for area in self.areas if area.sheltered]
+        if environment == "unsheltered":
+            return [area for area in self.areas if not area.sheltered]
+        return [area for area in self.areas if area.environment == environment]
 
     def background_for_area(self, area: MapArea, phase: str, tint) -> Image.Image:
         key = (area.area_id, phase)

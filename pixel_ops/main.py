@@ -20,8 +20,9 @@ from pixel_ops.data_sources.weather import OpenMeteoWeatherSource
 from pixel_ops.events.calendar_events import CalendarEventSource
 from pixel_ops.events.github_events import GitHubEventSource
 from pixel_ops.events.mock_events import MockEventSource
-from pixel_ops.outputs import GifOutput, PreviewOutput, TURZXOutput
+from pixel_ops.outputs import GifOutput, PreviewOutput, TURZXOutput, WindowOutput
 from pixel_ops.outputs.base import DisplayOutput
+from pixel_ops.plugins.ai.plugin import build_ai_plugin
 from pixel_ops.plugins.registry import available_plugins, get_plugin
 from pixel_ops.render.splash import render_splash, splash_frame_count, splash_seconds
 
@@ -75,8 +76,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Pixel OPs timezone dashboard renderer.")
     plugin_names = sorted(available_plugins())
     parser.add_argument("--plugin", choices=plugin_names, default="pokemon", help="Interface plugin to render.")
-    parser.add_argument("--output", choices=("preview", "gif", "turzx"), help="Frame output target.")
+    parser.add_argument("--output", choices=("preview", "gif", "turzx", "window"), help="Frame output target.")
     parser.add_argument("--display", action="store_true", help="Send frames to UsbMonitor via USB bulk.")
+    parser.add_argument("--window", action="store_true", help="Render frames in a desktop window.")
+    parser.add_argument("--window-scale", type=int, default=2, help="Desktop window pixel scale.")
     parser.add_argument("--preview", action="store_true", help="Render a single PNG preview.")
     parser.add_argument("--gif", action="store_true", help="Render an animated GIF preview.")
     parser.add_argument("--preview-sequence", action="store_true", help="Write numbered PNG frames for preview output.")
@@ -167,6 +170,8 @@ def selected_output(args: argparse.Namespace) -> str:
         return args.output
     if args.display:
         return "turzx"
+    if args.window:
+        return "window"
     if args.gif:
         return "gif"
     return "preview"
@@ -187,6 +192,8 @@ def build_output(
         return GifOutput(root_dir / display_cfg["gif_output"], fps=fps)
     if output_name == "turzx":
         return TURZXOutput(width=width, height=height)
+    if output_name == "window":
+        return WindowOutput(width=width, height=height, scale=args.window_scale)
     raise ValueError(f"Unsupported output: {output_name}")
 
 
@@ -218,6 +225,8 @@ def main() -> int:
         repos=split_env_list(env_value("PIXEL_OPS_GITHUB_REPOS", "") or ""),
         poll_seconds=env_int("PIXEL_OPS_GITHUB_POLL_SECONDS", 300),
         max_pull_requests=env_int("PIXEL_OPS_GITHUB_MAX_PRS", 4),
+        fetch_pull_requests=env_int("PIXEL_OPS_GITHUB_FETCH_PRS", 20),
+        timeout_seconds=env_int("PIXEL_OPS_GITHUB_TIMEOUT_SECONDS", 20),
     )
     weather_cfg = display_cfg.get("weather", {})
     weather_source = OpenMeteoWeatherSource(
@@ -226,6 +235,7 @@ def main() -> int:
         country_code=env_value("PIXEL_OPS_WEATHER_COUNTRY", weather_cfg.get("country_code", "BR")) or "BR",
         poll_seconds=env_int("PIXEL_OPS_WEATHER_POLL_SECONDS", int(weather_cfg.get("poll_seconds", 900))),
     )
+    ai_plugin = build_ai_plugin(display_cfg.get("ai", {}))
     event_sources.append(github_source)
     for source in calendar_sources:
         source.warm_cache()
@@ -243,6 +253,7 @@ def main() -> int:
         next_event=lambda now: next_event(args, now, env_ics_paths),
         github_source=github_source,
         weather_source=weather_source,
+        ai_plugin=ai_plugin,
         event_sources=event_sources,
     )
 

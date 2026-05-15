@@ -94,6 +94,14 @@ display:
     city: Porto Alegre
     country_code: BR
     poll_seconds: 900
+  ai:
+    enabled: false
+    provider: openai_chatgpt
+    model: gpt-5.2-chat-latest
+    api_key_env: OPENAI_API_KEY
+    timeout_seconds: 8
+    cache_enabled: true
+    cache_dir: pixel_ops/cache/ai_decisions
   splash:
     enabled: true
     seconds: 2
@@ -111,6 +119,7 @@ Fields:
 - `scanlines`: overlays a subtle handheld-screen scanline effect when enabled.
 - `timezone_primary`: timezone used for the main clock and day/night palette.
 - `weather`: Open-Meteo polling config for map weather effects and the map weather badge.
+- `ai`: optional Pixel OPs AI plugin config. The initial provider is `openai_chatgpt`, backed by the OpenAI Responses API. `cache_enabled` stores successful JSON decisions locally so repeated encounters do not spend tokens again.
 - `splash.enabled`: shows the Pixel OPs logo before GIF and live display output.
 - `splash.seconds`: splash duration.
 - `splash.logo_path`: explicit image used for the splash logo.
@@ -187,6 +196,11 @@ game:
   events:
     mock_events: false
     queue_limit: 6
+    knowledge_path: pixel_ops/plugins/pokemon/assets/knowledge/gen1_lore.json
+    ai_selector:
+      enabled: false
+      ambient: false
+      candidate_limit: 8
     event_pokemon_types:
       pull_request:
         - bug
@@ -236,6 +250,8 @@ Event fields:
 
 - `mock_events`: enables generated demo events when no real source is configured.
 - `queue_limit`: maximum pending work events in the encounter queue.
+- `knowledge_path`: optional local Pokemon lore/keyword JSON used as a tiny RAG knowledge base before AI calls.
+- `ai_selector`: lets the Pokemon plugin build an AI prompt for Pokemon choice and the short appearance message when a Pixel OPs AI plugin is enabled. If no AI plugin is available or the call fails, the deterministic selector and local text are used.
 - `event_pokemon_types`: maps event categories to preferred Pokemon types.
 - `repo_biomes`: maps repository keywords to Pokemon type pools.
 
@@ -251,8 +267,33 @@ review_requested
 message_important
 incident
 merge
+pr_closed
 pr_approved
 ambient
+```
+
+Enable AI Pokemon decisions:
+
+```bash
+OPENAI_API_KEY=sk-... python pixel_ops/main.py --plugin pokemon --output preview
+```
+
+Then set `display.ai.enabled: true` in `pixel_ops/config/display.yaml` and `game.events.ai_selector.enabled: true` in `pixel_ops/plugins/pokemon/game.yaml`. The Pokemon plugin first searches the local knowledge base from `knowledge_path`, sends only `candidate_limit` candidates to the model, and caches successful decisions under `pixel_ops/cache/ai_decisions`. The response chooses one candidate and writes a compact battle text box appearance phrase. Set `ambient: true` only if you want AI calls for ambient encounters too; otherwise it is used for real work events such as PRs, closed PRs, and meetings.
+
+Local Pokemon lore uses this shape:
+
+```json
+{
+  "pokemon": [
+    {
+      "number": 25,
+      "name": "Pikachu",
+      "types": ["electric"],
+      "keywords": ["frontend", "review", "approval"],
+      "lore": "Pikachu is quick to spark when small signals need attention."
+    }
+  ]
+}
 ```
 
 ## Pokemon API And Cache Config
@@ -433,6 +474,19 @@ PIXEL_OPS_GITHUB_MAX_PRS=4
 ```
 
 The token only needs read access to the configured repositories. GitHub pull requests appear in the HUD and can trigger `pull_request`, `review_requested`, `pr_approved`, and `merge` encounters.
+
+Useful GitHub env vars:
+
+```env
+POKEMON_DASHBOARD_GITHUB_ENABLED=true
+POKEMON_DASHBOARD_GITHUB_REPOS=owner/repo
+POKEMON_DASHBOARD_GITHUB_POLL_SECONDS=60
+POKEMON_DASHBOARD_GITHUB_MAX_PRS=4
+POKEMON_DASHBOARD_GITHUB_FETCH_PRS=20
+POKEMON_DASHBOARD_GITHUB_TIMEOUT_SECONDS=20
+```
+
+`MAX_PRS` controls how many PRs appear in the HUD. `FETCH_PRS` controls how many recent open PRs are scanned for encounters.
 
 ## Mock Events
 

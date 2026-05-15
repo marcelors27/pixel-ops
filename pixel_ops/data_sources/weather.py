@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import urllib.parse
 from dataclasses import dataclass
 from datetime import datetime
@@ -52,6 +53,9 @@ class OpenMeteoWeatherSource:
     def current(self, now: datetime) -> WeatherState | None:
         if not self.enabled:
             return None
+        mock_effect = os.environ.get("PIXEL_OPS_WEATHER_MOCK_EFFECT", "").strip().lower()
+        if mock_effect:
+            return self._mock_weather(now, mock_effect)
         if self._last_poll_at and (now - self._last_poll_at).total_seconds() < self.poll_seconds:
             return self._state
         self._last_poll_at = now
@@ -61,6 +65,25 @@ class OpenMeteoWeatherSource:
         except (KeyError, TypeError, ValueError, requests.RequestException):
             return self._state
         return self._state
+
+    def _mock_weather(self, now: datetime, effect: str) -> WeatherState:
+        effects = (effect,)
+        return WeatherState(
+            city=self.city,
+            temperature_c=18,
+            temperature_min_c=14,
+            temperature_max_c=22,
+            apparent_temperature_c=18,
+            precipitation_mm=2.4 if effect == "rain" else 0,
+            rain_mm=2.4 if effect == "rain" else 0,
+            snowfall_cm=0.8 if effect == "snow" else 0,
+            cloud_cover=92 if effect in ("rain", "cloudy", "snow") else 20,
+            wind_speed_kmh=32 if effect == "wind" else 8,
+            wind_gusts_kmh=46 if effect == "wind" else 14,
+            weather_code={"rain": 61, "snow": 71, "cloudy": 3}.get(effect, 0),
+            effects=effects,
+            observed_at=now,
+        )
 
     def _fetch_coordinates(self) -> tuple[float, float]:
         query = urllib.parse.urlencode(
