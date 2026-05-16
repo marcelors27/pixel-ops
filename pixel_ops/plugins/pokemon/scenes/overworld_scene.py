@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import random
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -29,7 +30,13 @@ from pixel_ops.plugins.pokemon.render.sprites import (
     pokeball,
     scale_sprite,
 )
-from pixel_ops.plugins.pokemon.render.text_box import draw_text_box
+from pixel_ops.plugins.pokemon.render.text_box import (
+    TEXT_BOX_TEXT_TOP_PADDING,
+    draw_text_box,
+    scroll_line_start,
+    text_box_visible_lines,
+    wrap_text_lines,
+)
 from pixel_ops.plugins.pokemon.render.tiles import TILE, draw_house, draw_lamp, draw_tree, make_tile
 
 BATTLE_POKEMON_X = 220
@@ -72,6 +79,16 @@ class OverworldScene:
         self.encounter_x = int(cfg.get("encounter_x", 132))
         self.walk_exit_x = int(cfg.get("walk_exit_x", 258))
         self.route_speed_px = float(cfg.get("route_speed_px", 2.6))
+        self.vertical_wander_px = int(cfg.get("vertical_wander_px", 42))
+        self.vertical_wander_frames = max(1, int(float(cfg.get("vertical_wander_seconds", 1.4)) * scene_fps))
+        self.horizontal_wander_frames = max(self.vertical_wander_frames, int(1.8 * scene_fps))
+        self.vertical_wander_speed_px = float(cfg.get("vertical_wander_speed_px", 2.4))
+        self.vertical_wander_rng = random.Random(int(cfg.get("vertical_wander_seed", 421)))
+        self._ash_motion_axis = "horizontal"
+        self._ash_motion_until_frame = 0
+        self._ash_render_x: float | None = None
+        self._ash_render_y: float | None = None
+        self._ash_vertical_target_y: float | None = None
         self.hud_height = int(cfg.get("hud_height", 72))
         self.text_box_height = int(cfg.get("text_box_height", 76))
         self.static_background = bool(cfg.get("static_background", True))
@@ -87,11 +104,13 @@ class OverworldScene:
             sources=event_sources or [],
             queue_limit=int(cfg.get("events", {}).get("queue_limit", 6)),
         )
-        self.encounter = self.encounter_system.ambient_context("morning")
+        self.encounter = self.encounter_system.idle_context()
         self.pokemon_sprites = PokemonSpriteStore()
         self._previous_sprite_box: tuple[int, int, int, int] | None = None
         self._previous_battle_sprite_box: tuple[int, int, int, int] | None = None
-        self._previous_text_key: tuple[str, bool] | None = None
+        self._previous_text_key: tuple[str, bool, int] | None = None
+        self._text_scroll_key = ""
+        self._text_scroll_started_frame = 0
         self._previous_was_battle = False
         self._previous_map_area_id: str | None = None
         asset_root = Path(__file__).resolve().parents[1] / "assets/sprites/ash"
@@ -130,10 +149,15 @@ class OverworldScene:
             pal = day_night_palette(base_now.hour)
             encounter = self.encounter_system.next_encounter(pal.phase, now=base_now, weather=weather)
             if encounter is None:
-                self.encounter = self.encounter_system.ambient_context(pal.phase, now=base_now, weather=weather)
+                if not self.encounter_system.queue:
+                    self.encounter = self.encounter_system.idle_context()
                 self.state.set_phase(GamePhase.WALKING, base_now)
                 return GamePhase.WALKING
             self.encounter = encounter
+            self.state.require_phase_seconds(
+                GamePhase.POKEMON_APPEARS,
+                self._message_scroll_seconds(encounter.message_for(GamePhase.POKEMON_APPEARS)),
+            )
         moving = phase in (GamePhase.WALKING, GamePhase.RESUME_WALKING)
         if moving:
             self.overworld_walk_frame += 1
@@ -170,7 +194,8 @@ class OverworldScene:
             self._draw_battle_scene(img, phase, pal)
         else:
             self._draw_sprites(img, phase, pal)
-        draw_text_box(img, self.text_box, self.encounter.message_for(phase), pal, self.frame)
+        message = self.encounter.message_for(phase)
+        draw_text_box(img, self.text_box, message, pal, self._text_frame(message))
         if self.scanlines:
             img = self.renderer.apply_scanlines(img)
         return img
@@ -239,13 +264,15 @@ class OverworldScene:
                 self._draw_sprites(region, phase, pal, offset=(sprite_box[0], sprite_box[1]))
                 regions.append((sprite_box[0], sprite_box[1], region))
 
-        text_key = (self.encounter.message_for(phase), self.frame % 20 < 10)
+        message = self.encounter.message_for(phase)
+        text_frame = self._text_frame(message)
+        text_key = (message, text_frame % 20 < 10, self._text_scroll_start(message, text_frame))
         if text_key != self._previous_text_key:
             self._previous_text_key = text_key
             text_box = self.text_box
             region = base.crop(text_box)
             local_box = (0, 0, text_box[2] - text_box[0], text_box[3] - text_box[1])
-            draw_text_box(region, local_box, text_key[0], pal, self.frame)
+            draw_text_box(region, local_box, text_key[0], pal, text_frame)
             regions.append((text_box[0], text_box[1], region))
 
         return regions
@@ -254,9 +281,45 @@ class OverworldScene:
         phase = self.state.phase
         self._previous_sprite_box = self._sprite_box_for_phase(phase)
         self._previous_battle_sprite_box = self._battle_sprite_box_for_phase(phase) if self._is_battle_phase(phase) else None
-        self._previous_text_key = (self.encounter.message_for(phase), self.frame % 20 < 10)
+        message = self.encounter.message_for(phase)
+        text_frame = self._text_frame(message)
+        self._previous_text_key = (message, text_frame % 20 < 10, self._text_scroll_start(message, text_frame))
         self._previous_was_battle = self._is_battle_phase(phase)
         self._previous_map_area_id = self.current_map_area.area_id if self.current_map_area else None
+
+    def _text_frame(self, message: str) -> int:
+        if message != self._text_scroll_key:
+            self._text_scroll_key = message
+            self._text_scroll_started_frame = self.frame
+        return max(0, self.frame - self._text_scroll_started_frame)
+
+    def _text_scroll_start(self, message: str, text_frame: int) -> int:
+        x0, y0, x1, y1 = self.text_box
+        text_x = x0 + 12
+        text_y = y0 + TEXT_BOX_TEXT_TOP_PADDING
+        max_lines = text_box_visible_lines(self.text_box, message, text_y=text_y)
+        scratch = Image.new("RGB", (1, 1))
+        draw = ImageDraw.Draw(scratch)
+        lines = wrap_text_lines(draw, message, font(14), x1 - text_x - 26)
+        return scroll_line_start(lines, max_lines, text_frame)
+
+    def _message_scroll_seconds(self, message: str) -> float:
+        if not message:
+            return 0.0
+        x0, y0, x1, y1 = self.text_box
+        text_x = x0 + 12
+        text_y = y0 + TEXT_BOX_TEXT_TOP_PADDING
+        max_lines = text_box_visible_lines(self.text_box, message, text_y=text_y)
+        scratch = Image.new("RGB", (1, 1))
+        draw = ImageDraw.Draw(scratch)
+        lines = wrap_text_lines(draw, message, font(14), x1 - text_x - 26)
+        hidden_lines = max(0, len(lines) - max_lines)
+        if hidden_lines == 0:
+            return 0.0
+        hold_frames = 8
+        step_frames = 8
+        cycle_frames = hold_frames + hidden_lines * step_frames + hold_frames
+        return cycle_frames / max(1, self.scene_fps)
 
     def _draw_sky(self, draw: ImageDraw.ImageDraw, pal) -> None:
         sky_bottom = self.hud_height + 40
@@ -752,11 +815,85 @@ class OverworldScene:
         return self.encounter_x
 
     def _ash_pose_for_phase(self, phase: GamePhase) -> tuple[int, int, str | None]:
-        if phase in (GamePhase.WALKING, GamePhase.RESUME_WALKING) and self.current_map_area:
+        moving = phase in (GamePhase.WALKING, GamePhase.RESUME_WALKING)
+        if moving and self.current_map_area:
             (x, y), direction = self.map_routes.pose_on_route(
                 self.current_map_area,
                 self.overworld_walk_frame,
                 self.route_speed_px,
             )
-            return x, self.hud_height + y, direction
-        return self._ash_x_for_phase(phase), self.ash_y, None
+            return self._moving_ash_pose(x, self.hud_height + y, direction)
+        x = self._ash_x_for_phase(phase)
+        if moving:
+            return self._moving_ash_pose(x, self.ash_y, None)
+        self._ash_render_x = float(x)
+        self._ash_render_y = float(self.ash_y)
+        self._ash_motion_axis = "horizontal"
+        return x, self.ash_y, None
+
+    def _moving_ash_pose(self, target_x: int, base_y: int, route_direction: str | None) -> tuple[int, int, str | None]:
+        if self._ash_render_x is None or self._ash_render_y is None:
+            self._ash_render_x = float(target_x)
+            self._ash_render_y = float(base_y)
+            self._ash_motion_until_frame = self.frame + self._random_horizontal_frames()
+
+        if self._ash_motion_axis == "vertical":
+            return self._vertical_ash_pose(base_y)
+
+        if self.frame >= self._ash_motion_until_frame and self.vertical_wander_px > 0:
+            self._start_vertical_wander(base_y)
+            return self._vertical_ash_pose(base_y)
+
+        previous_x = self._ash_render_x
+        step = max(1.0, self.route_speed_px)
+        self._ash_render_x = self._move_toward(self._ash_render_x, float(target_x), step)
+        x_delta = self._ash_render_x - previous_x
+        direction = route_direction
+        if abs(x_delta) >= 0.5:
+            direction = "right" if x_delta > 0 else "left"
+        return int(round(self._ash_render_x)), int(round(self._ash_render_y)), direction
+
+    def _vertical_ash_pose(self, base_y: int) -> tuple[int, int, str | None]:
+        assert self._ash_render_x is not None
+        assert self._ash_render_y is not None
+        if self._ash_vertical_target_y is None:
+            self._start_vertical_wander(base_y)
+        assert self._ash_vertical_target_y is not None
+        previous_y = self._ash_render_y
+        self._ash_render_y = self._move_toward(
+            self._ash_render_y,
+            self._ash_vertical_target_y,
+            self.vertical_wander_speed_px,
+        )
+        reached_target = abs(self._ash_render_y - self._ash_vertical_target_y) < 0.5
+        if reached_target and self.frame >= self._ash_motion_until_frame:
+            self._ash_motion_axis = "horizontal"
+            self._ash_motion_until_frame = self.frame + self._random_horizontal_frames()
+            self._ash_vertical_target_y = None
+        y_delta = self._ash_render_y - previous_y
+        direction = None
+        if abs(y_delta) >= 0.5:
+            direction = "down" if y_delta > 0 else "up"
+        return int(round(self._ash_render_x)), int(round(self._ash_render_y)), direction
+
+    def _start_vertical_wander(self, base_y: int) -> None:
+        assert self._ash_render_y is not None
+        min_y = self.hud_height + 6
+        max_y = self.text_box[1] - 48
+        target = float(base_y + self.vertical_wander_rng.randint(-self.vertical_wander_px, self.vertical_wander_px))
+        target = min(max_y, max(min_y, target))
+        if abs(target - self._ash_render_y) < 8:
+            direction = -1 if self._ash_render_y > (min_y + max_y) / 2 else 1
+            target = min(max_y, max(min_y, self._ash_render_y + direction * min(18, self.vertical_wander_px)))
+        self._ash_motion_axis = "vertical"
+        self._ash_motion_until_frame = self.frame + self.vertical_wander_frames
+        self._ash_vertical_target_y = target
+
+    def _random_horizontal_frames(self) -> int:
+        return self.horizontal_wander_frames + self.vertical_wander_rng.randint(0, max(1, self.scene_fps))
+
+    @staticmethod
+    def _move_toward(current: float, target: float, step: float) -> float:
+        if abs(target - current) <= step:
+            return target
+        return current + step if target > current else current - step

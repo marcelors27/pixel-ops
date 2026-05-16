@@ -8,6 +8,7 @@ import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from threading import Lock, Thread
 
 from pixel_ops.events.base import EventCategory, EventPriority, WorkEvent
 
@@ -53,18 +54,22 @@ class GitHubEventSource:
         self._pull_requests: list[PullRequestSummary] = []
         self._pending_events: list[WorkEvent] = []
         self._seen: set[str] = set()
+        self._lock = Lock()
+        self._refresh_running = False
         self.debug = _env_bool("PIXEL_OPS_DEBUG_EVENTS") or _env_bool("POKEMON_DASHBOARD_DEBUG_EVENTS")
 
     def poll(self, now: datetime) -> list[WorkEvent]:
         self._refresh(now)
-        events = self._pending_events
-        self._pending_events = []
+        with self._lock:
+            events = self._pending_events
+            self._pending_events = []
         return events
 
     def open_pull_requests(self, now: datetime | None = None) -> list[PullRequestSummary]:
         if now:
             self._refresh_hud(now)
-        return list(self._pull_requests)
+        with self._lock:
+            return list(self._pull_requests)
 
     def _refresh(self, now: datetime) -> None:
         if not self.enabled or not self.token or not self.repos:
@@ -74,36 +79,37 @@ class GitHubEventSource:
 
         previous_poll_at = self._last_poll_at
         self._last_poll_at = now
-        pull_requests = self._refresh_open_pull_requests(now)
-        self._pull_requests = pull_requests[: self.max_pull_requests]
-        self._debug(f"open_prs fetched={len(pull_requests)} hud={len(self._pull_requests)}")
-
-        for pr in pull_requests:
-            key = f"{pr.repo}#{pr.number}"
-            if key in self._seen:
-                continue
-            self._seen.add(key)
-            self._pending_events.append(
-                WorkEvent(
-                    category=EventCategory.REVIEW_REQUESTED if not pr.draft else EventCategory.PULL_REQUEST,
-                    title=f"{pr.repo} #{pr.number} ready for review",
-                    detail=pr.title,
-                    priority=EventPriority.MEDIUM,
-                    source="github",
-                    repo=pr.repo,
-                    actor=pr.author,
-                    external_id=key,
-                    occurred_at=now,
-                )
-            )
-            self._debug(f"queued {self._pending_events[-1].category.value} {key}")
         since = previous_poll_at or now - timedelta(seconds=self.poll_seconds)
-        self._pending_events.extend(self._fetch_closed_pull_request_events(now, since))
+        self._start_refresh_worker(now, since, include_closed=True)
 
     def _refresh_hud(self, now: datetime) -> None:
         if not self.enabled or not self.token or not self.repos:
             return
-        self._pull_requests = self._refresh_open_pull_requests(now)[: self.max_pull_requests]
+        if self._last_open_fetch_at and (now - self._last_open_fetch_at).total_seconds() < self.poll_seconds:
+            return
+        self._last_open_fetch_at = now
+        self._start_refresh_worker(now, now - timedelta(seconds=self.poll_seconds), include_closed=False)
+
+    def _start_refresh_worker(self, now: datetime, since: datetime, include_closed: bool) -> None:
+        with self._lock:
+            if self._refresh_running:
+                return
+            self._refresh_running = True
+            self._last_open_fetch_at = now
+
+        def worker() -> None:
+            try:
+                pull_requests = self._fetch_open_pull_requests()
+                closed_events = self._fetch_closed_pull_request_events(now, since) if include_closed else []
+                with self._lock:
+                    self._open_pull_requests = pull_requests
+                    self._pull_requests = pull_requests[: self.max_pull_requests]
+                    self._debug(f"open_prs fetched={len(pull_requests)} hud={len(self._pull_requests)}")
+                    self._queue_open_pull_request_events(pull_requests, now)
+                    self._pending_events.extend(closed_events)
+            finally:
+                with self._lock:
+                    self._refresh_running = False
 
     def _refresh_open_pull_requests(self, now: datetime) -> list[PullRequestSummary]:
         if self._last_open_fetch_at and (now - self._last_open_fetch_at).total_seconds() < self.poll_seconds:
@@ -133,6 +139,27 @@ class GitHubEventSource:
                 self._debug(f"open_prs error repo={repo}: {type(error).__name__}: {error}")
                 continue
         return pull_requests
+
+    def _queue_open_pull_request_events(self, pull_requests: list[PullRequestSummary], now: datetime) -> None:
+        for pr in pull_requests:
+            key = f"{pr.repo}#{pr.number}"
+            if key in self._seen:
+                continue
+            self._seen.add(key)
+            self._pending_events.append(
+                WorkEvent(
+                    category=EventCategory.REVIEW_REQUESTED if not pr.draft else EventCategory.PULL_REQUEST,
+                    title=f"{pr.repo} #{pr.number} ready for review",
+                    detail=pr.title,
+                    priority=EventPriority.MEDIUM,
+                    source="github",
+                    repo=pr.repo,
+                    actor=pr.author,
+                    external_id=key,
+                    occurred_at=now,
+                )
+            )
+            self._debug(f"queued {self._pending_events[-1].category.value} {key}")
 
     def _fetch_closed_pull_request_events(self, now: datetime, since: datetime) -> list[WorkEvent]:
         events: list[WorkEvent] = []

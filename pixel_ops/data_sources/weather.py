@@ -4,6 +4,7 @@ import os
 import urllib.parse
 from dataclasses import dataclass
 from datetime import datetime
+from threading import Lock, Thread
 
 import requests
 
@@ -49,6 +50,8 @@ class OpenMeteoWeatherSource:
         self._last_poll_at: datetime | None = None
         self._coordinates: tuple[float, float] | None = None
         self._state: WeatherState | None = None
+        self._lock = Lock()
+        self._refresh_running = False
 
     def current(self, now: datetime) -> WeatherState | None:
         if not self.enabled:
@@ -59,12 +62,29 @@ class OpenMeteoWeatherSource:
         if self._last_poll_at and (now - self._last_poll_at).total_seconds() < self.poll_seconds:
             return self._state
         self._last_poll_at = now
-        try:
-            self._coordinates = self._coordinates or self._fetch_coordinates()
-            self._state = self._fetch_weather(now, self._coordinates)
-        except (KeyError, TypeError, ValueError, requests.RequestException):
-            return self._state
+        self._refresh_async(now)
         return self._state
+
+    def _refresh_async(self, now: datetime) -> None:
+        with self._lock:
+            if self._refresh_running:
+                return
+            self._refresh_running = True
+
+        def worker() -> None:
+            try:
+                coordinates = self._coordinates or self._fetch_coordinates()
+                state = self._fetch_weather(now, coordinates)
+                with self._lock:
+                    self._coordinates = coordinates
+                    self._state = state
+            except (KeyError, TypeError, ValueError, requests.RequestException):
+                return
+            finally:
+                with self._lock:
+                    self._refresh_running = False
+
+        Thread(target=worker, daemon=True).start()
 
     def _mock_weather(self, now: datetime, effect: str) -> WeatherState:
         effects = (effect,)

@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import random
+import os
+import sys
+from hashlib import sha256
 from collections import deque
 from dataclasses import dataclass
 from datetime import datetime
@@ -53,7 +56,6 @@ DEFAULT_EVENT_TYPES = {
 PR_EVOLUTION = {
     EventCategory.PULL_REQUEST: (4, 5, 6),
     EventCategory.MERGE: (6,),
-    EventCategory.PR_CLOSED: (6,),
 }
 
 
@@ -82,6 +84,7 @@ class PokemonSelector:
         self.knowledge = PokemonKnowledgeBase.from_path(self.config.get("knowledge_path"), TYPE_FALLBACKS)
         repeat_window = int(self.config.get("repeat_window", 5))
         self.recent_numbers: deque[int] = deque(maxlen=max(0, repeat_window))
+        self.debug = _env_bool("PIXEL_OPS_DEBUG_EVENTS")
 
     def select(
         self,
@@ -89,16 +92,18 @@ class PokemonSelector:
         day_phase: str,
         now: datetime | None = None,
         weather: WeatherState | None = None,
-    ) -> PokemonSelection:
+    ) -> PokemonSelection | None:
         primary_types = self._primary_types_for_event(event)
         type_names = self._types_for_event(event, day_phase)
+        candidate_limit = int(self.config.get("ai_selector", {}).get("candidate_limit", 8))
         candidates = self.knowledge.search(
             event,
             type_names,
             day_phase,
             weather=weather,
-            limit=int(self.config.get("ai_selector", {}).get("candidate_limit", 8)),
+            limit=max(candidate_limit, candidate_limit * 3),
         )
+        candidates = self._diversify_candidates(event, candidates)[:candidate_limit]
         ai_candidates = self._without_recent_candidates(candidates)
         ai_choice = self.ai_selector.choose(
             event,
@@ -109,11 +114,19 @@ class PokemonSelector:
             recent_numbers=tuple(self.recent_numbers),
         )
         if ai_choice:
+            self._debug(
+                f"selected category={event.category.value} source=openai pokemon={ai_choice.number} "
+                f"message={ai_choice.appeared_message[:96]!r}"
+            )
             return self._selection(ai_choice.number, "ai", ("ai",), ai_choice.appeared_message)
+        if self.ai_selector.last_request_pending:
+            self._debug(f"waiting category={event.category.value} source=openai")
+            return None
 
         if event.category in PR_EVOLUTION and event.metadata.get("evolution", "true") != "false":
             number = self._workflow_number(event)
             if number is not None:
+                self._debug(f"selected category={event.category.value} source=workflow pokemon={number}")
                 return self._selection(number, "workflow", ("fire",))
 
         rarity = rarity_for_priority(event.priority, self.rng)
@@ -122,6 +135,7 @@ class PokemonSelector:
             candidates = self._candidate_numbers(type_names, rarity)
         candidates = self._without_recent_numbers(candidates)
         number = self.rng.choice(candidates)
+        self._debug(f"selected category={event.category.value} source=fallback pokemon={number} rarity={rarity}")
         return self._selection(number, rarity, type_names)
 
     def select_ambient(
@@ -201,6 +215,21 @@ class PokemonSelector:
             return self.pokemon_api.get(number, allow_download=self.lazy_download)
         return get_pokemon(number - 1)
 
+    def _diversify_candidates(self, event: WorkEvent, candidates: list[PokemonKnowledge]) -> list[PokemonKnowledge]:
+        if event.category != EventCategory.MEETING or len(candidates) < 2:
+            return candidates
+
+        values = " ".join((event.title, event.detail, " ".join(event.metadata.values()))).lower()
+        mr_mime_fits = any(term in values for term in ("focus", "formal", "decision", "approval", "architecture", "noise"))
+        if not mr_mime_fits:
+            candidates = [candidate for candidate in candidates if candidate.number != 122]
+
+        if len(candidates) <= 1:
+            return candidates
+        key = event.external_id or f"{event.source}:{event.title}:{event.detail}"
+        offset = int(sha256(key.encode("utf-8")).hexdigest()[:8], 16) % len(candidates)
+        return [*candidates[offset:], *candidates[:offset]]
+
     @staticmethod
     def _priority_index(priority: EventPriority) -> int:
         return {
@@ -209,3 +238,11 @@ class PokemonSelector:
             EventPriority.HIGH: 1,
             EventPriority.CRITICAL: 2,
         }.get(priority, 0)
+
+    def _debug(self, message: str) -> None:
+        if self.debug:
+            print(f"[pixel-ops pokemon-selector] {message}", file=sys.stderr)
+
+
+def _env_bool(name: str) -> bool:
+    return os.environ.get(name, "").strip().lower() in ("1", "true", "yes", "on")

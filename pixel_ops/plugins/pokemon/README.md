@@ -108,7 +108,8 @@ display:
   ai:
     enabled: false
     provider: openai_chatgpt
-    model: gpt-5.2-chat-latest
+    model: gpt-5-mini
+    reasoning_effort: low
     api_key_env: OPENAI_API_KEY
     timeout_seconds: 8
     cache_enabled: true
@@ -210,6 +211,7 @@ game:
     knowledge_path: pixel_ops/plugins/pokemon/assets/knowledge/gen1_lore.json
     ai_selector:
       enabled: false
+      async: true
       ambient: false
       candidate_limit: 8
     event_pokemon_types:
@@ -289,7 +291,7 @@ Enable AI Pokemon decisions:
 OPENAI_API_KEY=sk-... python pixel_ops/main.py --plugin pokemon --output preview
 ```
 
-Then set `display.ai.enabled: true` in `pixel_ops/config/display.yaml` and `game.events.ai_selector.enabled: true` in `pixel_ops/plugins/pokemon/game.yaml`. The Pokemon plugin first searches the local knowledge base from `knowledge_path`, sends only `candidate_limit` candidates to the model, and caches successful decisions under `pixel_ops/cache/ai_decisions`. The response chooses one candidate and writes a compact battle text box appearance phrase. Set `ambient: true` only if you want AI calls for ambient encounters too; otherwise it is used for real work events such as PRs, closed PRs, and meetings.
+Then set `display.ai.enabled: true` in `pixel_ops/config/display.yaml` and `game.events.ai_selector.enabled: true` in `pixel_ops/plugins/pokemon/game.yaml`. The Pokemon plugin first searches the local knowledge base from `knowledge_path`, sends only `candidate_limit` candidates to the model, and caches successful decisions under `pixel_ops/cache/ai_decisions`. The response chooses one candidate and writes a compact battle text box appearance phrase. OpenAI is only used for real work events; ambient encounters always use local selection.
 
 Local Pokemon lore uses this shape:
 

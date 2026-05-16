@@ -12,6 +12,8 @@ game:
   encounter_x: 132
   walk_exit_x: 258
   route_speed_px: 6.4
+  vertical_wander_px: 42
+  vertical_wander_seconds: 1.4
   pokemon_x: 220
   pokemon_y: 280
   hud_height: 212
@@ -19,7 +21,7 @@ game:
   encounter:
     walking_seconds: 2.0
     start_seconds: 3.0
-    appears_seconds: 7.0
+    appears_seconds: 10.0
     throw_seconds: 1.4
     shake_seconds: 3.0
     caught_seconds: 5.0
@@ -29,6 +31,7 @@ game:
     knowledge_path: pixel_ops/plugins/pokemon/assets/knowledge/gen1_lore.json
     ai_selector:
       enabled: true
+      async: true
       ambient: false
       candidate_limit: 8
     event_pokemon_types:

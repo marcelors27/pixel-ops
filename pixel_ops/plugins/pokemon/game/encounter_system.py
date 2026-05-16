@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import os
+import sys
 from collections import deque
 from dataclasses import dataclass
 from datetime import datetime
 
 from pixel_ops.data_sources.weather import WeatherState
-from pixel_ops.plugins.pokemon.pokemon import Pokemon
+from pixel_ops.plugins.pokemon.pokemon import Pokemon, get_pokemon
 from pixel_ops.events.base import EventCategory, EventPriority, EventSource, WorkEvent
 from pixel_ops.plugins.pokemon.game.pokemon_selector import PokemonSelector
 from pixel_ops.plugins.pokemon.game.state_machine import GamePhase
@@ -71,6 +73,7 @@ class EncounterSystem:
         self.sources = sources or []
         self.queue: deque[WorkEvent] = deque(maxlen=queue_limit)
         self._seen: set[str] = set()
+        self.debug = _env_bool("PIXEL_OPS_DEBUG_EVENTS")
 
     def poll(self, now: datetime) -> None:
         for source in self.sources:
@@ -80,9 +83,11 @@ class EncounterSystem:
     def enqueue(self, event: WorkEvent) -> None:
         key = event.external_id or f"{event.source}:{event.category.value}:{event.title}"
         if key in self._seen:
+            self._debug(f"skip duplicate category={event.category.value} key={key}")
             return
         self._seen.add(key)
         self.queue.append(event)
+        self._debug(f"queued category={event.category.value} key={key} size={len(self.queue)}")
 
     def next_encounter(
         self,
@@ -91,8 +96,17 @@ class EncounterSystem:
         weather: WeatherState | None = None,
     ) -> EncounterContext | None:
         if self.queue:
-            event = self.queue.popleft()
+            event = self.queue[0]
             selection = self.selector.select(event, day_phase, now=now, weather=weather)
+            if selection is None:
+                self._debug(f"waiting category={event.category.value} key={event.external_id or event.title}")
+                return None
+            self.queue.popleft()
+            self._debug(
+                f"consume category={event.category.value} source={selection.rarity} "
+                f"pokemon={selection.pokemon.number} size={len(self.queue)} "
+                f"message={selection.appeared_message[:96]!r}"
+            )
             return EncounterContext(
                 pokemon=selection.pokemon,
                 event=event,
@@ -120,3 +134,19 @@ class EncounterSystem:
             types_used=selection.types_used,
             appeared_message=selection.appeared_message,
         )
+
+    def idle_context(self) -> EncounterContext:
+        return EncounterContext(
+            pokemon=get_pokemon(24),
+            event=None,
+            rarity="idle",
+            appeared_message="",
+        )
+
+    def _debug(self, message: str) -> None:
+        if self.debug:
+            print(f"[pixel-ops encounter] {message}", file=sys.stderr)
+
+
+def _env_bool(name: str) -> bool:
+    return os.environ.get(name, "").strip().lower() in ("1", "true", "yes", "on")

@@ -15,7 +15,8 @@ display:
   ai:
     enabled: true
     provider: openai_chatgpt
-    model: gpt-5.2-chat-latest
+    model: gpt-5-mini
+    reasoning_effort: low
     api_key_env: OPENAI_API_KEY
     timeout_seconds: 8
     cache_enabled: true

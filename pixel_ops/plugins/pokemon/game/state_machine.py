@@ -33,6 +33,7 @@ class GameStateMachine:
     phase: GamePhase = GamePhase.WALKING
     phase_started_at: datetime | None = None
     elapsed_seconds: float = 0.0
+    min_phase_seconds: dict[GamePhase, float] | None = None
 
     @classmethod
     def from_seconds(cls, fps: int, seconds_config: dict | None = None) -> "GameStateMachine":
@@ -59,7 +60,7 @@ class GameStateMachine:
             return self.phase, False
 
         self.elapsed_seconds = max(0.0, (now - self.phase_started_at).total_seconds())
-        if self.elapsed_seconds < self.durations[self.phase]:
+        if self.elapsed_seconds < self.duration_for_phase(self.phase):
             return self.phase, False
 
         self.phase = self._next_phase(self.phase)
@@ -71,6 +72,15 @@ class GameStateMachine:
         self.phase = phase
         self.phase_started_at = now
         self.elapsed_seconds = 0.0
+
+    def require_phase_seconds(self, phase: GamePhase, seconds: float) -> None:
+        if self.min_phase_seconds is None:
+            self.min_phase_seconds = {}
+        self.min_phase_seconds[phase] = max(0.0, seconds)
+
+    def duration_for_phase(self, phase: GamePhase) -> float:
+        minimum = 0.0 if self.min_phase_seconds is None else self.min_phase_seconds.get(phase, 0.0)
+        return max(self.durations[phase], minimum)
 
     @staticmethod
     def _next_phase(phase: GamePhase) -> GamePhase:
@@ -88,7 +98,7 @@ class GameStateMachine:
 
     @property
     def progress(self) -> float:
-        return min(1.0, self.elapsed_seconds / max(0.001, self.durations[self.phase]))
+        return min(1.0, self.elapsed_seconds / max(0.001, self.duration_for_phase(self.phase)))
 
     @property
     def frame_in_phase(self) -> int:
