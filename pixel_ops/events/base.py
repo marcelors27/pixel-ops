@@ -18,6 +18,9 @@ class EventCategory(str, Enum):
     MERGE = "merge"
     PR_CLOSED = "pr_closed"
     PR_APPROVED = "pr_approved"
+    SOCIAL_ACTIVITY = "social_activity"
+    SOCIAL_PRESENCE = "social_presence"
+    SOCIAL_QUIET = "social_quiet"
     AMBIENT = "ambient"
 
 

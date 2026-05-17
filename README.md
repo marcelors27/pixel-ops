@@ -86,10 +86,37 @@ python pixel_ops/main.py --plugin pokemon --output preview --offline
 
 ## Events
 
+Runtime access to external systems is handled by integration plugins. Each
+plugin is loaded only when its own enable variable is true:
+
+```text
+PIXEL_OPS_SLACK_ENABLED
+PIXEL_OPS_DISCORD_ENABLED
+PIXEL_OPS_GITHUB_ENABLED
+PIXEL_OPS_GOOGLE_CALENDAR_ENABLED
+PIXEL_OPS_ICS_ENABLED
+```
+
 Calendar via local `.ics`:
 
 ```bash
 python pixel_ops/main.py --ics path/to/calendar.ics
+```
+
+Or via env:
+
+```env
+PIXEL_OPS_ICS_ENABLED=true
+PIXEL_OPS_ICS_PATH=/path/to/calendar.ics
+PIXEL_OPS_ICS_POLL_SECONDS=300
+```
+
+Google Calendar via private ICS URL:
+
+```env
+PIXEL_OPS_GOOGLE_CALENDAR_ENABLED=true
+PIXEL_OPS_GOOGLE_CALENDAR_ICS_URL=https://calendar.google.com/calendar/ical/...
+PIXEL_OPS_GOOGLE_CALENDAR_POLL_SECONDS=300
 ```
 
 GitHub pull requests in the HUD:
@@ -101,6 +128,44 @@ PIXEL_OPS_GITHUB_REPOS=owner/repo
 PIXEL_OPS_GITHUB_POLL_SECONDS=60
 PIXEL_OPS_GITHUB_MAX_PRS=4
 ```
+
+Slack and Discord are interpreted as ambient social weather, not message feeds.
+Message bodies are only used for short-lived semantic classification; rendered
+events become encounters, mood shifts, particles, NPC density, and meeting
+ceremonies.
+
+Slack Socket Mode receiver:
+
+```env
+PIXEL_OPS_SLACK_ENABLED=true
+PIXEL_OPS_SLACK_APP_TOKEN=xapp-...
+PIXEL_OPS_SLACK_BOT_TOKEN=xoxb-...
+PIXEL_OPS_SLACK_BOT_USER_ID=U123456
+PIXEL_OPS_SLACK_SOCKET_RECONNECT_SECONDS=10
+```
+
+Enable Socket Mode in the Slack app, create an app-level token with
+`connections:write`, and install the bot with event scopes for mentions,
+messages, reactions, and presence-like activity. Socket Mode is the recommended
+local setup because GACO opens an outbound WebSocket and does not need a public
+IP, tunnel, TLS endpoint, or reverse proxy.
+
+Supported signals include DMs, mentions, reactions, channel activity,
+calls/huddles, incident/deploy/PR keywords, and presence-like joins.
+
+Discord support is exposed as a Gateway dispatch adapter in
+`pixel_ops/integrations/discord/gateway.py`; a bot runner can pass dispatch
+payloads into `DiscordGatewayAdapter.handle_dispatch()`. Supported signals
+include presence, voice activity, mentions, message spikes, and server activity.
+
+All social/meeting providers normalize into `AmbientSignal` before becoming
+GACO `WorkEvent`s. That provider-neutral layer lives in
+`pixel_ops/events/ambient_signals.py` and uses a small common vocabulary:
+`meeting_soon`, `meeting_started`, `meeting_ended`, `participant_joined`,
+`voice_activity`, `mention`, `activity_spike`, `quiet_period`,
+`incident_signal`, `deploy_signal`, and `review_signal`. Slack, Discord,
+Teams, and Zoom integrations should stop at that boundary; the renderer only
+sees mood and encounter effects.
 
 ## Hardware
 

@@ -1,0 +1,1 @@
+"""Discord semantic event integration."""

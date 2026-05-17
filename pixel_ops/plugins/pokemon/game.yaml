@@ -34,7 +34,16 @@ game:
       async: true
       ambient: false
       candidate_limit: 8
-    event_pokemon_types:
+      throttle:
+        enabled: true
+        cooldown_seconds: 90
+        window_seconds: 900
+        max_requests_per_window: 4
+        max_pending: 1
+        skip_sources:
+          - slack
+          - discord
+      event_pokemon_types:
       pull_request:
         - bug
         - electric
@@ -70,6 +79,16 @@ game:
       pr_approved:
         - electric
         - fairy
+      social_activity:
+        - electric
+        - fire
+        - normal
+      social_presence:
+        - normal
+        - fairy
+      social_quiet:
+        - grass
+        - normal
     repo_biomes:
       backend:
         - rock

@@ -50,6 +50,9 @@ DEFAULT_EVENT_TYPES = {
     EventCategory.MERGE.value: ("dragon", "normal"),
     EventCategory.PR_CLOSED.value: ("ghost", "normal"),
     EventCategory.PR_APPROVED.value: ("electric", "fairy"),
+    EventCategory.SOCIAL_ACTIVITY.value: ("electric", "fire"),
+    EventCategory.SOCIAL_PRESENCE.value: ("normal", "fairy"),
+    EventCategory.SOCIAL_QUIET.value: ("grass", "normal"),
     EventCategory.AMBIENT.value: ("grass", "normal"),
 }
 
@@ -164,7 +167,7 @@ class PokemonSelector:
 
     def _primary_types_for_event(self, event: WorkEvent) -> tuple[str, ...]:
         configured = self.config.get("event_pokemon_types", {})
-        event_types = configured.get(event.category.value) or DEFAULT_EVENT_TYPES.get(event.category.value, ())
+        event_types = _metadata_types(event) or configured.get(event.category.value) or DEFAULT_EVENT_TYPES.get(event.category.value, ())
         return tuple(dict.fromkeys(str(item) for item in event_types if item))
 
     def _candidate_numbers(self, type_names: tuple[str, ...], rarity: str) -> tuple[int, ...]:
@@ -246,3 +249,8 @@ class PokemonSelector:
 
 def _env_bool(name: str) -> bool:
     return os.environ.get(name, "").strip().lower() in ("1", "true", "yes", "on")
+
+
+def _metadata_types(event: WorkEvent) -> tuple[str, ...]:
+    raw = event.metadata.get("dominant_types", "")
+    return tuple(item.strip() for item in raw.split(",") if item.strip())

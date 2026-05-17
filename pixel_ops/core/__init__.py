@@ -1,3 +1,3 @@
-from pixel_ops.core.app import PixelOpsApp
+from pixel_ops.core.app import PixelOpsApp, PullRequestSource
 
-__all__ = ["PixelOpsApp"]
+__all__ = ["PixelOpsApp", "PullRequestSource"]

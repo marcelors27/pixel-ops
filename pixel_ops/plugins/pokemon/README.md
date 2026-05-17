@@ -214,6 +214,15 @@ game:
       async: true
       ambient: false
       candidate_limit: 8
+      throttle:
+        enabled: true
+        cooldown_seconds: 90
+        window_seconds: 900
+        max_requests_per_window: 4
+        max_pending: 1
+        skip_sources:
+          - slack
+          - discord
     event_pokemon_types:
       pull_request:
         - bug
@@ -264,7 +273,7 @@ Event fields:
 - `mock_events`: enables generated demo events when no real source is configured.
 - `queue_limit`: maximum pending work events in the encounter queue.
 - `knowledge_path`: optional local Pokemon lore/keyword JSON used as a tiny RAG knowledge base before AI calls.
-- `ai_selector`: lets the Pokemon plugin build an AI prompt for Pokemon choice and the short appearance message when a Pixel OPs AI plugin is enabled. If no AI plugin is available or the call fails, the deterministic selector and local text are used.
+- `ai_selector`: lets the Pokemon plugin build an AI prompt for Pokemon choice and the short appearance message when a Pixel OPs AI plugin is enabled. If no AI plugin is available, throttling blocks the call, or the call fails, the deterministic selector and local text are used.
 - `event_pokemon_types`: maps event categories to preferred Pokemon types.
 - `repo_biomes`: maps repository keywords to Pokemon type pools.
 
@@ -291,7 +300,7 @@ Enable AI Pokemon decisions:
 OPENAI_API_KEY=sk-... python pixel_ops/main.py --plugin pokemon --output preview
 ```
 
-Then set `display.ai.enabled: true` in `pixel_ops/config/display.yaml` and `game.events.ai_selector.enabled: true` in `pixel_ops/plugins/pokemon/game.yaml`. The Pokemon plugin first searches the local knowledge base from `knowledge_path`, sends only `candidate_limit` candidates to the model, and caches successful decisions under `pixel_ops/cache/ai_decisions`. The response chooses one candidate and writes a compact battle text box appearance phrase. OpenAI is only used for real work events; ambient encounters always use local selection.
+Then set `display.ai.enabled: true` in `pixel_ops/config/display.yaml` and `game.events.ai_selector.enabled: true` in `pixel_ops/plugins/pokemon/game.yaml`. The Pokemon plugin first searches the local knowledge base from `knowledge_path`, sends only `candidate_limit` candidates to the model, and caches successful decisions under `pixel_ops/cache/ai_decisions`. The response chooses one candidate and writes a compact battle text box appearance phrase. OpenAI is only used for real work events; ambient encounters always use local selection. The default throttle allows at most one pending AI request, waits 90 seconds between starts, caps calls to 4 per 15 minutes, and skips Slack/Discord events.
 
 Local Pokemon lore uses this shape:
 
@@ -491,12 +500,12 @@ The token only needs read access to the configured repositories. GitHub pull req
 Useful GitHub env vars:
 
 ```env
-POKEMON_DASHBOARD_GITHUB_ENABLED=true
-POKEMON_DASHBOARD_GITHUB_REPOS=owner/repo
-POKEMON_DASHBOARD_GITHUB_POLL_SECONDS=60
-POKEMON_DASHBOARD_GITHUB_MAX_PRS=4
-POKEMON_DASHBOARD_GITHUB_FETCH_PRS=20
-POKEMON_DASHBOARD_GITHUB_TIMEOUT_SECONDS=20
+PIXEL_OPS_GITHUB_ENABLED=true
+PIXEL_OPS_GITHUB_REPOS=owner/repo
+PIXEL_OPS_GITHUB_POLL_SECONDS=60
+PIXEL_OPS_GITHUB_MAX_PRS=4
+PIXEL_OPS_GITHUB_FETCH_PRS=20
+PIXEL_OPS_GITHUB_TIMEOUT_SECONDS=20
 ```
 
 `MAX_PRS` controls how many PRs appear in the HUD. `FETCH_PRS` controls how many recent open PRs are scanned for encounters.

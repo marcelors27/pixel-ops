@@ -1,0 +1,1 @@
+"""Slack semantic event integration."""

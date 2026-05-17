@@ -2,14 +2,16 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pixel_ops.events.base import WorkEvent
+from pixel_ops.events.event_bus import EventBus
+from pixel_ops.integrations.slack.source import SlackBusEventSource
 
 
-class SlackEventSource:
-    """Placeholder for Slack/Discord important-message polling."""
+class SlackEventSource(SlackBusEventSource):
+    def __init__(self, bus: EventBus | None = None, enabled: bool = False, drain_limit: int = 4):
+        super().__init__(bus or EventBus(), enabled=enabled, drain_limit=drain_limit)
 
-    def __init__(self, enabled: bool = False):
-        self.enabled = enabled
+    def poll(self, now: datetime):
+        return super().poll(now)
 
-    def poll(self, now: datetime) -> list[WorkEvent]:
-        return []
+
+__all__ = ["SlackEventSource"]

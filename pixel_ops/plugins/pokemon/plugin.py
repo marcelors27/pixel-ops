@@ -5,11 +5,10 @@ from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
 
-from pixel_ops.core import PixelOpsApp
+from pixel_ops.core import PixelOpsApp, PullRequestSource
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.weather import OpenMeteoWeatherSource
 from pixel_ops.events.base import EventSource
-from pixel_ops.events.github_events import GitHubEventSource
 from pixel_ops.plugins.ai.plugin import AiDecisionPlugin
 from pixel_ops.plugins.pokemon.pokemon_api import PokeApiClient
 from pixel_ops.plugins.pokemon.scenes.overworld_scene import OverworldScene
@@ -55,7 +54,7 @@ class PokemonPlugin:
         fps: int,
         people_config: list[dict],
         next_event: Callable[[datetime], CalendarEvent | None],
-        github_source: GitHubEventSource,
+        pull_request_source: PullRequestSource,
         weather_source: OpenMeteoWeatherSource | None,
         ai_plugin: AiDecisionPlugin | None,
         event_sources: list[EventSource],
@@ -78,7 +77,7 @@ class PokemonPlugin:
             scene=scene,
             people_config=people_config,
             next_event=next_event,
-            github_source=github_source,
+            pull_request_source=pull_request_source,
             weather_source=weather_source,
         )
 

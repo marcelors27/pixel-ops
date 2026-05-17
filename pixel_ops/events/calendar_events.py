@@ -5,7 +5,8 @@ from pathlib import Path
 from threading import Thread
 
 from pixel_ops.data_sources.calendar import download_ics, next_ics_event
-from pixel_ops.events.base import EventCategory, EventPriority, WorkEvent
+from pixel_ops.events.base import WorkEvent
+from pixel_ops.events.meeting_events import work_event_for_meeting
 
 
 class CalendarEventSource:
@@ -44,18 +45,7 @@ class CalendarEventSource:
         if not event or event.starts_at - now > self.lookahead:
             return []
 
-        minutes = max(0, int((event.starts_at - now).total_seconds() // 60))
-        return [
-            WorkEvent(
-                category=EventCategory.MEETING,
-                title=f"{event.title} in {minutes}m",
-                priority=EventPriority.MEDIUM,
-                source="calendar",
-                external_id=f"{event.title}:{event.starts_at.isoformat()}",
-                occurred_at=now,
-                metadata={"starts_at": event.starts_at.isoformat()},
-            )
-        ]
+        return [work_event_for_meeting(event.title, event.starts_at, now)]
 
     def _calendar_path(self) -> Path | None:
         if self.url and self.cache_path:

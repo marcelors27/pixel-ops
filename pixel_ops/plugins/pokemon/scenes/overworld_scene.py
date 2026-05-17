@@ -16,6 +16,7 @@ from pixel_ops.events.base import WorkEvent
 from pixel_ops.events.github_events import PullRequestSummary
 from pixel_ops.plugins.ai.plugin import AiDecisionPlugin
 from pixel_ops.plugins.pokemon.game.encounter_system import EncounterSystem
+from pixel_ops.plugins.pokemon.game.mood_engine import MoodEngine
 from pixel_ops.plugins.pokemon.game.map_routes import MapArea, MapRouteManager
 from pixel_ops.plugins.pokemon.game.pokemon_selector import PokemonSelector
 from pixel_ops.plugins.pokemon.game.state_machine import GamePhase, GameStateMachine
@@ -30,6 +31,8 @@ from pixel_ops.plugins.pokemon.render.sprites import (
     pokeball,
     scale_sprite,
 )
+from pixel_ops.plugins.pokemon.render.battle_ambience import apply_battle_ambience
+from pixel_ops.plugins.pokemon.render.social_effects import draw_social_world_effects
 from pixel_ops.plugins.pokemon.render.text_box import (
     TEXT_BOX_TEXT_TOP_PADDING,
     draw_text_box,
@@ -94,6 +97,8 @@ class OverworldScene:
         self.static_background = bool(cfg.get("static_background", True))
         self.world = World(speed_px=float(cfg.get("world_speed_px", 1.4)), biome_duration_frames=scene_fps * 18)
         self.state = GameStateMachine.from_seconds(scene_fps, encounter_cfg)
+        self.mood_engine = MoodEngine()
+        self.current_mood = self.mood_engine.state(datetime.now(ZoneInfo(self.primary_timezone)))
         self.encounter_system = EncounterSystem(
             PokemonSelector(
                 pokemon_api,
@@ -103,6 +108,7 @@ class OverworldScene:
             ),
             sources=event_sources or [],
             queue_limit=int(cfg.get("events", {}).get("queue_limit", 6)),
+            on_event=self.mood_engine.observe,
         )
         self.encounter = self.encounter_system.idle_context()
         self.pokemon_sprites = PokemonSpriteStore()
@@ -215,6 +221,8 @@ class OverworldScene:
 
         self._draw_sky(draw, pal)
         self._draw_world(img, draw, pal, base_now, weather)
+        self.current_mood = self.mood_engine.state(base_now, weather=weather, calendar_event=event)
+        draw_social_world_effects(img, self.map_box, self.current_mood, self.frame)
         draw_hud(draw, people, event, base_now, pal, pull_requests=pull_requests)
         return img
 
@@ -227,7 +235,7 @@ class OverworldScene:
         if self._is_battle_phase(phase):
             if not self._previous_was_battle:
                 x0, y0, _, _ = self.battle_box
-                region = self._battle_background_image(pal).copy()
+                region = self._battle_background_for_current_mood(pal).copy()
                 self._draw_battle_sprites(region, phase, offset=(x0, y0))
                 regions.append((x0, y0, region))
             else:
@@ -235,7 +243,7 @@ class OverworldScene:
                 sprite_box = self._union_boxes(self._previous_battle_sprite_box, current_box)
                 if sprite_box:
                     x0, y0, _, _ = self.battle_box
-                    bg = self._battle_background_image(pal)
+                    bg = self._battle_background_for_current_mood(pal)
                     local_box = (sprite_box[0] - x0, sprite_box[1] - y0, sprite_box[2] - x0, sprite_box[3] - y0)
                     region = bg.crop(local_box)
                     self._draw_battle_sprites(region, phase, offset=(sprite_box[0], sprite_box[1]))
@@ -544,8 +552,11 @@ class OverworldScene:
 
     def _draw_battle_scene(self, img: Image.Image, phase: GamePhase, pal) -> None:
         x0, y0, x1, y1 = self.battle_box
-        img.paste(self._battle_background_image(pal), (x0, y0))
+        img.paste(self._battle_background_for_current_mood(pal), (x0, y0))
         self._draw_battle_sprites(img, phase)
+
+    def _battle_background_for_current_mood(self, pal) -> Image.Image:
+        return apply_battle_ambience(self._battle_background_image(pal), self.current_mood)
 
     def _battle_background_image(self, pal) -> Image.Image:
         cached = self._battle_backgrounds.get(pal.phase)

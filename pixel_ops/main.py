@@ -15,11 +15,11 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from pixel_ops.data_sources.calendar import download_ics, next_ics_event, next_mock_event
+from pixel_ops.data_sources.calendar import next_ics_event, next_mock_event
 from pixel_ops.data_sources.weather import OpenMeteoWeatherSource
-from pixel_ops.events.calendar_events import CalendarEventSource
-from pixel_ops.events.github_events import GitHubEventSource
 from pixel_ops.events.mock_events import MockEventSource
+from pixel_ops.integration_plugins.base import IntegrationContext
+from pixel_ops.integration_plugins.registry import build_integration_runtime
 from pixel_ops.outputs import GifOutput, PreviewOutput, TURZXOutput, WindowOutput
 from pixel_ops.outputs.base import DisplayOutput
 from pixel_ops.plugins.ai.plugin import build_ai_plugin
@@ -66,9 +66,6 @@ def env_value(name: str, default: str | None = None) -> str | None:
     value = os.environ.get(name)
     if value is not None:
         return value
-    if name.startswith("PIXEL_OPS_"):
-        legacy_name = f"POKEMON_DASHBOARD_{name.removeprefix('PIXEL_OPS_')}"
-        return os.environ.get(legacy_name, default)
     return default
 
 
@@ -97,70 +94,15 @@ def split_env_list(value: str) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
 
 
-def calendar_paths_from_env(root_dir: Path) -> list[Path]:
-    if not env_bool("PIXEL_OPS_ICS_ENABLED", False):
-        return []
-
-    paths: list[Path] = []
-    for ics_path in split_env_list(env_value("PIXEL_OPS_ICS_PATH", "") or ""):
-        path = Path(ics_path).expanduser()
-        if path.exists():
-            paths.append(path)
-
-    for index, ics_url in enumerate(split_env_list(env_value("PIXEL_OPS_ICS_URL", "") or ""), start=1):
-        cache_path = root_dir / f"pixel_ops/cache/calendar/calendar_{index}.ics"
-        downloaded = download_ics(ics_url, cache_path)
-        if downloaded:
-            paths.append(downloaded)
-    return paths
-
-
-def calendar_cache_paths_from_env(root_dir: Path) -> list[Path]:
-    if not env_bool("PIXEL_OPS_ICS_ENABLED", False):
-        return []
-    paths = [
-        Path(ics_path).expanduser()
-        for ics_path in split_env_list(env_value("PIXEL_OPS_ICS_PATH", "") or "")
-        if Path(ics_path).expanduser().exists()
-    ]
-    for index, _ in enumerate(split_env_list(env_value("PIXEL_OPS_ICS_URL", "") or ""), start=1):
-        cache_path = root_dir / f"pixel_ops/cache/calendar/calendar_{index}.ics"
-        if cache_path.exists():
-            paths.append(cache_path)
-    return paths
-
-
-def calendar_sources_from_env(root_dir: Path) -> list[CalendarEventSource]:
-    if not env_bool("PIXEL_OPS_ICS_ENABLED", False):
-        return []
-    poll_seconds = env_int("PIXEL_OPS_ICS_POLL_SECONDS", 300)
-    sources: list[CalendarEventSource] = []
-    for ics_path in split_env_list(env_value("PIXEL_OPS_ICS_PATH", "") or ""):
-        sources.append(CalendarEventSource(enabled=True, path=Path(ics_path).expanduser(), poll_seconds=poll_seconds))
-    for index, ics_url in enumerate(split_env_list(env_value("PIXEL_OPS_ICS_URL", "") or ""), start=1):
-        cache_path = root_dir / f"pixel_ops/cache/calendar/calendar_{index}.ics"
-        sources.append(CalendarEventSource(enabled=True, url=ics_url, cache_path=cache_path, poll_seconds=poll_seconds))
-    return sources
-
-
-def calendar_path_from_env(root_dir: Path) -> Path | None:
-    paths = calendar_paths_from_env(root_dir)
-    return paths[0] if paths else None
-
-
-def next_event(args: argparse.Namespace, now: datetime, env_ics_paths: list[Path] | None = None):
+def next_event(now: datetime, calendar_paths: list[Path], calendar_enabled: bool):
     events = []
-    if args.ics:
-        event = next_ics_event(args.ics, now)
-        if event:
-            events.append(event)
-    for path in env_ics_paths or []:
+    for path in calendar_paths:
         event = next_ics_event(path, now)
         if event:
             events.append(event)
     if events:
         return min(events, key=lambda item: item.starts_at)
-    if args.ics or env_ics_paths or env_bool("PIXEL_OPS_ICS_ENABLED", False):
+    if calendar_enabled:
         return None
     return next_mock_event(now)
 
@@ -213,21 +155,23 @@ def main() -> int:
     if plugin.maybe_handle_command(args, ROOT_DIR, plugin_cfg):
         return 0
 
+    integration_runtime = build_integration_runtime(
+        IntegrationContext(
+            root_dir=ROOT_DIR,
+            args=args,
+            env_bool=env_bool,
+            env_int=env_int,
+            env_value=env_value,
+            split_env_list=split_env_list,
+        )
+    )
+    integration_runtime.start()
     events_cfg = plugin.event_config(plugin_cfg)
-    env_ics_paths = calendar_paths_from_env(ROOT_DIR)
-    calendar_sources = calendar_sources_from_env(ROOT_DIR)
     event_sources = [
         MockEventSource(enabled=env_bool("PIXEL_OPS_MOCK_EVENTS", bool(events_cfg.get("mock_events", False)))),
-        *calendar_sources,
+        *integration_runtime.event_sources,
     ]
-    github_source = GitHubEventSource(
-        enabled=env_bool("PIXEL_OPS_GITHUB_ENABLED", False),
-        repos=split_env_list(env_value("PIXEL_OPS_GITHUB_REPOS", "") or ""),
-        poll_seconds=env_int("PIXEL_OPS_GITHUB_POLL_SECONDS", 300),
-        max_pull_requests=env_int("PIXEL_OPS_GITHUB_MAX_PRS", 4),
-        fetch_pull_requests=env_int("PIXEL_OPS_GITHUB_FETCH_PRS", 20),
-        timeout_seconds=env_int("PIXEL_OPS_GITHUB_TIMEOUT_SECONDS", 20),
-    )
+    pull_request_source = integration_runtime.pull_request_source
     weather_cfg = display_cfg.get("weather", {})
     weather_source = OpenMeteoWeatherSource(
         enabled=env_bool("PIXEL_OPS_WEATHER_ENABLED", bool(weather_cfg.get("enabled", True))),
@@ -236,10 +180,8 @@ def main() -> int:
         poll_seconds=env_int("PIXEL_OPS_WEATHER_POLL_SECONDS", int(weather_cfg.get("poll_seconds", 900))),
     )
     ai_plugin = build_ai_plugin(display_cfg.get("ai", {}))
-    event_sources.append(github_source)
-    for source in calendar_sources:
-        source.warm_cache()
-    env_ics_paths = calendar_cache_paths_from_env(ROOT_DIR)
+    integration_runtime.warm()
+    calendar_enabled = any(name in integration_runtime.loaded_plugins for name in ("ics", "google_calendar"))
 
     app = plugin.build_app(
         args=args,
@@ -250,8 +192,8 @@ def main() -> int:
         height=height,
         fps=fps,
         people_config=people_cfg,
-        next_event=lambda now: next_event(args, now, env_ics_paths),
-        github_source=github_source,
+        next_event=lambda now: next_event(now, integration_runtime.calendar_paths, calendar_enabled),
+        pull_request_source=pull_request_source,
         weather_source=weather_source,
         ai_plugin=ai_plugin,
         event_sources=event_sources,

@@ -3,8 +3,9 @@ from __future__ import annotations
 import re
 import os
 import sys
+from collections import deque
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from threading import Lock, Thread
 from typing import Any
 
@@ -27,6 +28,62 @@ class AiPokemonChoice:
     appeared_message: str = ""
 
 
+class AiThrottle:
+    def __init__(self, config: dict | None = None):
+        cfg = config or {}
+        self.enabled = bool(cfg.get("enabled", True))
+        self.cooldown_seconds = max(0.0, float(cfg.get("cooldown_seconds", 90)))
+        self.window_seconds = max(1.0, float(cfg.get("window_seconds", 900)))
+        self.max_requests_per_window = max(0, int(cfg.get("max_requests_per_window", 4)))
+        self.max_pending = max(0, int(cfg.get("max_pending", 1)))
+        self.skip_sources = {str(item).strip() for item in cfg.get("skip_sources", []) if str(item).strip()}
+        self.skip_categories = {str(item).strip() for item in cfg.get("skip_categories", []) if str(item).strip()}
+        self._request_times: deque[datetime] = deque()
+        self._last_started_at: datetime | None = None
+        self._blocked_keys: dict[str, datetime] = {}
+
+    def allow(self, event: WorkEvent, request_key: str, now: datetime | None, pending_count: int) -> tuple[bool, str]:
+        if not self.enabled:
+            return True, "disabled"
+        if event.source in self.skip_sources:
+            return False, f"source-blocked:{event.source}"
+        if event.category.value in self.skip_categories:
+            return False, f"category-blocked:{event.category.value}"
+
+        current = now or datetime.now()
+        self._prune(current)
+        blocked_until = self._blocked_keys.get(request_key)
+        if blocked_until and blocked_until > current:
+            return False, "request-key-cooling-down"
+        if self.max_pending and pending_count >= self.max_pending:
+            self._block_key(request_key, current)
+            return False, "too-many-pending"
+        if self._last_started_at and (current - self._last_started_at).total_seconds() < self.cooldown_seconds:
+            self._block_key(request_key, current)
+            return False, "cooldown"
+        if self.max_requests_per_window and len(self._request_times) >= self.max_requests_per_window:
+            self._block_key(request_key, current)
+            return False, "window-limit"
+        return True, "allowed"
+
+    def record_start(self, now: datetime | None) -> None:
+        current = now or datetime.now()
+        self._last_started_at = current
+        self._request_times.append(current)
+        self._prune(current)
+
+    def _block_key(self, request_key: str, now: datetime) -> None:
+        self._blocked_keys[request_key] = now + timedelta(seconds=max(1.0, self.cooldown_seconds))
+
+    def _prune(self, now: datetime) -> None:
+        cutoff = now - timedelta(seconds=self.window_seconds)
+        while self._request_times and self._request_times[0] < cutoff:
+            self._request_times.popleft()
+        expired = [key for key, blocked_until in self._blocked_keys.items() if blocked_until <= now]
+        for key in expired:
+            self._blocked_keys.pop(key, None)
+
+
 class PokemonAiPromptBuilder:
     """Builds Pokemon-specific AI decisions while leaving model calls to Pixel OPs AI plugins."""
 
@@ -35,6 +92,7 @@ class PokemonAiPromptBuilder:
         self.enabled = bool(self.config.get("enabled", False))
         self.ai_plugin = ai_plugin
         self.async_enabled = bool(self.config.get("async", True))
+        self.throttle = AiThrottle(self.config.get("throttle", {}))
         self._lock = Lock()
         self._pending: set[str] = set()
         self._failed: set[str] = set()
@@ -83,7 +141,12 @@ class PokemonAiPromptBuilder:
                     self.last_request_pending = True
                     self._debug(f"pending category={event.category.value} keyword={event_keyword}")
                     return None
+                allowed, reason = self.throttle.allow(event, request_key, now, pending_count=len(self._pending))
+                if not allowed:
+                    self._debug(f"throttle category={event.category.value} keyword={event_keyword} reason={reason}")
+                    return None
                 self._pending.add(request_key)
+                self.throttle.record_start(now)
                 self.last_request_pending = True
                 self._debug(f"start category={event.category.value} keyword={event_keyword} candidates={len(candidates)}")
             Thread(
@@ -93,6 +156,11 @@ class PokemonAiPromptBuilder:
             ).start()
             return None
 
+        allowed, reason = self.throttle.allow(event, request_key, now, pending_count=0)
+        if not allowed:
+            self._debug(f"throttle category={event.category.value} keyword={event_keyword} reason={reason}")
+            return None
+        self.throttle.record_start(now)
         result = self.ai_plugin.decide_json(request)
         if not result:
             self._debug(f"fail category={event.category.value} reason=no-openai-result")

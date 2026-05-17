@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import sys
 from collections import deque
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -58,6 +59,9 @@ class EncounterContext:
             EventCategory.MERGE: "MERGE recorded",
             EventCategory.PR_CLOSED: "PR CLOSED recorded",
             EventCategory.PR_APPROVED: "APPROVAL recorded",
+            EventCategory.SOCIAL_ACTIVITY: "SOCIAL weather shifted",
+            EventCategory.SOCIAL_PRESENCE: "PRESENCE noted",
+            EventCategory.SOCIAL_QUIET: "QUIET period noted",
         }
         return labels.get(self.event.category, "EVENT recorded")
 
@@ -68,10 +72,12 @@ class EncounterSystem:
         selector: PokemonSelector,
         sources: list[EventSource] | None = None,
         queue_limit: int = 6,
+        on_event: Callable[[WorkEvent], None] | None = None,
     ):
         self.selector = selector
         self.sources = sources or []
         self.queue: deque[WorkEvent] = deque(maxlen=queue_limit)
+        self.on_event = on_event
         self._seen: set[str] = set()
         self.debug = _env_bool("PIXEL_OPS_DEBUG_EVENTS")
 
@@ -86,6 +92,8 @@ class EncounterSystem:
             self._debug(f"skip duplicate category={event.category.value} key={key}")
             return
         self._seen.add(key)
+        if self.on_event:
+            self.on_event(event)
         self.queue.append(event)
         self._debug(f"queued category={event.category.value} key={key} size={len(self.queue)}")
 
