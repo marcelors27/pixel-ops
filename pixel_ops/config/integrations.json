@@ -38,10 +38,28 @@
       "poll_seconds": 60
     },
     "weather": {
-      "enabled": false,
+      "enabled": true,
       "city": "Porto Alegre",
       "country_code": "BR",
       "poll_seconds": 900
+    },
+    "ai_usage": {
+      "enabled": true,
+      "providers": [
+        "codex",
+        "claude",
+        "openai_api"
+      ],
+      "poll_seconds": 300,
+      "codex_home": "~/.codex",
+      "claude_projects_path": "~/.claude/projects",
+      "openai_admin_key_env": "OPENAI_ADMIN_KEY",
+      "openai_api_monthly_budget_usd": 20,
+      "thresholds": [
+        75,
+        90
+      ],
+      "timeout_seconds": 15
     }
   }
 }

@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 
 from PIL import Image, ImageDraw
 
+from pixel_ops.data_sources.ai_usage import AIUsageSnapshot
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.weather import WeatherState
 from pixel_ops.plugins.pokemon.pokemon_api import PokeApiClient
@@ -178,10 +179,11 @@ class OverworldScene:
         now: datetime | None = None,
         pull_requests: list[PullRequestSummary] | None = None,
         weather: WeatherState | None = None,
+        ai_usage: AIUsageSnapshot | None = None,
     ):
         base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
         phase = self.advance(base_now, weather=weather)
-        return self.render_full(people, event, base_now, phase, pull_requests=pull_requests, weather=weather)
+        return self.render_full(people, event, base_now, phase, pull_requests=pull_requests, weather=weather, ai_usage=ai_usage)
 
     def render_full(
         self,
@@ -191,16 +193,17 @@ class OverworldScene:
         phase: GamePhase | None = None,
         pull_requests: list[PullRequestSummary] | None = None,
         weather: WeatherState | None = None,
+        ai_usage: AIUsageSnapshot | None = None,
     ) -> Image.Image:
         phase = phase or self.state.phase
         base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
         pal = day_night_palette(base_now.hour)
-        img = self.render_base(people, event, base_now, pull_requests=pull_requests, weather=weather)
+        img = self.render_base(people, event, base_now, pull_requests=pull_requests, weather=weather, ai_usage=ai_usage)
         if self._is_battle_phase(phase):
             self._draw_battle_scene(img, phase, pal)
         else:
             self._draw_sprites(img, phase, pal)
-        message = self.encounter.message_for(phase)
+        message = self._display_message(self.encounter.message_for(phase))
         draw_text_box(img, self.text_box, message, pal, self._text_frame(message))
         if self.scanlines:
             img = self.renderer.apply_scanlines(img)
@@ -213,6 +216,7 @@ class OverworldScene:
         now: datetime | None = None,
         pull_requests: list[PullRequestSummary] | None = None,
         weather: WeatherState | None = None,
+        ai_usage: AIUsageSnapshot | None = None,
     ) -> Image.Image:
         base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
         pal = day_night_palette(base_now.hour)
@@ -223,7 +227,7 @@ class OverworldScene:
         self._draw_world(img, draw, pal, base_now, weather)
         self.current_mood = self.mood_engine.state(base_now, weather=weather, calendar_event=event)
         draw_social_world_effects(img, self.map_box, self.current_mood, self.frame)
-        draw_hud(draw, people, event, base_now, pal, pull_requests=pull_requests)
+        draw_hud(draw, people, event, base_now, pal, pull_requests=pull_requests, ai_usage=ai_usage)
         return img
 
     def render_dirty_regions(self, base: Image.Image, now: datetime | None = None) -> list[tuple[int, int, Image.Image]]:
@@ -272,7 +276,7 @@ class OverworldScene:
                 self._draw_sprites(region, phase, pal, offset=(sprite_box[0], sprite_box[1]))
                 regions.append((sprite_box[0], sprite_box[1], region))
 
-        message = self.encounter.message_for(phase)
+        message = self._display_message(self.encounter.message_for(phase))
         text_frame = self._text_frame(message)
         text_key = (message, text_frame % 20 < 10, self._text_scroll_start(message, text_frame))
         if text_key != self._previous_text_key:
@@ -289,7 +293,7 @@ class OverworldScene:
         phase = self.state.phase
         self._previous_sprite_box = self._sprite_box_for_phase(phase)
         self._previous_battle_sprite_box = self._battle_sprite_box_for_phase(phase) if self._is_battle_phase(phase) else None
-        message = self.encounter.message_for(phase)
+        message = self._display_message(self.encounter.message_for(phase))
         text_frame = self._text_frame(message)
         self._previous_text_key = (message, text_frame % 20 < 10, self._text_scroll_start(message, text_frame))
         self._previous_was_battle = self._is_battle_phase(phase)
@@ -300,6 +304,32 @@ class OverworldScene:
             self._text_scroll_key = message
             self._text_scroll_started_frame = self.frame
         return max(0, self.frame - self._text_scroll_started_frame)
+
+    def _display_message(self, message: str) -> str:
+        if message != "ASH is looking for Pokemon.":
+            return message
+        return f"{message}\n{self._world_state_caption()}"
+
+    def _world_state_caption(self) -> str:
+        mood = self.current_mood
+        captions = {
+            "quiet_route": "The route is quiet and calm.",
+            "ambient_route": "The route feels steady.",
+            "lively_town": "The town has a soft buzz.",
+            "electric_city": "The city hums with energy.",
+            "stormy_night": "A tense storm hangs nearby.",
+            "forge_city": "The forge district feels charged.",
+            "festival_town": "Festival lights warm the streets.",
+        }
+        if mood.world_state in captions:
+            return captions[mood.world_state]
+        if mood.world_state.startswith("meeting_"):
+            return "Meeting energy fills the plaza."
+        if mood.mood == "tense":
+            return "The air feels tense."
+        if mood.mood == "celebrating":
+            return "The town feels celebratory."
+        return "The world feels ambient."
 
     def _text_scroll_start(self, message: str, text_frame: int) -> int:
         x0, y0, x1, y1 = self.text_box

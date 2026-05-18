@@ -21,6 +21,7 @@ class EventCategory(str, Enum):
     SOCIAL_ACTIVITY = "social_activity"
     SOCIAL_PRESENCE = "social_presence"
     SOCIAL_QUIET = "social_quiet"
+    AI_USAGE = "ai_usage"
     AMBIENT = "ambient"
 
 

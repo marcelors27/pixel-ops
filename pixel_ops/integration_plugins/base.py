@@ -44,6 +44,7 @@ class IntegrationContribution:
     warmers: list[Callable[[], None]] = field(default_factory=list)
     pull_request_source: Any | None = None
     weather_source: Any | None = None
+    ai_usage_source: Any | None = None
     closers: list[Callable[[], None]] = field(default_factory=list)
 
 
@@ -68,3 +69,11 @@ class NullPullRequestSource:
 class NullWeatherSource:
     def current(self, now: datetime):
         return None
+
+
+class NullAIUsageSource:
+    def current(self, now: datetime | None = None):
+        return None
+
+    def poll(self, now: datetime):
+        return []

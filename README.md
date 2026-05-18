@@ -168,6 +168,40 @@ Weather via Open-Meteo:
 }
 ```
 
+AI usage ambient gauges:
+
+```env
+OPENAI_ADMIN_KEY=sk-admin-...
+```
+
+```json
+{
+  "integrations": {
+    "ai_usage": {
+      "enabled": true,
+      "providers": ["codex", "claude", "openai_api"],
+      "poll_seconds": 300,
+      "codex_home": "~/.codex",
+      "claude_projects_path": "~/.claude/projects",
+      "openai_admin_key_env": "OPENAI_ADMIN_KEY",
+      "thresholds": [75, 90]
+    }
+  }
+}
+```
+
+This follows the useful CodexBar pattern: provider-specific collectors normalize
+usage into small snapshots and gauges. Pixel OPs keeps that data ambient: the
+HUD shows tiny provider meters, and threshold crossings become `ai_usage` work
+events that can influence encounters/world mood. It does not render billing
+tables or detailed token logs.
+
+Supported sources:
+
+- Codex local JSONL sessions under `CODEX_HOME` or `~/.codex`.
+- Claude local JSONL project logs under `~/.claude/projects`.
+- OpenAI Admin API usage/cost endpoints via `OPENAI_ADMIN_KEY`.
+
 Slack Socket Mode receiver:
 
 ```env
@@ -202,6 +236,7 @@ PIXEL_OPS_SLACK_APP_TOKEN=xapp-...
 PIXEL_OPS_SLACK_BOT_TOKEN=xoxb-...
 PIXEL_OPS_GITHUB_TOKEN=github_pat_...
 OPENAI_API_KEY=sk-...
+OPENAI_ADMIN_KEY=sk-admin-...
 ```
 
 Supported signals include DMs, mentions, reactions, channel activity,
@@ -238,6 +273,10 @@ Purchase links:
 - United States: [TURZX 3.5-inch USB monitor search on Amazon](https://www.amazon.com/s?k=TURZX+3.5+inch+USB+monitor)
 
 Listings change frequently. Match a 3.5-inch TURZX/Turing Smart Screen/USB monitor with 320x480 resolution before buying.
+
+## Credits
+
+- [CodexBar](https://github.com/steipete/CodexBar), by Peter Steinberger, inspired the provider-normalized AI usage gauges and local/API usage tracking approach used by the `ai_usage` integration.
 
 ## Credits
 

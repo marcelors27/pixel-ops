@@ -210,6 +210,7 @@ def main() -> int:
             next_event=lambda now: next_event(now, integration_runtime.calendar_paths, current_calendar_enabled),
             pull_request_source=integration_runtime.pull_request_source,
             weather_source=integration_runtime.weather_source,
+            ai_usage_source=integration_runtime.ai_usage_source,
             ai_plugin=build_ai_plugin(current_display_cfg.get("ai", {})),
             event_sources=current_event_sources,
         )

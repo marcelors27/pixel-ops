@@ -44,7 +44,12 @@
           "max_pending": 1,
           "skip_sources": [
             "slack",
-            "discord"
+            "discord",
+            "ai_usage"
+          ],
+          "skip_categories": [
+            "ambient",
+            "ai_usage"
           ]
         }
       },
@@ -124,6 +129,10 @@
         "social_quiet": [
           "grass",
           "normal"
+        ],
+        "ai_usage": [
+          "electric",
+          "psychic"
         ]
       }
     }

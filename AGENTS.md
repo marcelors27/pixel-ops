@@ -4,6 +4,26 @@ This repository is a Python runtime for Pixel OPs / GACO: a plugin-based ambient
 
 The core rule is that external activity must become ambient world state, not a feed, notification wall, or cloned chat UI.
 
+## Default Execution Standard
+
+All agents should use the generated graph as default support before planning or changing code.
+
+Start every non-trivial task by checking the graph artifacts in `graphify-out/`:
+
+- `graphify-out/GRAPH_REPORT.md` for the high-level architecture map, god nodes, bridge nodes, and suggested questions.
+- `graphify-out/graph.json` for raw relationships when tracing dependencies.
+- `graphify-out/graph.html` when a visual map helps inspect coupling.
+
+Use the graph to identify likely affected modules, cross-community boundaries, and central abstractions before editing. This is especially important for changes involving integrations, config loading, event semantics, AI behavior, hot reload, rendering, or plugin boundaries.
+
+If `graphify-out/` is missing or stale after meaningful architecture changes, regenerate or update it before continuing:
+
+```bash
+python -m graphify update .
+```
+
+The graph is an aid, not a replacement for reading source files. After identifying relevant nodes and paths, inspect the actual code before making edits.
+
 ## Product Direction
 
 - Keep the display ambient, peripheral, calm, contextual, and emotional.
@@ -63,6 +83,7 @@ YAML is only a fallback when the matching JSON file does not exist.
 - `PIXEL_OPS_SLACK_BOT_TOKEN`
 - `PIXEL_OPS_GITHUB_TOKEN`
 - `OPENAI_API_KEY`
+- `OPENAI_ADMIN_KEY`
 
 Do not move non-secret toggles back into `.env`. Use JSON so future UI tooling can edit config graphically.
 
@@ -78,7 +99,8 @@ Each integration is loaded only when enabled by config:
     "github": { "enabled": true },
     "google_calendar": { "enabled": true },
     "ics": { "enabled": true },
-    "weather": { "enabled": false }
+    "weather": { "enabled": false },
+    "ai_usage": { "enabled": true }
   }
 }
 ```
@@ -91,12 +113,15 @@ Current plugin module map:
 - `google_calendar` -> `pixel_ops.integrations.google_calendar.plugin`
 - `ics` -> `pixel_ops.integrations.ics.plugin`
 - `weather` -> `pixel_ops.integrations.weather.plugin`
+- `ai_usage` -> `pixel_ops.integrations.ai_usage.plugin`
 
 Slack uses Socket Mode only. Do not re-add webhook fallback unless an ADR changes that decision.
 
 Discord currently exposes a Gateway dispatch adapter and event source boundary. A bot runner can feed dispatch payloads into the adapter.
 
 Teams and Zoom have placeholder classifiers/client boundaries. They should also normalize into `AmbientSignal`, not into provider-specific renderer state.
+
+AI usage follows the same provider boundary. Codex, Claude, and OpenAI API usage are normalized into gauges and `ai_usage` work events. Do not render raw logs, prompts, responses, or billing tables.
 
 ## AI Calls
 
@@ -160,4 +185,3 @@ When making an architectural change, add or update an ADR if the change affects:
 - AI call policy;
 - hot reload behavior;
 - renderer/product principles.
-

@@ -43,7 +43,11 @@ game:
         skip_sources:
           - slack
           - discord
-      event_pokemon_types:
+          - ai_usage
+        skip_categories:
+          - ambient
+          - ai_usage
+    event_pokemon_types:
       pull_request:
         - bug
         - electric
@@ -89,6 +93,9 @@ game:
       social_quiet:
         - grass
         - normal
+      ai_usage:
+        - electric
+        - psychic
     repo_biomes:
       backend:
         - rock

@@ -22,4 +22,4 @@ Current ADRs:
 - [0009 - Meetings Are Ambient Ceremonies](0009-meetings-are-ambient-ceremonies.md)
 - [0010 - Weather, Calendar, GitHub, Slack, Discord Share The Same Runtime Boundary](0010-shared-integration-runtime-boundary.md)
 - [0011 - Graphify Artifacts Document The Codebase Map](0011-graphify-codebase-map.md)
-
+- [0012 - AI Usage Becomes Ambient Gauges And Events](0012-ai-usage-ambient-gauges.md)

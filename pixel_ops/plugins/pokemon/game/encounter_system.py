@@ -62,6 +62,7 @@ class EncounterContext:
             EventCategory.SOCIAL_ACTIVITY: "SOCIAL weather shifted",
             EventCategory.SOCIAL_PRESENCE: "PRESENCE noted",
             EventCategory.SOCIAL_QUIET: "QUIET period noted",
+            EventCategory.AI_USAGE: "AI current measured",
         }
         return labels.get(self.event.category, "EVENT recorded")
 

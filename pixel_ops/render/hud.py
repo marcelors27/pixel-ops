@@ -4,6 +4,7 @@ from datetime import datetime
 
 from PIL import ImageDraw
 
+from pixel_ops.data_sources.ai_usage import AIUsageSnapshot
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.timezones import PersonTime
 from pixel_ops.events.github_events import PullRequestSummary
@@ -96,6 +97,7 @@ def draw_hud(
     now: datetime,
     pal,
     pull_requests: list[PullRequestSummary] | None = None,
+    ai_usage: AIUsageSnapshot | None = None,
 ) -> None:
     PixelRenderer.draw_panel(draw, (8, 8, 312, 212), pal.panel, pal.panel_shadow, pal.ink)
     row_font = font(13)
@@ -126,6 +128,8 @@ def draw_hud(
     label = _activity_label(draw, event, pull_requests or [], now, 282, small_font)
     draw.rectangle((18, 190, 300, 191), fill=pal.blue)
     draw.text((18, 195), label, font=small_font, fill=pal.blue)
+    if ai_usage and ai_usage.gauges:
+        _draw_ai_usage_compact(draw, ai_usage, now, 162, 144, pal)
 
 
 def _activity_label(
@@ -146,3 +150,63 @@ def _activity_label(
         items.append("NEXT: No meetings | PRS: none open")
     index = int(now.timestamp() // 5) % len(items)
     return _fit_text(draw, items[index], width, text_font)
+
+
+def _draw_ai_usage_compact(draw: ImageDraw.ImageDraw, ai_usage: AIUsageSnapshot, now: datetime, x: int, y: int, pal) -> None:
+    codex = [item for item in ai_usage.gauges if item.provider == "codex" and item.status != "quiet"]
+    codex_5h = next((item for item in codex if "5H" in item.label), None)
+    codex_weekly = next((item for item in codex if "5H" not in item.label), None)
+    openai_api = next((item for item in ai_usage.gauges if item.provider == "openai_api" and item.status != "quiet"), None)
+    second = openai_api if openai_api and int(now.timestamp() // 6) % 2 == 0 else codex_weekly
+    gauges = [item for item in (codex_5h, second or openai_api) if item is not None]
+    if not gauges:
+        return
+    small = font(7)
+    bar_width = 46
+    draw.text((x, y - 2), "AI", font=small, fill=pal.blue)
+    for index, gauge in enumerate(gauges):
+        row_y = y + index * 10
+        label = _ai_usage_gauge_short_label(gauge)
+        draw.text((x + 27, row_y - 2), label, font=small, fill=pal.ink)
+        bar_x = x + 40
+        draw.rectangle((bar_x, row_y, bar_x + bar_width, row_y + 5), outline=pal.ink, fill=pal.panel)
+        pct = gauge.used_percent
+        if pct is None and gauge.provider != "openai_api" and gauge.total_tokens:
+            pct = min(100.0, gauge.total_tokens / 250_000 * 100.0)
+        if pct is not None:
+            fill_width = int(bar_width * max(0.0, min(100.0, pct)) / 100.0)
+            color = pal.red if pct >= 90 else pal.yellow if pct >= 75 else pal.green
+            if fill_width > 0:
+                draw.rectangle((bar_x + 1, row_y + 1, bar_x + fill_width, row_y + 4), fill=color)
+        value = _ai_usage_gauge_value(gauge, pct)
+        draw.text((bar_x + bar_width + 3, row_y - 2), _fit_text(draw, value, 28, small), font=small, fill=pal.ink)
+
+
+def _ai_usage_gauge_short_label(gauge) -> str:
+    if gauge.provider == "openai_api":
+        return "API"
+    return "5H" if "5H" in gauge.label else "W"
+
+
+def _ai_usage_gauge_value(gauge, pct: float | None) -> str:
+    if gauge.status == "error":
+        return "ERR"
+    if gauge.provider == "openai_api":
+        return _ai_usage_label(gauge.total_tokens, gauge.cost_usd)
+    if pct is not None and gauge.reset_at:
+        return f"{max(0.0, min(100.0, pct)):.0f}%"
+    return _ai_usage_label(gauge.total_tokens, gauge.cost_usd)
+
+
+def _ai_usage_label(tokens: int | None, cost: float | None) -> str:
+    if cost and cost >= 0.01:
+        return f"${cost:.0f}" if cost >= 10 else f"${cost:.1f}"
+    if not tokens:
+        return "-"
+    if tokens >= 1_000_000:
+        if tokens >= 10_000_000:
+            return f"{tokens / 1_000_000:.0f}M"
+        return f"{tokens / 1_000_000:.1f}M"
+    if tokens >= 1_000:
+        return f"{tokens // 1000}k"
+    return str(tokens)

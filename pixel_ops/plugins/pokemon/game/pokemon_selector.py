@@ -53,6 +53,7 @@ DEFAULT_EVENT_TYPES = {
     EventCategory.SOCIAL_ACTIVITY.value: ("electric", "fire"),
     EventCategory.SOCIAL_PRESENCE.value: ("normal", "fairy"),
     EventCategory.SOCIAL_QUIET.value: ("grass", "normal"),
+    EventCategory.AI_USAGE.value: ("electric", "psychic"),
     EventCategory.AMBIENT.value: ("grass", "normal"),
 }
 

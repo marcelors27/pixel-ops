@@ -7,6 +7,7 @@ from pathlib import Path
 from pixel_ops.integration_plugins.base import (
     IntegrationContext,
     IntegrationContribution,
+    NullAIUsageSource,
     NullPullRequestSource,
     NullWeatherSource,
 )
@@ -19,6 +20,7 @@ PLUGIN_MODULES = {
     "google_calendar": "pixel_ops.integrations.google_calendar.plugin",
     "ics": "pixel_ops.integrations.ics.plugin",
     "weather": "pixel_ops.integrations.weather.plugin",
+    "ai_usage": "pixel_ops.integrations.ai_usage.plugin",
 }
 
 PLUGIN_ENABLES = {
@@ -28,6 +30,7 @@ PLUGIN_ENABLES = {
     "google_calendar": "PIXEL_OPS_GOOGLE_CALENDAR_ENABLED",
     "ics": "PIXEL_OPS_ICS_ENABLED",
     "weather": "PIXEL_OPS_WEATHER_ENABLED",
+    "ai_usage": "PIXEL_OPS_AI_USAGE_ENABLED",
 }
 
 
@@ -40,6 +43,7 @@ class IntegrationRuntime:
     closers: list = field(default_factory=list)
     pull_request_source: object = field(default_factory=NullPullRequestSource)
     weather_source: object = field(default_factory=NullWeatherSource)
+    ai_usage_source: object = field(default_factory=NullAIUsageSource)
     loaded_plugins: list[str] = field(default_factory=list)
 
     def start(self) -> None:
@@ -93,3 +97,5 @@ def _merge(runtime: IntegrationRuntime, contribution: IntegrationContribution) -
         runtime.pull_request_source = contribution.pull_request_source
     if contribution.weather_source is not None:
         runtime.weather_source = contribution.weather_source
+    if contribution.ai_usage_source is not None:
+        runtime.ai_usage_source = contribution.ai_usage_source

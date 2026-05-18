@@ -78,19 +78,20 @@ def scroll_line_start(lines: list[str], max_lines: int, frame: int) -> int:
 
 
 def wrap_text_lines(draw: ImageDraw.ImageDraw, text: str, text_font, max_text_width: int) -> list[str]:
-    words = text.split()
     lines: list[str] = []
-    current = ""
-    for word in words:
-        candidate = f"{current} {word}".strip()
-        if draw.textbbox((0, 0), candidate, font=text_font)[2] > max_text_width:
-            if current:
-                lines.append(current)
-            current = word
-        else:
-            current = candidate
-    if current:
-        lines.append(current)
+    for paragraph in text.splitlines() or [""]:
+        words = paragraph.split()
+        current = ""
+        for word in words:
+            candidate = f"{current} {word}".strip()
+            if draw.textbbox((0, 0), candidate, font=text_font)[2] > max_text_width:
+                if current:
+                    lines.append(current)
+                current = word
+            else:
+                current = candidate
+        if current:
+            lines.append(current)
     return lines
 
 

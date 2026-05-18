@@ -129,7 +129,7 @@ def _event_weight(event: WorkEvent) -> float:
         EventPriority.HIGH: 1.25,
         EventPriority.CRITICAL: 2.0,
     }.get(event.priority, 0.5)
-    if event.category in (EventCategory.SOCIAL_ACTIVITY, EventCategory.MESSAGE_IMPORTANT):
+    if event.category in (EventCategory.SOCIAL_ACTIVITY, EventCategory.MESSAGE_IMPORTANT, EventCategory.AI_USAGE):
         base += 0.35
     if event.category in (EventCategory.INCIDENT, EventCategory.DEPLOY_STARTED):
         base += 0.8
