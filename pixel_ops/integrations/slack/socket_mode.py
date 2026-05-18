@@ -54,6 +54,9 @@ class SlackSocketModeClient:
         self._thread = Thread(target=self._run_forever, daemon=True)
         self._thread.start()
 
+    def stop(self) -> None:
+        self._running = False
+
     def _run_forever(self) -> None:
         while self._running:
             try:

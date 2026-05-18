@@ -1,0 +1,131 @@
+{
+  "game": {
+    "fps": 10,
+    "static_background": true,
+    "require_ash_sprite": false,
+    "ash_sprite_source": "https://www.spriters-resource.com/game_boy_advance/pokemonfireredleafgreen/asset/52432/",
+    "ash_sprite_file": "pixel_ops/plugins/pokemon/assets/sprites/ash/ash_overworld.png",
+    "world_speed_px": 0,
+    "map_switch_seconds": 300,
+    "ash_x": 118,
+    "ash_y": 292,
+    "walk_start_x": 28,
+    "encounter_x": 132,
+    "walk_exit_x": 258,
+    "route_speed_px": 6.4,
+    "vertical_wander_px": 42,
+    "vertical_wander_seconds": 1.4,
+    "pokemon_x": 220,
+    "pokemon_y": 280,
+    "hud_height": 212,
+    "text_box_height": 96,
+    "encounter": {
+      "walking_seconds": 2.0,
+      "start_seconds": 3.0,
+      "appears_seconds": 10.0,
+      "throw_seconds": 1.4,
+      "shake_seconds": 3.0,
+      "caught_seconds": 5.0
+    },
+    "events": {
+      "mock_events": false,
+      "queue_limit": 6,
+      "knowledge_path": "pixel_ops/plugins/pokemon/assets/knowledge/gen1_lore.json",
+      "ai_selector": {
+        "enabled": true,
+        "async": true,
+        "ambient": false,
+        "candidate_limit": 8,
+        "throttle": {
+          "enabled": true,
+          "cooldown_seconds": 90,
+          "window_seconds": 900,
+          "max_requests_per_window": 4,
+          "max_pending": 1,
+          "skip_sources": [
+            "slack",
+            "discord"
+          ]
+        }
+      },
+      "repo_biomes": {
+        "backend": [
+          "rock",
+          "steel",
+          "ground"
+        ],
+        "frontend": [
+          "electric",
+          "psychic",
+          "fairy"
+        ],
+        "infra": [
+          "dragon",
+          "ghost",
+          "dark"
+        ]
+      },
+      "event_pokemon_types": {
+        "pull_request": [
+          "bug",
+          "electric",
+          "fighting"
+        ],
+        "meeting": [
+          "psychic",
+          "fairy"
+        ],
+        "build_broken": [
+          "ghost",
+          "electric"
+        ],
+        "deploy_started": [
+          "dragon",
+          "fire"
+        ],
+        "deploy_completed": [
+          "fire",
+          "normal"
+        ],
+        "review_requested": [
+          "psychic",
+          "fighting"
+        ],
+        "message_important": [
+          "electric",
+          "normal"
+        ],
+        "incident": [
+          "ghost",
+          "dark",
+          "legendary"
+        ],
+        "merge": [
+          "dragon",
+          "normal"
+        ],
+        "pr_closed": [
+          "ghost",
+          "normal"
+        ],
+        "pr_approved": [
+          "electric",
+          "fairy"
+        ],
+        "social_activity": [
+          "electric",
+          "fire",
+          "normal"
+        ],
+        "social_presence": [
+          "normal",
+          "fairy"
+        ],
+        "social_quiet": [
+          "grass",
+          "normal"
+        ]
+      }
+    }
+  }
+}

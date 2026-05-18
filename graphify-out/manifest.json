@@ -1,0 +1,557 @@
+{
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/.graphify_detect.json": {
+    "mtime": 1779063336.06157,
+    "ast_hash": "61a006c9dcef33449e191c70374849ff",
+    "semantic_hash": "61a006c9dcef33449e191c70374849ff"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config_loader.py": {
+    "mtime": 1779051101.5110033,
+    "ast_hash": "f7282c2f5c8528791dce605ef945dfe8",
+    "semantic_hash": "f7282c2f5c8528791dce605ef945dfe8"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/__init__.py": {
+    "mtime": 1778609753.1578004,
+    "ast_hash": "728dd70ea0c7965cc2b9c68c2049dbdb",
+    "semantic_hash": "728dd70ea0c7965cc2b9c68c2049dbdb"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/main.py": {
+    "mtime": 1779052219.0760434,
+    "ast_hash": "614fa9864a350056fff369f7025a9a3b",
+    "semantic_hash": "614fa9864a350056fff369f7025a9a3b"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/hardware/rgb565.py": {
+    "mtime": 1778609511.188578,
+    "ast_hash": "b041244ae0924dd7253641e1da474fdd",
+    "semantic_hash": "b041244ae0924dd7253641e1da474fdd"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/hardware/usb_bulk.py": {
+    "mtime": 1778609511.1889834,
+    "ast_hash": "ebb3ae6fb860c67144083689513a8734",
+    "semantic_hash": "ebb3ae6fb860c67144083689513a8734"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/hardware/__init__.py": {
+    "mtime": 1778609511.1892235,
+    "ast_hash": "cefd000dae72c88d55fc5ac46541e103",
+    "semantic_hash": "cefd000dae72c88d55fc5ac46541e103"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/core/__init__.py": {
+    "mtime": 1779050864.3906572,
+    "ast_hash": "9ca176d79ed394ba8aa6c829bdda15bb",
+    "semantic_hash": "9ca176d79ed394ba8aa6c829bdda15bb"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/core/app.py": {
+    "mtime": 1779050860.409087,
+    "ast_hash": "2f60ca40d4c7f5be1888a0975c1686a3",
+    "semantic_hash": "2f60ca40d4c7f5be1888a0975c1686a3"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/integrations.json": {
+    "mtime": 1779052090.5162945,
+    "ast_hash": "436de6c25b752b43719a0fe59214e111",
+    "semantic_hash": "436de6c25b752b43719a0fe59214e111"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/display.json": {
+    "mtime": 1779052248.1338987,
+    "ast_hash": "76e22484ddf55a52d146edc2ddfd5aea",
+    "semantic_hash": "76e22484ddf55a52d146edc2ddfd5aea"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/people.json": {
+    "mtime": 1779051073.6825666,
+    "ast_hash": "930649fb3cabdf0c3711742fce6f957d",
+    "semantic_hash": "930649fb3cabdf0c3711742fce6f957d"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/registry.py": {
+    "mtime": 1778609621.8887033,
+    "ast_hash": "ebe20930805a9e15d0c72a9d78e9fc60",
+    "semantic_hash": "ebe20930805a9e15d0c72a9d78e9fc60"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/__init__.py": {
+    "mtime": 1778609621.8250422,
+    "ast_hash": "4cc295633e4d55f62dcbe6baf43ee36b",
+    "semantic_hash": "4cc295633e4d55f62dcbe6baf43ee36b"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/pokemon_api.py": {
+    "mtime": 1778692417.7466524,
+    "ast_hash": "9a8a7318e5ed0fcd20f37096ae20381f",
+    "semantic_hash": "9a8a7318e5ed0fcd20f37096ae20381f"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game.json": {
+    "mtime": 1779051087.7703464,
+    "ast_hash": "186a020c551a4049a287714c2849322c",
+    "semantic_hash": "186a020c551a4049a287714c2849322c"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/__init__.py": {
+    "mtime": 1778609621.9531221,
+    "ast_hash": "34c3e6b60908f9fb2287229d6731d24d",
+    "semantic_hash": "34c3e6b60908f9fb2287229d6731d24d"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/pokemon.py": {
+    "mtime": 1778609511.1985648,
+    "ast_hash": "ddcb3f29511e34ac5b84d1020e18c430",
+    "semantic_hash": "ddcb3f29511e34ac5b84d1020e18c430"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/plugin.py": {
+    "mtime": 1779051235.8422756,
+    "ast_hash": "0d278d4e299cf0be8117ab760e43f366",
+    "semantic_hash": "0d278d4e299cf0be8117ab760e43f366"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/pokemon.json": {
+    "mtime": 1779051073.6833925,
+    "ast_hash": "d6d0875f3f90c8aecd280ef26aa484d6",
+    "semantic_hash": "d6d0875f3f90c8aecd280ef26aa484d6"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/scenes/main_scene.py": {
+    "mtime": 1778609511.1907935,
+    "ast_hash": "b47dadf109751a1972d7946ab7819b17",
+    "semantic_hash": "b47dadf109751a1972d7946ab7819b17"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/scenes/overworld_scene.py": {
+    "mtime": 1778995128.9164793,
+    "ast_hash": "96f53572912d37f012808f099186bf76",
+    "semantic_hash": "96f53572912d37f012808f099186bf76"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/scenes/entities.py": {
+    "mtime": 1778609511.1920946,
+    "ast_hash": "b209b274e96e5392874556e20cbf9e0f",
+    "semantic_hash": "b209b274e96e5392874556e20cbf9e0f"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/tools/extract_ash_from_sheet.py": {
+    "mtime": 1778609511.192498,
+    "ast_hash": "e36f6237c4ff10a76446fd1b4a6e987d",
+    "semantic_hash": "e36f6237c4ff10a76446fd1b4a6e987d"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/tools/split_map_sheets.py": {
+    "mtime": 1778617972.5434806,
+    "ast_hash": "626bb096978985e5252347297b675d25",
+    "semantic_hash": "626bb096978985e5252347297b675d25"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/render/text_box.py": {
+    "mtime": 1778898936.1017427,
+    "ast_hash": "6b0f99f202f7bdcbf62067d2f01984d0",
+    "semantic_hash": "6b0f99f202f7bdcbf62067d2f01984d0"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/render/tiles.py": {
+    "mtime": 1778609511.1931233,
+    "ast_hash": "5b6b1f2dc81c7eb4d2e63f2b3db9451a",
+    "semantic_hash": "5b6b1f2dc81c7eb4d2e63f2b3db9451a"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/render/palette.py": {
+    "mtime": 1778609511.193408,
+    "ast_hash": "6ad52a972f9cf1c9ce7b6e9cdfcdcad1",
+    "semantic_hash": "6ad52a972f9cf1c9ce7b6e9cdfcdcad1"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/render/social_effects.py": {
+    "mtime": 1778995006.046491,
+    "ast_hash": "a700d517db3298cee257a3dd80c143f3",
+    "semantic_hash": "a700d517db3298cee257a3dd80c143f3"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/render/battle_ambience.py": {
+    "mtime": 1778995016.97368,
+    "ast_hash": "4ce4ad63c64675e38d75b6b8fb62ee06",
+    "semantic_hash": "4ce4ad63c64675e38d75b6b8fb62ee06"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/render/textbox.py": {
+    "mtime": 1778995020.4265745,
+    "ast_hash": "819ee8610ac8365915536f0263e268b3",
+    "semantic_hash": "819ee8610ac8365915536f0263e268b3"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/render/sprites.py": {
+    "mtime": 1778692042.2018826,
+    "ast_hash": "63d0deff1628cf26dc52a0153c98e106",
+    "semantic_hash": "63d0deff1628cf26dc52a0153c98e106"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/world.py": {
+    "mtime": 1778609511.1944668,
+    "ast_hash": "c21101adcc088a3a0c64f3b3145fd20f",
+    "semantic_hash": "c21101adcc088a3a0c64f3b3145fd20f"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/day_night.py": {
+    "mtime": 1778609511.195196,
+    "ast_hash": "015a1c80c03746e0c3a5811164c46c6b",
+    "semantic_hash": "015a1c80c03746e0c3a5811164c46c6b"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/meeting_ceremonies.py": {
+    "mtime": 1778994975.2734559,
+    "ast_hash": "ac052f846959671fbc2f79771e94d5fd",
+    "semantic_hash": "ac052f846959671fbc2f79771e94d5fd"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/rarity.py": {
+    "mtime": 1778609511.1955755,
+    "ast_hash": "ebeb13b748847fa2c48ac54d72c763c0",
+    "semantic_hash": "ebeb13b748847fa2c48ac54d72c763c0"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/map_routes.py": {
+    "mtime": 1778722604.7720895,
+    "ast_hash": "a12fa6eb84cfe71e0a8d70b3e78fdaa5",
+    "semantic_hash": "a12fa6eb84cfe71e0a8d70b3e78fdaa5"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/__init__.py": {
+    "mtime": 1778609753.2896242,
+    "ast_hash": "4108061680750385d0092e38c82952ba",
+    "semantic_hash": "4108061680750385d0092e38c82952ba"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/encounter.py": {
+    "mtime": 1778609511.1967247,
+    "ast_hash": "567de461fbd2cddc619d026360a39b23",
+    "semantic_hash": "567de461fbd2cddc619d026360a39b23"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/ai_selector.py": {
+    "mtime": 1778995693.4256885,
+    "ast_hash": "2c74cbc8bceac1c97aa3bee316ef4ad4",
+    "semantic_hash": "2c74cbc8bceac1c97aa3bee316ef4ad4"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/state_machine.py": {
+    "mtime": 1778897554.1370194,
+    "ast_hash": "4a3d1cddda767e465b6909c1afafa37f",
+    "semantic_hash": "4a3d1cddda767e465b6909c1afafa37f"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/pokemon_selector.py": {
+    "mtime": 1778994921.9358172,
+    "ast_hash": "48860e18a0001b643c1c67541ba344cb",
+    "semantic_hash": "48860e18a0001b643c1c67541ba344cb"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/encounter_system.py": {
+    "mtime": 1778994937.5915554,
+    "ast_hash": "2649dffb920e26e396ff9b04213bb6e0",
+    "semantic_hash": "2649dffb920e26e396ff9b04213bb6e0"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/knowledge.py": {
+    "mtime": 1778796808.9582667,
+    "ast_hash": "480ac1fe5916b4f27569b5156cd65d3a",
+    "semantic_hash": "480ac1fe5916b4f27569b5156cd65d3a"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/social_weather.py": {
+    "mtime": 1778994968.8420503,
+    "ast_hash": "98bd98dedf717bdedee0a0003760988a",
+    "semantic_hash": "98bd98dedf717bdedee0a0003760988a"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/mood_engine.py": {
+    "mtime": 1778994972.2210286,
+    "ast_hash": "0f670c115985b9f9a7ebdcef480c30d5",
+    "semantic_hash": "0f670c115985b9f9a7ebdcef480c30d5"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/biome_system.py": {
+    "mtime": 1778609511.1982343,
+    "ast_hash": "de0a698de34c73644c0fc972effe4673",
+    "semantic_hash": "de0a698de34c73644c0fc972effe4673"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/ai/__init__.py": {
+    "mtime": 1778728462.69819,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/ai/plugin.py": {
+    "mtime": 1778896163.7283,
+    "ast_hash": "a9ef09a7253d24b29d22cfee8711f2dc",
+    "semantic_hash": "a9ef09a7253d24b29d22cfee8711f2dc"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/render/renderer.py": {
+    "mtime": 1778609511.198968,
+    "ast_hash": "19a81fe391e9769551a35d1a99ecc88a",
+    "semantic_hash": "19a81fe391e9769551a35d1a99ecc88a"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/render/animation.py": {
+    "mtime": 1778609511.199434,
+    "ast_hash": "6a3edc4bfd1aec9d56174459b0a5be0e",
+    "semantic_hash": "6a3edc4bfd1aec9d56174459b0a5be0e"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/render/hud.py": {
+    "mtime": 1778609511.1998947,
+    "ast_hash": "dfa83386bc2c0c892449c5d23e99a7ee",
+    "semantic_hash": "dfa83386bc2c0c892449c5d23e99a7ee"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/render/fonts.py": {
+    "mtime": 1778609511.2001812,
+    "ast_hash": "e4a3c6c503652172a4e72cf396ecddb3",
+    "semantic_hash": "e4a3c6c503652172a4e72cf396ecddb3"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/render/splash.py": {
+    "mtime": 1778626640.0828526,
+    "ast_hash": "6d94779c4093af165c7da42e220dd347",
+    "semantic_hash": "6d94779c4093af165c7da42e220dd347"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/__init__.py": {
+    "mtime": 1778995023.2864983,
+    "ast_hash": "f18ad9116c5f946844904cf2937010dd",
+    "semantic_hash": "f18ad9116c5f946844904cf2937010dd"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/base.py": {
+    "mtime": 1779049152.4642477,
+    "ast_hash": "bfa9bdd8c70194102c7f2c09ffd75293",
+    "semantic_hash": "bfa9bdd8c70194102c7f2c09ffd75293"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/google_calendar/__init__.py": {
+    "mtime": 1779049449.0638146,
+    "ast_hash": "7308b33a13acf6f44c6f766ab2da30da",
+    "semantic_hash": "7308b33a13acf6f44c6f766ab2da30da"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/google_calendar/plugin.py": {
+    "mtime": 1779052140.370799,
+    "ast_hash": "c0b6ccfc9bc346cabe2a3815da1d2feb",
+    "semantic_hash": "c0b6ccfc9bc346cabe2a3815da1d2feb"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/discord/gateway.py": {
+    "mtime": 1778995105.2037795,
+    "ast_hash": "4d887c4a3e8763f8841a8923d4d20525",
+    "semantic_hash": "4d887c4a3e8763f8841a8923d4d20525"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/discord/__init__.py": {
+    "mtime": 1778995083.3469539,
+    "ast_hash": "7c1557fc6fbff2872c1b196a3cbe250f",
+    "semantic_hash": "7c1557fc6fbff2872c1b196a3cbe250f"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/discord/presence.py": {
+    "mtime": 1779049147.2678843,
+    "ast_hash": "89f1377e211bf456a1988189c7065a46",
+    "semantic_hash": "89f1377e211bf456a1988189c7065a46"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/discord/plugin.py": {
+    "mtime": 1779052119.5201986,
+    "ast_hash": "499212394317ebf9d878f37726a00c61",
+    "semantic_hash": "499212394317ebf9d878f37726a00c61"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/github/__init__.py": {
+    "mtime": 1779049427.0608423,
+    "ast_hash": "63a4fc4e9cf28ba7fab2b8ade994e7aa",
+    "semantic_hash": "63a4fc4e9cf28ba7fab2b8ade994e7aa"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/github/plugin.py": {
+    "mtime": 1779052131.3694727,
+    "ast_hash": "47f65588327bb4c357cd05e9eb621af7",
+    "semantic_hash": "47f65588327bb4c357cd05e9eb621af7"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/teams/classifier.py": {
+    "mtime": 1779049175.8313768,
+    "ast_hash": "51e3061f4e4d584caf4c06fbae99be5c",
+    "semantic_hash": "51e3061f4e4d584caf4c06fbae99be5c"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/teams/__init__.py": {
+    "mtime": 1779049158.6355162,
+    "ast_hash": "cb15b69aecad2b38ca7c1cbbcecbbfe3",
+    "semantic_hash": "cb15b69aecad2b38ca7c1cbbcecbbfe3"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/teams/graph_client.py": {
+    "mtime": 1779049181.308199,
+    "ast_hash": "dd0ab3675e47609893b393bf178bd002",
+    "semantic_hash": "dd0ab3675e47609893b393bf178bd002"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/zoom/classifier.py": {
+    "mtime": 1779049199.2555687,
+    "ast_hash": "025145e6093bb80f8a4c65600f100d8d",
+    "semantic_hash": "025145e6093bb80f8a4c65600f100d8d"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/zoom/client.py": {
+    "mtime": 1779049204.2432446,
+    "ast_hash": "0a953436cbe387985083728d2bae017d",
+    "semantic_hash": "0a953436cbe387985083728d2bae017d"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/zoom/__init__.py": {
+    "mtime": 1779049184.018774,
+    "ast_hash": "77e6362e8ed9a1c21377a2bac8c2b025",
+    "semantic_hash": "77e6362e8ed9a1c21377a2bac8c2b025"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/slack/classifier.py": {
+    "mtime": 1779049140.0349143,
+    "ast_hash": "149fe05a01196858990307b4ee959297",
+    "semantic_hash": "149fe05a01196858990307b4ee959297"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/slack/socket_mode.py": {
+    "mtime": 1779052172.6571681,
+    "ast_hash": "ebd5a25dbcb025be23df122eeb2e8d95",
+    "semantic_hash": "ebd5a25dbcb025be23df122eeb2e8d95"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/slack/__init__.py": {
+    "mtime": 1778995025.4403305,
+    "ast_hash": "075feb1aff257fbe5e8a27442665df9f",
+    "semantic_hash": "075feb1aff257fbe5e8a27442665df9f"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/slack/plugin.py": {
+    "mtime": 1779052176.4833663,
+    "ast_hash": "9f0563c2b8926108ad50b88b2568298b",
+    "semantic_hash": "9f0563c2b8926108ad50b88b2568298b"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/slack/source.py": {
+    "mtime": 1778996385.0649319,
+    "ast_hash": "d43d397fb441adf4cf861c1fd04f6cb3",
+    "semantic_hash": "d43d397fb441adf4cf861c1fd04f6cb3"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/weather/__init__.py": {
+    "mtime": 1779050881.1458354,
+    "ast_hash": "44897929e94e3b85bc6876ab619ce7a9",
+    "semantic_hash": "44897929e94e3b85bc6876ab619ce7a9"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/weather/plugin.py": {
+    "mtime": 1779052155.279118,
+    "ast_hash": "27691f9ddd46c3fa7a9e9239bcc0fa75",
+    "semantic_hash": "27691f9ddd46c3fa7a9e9239bcc0fa75"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/ics/__init__.py": {
+    "mtime": 1779049436.9633138,
+    "ast_hash": "12b048e3feb8b70aa4b29437d3b035ab",
+    "semantic_hash": "12b048e3feb8b70aa4b29437d3b035ab"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/ics/plugin.py": {
+    "mtime": 1779052147.5589244,
+    "ast_hash": "fc6a9cf5961d0f6a4bb2733b97494fce",
+    "semantic_hash": "fc6a9cf5961d0f6a4bb2733b97494fce"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/weather.py": {
+    "mtime": 1778890102.351144,
+    "ast_hash": "1903d215b8e8882d3d72758987989beb",
+    "semantic_hash": "1903d215b8e8882d3d72758987989beb"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/calendar.py": {
+    "mtime": 1778609511.20099,
+    "ast_hash": "0bf1d0a00eaa5152e418015782b42cb7",
+    "semantic_hash": "0bf1d0a00eaa5152e418015782b42cb7"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/availability.py": {
+    "mtime": 1778609511.2013528,
+    "ast_hash": "f61239ee24edee0db2685597b837e65a",
+    "semantic_hash": "f61239ee24edee0db2685597b837e65a"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/timezones.py": {
+    "mtime": 1778609511.201669,
+    "ast_hash": "f78157fc70f4d51c0922acb49041b5b0",
+    "semantic_hash": "f78157fc70f4d51c0922acb49041b5b0"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/mock_events.py": {
+    "mtime": 1778609511.2019672,
+    "ast_hash": "57d6d859e3391d8343a140bc3b00c982",
+    "semantic_hash": "57d6d859e3391d8343a140bc3b00c982"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/calendar_events.py": {
+    "mtime": 1778994911.9588525,
+    "ast_hash": "3b12d067163eadf7276d549872654e59",
+    "semantic_hash": "3b12d067163eadf7276d549872654e59"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/__init__.py": {
+    "mtime": 1778609753.2242901,
+    "ast_hash": "c160dac2e5908180f38a9b33a19fbcfd",
+    "semantic_hash": "c160dac2e5908180f38a9b33a19fbcfd"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/social_events.py": {
+    "mtime": 1779049132.4491823,
+    "ast_hash": "4f8c3551431f4368bcb4fd496b841d70",
+    "semantic_hash": "4f8c3551431f4368bcb4fd496b841d70"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/ambient_signals.py": {
+    "mtime": 1779049124.1590512,
+    "ast_hash": "1246549a3fe773937f07236451cdba4e",
+    "semantic_hash": "1246549a3fe773937f07236451cdba4e"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/event_bus.py": {
+    "mtime": 1778994855.6387696,
+    "ast_hash": "6c87b6f2931179d218812adbfd56fbfc",
+    "semantic_hash": "6c87b6f2931179d218812adbfd56fbfc"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/slack_events.py": {
+    "mtime": 1778996388.2377625,
+    "ast_hash": "c4a96ea4f20b9a11a2713ef744af6151",
+    "semantic_hash": "c4a96ea4f20b9a11a2713ef744af6151"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/github_events.py": {
+    "mtime": 1779050418.1187603,
+    "ast_hash": "bd0bea252f9b529b2b62f2e4e361b942",
+    "semantic_hash": "bd0bea252f9b529b2b62f2e4e361b942"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/meeting_events.py": {
+    "mtime": 1778994903.1885862,
+    "ast_hash": "d670f542ffda9062d26024ba5b60247a",
+    "semantic_hash": "d670f542ffda9062d26024ba5b60247a"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/base.py": {
+    "mtime": 1778994848.006131,
+    "ast_hash": "b163aaf080732f138ee152791be2ff8d",
+    "semantic_hash": "b163aaf080732f138ee152791be2ff8d"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integration_plugins/registry.py": {
+    "mtime": 1779052167.1871378,
+    "ast_hash": "3a7a696347dca027cd7cd1d5c0f66cc4",
+    "semantic_hash": "3a7a696347dca027cd7cd1d5c0f66cc4"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integration_plugins/__init__.py": {
+    "mtime": 1779049387.5436885,
+    "ast_hash": "bf51c43ab99488f91e225ae2ed66d30c",
+    "semantic_hash": "bf51c43ab99488f91e225ae2ed66d30c"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integration_plugins/base.py": {
+    "mtime": 1779052159.8976495,
+    "ast_hash": "6291bbcf5bedfd4edc0b98b215ea5eb3",
+    "semantic_hash": "6291bbcf5bedfd4edc0b98b215ea5eb3"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/preview.py": {
+    "mtime": 1778609511.2044404,
+    "ast_hash": "24b5927550406d6f0685712ee324fa3d",
+    "semantic_hash": "24b5927550406d6f0685712ee324fa3d"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/window.py": {
+    "mtime": 1778812295.4182937,
+    "ast_hash": "f3b4a1b6604a5cb6ee9e7b3eb870d2d3",
+    "semantic_hash": "f3b4a1b6604a5cb6ee9e7b3eb870d2d3"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/__init__.py": {
+    "mtime": 1778812158.4523532,
+    "ast_hash": "39a4a134234cab466cfb8a7ff8d57387",
+    "semantic_hash": "39a4a134234cab466cfb8a7ff8d57387"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/file_gif.py": {
+    "mtime": 1778609511.2051497,
+    "ast_hash": "557e4d8495ae968f5390ee9abef7477f",
+    "semantic_hash": "557e4d8495ae968f5390ee9abef7477f"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/base.py": {
+    "mtime": 1778609511.2054646,
+    "ast_hash": "91c4e460a0478201034d55eb80f05133",
+    "semantic_hash": "91c4e460a0478201034d55eb80f05133"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/turzx_usb.py": {
+    "mtime": 1778609511.2057507,
+    "ast_hash": "b5779d61672a6ff9b35f5ac3ceba89cb",
+    "semantic_hash": "b5779d61672a6ff9b35f5ac3ceba89cb"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/requirements.txt": {
+    "mtime": 1778996289.610315,
+    "ast_hash": "3deff612c7db34e6962fcc725797f9ff",
+    "semantic_hash": "3deff612c7db34e6962fcc725797f9ff"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/README.md": {
+    "mtime": 1779052286.4363163,
+    "ast_hash": "def8aa540e5fd6a362b08687296478ff",
+    "semantic_hash": "def8aa540e5fd6a362b08687296478ff"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/NOTICE.md": {
+    "mtime": 1778610817.2035027,
+    "ast_hash": "af0bff3ffdb21d7afd07837c6ce73eb5",
+    "semantic_hash": "af0bff3ffdb21d7afd07837c6ce73eb5"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/display.yaml": {
+    "mtime": 1778866916.940433,
+    "ast_hash": "73f0cd8b45da751d87462fd7c2c10d2d",
+    "semantic_hash": "73f0cd8b45da751d87462fd7c2c10d2d"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/people.yaml": {
+    "mtime": 1778609500.5638611,
+    "ast_hash": "b2b519ebacb755624d07b32badeabd1b",
+    "semantic_hash": "b2b519ebacb755624d07b32badeabd1b"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game.yaml": {
+    "mtime": 1778995699.1842618,
+    "ast_hash": "3083ef38345364bdf3e311b96a33c421",
+    "semantic_hash": "3083ef38345364bdf3e311b96a33c421"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/README.md": {
+    "mtime": 1779051258.7293088,
+    "ast_hash": "266188970c1f6f5c07c8fc0476036847",
+    "semantic_hash": "266188970c1f6f5c07c8fc0476036847"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/pokemon.yaml": {
+    "mtime": 1778609752.9352202,
+    "ast_hash": "7a449a50c2be2aa24fd3feaed12c1aea",
+    "semantic_hash": "7a449a50c2be2aa24fd3feaed12c1aea"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/assets/fonts/jetbrains-mono/OFL.txt": {
+    "mtime": 1778604421.5587673,
+    "ast_hash": "43dc1a748ef82aa746d6a645d52578a9",
+    "semantic_hash": "43dc1a748ef82aa746d6a645d52578a9"
+  }
+}

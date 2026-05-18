@@ -5,9 +5,8 @@ from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
 
-from pixel_ops.core import PixelOpsApp, PullRequestSource
+from pixel_ops.core import PixelOpsApp, PullRequestSource, WeatherSource
 from pixel_ops.data_sources.calendar import CalendarEvent
-from pixel_ops.data_sources.weather import OpenMeteoWeatherSource
 from pixel_ops.events.base import EventSource
 from pixel_ops.plugins.ai.plugin import AiDecisionPlugin
 from pixel_ops.plugins.pokemon.pokemon_api import PokeApiClient
@@ -23,10 +22,10 @@ class PokemonPlugin:
         parser.add_argument("--warm-cache", action="store_true", help="Download/cache Gen 1 Pokemon metadata and sprites.")
         parser.add_argument("--pokemon-limit", type=int, default=151)
 
-    def load_config(self, plugin_dir: Path, load_yaml: Callable[[Path], dict]) -> dict:
+    def load_config(self, plugin_dir: Path, load_config: Callable[[Path], dict]) -> dict:
         return {
-            "game": load_yaml(plugin_dir / "game.yaml")["game"],
-            "pokemon": load_yaml(plugin_dir / "pokemon.yaml")["pokemon"],
+            "game": load_config(plugin_dir / "game.json")["game"],
+            "pokemon": load_config(plugin_dir / "pokemon.json")["pokemon"],
         }
 
     def maybe_handle_command(self, args: argparse.Namespace, root_dir: Path, config: dict) -> bool:
@@ -55,7 +54,7 @@ class PokemonPlugin:
         people_config: list[dict],
         next_event: Callable[[datetime], CalendarEvent | None],
         pull_request_source: PullRequestSource,
-        weather_source: OpenMeteoWeatherSource | None,
+        weather_source: WeatherSource | None,
         ai_plugin: AiDecisionPlugin | None,
         event_sources: list[EventSource],
     ) -> PixelOpsApp:

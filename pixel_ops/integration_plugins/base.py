@@ -18,10 +18,22 @@ SplitList = Callable[[str], list[str]]
 class IntegrationContext:
     root_dir: Path
     args: object
+    config: dict[str, Any]
     env_bool: EnvBool
     env_int: EnvInt
     env_value: EnvValue
     split_env_list: SplitList
+
+    def plugin_config(self, name: str) -> dict[str, Any]:
+        integrations = self.config.get("integrations", {})
+        value = integrations.get(name, {})
+        return value if isinstance(value, dict) else {}
+
+    def plugin_enabled(self, name: str, env_name: str, default: bool = False) -> bool:
+        cfg = self.plugin_config(name)
+        if "enabled" in cfg:
+            return bool(cfg["enabled"])
+        return self.env_bool(env_name, default)
 
 
 @dataclass
@@ -31,6 +43,8 @@ class IntegrationContribution:
     starters: list[Callable[[], None]] = field(default_factory=list)
     warmers: list[Callable[[], None]] = field(default_factory=list)
     pull_request_source: Any | None = None
+    weather_source: Any | None = None
+    closers: list[Callable[[], None]] = field(default_factory=list)
 
 
 class IntegrationPlugin(Protocol):
@@ -49,3 +63,8 @@ class NullPullRequestSource:
 
     def poll(self, now: datetime):
         return []
+
+
+class NullWeatherSource:
+    def current(self, now: datetime):
+        return None

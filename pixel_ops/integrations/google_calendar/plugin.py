@@ -9,14 +9,12 @@ class GoogleCalendarIntegrationPlugin:
     name = "google_calendar"
 
     def enabled(self, ctx: IntegrationContext) -> bool:
-        return ctx.env_bool("PIXEL_OPS_GOOGLE_CALENDAR_ENABLED", False)
+        return ctx.plugin_enabled(self.name, "PIXEL_OPS_GOOGLE_CALENDAR_ENABLED", False)
 
     def build(self, ctx: IntegrationContext) -> IntegrationContribution:
-        poll_seconds = ctx.env_int("PIXEL_OPS_GOOGLE_CALENDAR_POLL_SECONDS", ctx.env_int("PIXEL_OPS_ICS_POLL_SECONDS", 300))
-        urls = ctx.split_env_list(
-            ctx.env_value("PIXEL_OPS_GOOGLE_CALENDAR_ICS_URL", None)
-            or ""
-        )
+        cfg = ctx.plugin_config(self.name)
+        poll_seconds = int(cfg.get("poll_seconds", ctx.env_int("PIXEL_OPS_GOOGLE_CALENDAR_POLL_SECONDS", ctx.env_int("PIXEL_OPS_ICS_POLL_SECONDS", 300))))
+        urls = list(cfg.get("ics_urls") or ctx.split_env_list(ctx.env_value("PIXEL_OPS_GOOGLE_CALENDAR_ICS_URL", None) or ""))
         sources: list[CalendarEventSource] = []
         cache_paths = []
         warmers = []

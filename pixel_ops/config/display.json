@@ -1,0 +1,32 @@
+{
+  "display": {
+    "width": 320,
+    "height": 480,
+    "backend": "usb_bulk_rev_a",
+    "fps": 12,
+    "preview_output": "pixel_ops/output/preview.png",
+    "gif_output": "pixel_ops/output/preview.gif",
+    "scanlines": false,
+    "timezone_primary": "America/Sao_Paulo",
+    "ai": {
+      "enabled": true,
+      "provider": "openai_chatgpt",
+      "model": "gpt-5-mini",
+      "reasoning_effort": "low",
+      "api_key_env": "OPENAI_API_KEY",
+      "timeout_seconds": 8,
+      "cache_enabled": true,
+      "cache_dir": "pixel_ops/cache/ai_decisions"
+    },
+    "splash": {
+      "enabled": true,
+      "seconds": 2,
+      "logo_path": "pixel_ops/assets/logo/pixel_ops_gaco_logo.jpg",
+      "background": [
+        8,
+        10,
+        18
+      ]
+    }
+  }
+}

@@ -10,21 +10,25 @@ class SlackIntegrationPlugin:
     name = "slack"
 
     def enabled(self, ctx: IntegrationContext) -> bool:
-        return ctx.env_bool("PIXEL_OPS_SLACK_ENABLED", False)
+        return ctx.plugin_enabled(self.name, "PIXEL_OPS_SLACK_ENABLED", False)
 
     def build(self, ctx: IntegrationContext) -> IntegrationContribution:
-        bus = EventBus(maxlen=ctx.env_int("PIXEL_OPS_SOCIAL_BUS_LIMIT", 128))
+        cfg = ctx.plugin_config(self.name)
+        bus = EventBus(maxlen=int(ctx.config.get("integrations", {}).get("social_bus_limit", ctx.env_int("PIXEL_OPS_SOCIAL_BUS_LIMIT", 128))))
+        app_token_env = str(cfg.get("app_token_env", "PIXEL_OPS_SLACK_APP_TOKEN"))
+        bot_token_env = str(cfg.get("bot_token_env", "PIXEL_OPS_SLACK_BOT_TOKEN"))
         client = SlackSocketModeClient(
             bus,
-            app_token=ctx.env_value("PIXEL_OPS_SLACK_APP_TOKEN", "") or "",
-            bot_token=ctx.env_value("PIXEL_OPS_SLACK_BOT_TOKEN", "") or "",
-            bot_user_id=ctx.env_value("PIXEL_OPS_SLACK_BOT_USER_ID", "") or "",
+            app_token=ctx.env_value(app_token_env, "") or "",
+            bot_token=ctx.env_value(bot_token_env, "") or "",
+            bot_user_id=str(cfg.get("bot_user_id") or ctx.env_value("PIXEL_OPS_SLACK_BOT_USER_ID", "") or ""),
             enabled=True,
-            reconnect_seconds=ctx.env_int("PIXEL_OPS_SLACK_SOCKET_RECONNECT_SECONDS", 10),
+            reconnect_seconds=int(cfg.get("socket_reconnect_seconds", ctx.env_int("PIXEL_OPS_SLACK_SOCKET_RECONNECT_SECONDS", 10))),
         )
         return IntegrationContribution(
             event_sources=[SlackBusEventSource(bus, enabled=True)],
             starters=[client.start],
+            closers=[client.stop],
         )
 
 

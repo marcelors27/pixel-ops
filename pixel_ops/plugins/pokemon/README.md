@@ -77,16 +77,19 @@ Window mode accepts `--window-scale N` to resize the 320x480 frame with nearest-
 The plugin uses core Pixel OPs configuration plus two Pokemon-specific YAML files.
 
 ```text
-pixel_ops/config/display.yaml
-pixel_ops/config/people.yaml
-pixel_ops/plugins/pokemon/game.yaml
-pixel_ops/plugins/pokemon/pokemon.yaml
+pixel_ops/config/display.json
+pixel_ops/config/people.json
+pixel_ops/plugins/pokemon/game.json
+pixel_ops/plugins/pokemon/pokemon.json
 pixel_ops/plugins/pokemon/assets/sprites/ash/manifest.yaml
 ```
 
+JSON files are the primary runtime config. Matching YAML files remain readable
+as fallback, but JSON wins when both files exist.
+
 ## Display Config
 
-File: `pixel_ops/config/display.yaml`
+File: `pixel_ops/config/display.json`
 
 Example:
 
@@ -139,7 +142,7 @@ Fields:
 
 ## People And Time Zones
 
-File: `pixel_ops/config/people.yaml`
+File: `pixel_ops/config/people.json`
 
 Example:
 
@@ -175,7 +178,7 @@ Fields:
 
 ## Game Config
 
-File: `pixel_ops/plugins/pokemon/game.yaml`
+File: `pixel_ops/plugins/pokemon/game.json`
 
 Current full example:
 
@@ -300,7 +303,7 @@ Enable AI Pokemon decisions:
 OPENAI_API_KEY=sk-... python pixel_ops/main.py --plugin pokemon --output preview
 ```
 
-Then set `display.ai.enabled: true` in `pixel_ops/config/display.yaml` and `game.events.ai_selector.enabled: true` in `pixel_ops/plugins/pokemon/game.yaml`. The Pokemon plugin first searches the local knowledge base from `knowledge_path`, sends only `candidate_limit` candidates to the model, and caches successful decisions under `pixel_ops/cache/ai_decisions`. The response chooses one candidate and writes a compact battle text box appearance phrase. OpenAI is only used for real work events; ambient encounters always use local selection. The default throttle allows at most one pending AI request, waits 90 seconds between starts, caps calls to 4 per 15 minutes, and skips Slack/Discord events.
+Then set `display.ai.enabled: true` in `pixel_ops/config/display.json` and `game.events.ai_selector.enabled: true` in `pixel_ops/plugins/pokemon/game.json`. The Pokemon plugin first searches the local knowledge base from `knowledge_path`, sends only `candidate_limit` candidates to the model, and caches successful decisions under `pixel_ops/cache/ai_decisions`. The response chooses one candidate and writes a compact battle text box appearance phrase. OpenAI is only used for real work events; ambient encounters always use local selection. The default throttle allows at most one pending AI request, waits 90 seconds between starts, caps calls to 4 per 15 minutes, and skips Slack/Discord events.
 
 Local Pokemon lore uses this shape:
 
@@ -320,7 +323,7 @@ Local Pokemon lore uses this shape:
 
 ## Pokemon API And Cache Config
 
-File: `pixel_ops/plugins/pokemon/pokemon.yaml`
+File: `pixel_ops/plugins/pokemon/pokemon.json`
 
 Example:
 

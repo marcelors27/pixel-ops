@@ -41,10 +41,16 @@ pixel_ops/output/preview.gif
 
 ## Configuration
 
-- People and time zones: `pixel_ops/config/people.yaml`
-- Display/FPS/output paths: `pixel_ops/config/display.yaml`
-- Pokemon plugin scene: `pixel_ops/plugins/pokemon/game.yaml`
-- PokeAPI/cache/sprites: `pixel_ops/plugins/pokemon/pokemon.yaml`
+- People and time zones: `pixel_ops/config/people.json`
+- Display/FPS/output paths: `pixel_ops/config/display.json`
+- Pokemon plugin scene: `pixel_ops/plugins/pokemon/game.json`
+- PokeAPI/cache/sprites: `pixel_ops/plugins/pokemon/pokemon.json`
+
+JSON config files are the primary runtime config. Matching YAML files are still
+accepted as fallback, but when both exist the JSON file wins. Long-running modes
+hot-reload visual app config changes from JSON without restarting the display;
+changing output dimensions/FPS or integration enable envs still requires a
+restart.
 
 ## Plugins
 
@@ -56,7 +62,7 @@ Plugins live in `pixel_ops/plugins/<name>/` and expose a plugin class with:
 
 - `name`
 - `add_arguments(parser)`
-- `load_config(plugin_dir, load_yaml)`
+- `load_config(plugin_dir, load_config)`
 - `maybe_handle_command(args, root_dir, config)`
 - `fps(config, display_fps)`
 - `event_config(config)`
@@ -87,15 +93,11 @@ python pixel_ops/main.py --plugin pokemon --output preview --offline
 ## Events
 
 Runtime access to external systems is handled by integration plugins. Each
-plugin is loaded only when its own enable variable is true:
-
-```text
-PIXEL_OPS_SLACK_ENABLED
-PIXEL_OPS_DISCORD_ENABLED
-PIXEL_OPS_GITHUB_ENABLED
-PIXEL_OPS_GOOGLE_CALENDAR_ENABLED
-PIXEL_OPS_ICS_ENABLED
-```
+plugin is configured in `pixel_ops/config/integrations.json`. The `.env` file is
+reserved for secrets such as Slack/GitHub/OpenAI tokens. Editing
+`integrations.json` during a long-running display session rebuilds the
+integration runtime so enables, polling intervals, repos, calendar URLs, and
+weather location can be changed from a UI.
 
 Calendar via local `.ics`:
 
@@ -106,42 +108,85 @@ python pixel_ops/main.py --ics path/to/calendar.ics
 Or via env:
 
 ```env
-PIXEL_OPS_ICS_ENABLED=true
-PIXEL_OPS_ICS_PATH=/path/to/calendar.ics
-PIXEL_OPS_ICS_POLL_SECONDS=300
+{
+  "integrations": {
+    "ics": {
+      "enabled": true,
+      "paths": ["/path/to/calendar.ics"],
+      "poll_seconds": 300
+    }
+  }
+}
 ```
 
 Google Calendar via private ICS URL:
 
 ```env
-PIXEL_OPS_GOOGLE_CALENDAR_ENABLED=true
-PIXEL_OPS_GOOGLE_CALENDAR_ICS_URL=https://calendar.google.com/calendar/ical/...
-PIXEL_OPS_GOOGLE_CALENDAR_POLL_SECONDS=300
+{
+  "integrations": {
+    "google_calendar": {
+      "enabled": true,
+      "ics_urls": ["https://calendar.google.com/calendar/ical/..."],
+      "poll_seconds": 300
+    }
+  }
+}
 ```
 
 GitHub pull requests in the HUD:
 
 ```env
-PIXEL_OPS_GITHUB_ENABLED=true
 PIXEL_OPS_GITHUB_TOKEN=github_pat_...
-PIXEL_OPS_GITHUB_REPOS=owner/repo
-PIXEL_OPS_GITHUB_POLL_SECONDS=60
-PIXEL_OPS_GITHUB_MAX_PRS=4
 ```
 
-Slack and Discord are interpreted as ambient social weather, not message feeds.
-Message bodies are only used for short-lived semantic classification; rendered
-events become encounters, mood shifts, particles, NPC density, and meeting
-ceremonies.
+```json
+{
+  "integrations": {
+    "github": {
+      "enabled": true,
+      "token_env": "PIXEL_OPS_GITHUB_TOKEN",
+      "repos": ["owner/repo"],
+      "poll_seconds": 60,
+      "max_pull_requests": 4
+    }
+  }
+}
+```
+
+Weather via Open-Meteo:
+
+```json
+{
+  "integrations": {
+    "weather": {
+      "enabled": true,
+      "city": "Porto Alegre",
+      "country_code": "BR",
+      "poll_seconds": 900
+    }
+  }
+}
+```
 
 Slack Socket Mode receiver:
 
 ```env
-PIXEL_OPS_SLACK_ENABLED=true
 PIXEL_OPS_SLACK_APP_TOKEN=xapp-...
 PIXEL_OPS_SLACK_BOT_TOKEN=xoxb-...
-PIXEL_OPS_SLACK_BOT_USER_ID=U123456
-PIXEL_OPS_SLACK_SOCKET_RECONNECT_SECONDS=10
+```
+
+```json
+{
+  "integrations": {
+    "slack": {
+      "enabled": true,
+      "app_token_env": "PIXEL_OPS_SLACK_APP_TOKEN",
+      "bot_token_env": "PIXEL_OPS_SLACK_BOT_TOKEN",
+      "bot_user_id": "U123456",
+      "socket_reconnect_seconds": 10
+    }
+  }
+}
 ```
 
 Enable Socket Mode in the Slack app, create an app-level token with
@@ -149,6 +194,15 @@ Enable Socket Mode in the Slack app, create an app-level token with
 messages, reactions, and presence-like activity. Socket Mode is the recommended
 local setup because GACO opens an outbound WebSocket and does not need a public
 IP, tunnel, TLS endpoint, or reverse proxy.
+
+Secrets:
+
+```env
+PIXEL_OPS_SLACK_APP_TOKEN=xapp-...
+PIXEL_OPS_SLACK_BOT_TOKEN=xoxb-...
+PIXEL_OPS_GITHUB_TOKEN=github_pat_...
+OPENAI_API_KEY=sk-...
+```
 
 Supported signals include DMs, mentions, reactions, channel activity,
 calls/huddles, incident/deploy/PR keywords, and presence-like joins.

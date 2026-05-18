@@ -8,11 +8,15 @@ from PIL import Image
 
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.timezones import build_people_times
-from pixel_ops.data_sources.weather import OpenMeteoWeatherSource
 
 
 class PullRequestSource(Protocol):
     def open_pull_requests(self, now: datetime | None = None) -> list:
+        ...
+
+
+class WeatherSource(Protocol):
+    def current(self, now: datetime):
         ...
 
 
@@ -30,7 +34,7 @@ class PixelOpsApp:
         people_config: list[dict],
         next_event: Callable[[datetime], CalendarEvent | None],
         pull_request_source: PullRequestSource,
-        weather_source: OpenMeteoWeatherSource | None = None,
+        weather_source: WeatherSource | None = None,
     ):
         self.scene = scene
         self.people_config = people_config

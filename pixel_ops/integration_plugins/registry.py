@@ -4,7 +4,12 @@ import importlib
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from pixel_ops.integration_plugins.base import IntegrationContext, IntegrationContribution, NullPullRequestSource
+from pixel_ops.integration_plugins.base import (
+    IntegrationContext,
+    IntegrationContribution,
+    NullPullRequestSource,
+    NullWeatherSource,
+)
 
 
 PLUGIN_MODULES = {
@@ -13,6 +18,7 @@ PLUGIN_MODULES = {
     "github": "pixel_ops.integrations.github.plugin",
     "google_calendar": "pixel_ops.integrations.google_calendar.plugin",
     "ics": "pixel_ops.integrations.ics.plugin",
+    "weather": "pixel_ops.integrations.weather.plugin",
 }
 
 PLUGIN_ENABLES = {
@@ -21,6 +27,7 @@ PLUGIN_ENABLES = {
     "github": "PIXEL_OPS_GITHUB_ENABLED",
     "google_calendar": "PIXEL_OPS_GOOGLE_CALENDAR_ENABLED",
     "ics": "PIXEL_OPS_ICS_ENABLED",
+    "weather": "PIXEL_OPS_WEATHER_ENABLED",
 }
 
 
@@ -30,7 +37,9 @@ class IntegrationRuntime:
     calendar_paths: list[Path] = field(default_factory=list)
     starters: list = field(default_factory=list)
     warmers: list = field(default_factory=list)
+    closers: list = field(default_factory=list)
     pull_request_source: object = field(default_factory=NullPullRequestSource)
+    weather_source: object = field(default_factory=NullWeatherSource)
     loaded_plugins: list[str] = field(default_factory=list)
 
     def start(self) -> None:
@@ -40,6 +49,10 @@ class IntegrationRuntime:
     def warm(self) -> None:
         for warmer in self.warmers:
             warmer()
+
+    def close(self) -> None:
+        for closer in reversed(self.closers):
+            closer()
 
 
 def build_integration_runtime(ctx: IntegrationContext) -> IntegrationRuntime:
@@ -58,7 +71,7 @@ def _selected_plugin_names(ctx: IntegrationContext) -> list[str]:
     names = [
         name
         for name, env_name in PLUGIN_ENABLES.items()
-        if ctx.env_bool(env_name, False)
+        if ctx.plugin_enabled(name, env_name, False)
     ]
     if bool(getattr(ctx.args, "ics", None)) and "ics" not in names:
         names.append("ics")
@@ -75,5 +88,8 @@ def _merge(runtime: IntegrationRuntime, contribution: IntegrationContribution) -
     runtime.calendar_paths.extend(contribution.calendar_paths)
     runtime.starters.extend(contribution.starters)
     runtime.warmers.extend(contribution.warmers)
+    runtime.closers.extend(contribution.closers)
     if contribution.pull_request_source is not None:
         runtime.pull_request_source = contribution.pull_request_source
+    if contribution.weather_source is not None:
+        runtime.weather_source = contribution.weather_source

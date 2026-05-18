@@ -9,14 +9,12 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-import yaml
-
 ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from pixel_ops.data_sources.calendar import next_ics_event, next_mock_event
-from pixel_ops.data_sources.weather import OpenMeteoWeatherSource
+from pixel_ops.config_loader import ConfigWatcher, load_config_prefer_json
 from pixel_ops.events.mock_events import MockEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext
 from pixel_ops.integration_plugins.registry import build_integration_runtime
@@ -29,8 +27,13 @@ from pixel_ops.render.splash import render_splash, splash_frame_count, splash_se
 APP_DIR = Path(__file__).resolve().parent
 
 
-def load_yaml(path: Path) -> dict:
-    return yaml.safe_load(path.read_text(encoding="utf-8"))
+def load_config(path: Path) -> dict:
+    return load_config_prefer_json(path)
+
+
+def load_runtime_config() -> dict:
+    path = APP_DIR / "config/integrations.json"
+    return load_config(path) if path.exists() else {"integrations": {}}
 
 
 def load_env(path: Path) -> dict[str, str]:
@@ -144,9 +147,20 @@ def main() -> int:
     load_env(ROOT_DIR / ".env")
     plugin = get_plugin(args.plugin)
     plugin_dir = APP_DIR / "plugins" / plugin.name
-    display_cfg = load_yaml(APP_DIR / "config/display.yaml")["display"]
-    people_cfg = load_yaml(APP_DIR / "config/people.yaml")["people"]
-    plugin_cfg = plugin.load_config(plugin_dir, load_yaml)
+    runtime_config = load_runtime_config()
+    display_cfg = load_config(APP_DIR / "config/display.json")["display"]
+    people_cfg = load_config(APP_DIR / "config/people.json")["people"]
+    plugin_cfg = plugin.load_config(plugin_dir, load_config)
+    config_watcher = ConfigWatcher(
+        lambda: [
+            APP_DIR / "config/display.json",
+            APP_DIR / "config/people.json",
+            APP_DIR / "config/integrations.json",
+            plugin_dir / "game.json",
+            plugin_dir / "pokemon.json",
+        ]
+    )
+    config_watcher.reset()
     width = int(display_cfg["width"])
     height = int(display_cfg["height"])
     fps = args.fps or plugin.fps(plugin_cfg, int(display_cfg["fps"]))
@@ -155,49 +169,67 @@ def main() -> int:
     if plugin.maybe_handle_command(args, ROOT_DIR, plugin_cfg):
         return 0
 
-    integration_runtime = build_integration_runtime(
-        IntegrationContext(
-            root_dir=ROOT_DIR,
-            args=args,
-            env_bool=env_bool,
-            env_int=env_int,
-            env_value=env_value,
-            split_env_list=split_env_list,
+    def build_integration_runtime_from_config(current_runtime_config: dict):
+        built = build_integration_runtime(
+            IntegrationContext(
+                root_dir=ROOT_DIR,
+                args=args,
+                config=current_runtime_config,
+                env_bool=env_bool,
+                env_int=env_int,
+                env_value=env_value,
+                split_env_list=split_env_list,
+            )
         )
-    )
-    integration_runtime.start()
-    events_cfg = plugin.event_config(plugin_cfg)
-    event_sources = [
-        MockEventSource(enabled=env_bool("PIXEL_OPS_MOCK_EVENTS", bool(events_cfg.get("mock_events", False)))),
-        *integration_runtime.event_sources,
-    ]
-    pull_request_source = integration_runtime.pull_request_source
-    weather_cfg = display_cfg.get("weather", {})
-    weather_source = OpenMeteoWeatherSource(
-        enabled=env_bool("PIXEL_OPS_WEATHER_ENABLED", bool(weather_cfg.get("enabled", True))),
-        city=env_value("PIXEL_OPS_WEATHER_CITY", weather_cfg.get("city", "Porto Alegre")) or "Porto Alegre",
-        country_code=env_value("PIXEL_OPS_WEATHER_COUNTRY", weather_cfg.get("country_code", "BR")) or "BR",
-        poll_seconds=env_int("PIXEL_OPS_WEATHER_POLL_SECONDS", int(weather_cfg.get("poll_seconds", 900))),
-    )
-    ai_plugin = build_ai_plugin(display_cfg.get("ai", {}))
-    integration_runtime.warm()
-    calendar_enabled = any(name in integration_runtime.loaded_plugins for name in ("ics", "google_calendar"))
+        built.start()
+        built.warm()
+        return built
 
-    app = plugin.build_app(
-        args=args,
-        root_dir=ROOT_DIR,
-        display_cfg=display_cfg,
-        config=plugin_cfg,
-        width=width,
-        height=height,
-        fps=fps,
-        people_config=people_cfg,
-        next_event=lambda now: next_event(now, integration_runtime.calendar_paths, calendar_enabled),
-        pull_request_source=pull_request_source,
-        weather_source=weather_source,
-        ai_plugin=ai_plugin,
-        event_sources=event_sources,
-    )
+    integration_runtime = build_integration_runtime_from_config(runtime_config)
+
+    def build_runtime_app():
+        nonlocal integration_runtime
+        current_display_cfg = load_config(APP_DIR / "config/display.json")["display"]
+        current_people_cfg = load_config(APP_DIR / "config/people.json")["people"]
+        current_plugin_cfg = plugin.load_config(plugin_dir, load_config)
+        current_events_cfg = plugin.event_config(current_plugin_cfg)
+        current_calendar_enabled = any(name in integration_runtime.loaded_plugins for name in ("ics", "google_calendar"))
+        current_event_sources = [
+            MockEventSource(enabled=env_bool("PIXEL_OPS_MOCK_EVENTS", bool(current_events_cfg.get("mock_events", False)))),
+            *integration_runtime.event_sources,
+        ]
+        return plugin.build_app(
+            args=args,
+            root_dir=ROOT_DIR,
+            display_cfg=current_display_cfg,
+            config=current_plugin_cfg,
+            width=width,
+            height=height,
+            fps=fps,
+            people_config=current_people_cfg,
+            next_event=lambda now: next_event(now, integration_runtime.calendar_paths, current_calendar_enabled),
+            pull_request_source=integration_runtime.pull_request_source,
+            weather_source=integration_runtime.weather_source,
+            ai_plugin=build_ai_plugin(current_display_cfg.get("ai", {})),
+            event_sources=current_event_sources,
+        )
+
+    app = build_runtime_app()
+
+    def maybe_reload_app(current_app):
+        nonlocal integration_runtime, runtime_config
+        if not config_watcher.changed():
+            return current_app
+        try:
+            next_runtime_config = load_runtime_config()
+            if next_runtime_config != runtime_config:
+                integration_runtime.close()
+                integration_runtime = build_integration_runtime_from_config(next_runtime_config)
+                runtime_config = next_runtime_config
+            return build_runtime_app()
+        except Exception as error:
+            print(f"[pixel-ops config] hot reload failed: {type(error).__name__}: {error}", file=sys.stderr)
+            return current_app
 
     output_name = selected_output(args)
     output = build_output(output_name, args, ROOT_DIR, display_cfg, width, height, fps)
@@ -215,6 +247,7 @@ def main() -> int:
             started = datetime.now(ZoneInfo(primary_tz))
             total_frames = max(1, int(args.seconds * fps))
             for frame_index in range(total_frames):
+                app = maybe_reload_app(app)
                 if frame_index < splash_frames:
                     output.send(splash_frame)
                 else:
@@ -236,6 +269,7 @@ def main() -> int:
         end_at = None if args.forever or args.seconds <= 0 else time.perf_counter() + args.seconds
         while end_at is None or time.perf_counter() < end_at:
             loop_started = time.perf_counter()
+            app = maybe_reload_app(app)
             now = datetime.now(ZoneInfo(primary_tz))
             output.send(app.render_frame(now))
             elapsed = time.perf_counter() - loop_started
@@ -245,6 +279,7 @@ def main() -> int:
         print(error, file=sys.stderr)
         return 1
     finally:
+        integration_runtime.close()
         output.stop()
     return 0
 

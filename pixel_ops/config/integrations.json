@@ -1,0 +1,47 @@
+{
+  "integrations": {
+    "social_bus_limit": 128,
+    "slack": {
+      "enabled": false,
+      "app_token_env": "PIXEL_OPS_SLACK_APP_TOKEN",
+      "bot_token_env": "PIXEL_OPS_SLACK_BOT_TOKEN",
+      "bot_user_id": "",
+      "socket_reconnect_seconds": 10
+    },
+    "discord": {
+      "enabled": false
+    },
+    "github": {
+      "enabled": true,
+      "token_env": "PIXEL_OPS_GITHUB_TOKEN",
+      "repos": [
+        "The-Fitness-Doctor/tfd-monorepo"
+      ],
+      "poll_seconds": 60,
+      "max_pull_requests": 4,
+      "fetch_pull_requests": 20,
+      "timeout_seconds": 20
+    },
+    "google_calendar": {
+      "enabled": true,
+      "calendar_id": "primary",
+      "credentials_path": "custom/pokemon_timezone_dashboard/secrets/google-oauth-client.json",
+      "token_path": "custom/pokemon_timezone_dashboard/secrets/google-token.json",
+      "ics_urls": [
+        "https://calendar.google.com/calendar/ical/marcelo%40thefitnessdoctor.com/private-75d861cb4819d4f606aa4d658a3e7b2b/basic.ics"
+      ],
+      "poll_seconds": 120
+    },
+    "ics": {
+      "enabled": true,
+      "paths": [],
+      "poll_seconds": 60
+    },
+    "weather": {
+      "enabled": false,
+      "city": "Porto Alegre",
+      "country_code": "BR",
+      "poll_seconds": 900
+    }
+  }
+}

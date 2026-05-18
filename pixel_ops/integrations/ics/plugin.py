@@ -10,10 +10,11 @@ class IcsIntegrationPlugin:
     name = "ics"
 
     def enabled(self, ctx: IntegrationContext) -> bool:
-        return ctx.env_bool("PIXEL_OPS_ICS_ENABLED", False) or bool(getattr(ctx.args, "ics", None))
+        return ctx.plugin_enabled(self.name, "PIXEL_OPS_ICS_ENABLED", False) or bool(getattr(ctx.args, "ics", None))
 
     def build(self, ctx: IntegrationContext) -> IntegrationContribution:
-        poll_seconds = ctx.env_int("PIXEL_OPS_ICS_POLL_SECONDS", 300)
+        cfg = ctx.plugin_config(self.name)
+        poll_seconds = int(cfg.get("poll_seconds", ctx.env_int("PIXEL_OPS_ICS_POLL_SECONDS", 300)))
         sources: list[CalendarEventSource] = []
         paths: list[Path] = []
         arg_path = getattr(ctx.args, "ics", None)
@@ -22,7 +23,8 @@ class IcsIntegrationPlugin:
             sources.append(CalendarEventSource(enabled=True, path=path, poll_seconds=poll_seconds))
             if path.exists():
                 paths.append(path)
-        for raw_path in ctx.split_env_list(ctx.env_value("PIXEL_OPS_ICS_PATH", "") or ""):
+        raw_paths = list(cfg.get("paths") or ctx.split_env_list(ctx.env_value("PIXEL_OPS_ICS_PATH", "") or ""))
+        for raw_path in raw_paths:
             path = Path(raw_path).expanduser()
             sources.append(CalendarEventSource(enabled=True, path=path, poll_seconds=poll_seconds))
             if path.exists():

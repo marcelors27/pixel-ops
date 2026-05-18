@@ -9,10 +9,10 @@ class DiscordIntegrationPlugin:
     name = "discord"
 
     def enabled(self, ctx: IntegrationContext) -> bool:
-        return ctx.env_bool("PIXEL_OPS_DISCORD_ENABLED", False)
+        return ctx.plugin_enabled(self.name, "PIXEL_OPS_DISCORD_ENABLED", False)
 
     def build(self, ctx: IntegrationContext) -> IntegrationContribution:
-        bus = EventBus(maxlen=ctx.env_int("PIXEL_OPS_SOCIAL_BUS_LIMIT", 128))
+        bus = EventBus(maxlen=int(ctx.config.get("integrations", {}).get("social_bus_limit", ctx.env_int("PIXEL_OPS_SOCIAL_BUS_LIMIT", 128))))
         return IntegrationContribution(
             event_sources=[DiscordBusEventSource(bus, enabled=True)],
         )

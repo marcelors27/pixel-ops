@@ -1,0 +1,15 @@
+pixel_ops/cache/
+pixel_ops/output/
+pixel_ops/plugins/pokemon/assets/
+graphify-out/
+.git/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.mp4
+*.mov
