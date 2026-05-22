@@ -2,6 +2,7 @@ people:
   - key: BRT
     name: Marcelo, Time
     country: BR
+    show_flag: true
     timezone: America/Sao_Paulo
     timezone_label: Brazil
     work_start: "09:00"
@@ -9,6 +10,7 @@ people:
   - key: MCT
     name: Sinaí, Nahomi, Michel
     country: MX
+    show_flag: true
     timezone: America/Mexico_City
     timezone_label: Mexico City
     work_start: "09:00"
@@ -16,6 +18,7 @@ people:
   - key: Ariz.
     name: Patricia, Robbie, Jon, Scott
     country: US
+    show_flag: true
     timezone: America/Phoenix
     timezone_label: Arizona
     standard_key: Ariz.
@@ -25,6 +28,7 @@ people:
   - key: PT
     name: ""
     country: US
+    show_flag: true
     timezone: America/Los_Angeles
     timezone_label: Pacific
     standard_key: PST
@@ -34,6 +38,7 @@ people:
   - key: MT
     name: ""
     country: US
+    show_flag: true
     timezone: America/Denver
     timezone_label: Mountain
     standard_key: MST
@@ -43,6 +48,7 @@ people:
   - key: CT
     name: ""
     country: US
+    show_flag: true
     timezone: America/Chicago
     timezone_label: Central
     standard_key: CST
@@ -52,6 +58,7 @@ people:
   - key: ET
     name: ""
     country: US
+    show_flag: true
     timezone: America/New_York
     timezone_label: Eastern
     standard_key: EST
@@ -61,6 +68,7 @@ people:
   - key: IST
     name: Anirudh, Hari
     country: IN
+    show_flag: true
     timezone: Asia/Kolkata
     timezone_label: India
     work_start: "09:00"
@@ -68,6 +76,7 @@ people:
   - key: PRT
     name: Marino
     country: PT
+    show_flag: true
     timezone: Europe/Lisbon
     timezone_label: Portugal
     standard_key: WET

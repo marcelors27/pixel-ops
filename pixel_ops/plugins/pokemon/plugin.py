@@ -67,9 +67,10 @@ class PokemonPlugin:
             display_cfg["timezone_primary"],
             scanlines=bool(display_cfg.get("scanlines", True)),
             pokemon_api=pokemon_api,
-            lazy_download=bool(pokemon_cfg.get("lazy_download", True)) and not args.offline,
+            lazy_download=bool(pokemon_cfg.get("lazy_download", True)) and not self._offline(args, pokemon_cfg),
             scene_fps=fps,
             game_config=config["game"],
+            display_layout=display_cfg.get("layout", {}),
             event_sources=event_sources,
             ai_plugin=ai_plugin,
         )
@@ -88,6 +89,10 @@ class PokemonPlugin:
             api_base_url=pokemon_cfg["api_base_url"],
             sprite_base_url=pokemon_cfg["sprite_base_url"],
             timeout_seconds=int(pokemon_cfg.get("network_timeout_seconds", 8)),
-            offline=args.offline,
+            offline=self._offline(args, pokemon_cfg),
             sprite_style=pokemon_cfg.get("sprite_style", "animated"),
         )
+
+    @staticmethod
+    def _offline(args: argparse.Namespace, pokemon_cfg: dict) -> bool:
+        return bool(args.offline or pokemon_cfg.get("offline", False))

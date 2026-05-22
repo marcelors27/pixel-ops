@@ -20,12 +20,12 @@
     "hud_height": 212,
     "text_box_height": 96,
     "encounter": {
-      "walking_seconds": 2.0,
-      "start_seconds": 3.0,
-      "appears_seconds": 10.0,
+      "walking_seconds": 2,
+      "start_seconds": 3,
+      "appears_seconds": 10,
       "throw_seconds": 1.4,
-      "shake_seconds": 3.0,
-      "caught_seconds": 5.0
+      "shake_seconds": 3,
+      "caught_seconds": 5
     },
     "events": {
       "mock_events": false,

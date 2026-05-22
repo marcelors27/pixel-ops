@@ -79,11 +79,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--output", choices=("preview", "gif", "turzx", "window"), help="Frame output target.")
     parser.add_argument("--display", action="store_true", help="Send frames to UsbMonitor via USB bulk.")
     parser.add_argument("--window", action="store_true", help="Render frames in a desktop window.")
-    parser.add_argument("--window-scale", type=int, default=2, help="Desktop window pixel scale.")
+    parser.add_argument("--window-scale", type=int, help="Desktop window pixel scale.")
     parser.add_argument("--preview", action="store_true", help="Render a single PNG preview.")
     parser.add_argument("--gif", action="store_true", help="Render an animated GIF preview.")
     parser.add_argument("--preview-sequence", action="store_true", help="Write numbered PNG frames for preview output.")
-    parser.add_argument("--seconds", type=float, default=20)
+    parser.add_argument("--seconds", type=float)
     parser.add_argument("--forever", action="store_true", help="Run display loop until Ctrl+C.")
     parser.add_argument("--fps", type=int, default=0)
     parser.add_argument("--full-frame", action="store_true", help="Send full frames instead of dirty regions.")
@@ -122,6 +122,45 @@ def selected_output(args: argparse.Namespace) -> str:
     return "preview"
 
 
+def runtime_device_config(display_cfg: dict) -> dict:
+    cfg = display_cfg.get("device", {})
+    return cfg if isinstance(cfg, dict) else {}
+
+
+def runtime_output(args: argparse.Namespace, display_cfg: dict) -> str:
+    if args.output or args.display or args.window or args.gif or args.preview:
+        return selected_output(args)
+    device_cfg = runtime_device_config(display_cfg)
+    output = str(device_cfg.get("output") or device_cfg.get("target") or "preview")
+    if output == "display":
+        return "turzx"
+    if output in ("preview", "gif", "turzx", "window"):
+        return output
+    return "preview"
+
+
+def runtime_seconds(args: argparse.Namespace, display_cfg: dict) -> float:
+    if args.seconds is not None:
+        return float(args.seconds)
+    return float(runtime_device_config(display_cfg).get("seconds", 20))
+
+
+def runtime_forever(args: argparse.Namespace, display_cfg: dict) -> bool:
+    if args.forever:
+        return True
+    return bool(runtime_device_config(display_cfg).get("forever", False))
+
+
+def runtime_window_scale(args: argparse.Namespace, display_cfg: dict) -> int:
+    if args.window_scale is not None:
+        return max(1, int(args.window_scale))
+    return max(1, int(runtime_device_config(display_cfg).get("window_scale", 2)))
+
+
+def runtime_preview_sequence(args: argparse.Namespace, display_cfg: dict) -> bool:
+    return bool(args.preview_sequence or runtime_device_config(display_cfg).get("preview_sequence", False))
+
+
 def build_output(
     output_name: str,
     args: argparse.Namespace,
@@ -132,13 +171,13 @@ def build_output(
     fps: int,
 ) -> DisplayOutput:
     if output_name == "preview":
-        return PreviewOutput(root_dir / display_cfg["preview_output"], sequence=args.preview_sequence)
+        return PreviewOutput(root_dir / display_cfg["preview_output"], sequence=runtime_preview_sequence(args, display_cfg))
     if output_name == "gif":
         return GifOutput(root_dir / display_cfg["gif_output"], fps=fps)
     if output_name == "turzx":
         return TURZXOutput(width=width, height=height)
     if output_name == "window":
-        return WindowOutput(width=width, height=height, scale=args.window_scale)
+        return WindowOutput(width=width, height=height, scale=runtime_window_scale(args, display_cfg))
     raise ValueError(f"Unsupported output: {output_name}")
 
 
@@ -232,11 +271,11 @@ def main() -> int:
             print(f"[pixel-ops config] hot reload failed: {type(error).__name__}: {error}", file=sys.stderr)
             return current_app
 
-    output_name = selected_output(args)
+    output_name = runtime_output(args, display_cfg)
     output = build_output(output_name, args, ROOT_DIR, display_cfg, width, height, fps)
     try:
         output.start()
-        if output_name == "preview" and not args.preview_sequence:
+        if output_name == "preview" and not runtime_preview_sequence(args, display_cfg):
             now = datetime.now(ZoneInfo(primary_tz))
             output.send(app.render_frame(now))
             return 0
@@ -246,7 +285,7 @@ def main() -> int:
         splash_frames = splash_frame_count(display_cfg, fps) if splash_frame else 0
         if output_name == "gif":
             started = datetime.now(ZoneInfo(primary_tz))
-            total_frames = max(1, int(args.seconds * fps))
+            total_frames = max(1, int(runtime_seconds(args, display_cfg) * fps))
             for frame_index in range(total_frames):
                 app = maybe_reload_app(app)
                 if frame_index < splash_frames:
@@ -267,7 +306,8 @@ def main() -> int:
                     break
                 time.sleep(min(frame_delay, remaining, max(0, frame_delay - elapsed)))
 
-        end_at = None if args.forever or args.seconds <= 0 else time.perf_counter() + args.seconds
+        seconds = runtime_seconds(args, display_cfg)
+        end_at = None if runtime_forever(args, display_cfg) or seconds <= 0 else time.perf_counter() + seconds
         while end_at is None or time.perf_counter() < end_at:
             loop_started = time.perf_counter()
             app = maybe_reload_app(app)

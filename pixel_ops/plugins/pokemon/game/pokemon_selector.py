@@ -99,6 +99,12 @@ class PokemonSelector:
     ) -> PokemonSelection | None:
         primary_types = self._primary_types_for_event(event)
         type_names = self._types_for_event(event, day_phase)
+        if event.category in PR_EVOLUTION and event.metadata.get("evolution", "true") != "false":
+            number = self._workflow_number(event)
+            if number is not None:
+                self._debug(f"selected category={event.category.value} source=workflow pokemon={number}")
+                return self._selection(number, "workflow", ("fire",))
+
         candidate_limit = int(self.config.get("ai_selector", {}).get("candidate_limit", 8))
         candidates = self.knowledge.search(
             event,
@@ -126,12 +132,6 @@ class PokemonSelector:
         if self.ai_selector.last_request_pending:
             self._debug(f"waiting category={event.category.value} source=openai")
             return None
-
-        if event.category in PR_EVOLUTION and event.metadata.get("evolution", "true") != "false":
-            number = self._workflow_number(event)
-            if number is not None:
-                self._debug(f"selected category={event.category.value} source=workflow pokemon={number}")
-                return self._selection(number, "workflow", ("fire",))
 
         rarity = rarity_for_priority(event.priority, self.rng)
         candidates = self._candidate_numbers(primary_types, rarity) if primary_types else ()

@@ -151,6 +151,7 @@ people:
   - key: BRT
     name: Marcelo, Time
     country: BR
+    show_flag: true
     timezone: America/Sao_Paulo
     timezone_label: Brazil
     work_start: "09:00"
@@ -158,6 +159,7 @@ people:
   - key: PT
     name: Product Team
     country: US
+    show_flag: true
     timezone: America/Los_Angeles
     timezone_label: Pacific
     standard_key: PST
@@ -171,6 +173,7 @@ Fields:
 - `key`: short label rendered in the HUD.
 - `name`: people or team names for that timezone.
 - `country`: compact country label.
+- `show_flag`: shows the compact country flag for this timezone when enabled.
 - `timezone`: IANA timezone name.
 - `timezone_label`: human-friendly label.
 - `standard_key`, `daylight_key`: optional seasonal abbreviations.

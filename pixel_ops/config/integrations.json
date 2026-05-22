@@ -20,6 +20,7 @@
       "poll_seconds": 60,
       "max_pull_requests": 4,
       "fetch_pull_requests": 20,
+      "startup_lookback_seconds": 3600,
       "timeout_seconds": 20
     },
     "google_calendar": {

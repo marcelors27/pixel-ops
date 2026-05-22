@@ -7,6 +7,12 @@ display:
   gif_output: pixel_ops/output/preview.gif
   scanlines: false
   timezone_primary: America/Sao_Paulo
+  layout:
+    timezones:
+      x: 8
+      y: 8
+      width: 301
+      height: 172
   weather:
     enabled: true
     city: Porto Alegre

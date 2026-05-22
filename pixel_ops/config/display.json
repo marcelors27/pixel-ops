@@ -2,6 +2,53 @@
   "display": {
     "width": 320,
     "height": 480,
+    "device": {
+      "target": "window",
+      "output": "window",
+      "window_scale": 2,
+      "seconds": 20,
+      "forever": true,
+      "preview_sequence": false,
+      "full_frame": false
+    },
+    "layout": {
+      "timezones": {
+        "x": 0,
+        "y": 8,
+        "width": 314,
+        "height": 153
+      },
+      "gauges": {
+        "x": 8,
+        "y": 164,
+        "width": 145,
+        "height": 40
+      },
+      "weather": {
+        "x": 163,
+        "y": 214,
+        "width": 141,
+        "height": 42
+      },
+      "activity": {
+        "x": 163,
+        "y": 164,
+        "width": 149,
+        "height": 40
+      },
+      "game": {
+        "x": 0,
+        "y": 211,
+        "width": 320,
+        "height": 172
+      },
+      "text_box": {
+        "x": 8,
+        "y": 387,
+        "width": 304,
+        "height": 91
+      }
+    },
     "backend": "usb_bulk_rev_a",
     "fps": 12,
     "preview_output": "pixel_ops/output/preview.png",

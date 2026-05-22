@@ -21,6 +21,7 @@ class PullRequestSummary:
     author: str
     draft: bool = False
     review_state: str = "open"
+    updated_at: datetime | None = None
 
     @property
     def label(self) -> str:
@@ -39,6 +40,7 @@ class GitHubEventSource:
         poll_seconds: int = 300,
         max_pull_requests: int = 4,
         fetch_pull_requests: int | None = None,
+        startup_lookback_seconds: int = 3600,
         timeout_seconds: int = 20,
     ):
         self.enabled = enabled
@@ -47,16 +49,25 @@ class GitHubEventSource:
         self.poll_seconds = poll_seconds
         self.max_pull_requests = max_pull_requests
         self.fetch_pull_requests = fetch_pull_requests or max(max_pull_requests, 20)
+        self.startup_lookback_seconds = max(self.poll_seconds, int(startup_lookback_seconds))
         self.timeout_seconds = timeout_seconds
         self._last_poll_at: datetime | None = None
         self._last_open_fetch_at: datetime | None = None
         self._open_pull_requests: list[PullRequestSummary] = []
+        self._closed_pull_requests: list[PullRequestSummary] = []
         self._pull_requests: list[PullRequestSummary] = []
         self._pending_events: list[WorkEvent] = []
         self._seen: set[str] = set()
         self._lock = Lock()
         self._refresh_running = False
         self.debug = _env_bool("PIXEL_OPS_DEBUG_EVENTS")
+
+    def warm(self) -> None:
+        if not self.enabled or not self.token or not self.repos:
+            return
+        now = datetime.now(timezone.utc)
+        since = now - timedelta(seconds=self.startup_lookback_seconds)
+        self._refresh_sync(now, since, include_closed=True)
 
     def poll(self, now: datetime) -> list[WorkEvent]:
         self._refresh(now)
@@ -99,17 +110,29 @@ class GitHubEventSource:
 
         def worker() -> None:
             try:
-                pull_requests = self._fetch_open_pull_requests()
-                closed_events = self._fetch_closed_pull_request_events(now, since) if include_closed else []
-                with self._lock:
-                    self._open_pull_requests = pull_requests
-                    self._pull_requests = pull_requests[: self.max_pull_requests]
-                    self._debug(f"open_prs fetched={len(pull_requests)} hud={len(self._pull_requests)}")
-                    self._queue_open_pull_request_events(pull_requests, now)
-                    self._pending_events.extend(closed_events)
+                self._refresh_sync(now, since, include_closed)
             finally:
                 with self._lock:
                     self._refresh_running = False
+
+    def _refresh_sync(self, now: datetime, since: datetime, include_closed: bool) -> None:
+        open_pull_requests = self._fetch_open_pull_requests()
+        closed_pull_requests: list[PullRequestSummary] = []
+        closed_events: list[WorkEvent] = []
+        if include_closed:
+            closed_pull_requests, closed_events = self._fetch_closed_pull_request_updates(now, since)
+        with self._lock:
+            self._open_pull_requests = open_pull_requests
+            if include_closed:
+                self._closed_pull_requests = closed_pull_requests
+            combined = [*open_pull_requests, *self._closed_pull_requests]
+            self._pull_requests = combined[: self.max_pull_requests]
+            self._debug(
+                f"prs open={len(open_pull_requests)} closed={len(self._closed_pull_requests)} "
+                f"hud={len(self._pull_requests)}"
+            )
+            self._queue_open_pull_request_events(open_pull_requests, now)
+            self._pending_events.extend(closed_events)
 
     def _refresh_open_pull_requests(self, now: datetime) -> list[PullRequestSummary]:
         if self._last_open_fetch_at and (now - self._last_open_fetch_at).total_seconds() < self.poll_seconds:
@@ -161,7 +184,12 @@ class GitHubEventSource:
             )
             self._debug(f"queued {self._pending_events[-1].category.value} {key}")
 
-    def _fetch_closed_pull_request_events(self, now: datetime, since: datetime) -> list[WorkEvent]:
+    def _fetch_closed_pull_request_updates(
+        self,
+        now: datetime,
+        since: datetime,
+    ) -> tuple[list[PullRequestSummary], list[WorkEvent]]:
+        summaries: list[PullRequestSummary] = []
         events: list[WorkEvent] = []
         for repo in self.repos:
             encoded_repo = urllib.parse.quote(repo, safe="/")
@@ -173,13 +201,26 @@ class GitHubEventSource:
             try:
                 for item in self._request_json(url):
                     closed_at = self._parse_github_datetime(item.get("closed_at"))
-                    if closed_at is None or closed_at <= since:
+                    if closed_at is None:
                         continue
                     number = int(item["number"])
                     title = str(item["title"])
                     author = str(item.get("user", {}).get("login", "unknown"))
                     merged = bool(item.get("merged_at"))
                     state = "merged" if merged else "closed"
+                    summaries.append(
+                        PullRequestSummary(
+                            repo=short_repo,
+                            number=number,
+                            title=title,
+                            author=author,
+                            draft=False,
+                            review_state=state,
+                            updated_at=closed_at,
+                        )
+                    )
+                    if closed_at <= since:
+                        continue
                     key = f"{short_repo}#{number}:{state}"
                     if key in self._seen:
                         continue
@@ -201,7 +242,8 @@ class GitHubEventSource:
             except (urllib.error.URLError, KeyError, ValueError, TypeError) as error:
                 self._debug(f"closed_prs error repo={repo}: {type(error).__name__}: {error}")
                 continue
-        return events
+        summaries.sort(key=lambda item: item.updated_at or datetime.min.replace(tzinfo=timezone.utc), reverse=True)
+        return summaries[: self.fetch_pull_requests], events
 
     @staticmethod
     def _parse_github_datetime(value: object) -> datetime | None:

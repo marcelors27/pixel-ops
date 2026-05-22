@@ -20,9 +20,12 @@ class GitHubIntegrationPlugin:
             poll_seconds=int(cfg.get("poll_seconds", ctx.env_int("PIXEL_OPS_GITHUB_POLL_SECONDS", 300))),
             max_pull_requests=int(cfg.get("max_pull_requests", ctx.env_int("PIXEL_OPS_GITHUB_MAX_PRS", 4))),
             fetch_pull_requests=int(cfg.get("fetch_pull_requests", ctx.env_int("PIXEL_OPS_GITHUB_FETCH_PRS", 20))),
+            startup_lookback_seconds=int(
+                cfg.get("startup_lookback_seconds", ctx.env_int("PIXEL_OPS_GITHUB_STARTUP_LOOKBACK_SECONDS", 3600))
+            ),
             timeout_seconds=int(cfg.get("timeout_seconds", ctx.env_int("PIXEL_OPS_GITHUB_TIMEOUT_SECONDS", 20))),
         )
-        return IntegrationContribution(event_sources=[source], pull_request_source=source)
+        return IntegrationContribution(event_sources=[source], warmers=[source.warm], pull_request_source=source)
 
 
 def plugin() -> GitHubIntegrationPlugin:

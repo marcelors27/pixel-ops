@@ -17,6 +17,7 @@ class PersonTime:
     country: str = ""
     timezone_label: str = ""
     display_key: str = ""
+    show_flag: bool = False
 
 
 def build_people_times(people: list[dict], now: datetime | None = None) -> list[PersonTime]:
@@ -36,6 +37,7 @@ def build_people_times(people: list[dict], now: datetime | None = None) -> list[
                 country=person.get("country", ""),
                 timezone_label=person.get("timezone_label", person["timezone"].split("/")[-1].replace("_", " ")),
                 display_key=display_key,
+                show_flag=bool(person.get("show_flag", False)),
             )
         )
     return rows

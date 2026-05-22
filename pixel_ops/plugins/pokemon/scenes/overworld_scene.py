@@ -60,11 +60,13 @@ class OverworldScene:
         lazy_download: bool = True,
         scene_fps: int = 10,
         game_config: dict | None = None,
+        display_layout: dict | None = None,
         ash_assets_dir: Path | None = None,
         event_sources: list | None = None,
         ai_plugin: AiDecisionPlugin | None = None,
     ):
         cfg = game_config or {}
+        self.display_layout = display_layout or {}
         encounter_cfg = cfg.get("encounter", {})
         self.renderer = PixelRenderer(width, height)
         self.primary_timezone = primary_timezone
@@ -127,7 +129,7 @@ class OverworldScene:
             scene_fps=scene_fps,
             require_local=bool(cfg.get("require_ash_sprite", False)),
         )
-        map_viewport = (self.renderer.width, self.text_box[1] - self.hud_height - 4)
+        map_viewport = (self.map_box[2] - self.map_box[0], self.map_box[3] - self.map_box[1])
         self.map_routes = MapRouteManager(
             Path(__file__).resolve().parents[1] / "assets/maps/firered_leafgreen_clean",
             map_viewport,
@@ -137,7 +139,10 @@ class OverworldScene:
 
     @property
     def text_box(self) -> tuple[int, int, int, int]:
-        return (8, self.renderer.height - self.text_box_height - 2, 312, self.renderer.height - 2)
+        return self._layout_box(
+            "text_box",
+            (8, self.renderer.height - self.text_box_height - 2, self.renderer.width - 8, self.renderer.height - 2),
+        )
 
     @property
     def hud_box(self) -> tuple[int, int, int, int]:
@@ -145,7 +150,24 @@ class OverworldScene:
 
     @property
     def map_box(self) -> tuple[int, int, int, int]:
-        return (0, self.hud_height, self.renderer.width, self.text_box[1] - 4)
+        return self._layout_box("game", (0, self.hud_height, self.renderer.width, self.text_box[1] - 4))
+
+    def _layout_box(self, key: str, fallback: tuple[int, int, int, int]) -> tuple[int, int, int, int]:
+        raw = self.display_layout.get(key) if isinstance(self.display_layout, dict) else None
+        if not isinstance(raw, dict):
+            return fallback
+        try:
+            x = int(raw.get("x", fallback[0]))
+            y = int(raw.get("y", fallback[1]))
+            width = int(raw.get("width", fallback[2] - fallback[0]))
+            height = int(raw.get("height", fallback[3] - fallback[1]))
+        except (TypeError, ValueError):
+            return fallback
+        x0 = max(0, min(self.renderer.width - 1, x))
+        y0 = max(0, min(self.renderer.height - 1, y))
+        x1 = max(x0 + 1, min(self.renderer.width, x0 + max(1, width)))
+        y1 = max(y0 + 1, min(self.renderer.height, y0 + max(1, height)))
+        return x0, y0, x1, y1
 
     def advance(self, now: datetime | None = None, weather: WeatherState | None = None) -> GamePhase:
         self.frame += 1
@@ -227,7 +249,17 @@ class OverworldScene:
         self._draw_world(img, draw, pal, base_now, weather)
         self.current_mood = self.mood_engine.state(base_now, weather=weather, calendar_event=event)
         draw_social_world_effects(img, self.map_box, self.current_mood, self.frame)
-        draw_hud(draw, people, event, base_now, pal, pull_requests=pull_requests, ai_usage=ai_usage)
+        draw_hud(
+            draw,
+            people,
+            event,
+            base_now,
+            pal,
+            pull_requests=pull_requests,
+            ai_usage=ai_usage,
+            weather=weather,
+            layout=self.display_layout,
+        )
         return img
 
     def render_dirty_regions(self, base: Image.Image, now: datetime | None = None) -> list[tuple[int, int, Image.Image]]:
@@ -360,15 +392,17 @@ class OverworldScene:
         return cycle_frames / max(1, self.scene_fps)
 
     def _draw_sky(self, draw: ImageDraw.ImageDraw, pal) -> None:
-        sky_bottom = self.hud_height + 40
-        for y in range(self.hud_height, sky_bottom):
-            t = (y - self.hud_height) / max(1, sky_bottom - self.hud_height)
+        x0, y0, x1, _ = self.map_box
+        sky_bottom = y0 + 40
+        for y in range(y0, sky_bottom):
+            t = (y - y0) / max(1, sky_bottom - y0)
             color = tuple(int(pal.sky_top[i] * (1 - t) + pal.sky_bottom[i] * t) for i in range(3))
-            draw.line((0, y, self.renderer.width, y), fill=color)
+            draw.line((x0, y, x1, y), fill=color)
         if pal.phase == "night":
             for x, y in ((38, 150), (82, 162), (166, 146), (244, 158), (286, 168)):
-                draw.point((x, y), fill=pal.light)
-                draw.point((x + 1, y), fill=pal.light)
+                if x0 <= x <= x1 and y0 <= y <= self.map_box[3]:
+                    draw.point((x, y), fill=pal.light)
+                    draw.point((x + 1, y), fill=pal.light)
         else:
             draw.ellipse((252, 144, 286, 178), fill=pal.light, outline=pal.panel_shadow)
 
@@ -377,13 +411,14 @@ class OverworldScene:
         if area:
             self.current_map_area = area
             self.current_map_timestamp = now.timestamp()
-            img.paste(self._map_background_image(area, pal), (0, self.hud_height))
+            img.paste(self._map_background_image(area, pal), (self.map_box[0], self.map_box[1]))
             if weather:
                 self._draw_weather_effects(img, weather, area, pal)
             return
 
-        top = self.hud_height + 40
-        bottom = self.renderer.height - self.text_box_height - 14
+        x0, y0, x1, y1 = self.map_box
+        top = y0 + 40
+        bottom = y1
         tiles = {name: make_tile(name, pal) for name in ("grass", "tall_grass", "path")}
         trail_top = self.ash_y + 34
         trail_bottom = min(bottom, trail_top + 56)
@@ -394,7 +429,7 @@ class OverworldScene:
                 name = "tall_grass" if (y // TILE) % 2 else "grass"
             else:
                 name = "grass"
-            for x in range(0, self.renderer.width, TILE):
+            for x in range(x0, x1, TILE):
                 img.paste(tiles[name], (x, y))
 
         self._draw_static_props(draw, pal, top, trail_top)
@@ -457,7 +492,8 @@ class OverworldScene:
             self._draw_rain(draw, box)
         if outdoor and "snow" in effects:
             self._draw_snow(draw, box)
-        self._draw_weather_badge(draw, weather, pal)
+        if not (isinstance(self.display_layout, dict) and isinstance(self.display_layout.get("weather"), dict)):
+            self._draw_weather_badge(draw, weather, pal)
 
     @staticmethod
     def _blend_map_region(img: Image.Image, box: tuple[int, int, int, int], color: tuple[int, int, int], alpha: float) -> None:
@@ -863,7 +899,7 @@ class OverworldScene:
                 self.overworld_walk_frame,
                 self.route_speed_px,
             )
-            return self._moving_ash_pose(x, self.hud_height + y, direction)
+            return self._moving_ash_pose(self.map_box[0] + x, self.map_box[1] + y, direction)
         x = self._ash_x_for_phase(phase)
         if moving:
             return self._moving_ash_pose(x, self.ash_y, None)
