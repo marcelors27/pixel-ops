@@ -12,8 +12,10 @@ from pixel_ops.render.animation import SpriteAnimation
 ASSET_DIR = Path(__file__).resolve().parents[1] / "assets/sprites/ash"
 POKEBALL_SHEET = ASSET_DIR / "Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Poke Balls.png"
 PLAYER_SHEET = ASSET_DIR / "Game Boy Advance - Pokemon FireRed _ LeafGreen - Playable Characters - Player Sprites.png"
+NPC_SHEET = ASSET_DIR / "Game Boy Advance - Pokemon FireRed _ LeafGreen - Trainers & Non-Playable Characters - Overworld NPCs.png"
 POKEBALL_TRANSPARENT = (255, 166, 166)
 PLAYER_TRANSPARENT = (255, 127, 39)
+NPC_TRANSPARENT_COLORS = ((255, 127, 39), (34, 177, 76), (255, 255, 255))
 _POKEBALL_FRAMES: list[Image.Image] | None = None
 _BATTLE_ASH_FRAMES: list[Image.Image] | None = None
 
@@ -268,6 +270,158 @@ class AshSpriteSet:
     def frame(self, name: str, scene_frame: int) -> Image.Image:
         animation = self.animations.get(name) or self.animations["walk_right"]
         return animation.frame_at(scene_frame, self.scene_fps)
+
+
+class NpcSpriteSet:
+    """Small loader for FireRed/LeafGreen overworld NPC rows."""
+
+    # Character rows in the bundled NPC sheet. Each row contains four
+    # directions in 16x20 cells spaced 17 pixels apart: down, up, right, left.
+    ROWS = (
+        72,
+        96,
+        121,
+        172,
+        197,
+        221,
+        246,
+        272,
+        297,
+        321,
+        471,
+        497,
+        521,
+        546,
+        571,
+        596,
+        621,
+        647,
+        671,
+        731,
+        756,
+        780,
+        805,
+        830,
+        855,
+        879,
+        904,
+        963,
+        988,
+        1013,
+        1038,
+        1065,
+        1088,
+        1113,
+        1138,
+        1163,
+        1188,
+        1213,
+        1264,
+        1290,
+        1313,
+        1338,
+        1363,
+        1388,
+        1514,
+        1539,
+        1663,
+        1688,
+        1888,
+        1987,
+        2013,
+        2038,
+        2113,
+        2138,
+        2163,
+    )
+    X0 = 9
+    STEP_X = 17
+    FRAME_W = 16
+    FRAME_H = 20
+
+    def __init__(self, asset_dir: Path, scene_fps: int = 10, scale: int = 2):
+        self.asset_dir = asset_dir
+        self.scene_fps = scene_fps
+        self.scale = scale
+        self._variants: list[dict[str, SpriteAnimation]] = []
+        self._load()
+
+    def frame(self, variant: int, name: str, scene_frame: int) -> Image.Image:
+        if not self._variants:
+            return scale_sprite(ash_direction_frame("down", scene_frame), self.scale)
+        animations = self._variants[variant % len(self._variants)]
+        animation = animations.get(name) or animations.get("walk_down") or next(iter(animations.values()))
+        return animation.frame_at(scene_frame, self.scene_fps)
+
+    @property
+    def count(self) -> int:
+        return max(1, len(self._variants))
+
+    def _load(self) -> None:
+        path = self.asset_dir / NPC_SHEET.name
+        if not path.exists():
+            return
+        with Image.open(path) as image:
+            sheet = image.convert("RGBA")
+        for row in self.ROWS:
+            animations = self._animations_for_row(sheet, row)
+            if animations:
+                self._variants.append(animations)
+
+    def _animations_for_row(self, sheet: Image.Image, row: int) -> dict[str, SpriteAnimation]:
+        frames = [self._frame(sheet, self.X0 + index * self.STEP_X, row) for index in range(12)]
+        if any(_visible_pixels(frame) < 12 for frame in frames):
+            return {}
+        down = self._sequence(frames, (0, 1, 2, 1))
+        up = self._sequence(frames, (3, 4, 5, 4))
+        right = self._sequence(frames, (6, 7, 8, 7))
+        left = self._sequence(frames, (9, 10, 11, 10))
+        return {
+            "walk_down": SpriteAnimation(down, fps=6),
+            "walk_up": SpriteAnimation(up, fps=6),
+            "walk_right": SpriteAnimation(right, fps=6),
+            "walk_left": SpriteAnimation(left, fps=6),
+            "idle_down": SpriteAnimation((down[0],), fps=1),
+            "idle_up": SpriteAnimation((up[0],), fps=1),
+            "idle_right": SpriteAnimation((right[0],), fps=1),
+            "idle_left": SpriteAnimation((left[0],), fps=1),
+        }
+
+    def _frame(self, sheet: Image.Image, x: int, y: int) -> Image.Image:
+        frame = sheet.crop((x, y, x + self.FRAME_W, y + self.FRAME_H)).convert("RGBA")
+        self._clear_connected_background(frame)
+        return scale_sprite(frame, self.scale)
+
+    @staticmethod
+    def _clear_connected_background(frame: Image.Image) -> None:
+        pixels = frame.load()
+        stack: list[tuple[int, int]] = []
+        seen: set[tuple[int, int]] = set()
+        for x in range(frame.width):
+            stack.append((x, 0))
+            stack.append((x, frame.height - 1))
+        for y in range(frame.height):
+            stack.append((0, y))
+            stack.append((frame.width - 1, y))
+        while stack:
+            x, y = stack.pop()
+            if (x, y) in seen or not (0 <= x < frame.width and 0 <= y < frame.height):
+                continue
+            seen.add((x, y))
+            r, g, b, a = pixels[x, y]
+            if not a or (r, g, b) not in NPC_TRANSPARENT_COLORS:
+                continue
+            pixels[x, y] = (r, g, b, 0)
+            stack.extend(((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)))
+
+    @staticmethod
+    def _sequence(frames: list[Image.Image], indexes: tuple[int, ...]) -> tuple[Image.Image, ...]:
+        return tuple(frames[index] for index in indexes)
+
+
+def _visible_pixels(frame: Image.Image) -> int:
+    alpha = frame.convert("RGBA").getchannel("A")
+    return sum(1 for value in alpha.getdata() if value)
 
 
 def pokemon_blob(number: int, step: int) -> Image.Image:

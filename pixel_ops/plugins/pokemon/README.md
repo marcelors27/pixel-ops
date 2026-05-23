@@ -133,7 +133,7 @@ Fields:
 - `gif_output`: GIF output path.
 - `scanlines`: overlays a subtle handheld-screen scanline effect when enabled.
 - `timezone_primary`: timezone used for the main clock and day/night palette.
-- `weather`: Open-Meteo polling config for map weather effects and the map weather badge.
+- Weather lives in `pixel_ops/config/integrations.json`. Supported providers are `open_meteo`, `wttr_in`, and `openweathermap`; all normalize into the same map weather effects and HUD badge.
 - `ai`: optional Pixel OPs AI plugin config. The initial provider is `openai_chatgpt`, backed by the OpenAI Responses API. `cache_enabled` stores successful JSON decisions locally so repeated encounters do not spend tokens again.
 - `splash.enabled`: shows the Pixel OPs logo before GIF and live display output.
 - `splash.seconds`: splash duration.

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import hashlib
 import random
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -27,6 +29,7 @@ from pixel_ops.render.hud import draw_hud
 from pixel_ops.render.renderer import PixelRenderer
 from pixel_ops.plugins.pokemon.render.sprites import (
     AshSpriteSet,
+    NpcSpriteSet,
     PokemonSpriteStore,
     battle_ash_frame,
     pokeball,
@@ -49,6 +52,19 @@ BATTLE_ASH_X = 8
 BATTLE_ASH_BOTTOM_PAD = 2
 
 
+@dataclass
+class VoiceCompanionState:
+    x: float
+    y: float
+    target_x: float
+    target_y: float
+    direction: str
+    next_target_frame: int
+    speed: float
+    rng: random.Random
+    variant: int
+
+
 class OverworldScene:
     def __init__(
         self,
@@ -60,12 +76,14 @@ class OverworldScene:
         lazy_download: bool = True,
         scene_fps: int = 10,
         game_config: dict | None = None,
+        companion_config: dict | None = None,
         display_layout: dict | None = None,
         ash_assets_dir: Path | None = None,
         event_sources: list | None = None,
         ai_plugin: AiDecisionPlugin | None = None,
     ):
         cfg = game_config or {}
+        self.companion_config = companion_config or {}
         self.display_layout = display_layout or {}
         encounter_cfg = cfg.get("encounter", {})
         self.renderer = PixelRenderer(width, height)
@@ -102,6 +120,8 @@ class OverworldScene:
         self.state = GameStateMachine.from_seconds(scene_fps, encounter_cfg)
         self.mood_engine = MoodEngine()
         self.current_mood = self.mood_engine.state(datetime.now(ZoneInfo(self.primary_timezone)))
+        self.event_sources = event_sources or []
+        self._voice_companions: dict[str, VoiceCompanionState] = {}
         self.encounter_system = EncounterSystem(
             PokemonSelector(
                 pokemon_api,
@@ -109,7 +129,7 @@ class OverworldScene:
                 config=cfg.get("events", {}),
                 ai_plugin=ai_plugin,
             ),
-            sources=event_sources or [],
+            sources=self.event_sources,
             queue_limit=int(cfg.get("events", {}).get("queue_limit", 6)),
             on_event=self.mood_engine.observe,
         )
@@ -129,6 +149,7 @@ class OverworldScene:
             scene_fps=scene_fps,
             require_local=bool(cfg.get("require_ash_sprite", False)),
         )
+        self.npc_sprites = NpcSpriteSet(self.asset_root, scene_fps=scene_fps, scale=2)
         map_viewport = (self.map_box[2] - self.map_box[0], self.map_box[3] - self.map_box[1])
         self.map_routes = MapRouteManager(
             Path(__file__).resolve().parents[1] / "assets/maps/firered_leafgreen_clean",
@@ -202,10 +223,21 @@ class OverworldScene:
         pull_requests: list[PullRequestSummary] | None = None,
         weather: WeatherState | None = None,
         ai_usage: AIUsageSnapshot | None = None,
+        work_events: list[WorkEvent] | None = None,
     ):
         base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
         phase = self.advance(base_now, weather=weather)
-        return self.render_full(people, event, base_now, phase, pull_requests=pull_requests, weather=weather, ai_usage=ai_usage)
+        recent_events = work_events if work_events is not None else self.encounter_system.recent(base_now)
+        return self.render_full(
+            people,
+            event,
+            base_now,
+            phase,
+            pull_requests=pull_requests,
+            weather=weather,
+            ai_usage=ai_usage,
+            work_events=recent_events,
+        )
 
     def render_full(
         self,
@@ -216,11 +248,20 @@ class OverworldScene:
         pull_requests: list[PullRequestSummary] | None = None,
         weather: WeatherState | None = None,
         ai_usage: AIUsageSnapshot | None = None,
+        work_events: list[WorkEvent] | None = None,
     ) -> Image.Image:
         phase = phase or self.state.phase
         base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
         pal = day_night_palette(base_now.hour)
-        img = self.render_base(people, event, base_now, pull_requests=pull_requests, weather=weather, ai_usage=ai_usage)
+        img = self.render_base(
+            people,
+            event,
+            base_now,
+            pull_requests=pull_requests,
+            weather=weather,
+            ai_usage=ai_usage,
+            work_events=work_events,
+        )
         if self._is_battle_phase(phase):
             self._draw_battle_scene(img, phase, pal)
         else:
@@ -239,6 +280,7 @@ class OverworldScene:
         pull_requests: list[PullRequestSummary] | None = None,
         weather: WeatherState | None = None,
         ai_usage: AIUsageSnapshot | None = None,
+        work_events: list[WorkEvent] | None = None,
     ) -> Image.Image:
         base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
         pal = day_night_palette(base_now.hour)
@@ -258,6 +300,7 @@ class OverworldScene:
             pull_requests=pull_requests,
             ai_usage=ai_usage,
             weather=weather,
+            work_events=work_events,
             layout=self.display_layout,
         )
         return img
@@ -810,8 +853,8 @@ class OverworldScene:
     def enqueue_event(self, event: WorkEvent) -> None:
         self.encounter_system.enqueue(event)
 
-    def _sprite_layers(self, phase: GamePhase) -> list[tuple[Image.Image, int, int]]:
-        layers: list[tuple[Image.Image, int, int]] = []
+    def _sprite_layers(self, phase: GamePhase) -> list[tuple[Image.Image, int, int, str]]:
+        layers: list[tuple[Image.Image, int, int, str]] = []
         ash_x, route_y, direction = self._ash_pose_for_phase(phase)
         if direction:
             self.ash_direction = direction
@@ -822,14 +865,15 @@ class OverworldScene:
         walking = phase in (GamePhase.WALKING, GamePhase.RESUME_WALKING)
         step_index = int(self.frame * 6 / max(1, self.scene_fps))
         ash_y = route_y + (1 if walking and step_index % 2 else 0)
-        layers.append((ash, ash_x, ash_y))
+        layers.extend(self._voice_companion_layers(ash_x, ash_y, phase))
+        layers.append((ash, ash_x, ash_y, ""))
 
         if phase in (GamePhase.ENCOUNTER_START, GamePhase.POKEMON_APPEARS, GamePhase.ASH_THROWS, GamePhase.BALL_SHAKE):
             sprite_path = self.encounter.pokemon.animated_sprite_path or self.encounter.pokemon.sprite_path
             poke = self.pokemon_sprites.sprite_for(sprite_path, self.encounter.pokemon.number, self.frame, scale=2)
             wobble = 1 if phase in (GamePhase.ENCOUNTER_START, GamePhase.POKEMON_APPEARS) and self.frame % 10 < 5 else 0
             if not (phase == GamePhase.ENCOUNTER_START and self.frame % 8 < 4):
-                layers.append((poke, self.pokemon_x, self.pokemon_y + wobble))
+                layers.append((poke, self.pokemon_x, self.pokemon_y + wobble, ""))
 
         if phase in (GamePhase.ASH_THROWS, GamePhase.BALL_SHAKE):
             ball = scale_sprite(pokeball(self.frame // 4), 2)
@@ -841,20 +885,199 @@ class OverworldScene:
                 shake = (-3, 3, 0, -2)[(self.frame // 4) % 4]
                 bx = self.pokemon_x + 12 + shake
                 by = self.pokemon_y + 22
-            layers.append((ball, bx, by))
+            layers.append((ball, bx, by, ""))
         return layers
 
     def _draw_sprites(self, img: Image.Image, phase: GamePhase, pal, offset: tuple[int, int] = (0, 0)) -> None:
         ox, oy = offset
-        for sprite, x, y in self._sprite_layers(phase):
+        draw = ImageDraw.Draw(img)
+        for sprite, x, y, label in self._sprite_layers(phase):
             img.paste(sprite, (x - ox, y - oy), sprite)
+            if label:
+                self._draw_companion_label(draw, label, x - ox + sprite.width // 2, y - oy + sprite.height + 1, pal)
 
     def _sprite_box_for_phase(self, phase: GamePhase) -> tuple[int, int, int, int] | None:
         layers = self._sprite_layers(phase)
         if not layers:
             return None
-        boxes = [(x, y, x + sprite.width, y + sprite.height) for sprite, x, y in layers]
+        boxes = []
+        for sprite, x, y, label in layers:
+            boxes.append((x, y, x + sprite.width, y + sprite.height))
+            if label:
+                boxes.append((x - 18, y + sprite.height, x + sprite.width + 18, y + sprite.height + 12))
         return self._pad_box(self._union_many(boxes), 4)
+
+    def _voice_companion_layers(self, ash_x: int, ash_y: int, phase: GamePhase) -> list[tuple[Image.Image, int, int, str]]:
+        snapshot = self._discord_voice_snapshot()
+        if snapshot is None or not snapshot.members:
+            self._voice_companions.clear()
+            return []
+        active_ids = {member.user_id for member in snapshot.members}
+        for user_id in list(self._voice_companions):
+            if user_id not in active_ids:
+                self._voice_companions.pop(user_id, None)
+        layers: list[tuple[Image.Image, int, int, str]] = []
+        for member in snapshot.members:
+            seed = int(hashlib.sha1(member.user_id.encode("utf-8")).hexdigest()[:8], 16)
+            visual = self._discord_companion_visual(member.user_id)
+            state = self._voice_companion_state(member.user_id, seed, ash_x, ash_y, visual.get("sprite_variant"))
+            muted = bool(getattr(member, "muted", False))
+            if muted:
+                state.target_x = state.x
+                state.target_y = state.y
+            else:
+                self._update_voice_companion_state(state)
+            anim = f"walk_{state.direction}"
+            if muted or (abs(state.x - state.target_x) < 0.6 and abs(state.y - state.target_y) < 0.6):
+                anim = f"idle_{state.direction}"
+            companion = self.npc_sprites.frame(state.variant, anim, self.frame)
+            if muted:
+                companion = self._muted_companion_sprite(companion)
+            x = self._clamp_sprite_x(int(round(state.x)), companion.width)
+            y = self._clamp_sprite_y(int(round(state.y)), companion.height)
+            label = str(visual.get("label") or member.name)
+            layers.append((companion, x, y, self._short_companion_name(label)))
+        return sorted(layers, key=lambda item: item[2] + item[0].height)
+
+    @staticmethod
+    def _muted_companion_sprite(sprite: Image.Image) -> Image.Image:
+        rgba = sprite.convert("RGBA")
+        alpha = rgba.getchannel("A")
+        shade = Image.new("RGBA", rgba.size, (20, 22, 30, 255))
+        muted = Image.blend(rgba, shade, 0.48)
+        muted.putalpha(alpha)
+        return muted
+
+    def _discord_companion_visual(self, user_id: str) -> dict:
+        raw = self.companion_config.get("discord", {}) if isinstance(self.companion_config, dict) else {}
+        value = raw.get(user_id, {}) if isinstance(raw, dict) else {}
+        return value if isinstance(value, dict) else {}
+
+    def _voice_companion_state(
+        self,
+        user_id: str,
+        seed: int,
+        ash_x: int,
+        ash_y: int,
+        sprite_variant: int | None,
+    ) -> VoiceCompanionState:
+        state = self._voice_companions.get(user_id)
+        if state is not None:
+            variant = sprite_variant if sprite_variant is not None else seed % self.npc_sprites.count
+            state.variant = max(0, min(self.npc_sprites.count - 1, variant))
+            return state
+        rng = random.Random(seed)
+        variant = sprite_variant if sprite_variant is not None else seed % self.npc_sprites.count
+        variant = max(0, min(self.npc_sprites.count - 1, variant))
+        sample = self.npc_sprites.frame(variant, "idle_down", self.frame)
+        sprite_w = sample.width
+        sprite_h = sample.height
+        x, y = self._random_companion_target(rng, sprite_w, sprite_h)
+        if not self._voice_companions:
+            x = self._clamp_sprite_x(ash_x + rng.randint(-52, 52), sprite_w)
+            y = self._clamp_sprite_y(ash_y + rng.randint(-48, 28), sprite_h)
+        state = VoiceCompanionState(
+            x=float(x),
+            y=float(y),
+            target_x=float(x),
+            target_y=float(y),
+            direction="down",
+            next_target_frame=self.frame + rng.randint(self.scene_fps * 2, self.scene_fps * 6),
+            speed=0.7 + rng.random() * 0.9,
+            rng=rng,
+            variant=variant,
+        )
+        self._set_next_companion_target(state, sprite_w, sprite_h)
+        self._voice_companions[user_id] = state
+        return state
+
+    def _update_voice_companion_state(self, state: VoiceCompanionState) -> None:
+        dx = state.target_x - state.x
+        dy = state.target_y - state.y
+        distance = max(0.01, (dx * dx + dy * dy) ** 0.5)
+        if distance <= state.speed or self.frame >= state.next_target_frame:
+            state.x = state.target_x
+            state.y = state.target_y
+            sprite = self.npc_sprites.frame(state.variant, "idle_down", self.frame)
+            self._set_next_companion_target(state, sprite.width, sprite.height)
+            state.next_target_frame = self.frame + state.rng.randint(self.scene_fps * 2, self.scene_fps * 7)
+            return
+        step = min(state.speed, distance)
+        state.x += dx / distance * step
+        state.y += dy / distance * step
+
+    def _random_companion_target(self, rng: random.Random, width: int, height: int) -> tuple[int, int]:
+        x0, y0, x1, y1 = self.map_box
+        min_x = x0 + 8
+        max_x = max(min_x, x1 - width - 8)
+        min_y = y0 + 10
+        max_y = max(min_y, y1 - height - 18)
+        return rng.randint(min_x, max_x), rng.randint(min_y, max_y)
+
+    def _set_next_companion_target(self, state: VoiceCompanionState, width: int, height: int) -> None:
+        x0, y0, x1, y1 = self.map_box
+        min_x = x0 + 8
+        max_x = max(min_x, x1 - width - 8)
+        min_y = y0 + 10
+        max_y = max(min_y, y1 - height - 18)
+        directions = ("down", "up", "right", "left")
+        for _ in range(8):
+            direction = directions[state.rng.randrange(len(directions))]
+            distance = state.rng.randint(20, 76)
+            target_x = state.x
+            target_y = state.y
+            if direction == "down":
+                target_y = min(max_y, state.y + distance)
+            elif direction == "up":
+                target_y = max(min_y, state.y - distance)
+            elif direction == "right":
+                target_x = min(max_x, state.x + distance)
+            else:
+                target_x = max(min_x, state.x - distance)
+            if abs(target_x - state.x) >= 4 or abs(target_y - state.y) >= 4:
+                state.direction = direction
+                state.target_x = float(target_x)
+                state.target_y = float(target_y)
+                return
+        state.target_x, state.target_y = self._random_companion_target(state.rng, width, height)
+        dx = state.target_x - state.x
+        dy = state.target_y - state.y
+        if abs(dx) > abs(dy):
+            state.target_y = state.y
+            state.direction = "right" if dx > 0 else "left"
+        else:
+            state.target_x = state.x
+            state.direction = "down" if dy > 0 else "up"
+
+    def _discord_voice_snapshot(self):
+        for source in self.event_sources:
+            snapshot_fn = getattr(source, "discord_voice_snapshot", None)
+            if callable(snapshot_fn):
+                return snapshot_fn()
+        return None
+
+    def _clamp_sprite_x(self, x: int, width: int) -> int:
+        x0, _, x1, _ = self.map_box
+        return max(x0 + 2, min(x1 - width - 2, x))
+
+    def _clamp_sprite_y(self, y: int, height: int) -> int:
+        _, y0, _, y1 = self.map_box
+        return max(y0 + 4, min(y1 - height - 14, y))
+
+    @staticmethod
+    def _short_companion_name(name: str) -> str:
+        clean = name.strip() or "Friend"
+        return clean[:10]
+
+    def _draw_companion_label(self, draw: ImageDraw.ImageDraw, label: str, center_x: int, y: int, pal) -> None:
+        label_font = font(8)
+        box = draw.textbbox((0, 0), label, font=label_font)
+        width = box[2] - box[0] + 6
+        x0 = max(self.map_box[0] + 1, min(self.map_box[2] - width - 1, center_x - width // 2))
+        y0 = min(self.map_box[3] - 10, y)
+        draw.rectangle((x0 + 1, y0 + 1, x0 + width + 1, y0 + 10), fill=(16, 24, 32))
+        draw.rectangle((x0, y0, x0 + width, y0 + 9), fill=pal.panel, outline=pal.panel_shadow)
+        draw.text((x0 + 3, y0), label, font=label_font, fill=pal.ink)
 
     def _pad_box(self, box: tuple[int, int, int, int], pad: int) -> tuple[int, int, int, int]:
         return (

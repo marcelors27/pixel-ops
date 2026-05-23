@@ -6,6 +6,7 @@ from typing import Any
 from pixel_ops.events.event_bus import EventBus
 from pixel_ops.events.social_events import SocialSignal, signal_to_work_event
 from pixel_ops.integrations.discord.presence import classify_discord_dispatch
+from pixel_ops.integrations.discord.voice_state import DiscordVoiceSnapshot, DiscordVoiceStateTracker
 
 
 class DiscordGatewayAdapter:
@@ -29,12 +30,24 @@ class DiscordGatewayAdapter:
 
 
 class DiscordBusEventSource:
-    def __init__(self, bus: EventBus, enabled: bool = False, drain_limit: int = 4):
+    def __init__(
+        self,
+        bus: EventBus,
+        enabled: bool = False,
+        drain_limit: int = 4,
+        tracker: DiscordVoiceStateTracker | None = None,
+    ):
         self.bus = bus
         self.enabled = enabled
         self.drain_limit = drain_limit
+        self.tracker = tracker
 
     def poll(self, now: datetime):
         if not self.enabled:
             return []
         return self.bus.drain(self.drain_limit)
+
+    def discord_voice_snapshot(self) -> DiscordVoiceSnapshot:
+        if self.tracker is None:
+            return DiscordVoiceSnapshot()
+        return self.tracker.snapshot()

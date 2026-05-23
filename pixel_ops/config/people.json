@@ -33,50 +33,6 @@
       "show_flag": true
     },
     {
-      "key": "PT",
-      "name": "",
-      "country": "US",
-      "timezone": "America/Los_Angeles",
-      "timezone_label": "Pacific",
-      "standard_key": "PST",
-      "daylight_key": "PDT",
-      "work_start": "09:00",
-      "work_end": "17:00"
-    },
-    {
-      "key": "MT",
-      "name": "",
-      "country": "US",
-      "timezone": "America/Denver",
-      "timezone_label": "Mountain",
-      "standard_key": "MST",
-      "daylight_key": "MDT",
-      "work_start": "09:00",
-      "work_end": "17:00"
-    },
-    {
-      "key": "CT",
-      "name": "",
-      "country": "US",
-      "timezone": "America/Chicago",
-      "timezone_label": "Central",
-      "standard_key": "CST",
-      "daylight_key": "CDT",
-      "work_start": "09:00",
-      "work_end": "17:00"
-    },
-    {
-      "key": "ET",
-      "name": "",
-      "country": "US",
-      "timezone": "America/New_York",
-      "timezone_label": "Eastern",
-      "standard_key": "EST",
-      "daylight_key": "EDT",
-      "work_start": "09:00",
-      "work_end": "17:00"
-    },
-    {
       "key": "IST",
       "name": "Anirudh, Hari",
       "country": "IN",
@@ -97,6 +53,54 @@
       "work_start": "09:00",
       "work_end": "18:00",
       "show_flag": true
+    },
+    {
+      "key": "PT",
+      "name": "",
+      "country": "US",
+      "timezone": "America/Los_Angeles",
+      "timezone_label": "Pacific",
+      "standard_key": "PST",
+      "daylight_key": "PDT",
+      "work_start": "09:00",
+      "work_end": "17:00",
+      "show_flag": false
+    },
+    {
+      "key": "MT",
+      "name": "",
+      "country": "US",
+      "timezone": "America/Denver",
+      "timezone_label": "Mountain",
+      "standard_key": "MST",
+      "daylight_key": "MDT",
+      "work_start": "09:00",
+      "work_end": "17:00",
+      "show_flag": false
+    },
+    {
+      "key": "CT",
+      "name": "",
+      "country": "US",
+      "timezone": "America/Chicago",
+      "timezone_label": "Central",
+      "standard_key": "CST",
+      "daylight_key": "CDT",
+      "work_start": "09:00",
+      "work_end": "17:00",
+      "show_flag": false
+    },
+    {
+      "key": "ET",
+      "name": "",
+      "country": "US",
+      "timezone": "America/New_York",
+      "timezone_label": "Eastern",
+      "standard_key": "EST",
+      "daylight_key": "EDT",
+      "work_start": "09:00",
+      "work_end": "17:00",
+      "show_flag": false
     }
   ]
 }

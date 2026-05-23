@@ -82,11 +82,9 @@ class MainScene:
 
     def _draw_time_panel(self, draw, pal, people: list[PersonTime]) -> None:
         PixelRenderer.draw_panel(draw, (12, 16, 308, 218), pal["panel"], pal["panel_shadow"], pal["ink"])
-        title_font = font(20)
         row_font = font(18)
-        draw.text((28, 28), "TIME LINK STATUS", font=title_font, fill=pal["ink"])
-        draw.rectangle((26, 56, 294, 59), fill=pal["blue"])
-        y = 70
+        draw.rectangle((26, 38, 294, 41), fill=pal["blue"])
+        y = 52
         for person in people[:5]:
             status_color = {
                 "working": pal["green"],

@@ -23,3 +23,6 @@ Current ADRs:
 - [0010 - Weather, Calendar, GitHub, Slack, Discord Share The Same Runtime Boundary](0010-shared-integration-runtime-boundary.md)
 - [0011 - Graphify Artifacts Document The Codebase Map](0011-graphify-codebase-map.md)
 - [0012 - AI Usage Becomes Ambient Gauges And Events](0012-ai-usage-ambient-gauges.md)
+- [0013 - Config Studio Discovers Plugin-Owned Config](0013-config-studio-discovers-plugin-configs.md)
+- [0014 - Discord Voice Companions Are Provider State With Visual Mapping](0014-discord-voice-companions-are-provider-state-with-visual-mapping.md)
+- [0015 - Timezone Config Is Derived From IANA Selection](0015-timezone-config-is-derived-from-iana-selection.md)

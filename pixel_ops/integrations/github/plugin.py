@@ -20,6 +20,8 @@ class GitHubIntegrationPlugin:
             poll_seconds=int(cfg.get("poll_seconds", ctx.env_int("PIXEL_OPS_GITHUB_POLL_SECONDS", 300))),
             max_pull_requests=int(cfg.get("max_pull_requests", ctx.env_int("PIXEL_OPS_GITHUB_MAX_PRS", 4))),
             fetch_pull_requests=int(cfg.get("fetch_pull_requests", ctx.env_int("PIXEL_OPS_GITHUB_FETCH_PRS", 20))),
+            fetch_deployments=bool(cfg.get("fetch_deployments", True)),
+            deployment_workflows=[str(item) for item in (cfg.get("deployment_workflows") or [])],
             startup_lookback_seconds=int(
                 cfg.get("startup_lookback_seconds", ctx.env_int("PIXEL_OPS_GITHUB_STARTUP_LOOKBACK_SECONDS", 3600))
             ),

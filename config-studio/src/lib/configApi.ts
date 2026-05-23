@@ -1,11 +1,23 @@
-import type { RuntimeConfig } from "../types";
+import type { ConfigManifest, RuntimeConfig } from "../types";
 
-export async function loadConfig(): Promise<RuntimeConfig> {
-  const response = await fetch("/api/config");
+export async function loadConfig(plugins: string[] = []): Promise<RuntimeConfig> {
+  const params = new URLSearchParams();
+  if (plugins.length) {
+    params.set("plugins", plugins.join(","));
+  }
+  const response = await fetch(`/api/config${params.size ? `?${params.toString()}` : ""}`);
   if (!response.ok) {
     throw new Error(await response.text());
   }
   return response.json() as Promise<RuntimeConfig>;
+}
+
+export async function loadConfigManifest(): Promise<ConfigManifest> {
+  const response = await fetch("/api/config-manifest");
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.json() as Promise<ConfigManifest>;
 }
 
 export async function saveConfig(config: RuntimeConfig): Promise<void> {

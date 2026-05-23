@@ -14,27 +14,33 @@
     "layout": {
       "timezones": {
         "x": 0,
-        "y": 8,
-        "width": 314,
-        "height": 153
+        "y": 0,
+        "width": 318,
+        "height": 136
+      },
+      "route_signal": {
+        "x": 0,
+        "y": 172,
+        "width": 185,
+        "height": 39
       },
       "gauges": {
-        "x": 8,
-        "y": 164,
-        "width": 145,
+        "x": 185,
+        "y": 172,
+        "width": 131,
         "height": 40
       },
       "weather": {
-        "x": 163,
-        "y": 214,
-        "width": 141,
-        "height": 42
+        "x": 194,
+        "y": 216,
+        "width": 120,
+        "height": 40
       },
       "activity": {
-        "x": 163,
-        "y": 164,
-        "width": 149,
-        "height": 40
+        "x": 0,
+        "y": 137,
+        "width": 316,
+        "height": 35
       },
       "game": {
         "x": 0,
@@ -43,10 +49,10 @@
         "height": 172
       },
       "text_box": {
-        "x": 8,
-        "y": 387,
-        "width": 304,
-        "height": 91
+        "x": 0,
+        "y": 385,
+        "width": 320,
+        "height": 92
       }
     },
     "backend": "usb_bulk_rev_a",

@@ -1,3 +1,24 @@
+export type ConfigDescriptor = {
+  key: keyof RuntimeConfig | string;
+  label: string;
+  relativePath: string;
+  scope: "core" | "integration" | "plugin";
+  owner?: string;
+};
+
+export type DetectedPlugin = {
+  key: string;
+  label: string;
+  configKeys: string[];
+  configs: ConfigDescriptor[];
+};
+
+export type ConfigManifest = {
+  core: ConfigDescriptor[];
+  integrations: DetectedPlugin[];
+  visualPlugins: DetectedPlugin[];
+};
+
 export type RuntimeConfig = {
   display: {
     display: {
@@ -46,13 +67,21 @@ export type RuntimeConfig = {
         bot_user_id: string;
         socket_reconnect_seconds: number;
       };
-      discord: IntegrationToggle;
+      discord: IntegrationToggle & {
+        bot_token_env: string;
+        guild_id: string;
+        focus_user_id: string;
+        max_companions: number;
+        gateway_reconnect_seconds: number;
+      };
       github: IntegrationToggle & {
         token_env: string;
         repos: string[];
         poll_seconds: number;
         max_pull_requests: number;
         fetch_pull_requests: number;
+        fetch_deployments: boolean;
+        deployment_workflows: string[];
         startup_lookback_seconds: number;
         timeout_seconds: number;
       };
@@ -68,9 +97,12 @@ export type RuntimeConfig = {
         poll_seconds: number;
       };
       weather: IntegrationToggle & {
+        provider: string;
         city: string;
         country_code: string;
         poll_seconds: number;
+        timeout_seconds: number;
+        api_key_env: string;
       };
       ai_usage: IntegrationToggle & {
         providers: string[];
@@ -84,10 +116,16 @@ export type RuntimeConfig = {
       };
     };
   };
+  discord_people?: {
+    discord_people: {
+      max_recent: number;
+      people: Record<string, DiscordPersonConfig>;
+    };
+  };
   people: {
     people: PersonConfig[];
   };
-  game: {
+  game?: {
     game: {
       fps: number;
       static_background: boolean;
@@ -121,7 +159,7 @@ export type RuntimeConfig = {
       };
     };
   };
-  pokemon: {
+  pokemon?: {
     pokemon: {
       api_base_url: string;
       sprite_base_url: string;
@@ -133,9 +171,14 @@ export type RuntimeConfig = {
       lazy_download: boolean;
     };
   };
+  pokemon_companions?: {
+    companions: {
+      discord: Record<string, PokemonCompanionConfig>;
+    };
+  };
 };
 
-export type LayoutKey = "timezones" | "gauges" | "weather" | "activity" | "game" | "text_box";
+export type LayoutKey = "timezones" | "gauges" | "weather" | "activity" | "route_signal" | "game" | "text_box";
 
 export type LayoutBox = {
   x: number;
@@ -146,6 +189,17 @@ export type LayoutBox = {
 
 export type IntegrationToggle = {
   enabled: boolean;
+};
+
+export type DiscordPersonConfig = {
+  display_name: string;
+  nicknames: string[];
+  last_seen_at: string;
+};
+
+export type PokemonCompanionConfig = {
+  sprite_variant: number | null;
+  label: string;
 };
 
 export type PersonConfig = {

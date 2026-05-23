@@ -1,0 +1,30 @@
+{
+  "companions": {
+    "discord": {
+      "135844077781516289": {
+        "sprite_variant": 7,
+        "label": ""
+      },
+      "141559772188114944": {
+        "sprite_variant": 17,
+        "label": ""
+      },
+      "533459625341616148": {
+        "sprite_variant": 37,
+        "label": ""
+      },
+      "429437142817701898": {
+        "sprite_variant": 44,
+        "label": ""
+      },
+      "406174064005218305": {
+        "sprite_variant": 33,
+        "label": ""
+      },
+      "403309503417679872": {
+        "sprite_variant": 23,
+        "label": ""
+      }
+    }
+  }
+}

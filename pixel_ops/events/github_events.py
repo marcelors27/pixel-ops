@@ -40,6 +40,8 @@ class GitHubEventSource:
         poll_seconds: int = 300,
         max_pull_requests: int = 4,
         fetch_pull_requests: int | None = None,
+        fetch_deployments: bool = True,
+        deployment_workflows: list[str] | None = None,
         startup_lookback_seconds: int = 3600,
         timeout_seconds: int = 20,
     ):
@@ -49,6 +51,8 @@ class GitHubEventSource:
         self.poll_seconds = poll_seconds
         self.max_pull_requests = max_pull_requests
         self.fetch_pull_requests = fetch_pull_requests or max(max_pull_requests, 20)
+        self.fetch_deployments = fetch_deployments
+        self.deployment_workflows = tuple(name.lower() for name in (deployment_workflows or []) if name)
         self.startup_lookback_seconds = max(self.poll_seconds, int(startup_lookback_seconds))
         self.timeout_seconds = timeout_seconds
         self._last_poll_at: datetime | None = None
@@ -119,8 +123,10 @@ class GitHubEventSource:
         open_pull_requests = self._fetch_open_pull_requests()
         closed_pull_requests: list[PullRequestSummary] = []
         closed_events: list[WorkEvent] = []
+        deployment_events: list[WorkEvent] = []
         if include_closed:
             closed_pull_requests, closed_events = self._fetch_closed_pull_request_updates(now, since)
+            deployment_events = self._fetch_deployment_events(now, since)
         with self._lock:
             self._open_pull_requests = open_pull_requests
             if include_closed:
@@ -133,6 +139,7 @@ class GitHubEventSource:
             )
             self._queue_open_pull_request_events(open_pull_requests, now)
             self._pending_events.extend(closed_events)
+            self._pending_events.extend(deployment_events)
 
     def _refresh_open_pull_requests(self, now: datetime) -> list[PullRequestSummary]:
         if self._last_open_fetch_at and (now - self._last_open_fetch_at).total_seconds() < self.poll_seconds:
@@ -244,6 +251,71 @@ class GitHubEventSource:
                 continue
         summaries.sort(key=lambda item: item.updated_at or datetime.min.replace(tzinfo=timezone.utc), reverse=True)
         return summaries[: self.fetch_pull_requests], events
+
+    def _fetch_deployment_events(self, now: datetime, since: datetime) -> list[WorkEvent]:
+        if not self.fetch_deployments:
+            return []
+        events: list[WorkEvent] = []
+        for repo in self.repos:
+            encoded_repo = urllib.parse.quote(repo, safe="/")
+            short_repo = repo.split("/")[-1]
+            url = f"https://api.github.com/repos/{encoded_repo}/actions/runs?per_page=10"
+            try:
+                payload = self._request_json(url)
+                for item in payload.get("workflow_runs", []):
+                    updated_at = self._parse_github_datetime(item.get("updated_at"))
+                    if updated_at is None or updated_at <= since:
+                        continue
+                    workflow = str(item.get("name") or "workflow")
+                    if self.deployment_workflows and workflow.lower() not in self.deployment_workflows:
+                        continue
+                    status = str(item.get("status") or "").lower()
+                    conclusion = str(item.get("conclusion") or "").lower()
+                    category = self._workflow_category(status, conclusion)
+                    if category is None:
+                        continue
+                    run_id = str(item.get("id") or item.get("run_number") or workflow)
+                    state = conclusion or status
+                    key = f"{short_repo}:workflow:{run_id}:{state}"
+                    if key in self._seen:
+                        continue
+                    self._seen.add(key)
+                    events.append(
+                        WorkEvent(
+                            category=category,
+                            title=f"{workflow} {self._workflow_title_state(category)}",
+                            detail=short_repo,
+                            priority=EventPriority.HIGH if category == EventCategory.BUILD_BROKEN else EventPriority.MEDIUM,
+                            source="github",
+                            repo=short_repo,
+                            external_id=key,
+                            occurred_at=updated_at.astimezone(now.tzinfo),
+                            metadata={"workflow": workflow, "state": state},
+                        )
+                    )
+                    self._debug(f"queued workflow category={category.value} key={key}")
+            except (urllib.error.URLError, KeyError, ValueError, TypeError, AttributeError) as error:
+                self._debug(f"workflow_runs error repo={repo}: {type(error).__name__}: {error}")
+                continue
+        return events
+
+    @staticmethod
+    def _workflow_category(status: str, conclusion: str) -> EventCategory | None:
+        if status in ("queued", "in_progress", "requested", "pending", "waiting"):
+            return EventCategory.DEPLOY_STARTED
+        if conclusion == "success":
+            return EventCategory.DEPLOY_COMPLETED
+        if conclusion in ("failure", "cancelled", "timed_out", "action_required", "startup_failure"):
+            return EventCategory.BUILD_BROKEN
+        return None
+
+    @staticmethod
+    def _workflow_title_state(category: EventCategory) -> str:
+        if category == EventCategory.DEPLOY_STARTED:
+            return "is deploying"
+        if category == EventCategory.DEPLOY_COMPLETED:
+            return "deployed"
+        return "needs attention"
 
     @staticmethod
     def _parse_github_datetime(value: object) -> datetime | None:

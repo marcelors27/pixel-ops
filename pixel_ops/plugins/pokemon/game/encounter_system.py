@@ -5,7 +5,7 @@ import sys
 from collections import deque
 from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from pixel_ops.data_sources.weather import WeatherState
 from pixel_ops.plugins.pokemon.pokemon import Pokemon, get_pokemon
@@ -78,6 +78,7 @@ class EncounterSystem:
         self.selector = selector
         self.sources = sources or []
         self.queue: deque[WorkEvent] = deque(maxlen=queue_limit)
+        self.recent_events: deque[WorkEvent] = deque(maxlen=24)
         self.on_event = on_event
         self._seen: set[str] = set()
         self.debug = _env_bool("PIXEL_OPS_DEBUG_EVENTS")
@@ -96,7 +97,16 @@ class EncounterSystem:
         if self.on_event:
             self.on_event(event)
         self.queue.append(event)
+        self.recent_events.append(event)
         self._debug(f"queued category={event.category.value} key={key} size={len(self.queue)}")
+
+    def recent(self, now: datetime, max_age_seconds: int = 1800) -> list[WorkEvent]:
+        cutoff = now - timedelta(seconds=max_age_seconds)
+        return [
+            event
+            for event in self.recent_events
+            if event.occurred_at is None or event.occurred_at.astimezone(now.tzinfo) >= cutoff
+        ]
 
     def next_encounter(
         self,

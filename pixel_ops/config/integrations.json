@@ -9,7 +9,12 @@
       "socket_reconnect_seconds": 10
     },
     "discord": {
-      "enabled": false
+      "enabled": true,
+      "bot_token_env": "PIXEL_OPS_DISCORD_BOT_TOKEN",
+      "guild_id": "1133891225209024633",
+      "focus_user_id": "242829666488942593",
+      "max_companions": 20,
+      "gateway_reconnect_seconds": 10
     },
     "github": {
       "enabled": true,
@@ -20,6 +25,8 @@
       "poll_seconds": 60,
       "max_pull_requests": 4,
       "fetch_pull_requests": 20,
+      "fetch_deployments": true,
+      "deployment_workflows": [],
       "startup_lookback_seconds": 3600,
       "timeout_seconds": 20
     },
@@ -40,9 +47,12 @@
     },
     "weather": {
       "enabled": true,
+      "provider": "open_meteo",
       "city": "Porto Alegre",
       "country_code": "BR",
-      "poll_seconds": 900
+      "poll_seconds": 900,
+      "timeout_seconds": 8,
+      "api_key_env": "OPENWEATHERMAP_API_KEY"
     },
     "ai_usage": {
       "enabled": true,

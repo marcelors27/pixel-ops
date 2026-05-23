@@ -54,21 +54,124 @@ restart.
 
 ## Plugins
 
-The Pokemon plugin has its own full documentation with images, configuration examples, cache commands, maps, sprites, calendar setup, and GitHub setup:
+Pixel OPs has three plugin-style boundaries. Keep them separate:
+
+- visual interface plugins render the world;
+- integration plugins collect outside activity and normalize it;
+- AI decision plugins provide optional structured model decisions.
+
+### Visual Interface Plugins
+
+Visual plugins live in `pixel_ops/plugins/<name>/`. They own a complete display experience and translate shared runtime state into pixels. The current default is `pokemon`.
+
+Visual plugins may depend on core data types such as `PersonTime`, `CalendarEvent`, `PullRequestSummary`, `WeatherState`, `AIUsageSnapshot`, `WorkEvent`, and `EventSource`. They must not make provider transport calls directly. Provider-specific activity should arrive through integration contributions and core events.
+
+The plugin object contract is currently duck-typed by `pixel_ops/main.py`:
+
+- `name`: stable CLI/config key.
+- `display_name`: human-readable name for UI tooling.
+- `add_arguments(parser)`: optional CLI flags for plugin commands.
+- `load_config(plugin_dir, load_config)`: load plugin-owned JSON config.
+- `maybe_handle_command(args, root_dir, config)`: handle one-shot commands such as cache warmup.
+- `fps(config, display_fps)`: choose the render FPS.
+- `event_config(config)`: expose event selection settings to the runtime.
+- `build_app(...)`: return a `PixelOpsApp`.
+
+To create a visual plugin:
+
+1. Create `pixel_ops/plugins/<name>/plugin.py`.
+2. Add JSON config files under the plugin directory.
+3. Implement a plugin class with the methods above.
+4. Register it in `pixel_ops/plugins/registry.py`.
+5. Keep provider-specific code out of the plugin. Consume `WorkEvent`s, data sources, and optional integration snapshots.
+6. Add plugin documentation and an ADR if the plugin changes runtime boundaries or event semantics.
+
+Config Studio discovers visual plugins from `pixel_ops/plugins/*/plugin.py` and loads plugin JSON files only when the plugin is selected.
+
+The Pokemon plugin has its own full documentation with images, configuration examples, cache commands, maps, sprites, calendar setup, GitHub setup, and Discord companion mapping:
 
 - [Pokemon plugin documentation](pixel_ops/plugins/pokemon/README.md)
 
-Plugins live in `pixel_ops/plugins/<name>/` and expose a plugin class with:
+### Integration Plugins
 
-- `name`
-- `add_arguments(parser)`
-- `load_config(plugin_dir, load_config)`
-- `maybe_handle_command(args, root_dir, config)`
-- `fps(config, display_fps)`
-- `event_config(config)`
-- `build_app(...)`
+Integration plugins live in `pixel_ops/integrations/<name>/plugin.py`. They own provider setup, polling, sockets, local file reads, and provider-specific normalization.
 
-Register new interfaces in `pixel_ops/plugins/registry.py`.
+Integration plugins implement the protocol in `pixel_ops/integration_plugins/base.py`:
+
+- `name`: stable key under `pixel_ops/config/integrations.json`.
+- `enabled(ctx)`: decide whether the plugin should load.
+- `build(ctx)`: return an `IntegrationContribution`.
+
+`IntegrationContext` gives a plugin:
+
+- `root_dir`;
+- CLI args;
+- merged integration config;
+- env helpers for secret names and legacy fallback.
+
+`IntegrationContribution` can provide:
+
+- `event_sources`;
+- `calendar_paths`;
+- `starters`;
+- `warmers`;
+- `closers`;
+- `pull_request_source`;
+- `weather_source`;
+- `ai_usage_source`.
+
+The registry in `pixel_ops/integration_plugins/registry.py` selects enabled plugins, imports their module, calls `plugin()`, merges contributions into one `IntegrationRuntime`, starts background receivers, and closes them on rebuild.
+
+To create an integration plugin:
+
+1. Create `pixel_ops/integrations/<name>/plugin.py`.
+2. Add a class with `name`, `enabled(ctx)`, and `build(ctx)`.
+3. Return only normalized contributions from `build(ctx)`.
+4. Add the module to `PLUGIN_MODULES` and the env fallback key to `PLUGIN_ENABLES`.
+5. Add non-secret config under `pixel_ops/config/integrations.json`.
+6. Put secrets in `.env` and reference them by env var name from JSON, for example `token_env`.
+7. Normalize social/meeting activity through `AmbientSignal` and `WorkEvent`; do not render raw messages, provider payloads, or chat feeds.
+
+Config Studio detects integration plugins from `pixel_ops/integrations/*/plugin.py`. Sidecar config files still need an explicit manifest mapping so unrelated JSON is not exposed accidentally.
+
+### AI Decision Plugins
+
+AI decision plugins live under `pixel_ops/plugins/ai/`. They are not visual plugins. They provide optional structured decisions to visual plugins while preserving deterministic fallback behavior.
+
+The current protocol is in `pixel_ops/plugins/ai/plugin.py`:
+
+- `enabled`: boolean.
+- `decide_json(request)`: return a JSON object matching the request schema, or `None`.
+
+`AiDecisionRequest` contains:
+
+- `system_prompt`;
+- `user_payload`;
+- `schema_name`;
+- `json_schema`;
+- `max_output_tokens`.
+
+Rules for AI plugins:
+
+- keep calls optional;
+- cache successful decisions when practical;
+- return `None` on missing keys, API errors, invalid JSON, or disabled config;
+- never make ambient idle behavior depend on network availability;
+- keep provider-specific API code in the AI plugin, not in visual scenes.
+
+To add an AI provider, implement the protocol, extend `build_ai_plugin()`, add JSON config under `display.ai`, and document any new secret env vars in `.env.example` and ADRs.
+
+### Config Ownership
+
+Use JSON for runtime settings:
+
+- core display config: `pixel_ops/config/display.json`;
+- people/timezones: `pixel_ops/config/people.json`;
+- integration enables and settings: `pixel_ops/config/integrations.json`;
+- visual plugin config: `pixel_ops/plugins/<name>/*.json`;
+- integration sidecars only when an integration owns persistent local state.
+
+Use `.env` only for secrets. Do not move provider toggles, repo lists, city names, guild IDs, sprite choices, or UI-editable runtime values into `.env`.
 
 ## Pokemon Cache
 
@@ -94,7 +197,7 @@ python pixel_ops/main.py --plugin pokemon --output preview --offline
 
 Runtime access to external systems is handled by integration plugins. Each
 plugin is configured in `pixel_ops/config/integrations.json`. The `.env` file is
-reserved for secrets such as Slack/GitHub/OpenAI tokens. Editing
+reserved for secrets such as Slack/GitHub/OpenAI/weather tokens. Editing
 `integrations.json` during a long-running display session rebuilds the
 integration runtime so enables, polling intervals, repos, calendar URLs, and
 weather location can be changed from a UI.
@@ -147,26 +250,35 @@ PIXEL_OPS_GITHUB_TOKEN=github_pat_...
       "token_env": "PIXEL_OPS_GITHUB_TOKEN",
       "repos": ["owner/repo"],
       "poll_seconds": 60,
-      "max_pull_requests": 4
+      "max_pull_requests": 4,
+      "fetch_deployments": true,
+      "deployment_workflows": []
     }
   }
 }
 ```
 
-Weather via Open-Meteo:
+When `fetch_deployments` is enabled, recent GitHub Actions workflow runs are normalized into ambient deploy/build events. Leave `deployment_workflows` empty to observe all workflows, or list workflow names to treat only those as deploy signals.
+
+Weather provider:
 
 ```json
 {
   "integrations": {
     "weather": {
       "enabled": true,
+      "provider": "open_meteo",
       "city": "Porto Alegre",
       "country_code": "BR",
-      "poll_seconds": 900
+      "poll_seconds": 900,
+      "timeout_seconds": 8,
+      "api_key_env": "OPENWEATHERMAP_API_KEY"
     }
   }
 }
 ```
+
+Supported weather providers are `open_meteo` (default, no key), `wttr_in` (no key), and `openweathermap` (requires the configured API key environment variable).
 
 AI usage ambient gauges:
 

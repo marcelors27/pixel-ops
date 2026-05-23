@@ -23,9 +23,11 @@ class PokemonPlugin:
         parser.add_argument("--pokemon-limit", type=int, default=151)
 
     def load_config(self, plugin_dir: Path, load_config: Callable[[Path], dict]) -> dict:
+        companions_path = plugin_dir / "companions.json"
         return {
             "game": load_config(plugin_dir / "game.json")["game"],
             "pokemon": load_config(plugin_dir / "pokemon.json")["pokemon"],
+            "companions": load_config(companions_path).get("companions", {}) if companions_path.exists() else {},
         }
 
     def maybe_handle_command(self, args: argparse.Namespace, root_dir: Path, config: dict) -> bool:
@@ -70,6 +72,7 @@ class PokemonPlugin:
             lazy_download=bool(pokemon_cfg.get("lazy_download", True)) and not self._offline(args, pokemon_cfg),
             scene_fps=fps,
             game_config=config["game"],
+            companion_config=config.get("companions", {}),
             display_layout=display_cfg.get("layout", {}),
             event_sources=event_sources,
             ai_plugin=ai_plugin,

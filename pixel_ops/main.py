@@ -197,6 +197,7 @@ def main() -> int:
             APP_DIR / "config/integrations.json",
             plugin_dir / "game.json",
             plugin_dir / "pokemon.json",
+            plugin_dir / "companions.json",
         ]
     )
     config_watcher.reset()

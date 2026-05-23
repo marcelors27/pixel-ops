@@ -8,8 +8,9 @@ from pixel_ops.data_sources.ai_usage import AIUsageSnapshot
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.timezones import PersonTime
 from pixel_ops.data_sources.weather import WeatherState
+from pixel_ops.events.base import EventCategory, WorkEvent
 from pixel_ops.events.github_events import PullRequestSummary
-from pixel_ops.render.fonts import font
+from pixel_ops.render.fonts import font, icon_font
 from pixel_ops.render.renderer import PixelRenderer
 
 
@@ -122,10 +123,11 @@ def draw_hud(
     pull_requests: list[PullRequestSummary] | None = None,
     ai_usage: AIUsageSnapshot | None = None,
     weather: WeatherState | None = None,
+    work_events: list[WorkEvent] | None = None,
     layout: dict | None = None,
 ) -> None:
     if layout:
-        _draw_configured_hud(draw, people, event, now, pal, pull_requests or [], ai_usage, weather, layout)
+        _draw_configured_hud(draw, people, event, now, pal, pull_requests or [], ai_usage, weather, work_events or [], layout)
         return
 
     PixelRenderer.draw_panel(draw, (8, 8, 312, 212), pal.panel, pal.panel_shadow, pal.ink)
@@ -134,31 +136,30 @@ def draw_hud(
     name_font = font(8)
     small_font = font(11)
     chip_font = font(9)
-    draw.text((18, 18), "TIME LINK", font=small_font, fill=pal.blue)
 
     primary = [person for person in people if person.name]
     empty_us = [person for person in people if not person.name]
     positions = (
-        (18, 36, 132),
-        (162, 36, 132),
-        (18, 82, 132),
-        (162, 82, 132),
-        (18, 128, 132),
+        (18, 20, 132),
+        (162, 20, 132),
+        (18, 66, 132),
+        (162, 66, 132),
+        (18, 112, 132),
     )
     for person, (x, y, width) in zip(primary, positions):
         _draw_timezone_card(draw, person, x, y, width, row_font, zone_font, name_font, pal)
 
     if empty_us:
-        _draw_flag(draw, 18, 165, "US", pal.ink)
-    compact_positions = ((38, 164), (104, 164), (170, 164), (236, 164))
+        _draw_flag(draw, 18, 151, "US", pal.ink)
+    compact_positions = ((38, 150), (104, 150), (170, 150), (236, 150))
     for person, (x, y) in zip(empty_us, compact_positions):
         _draw_timezone_chip(draw, person, x, y, 62, chip_font, zone_font, name_font, pal)
 
     label = _activity_label(draw, event, pull_requests or [], now, 282, small_font)
-    draw.rectangle((18, 190, 300, 191), fill=pal.blue)
-    draw.text((18, 195), label, font=small_font, fill=pal.blue)
+    draw.rectangle((18, 181, 300, 182), fill=pal.blue)
+    draw.text((18, 186), label, font=small_font, fill=pal.blue)
     if ai_usage and ai_usage.gauges:
-        _draw_ai_usage_compact(draw, ai_usage, now, 162, 144, pal)
+        _draw_ai_usage_compact(draw, ai_usage, now, 162, 132, pal)
 
 
 def _draw_configured_hud(
@@ -170,6 +171,7 @@ def _draw_configured_hud(
     pull_requests: list[PullRequestSummary],
     ai_usage: AIUsageSnapshot | None,
     weather: WeatherState | None,
+    work_events: list[WorkEvent],
     layout: dict,
 ) -> None:
     small_font = font(11)
@@ -178,16 +180,19 @@ def _draw_configured_hud(
     name_font = font(7)
     timezones_box = _layout_box(layout, "timezones", (8, 8, 154, 162))
     PixelRenderer.draw_panel(draw, timezones_box, pal.panel, pal.panel_shadow, pal.ink)
-    draw.text((timezones_box[0] + 8, timezones_box[1] + 8), "TIME LINK", font=small_font, fill=pal.blue)
     _draw_timezone_flex_grid(draw, people, timezones_box, chip_font, zone_font, name_font, pal)
 
-    activity_box = _layout_box(layout, "activity", (18, 190, 300, 206))
+    activity_box = _layout_box(layout, "activity", (8, 164, 312, 204))
     _draw_activity_panel(draw, event, pull_requests, now, activity_box, pal)
 
-    gauges_box = _layout_box(layout, "gauges", (162, 144, 304, 178))
+    if "route_signal" in layout:
+        route_box = _layout_box(layout, "route_signal", (8, 120, 176, 160))
+        _draw_route_signal_panel(draw, event, pull_requests, ai_usage, work_events, now, route_box, pal)
+
+    gauges_box = _layout_box(layout, "gauges", (8, 120, 153, 160))
     _draw_ai_usage_panel(draw, ai_usage, now, gauges_box, pal)
 
-    weather_box = _layout_box(layout, "weather", (162, 8, 304, 50))
+    weather_box = _layout_box(layout, "weather", (184, 120, 304, 160))
     _draw_weather_compact(draw, weather, weather_box, pal)
 
 
@@ -218,20 +223,20 @@ def _draw_timezone_flex_grid(
         return
     padding_x = 8
     gap_x = 6
-    gap_y = 4
+    gap_y = 2
     content_x = box[0] + padding_x
-    content_y = box[1] + 28
+    content_y = box[1] + 8
     content_w = max(1, box[2] - box[0] - padding_x * 2)
     content_h = max(1, box[3] - content_y - 8)
     min_cell_w = 92 if any(person.show_flag for person in people) else 62
     max_columns = max(1, content_w // min_cell_w)
     columns = min(len(people), max_columns)
     rows = (len(people) + columns - 1) // columns
-    while rows * 34 + (rows - 1) * gap_y > content_h and columns < len(people):
+    while rows * 30 + (rows - 1) * gap_y > content_h and columns < len(people):
         columns += 1
         rows = (len(people) + columns - 1) // columns
     cell_w = max(1, (content_w - gap_x * (columns - 1)) // columns)
-    cell_h = max(30, min(42, (content_h - gap_y * (rows - 1)) // rows))
+    cell_h = max(28, min(42, (content_h - gap_y * (rows - 1)) // rows))
     for index, person in enumerate(people):
         row = index // columns
         column = index % columns
@@ -253,15 +258,121 @@ def _draw_timezone_flex_grid(
 
 def _draw_weather_compact(draw: ImageDraw.ImageDraw, weather: WeatherState | None, box: tuple[int, int, int, int], pal) -> None:
     PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
-    small = font(9)
-    label_font = font(11)
-    draw.text((box[0] + 8, box[1] + 7), "WEATHER", font=small, fill=pal.blue)
+    label_font = font(10)
+    range_font = font(7)
+    icon_x = box[0] + 7
+    icon_y = box[1] + max(4, (box[3] - box[1] - 22) // 2)
+    text_x = box[0] + 34
+    text_width = max(1, box[2] - text_x - 8)
     if weather is None:
-        draw.text((box[0] + 8, box[1] + 22), "-", font=label_font, fill=pal.ink)
+        _draw_weather_icon(draw, "unknown", icon_x, icon_y, pal)
+        draw.text((text_x, box[1] + 9), "-", font=label_font, fill=pal.ink)
         return
-    effect = weather.primary_effect.upper()[:5]
-    label = f"{round(weather.temperature_c):d}C {effect}"
-    draw.text((box[0] + 8, box[1] + 22), _fit_text(draw, label, box[2] - box[0] - 16, label_font), font=label_font, fill=pal.ink)
+    condition = _weather_condition(weather)
+    _draw_weather_icon(draw, condition, icon_x, icon_y, pal)
+    label = f"{round(weather.temperature_c):d}° {_weather_condition_label(condition)}"
+    draw.text((text_x, box[1] + 7), _fit_text(draw, label, text_width, label_font), font=label_font, fill=pal.ink)
+    _draw_temperature_range(draw, weather, text_x, box[1] + 24, text_width, range_font, pal)
+
+
+def _draw_temperature_range(
+    draw: ImageDraw.ImageDraw,
+    weather: WeatherState,
+    x: int,
+    y: int,
+    width: int,
+    text_font,
+    pal,
+) -> None:
+    arrow_font = icon_font(6)
+    up = "\uf062"
+    down = "\uf063"
+    high = "--" if weather.temperature_max_c is None else f"{round(weather.temperature_max_c):d}"
+    low = "--" if weather.temperature_min_c is None else f"{round(weather.temperature_min_c):d}"
+    first = f"{high}°"
+    second = f"{low}°"
+    draw.text((x, y + 1), up, font=arrow_font, fill=pal.red)
+    draw.text((x + 8, y), first, font=text_font, fill=pal.ink)
+    second_x = x + 37
+    if draw.textbbox((0, 0), f"{first} {second}", font=text_font)[2] > width - 12:
+        second_x = x + 32
+    draw.text((second_x, y + 1), down, font=arrow_font, fill=pal.blue)
+    draw.text((second_x + 8, y), second, font=text_font, fill=pal.ink)
+
+
+def _weather_condition(weather: WeatherState) -> str:
+    code = weather.weather_code
+    effects = set(weather.effects)
+    if code in (95, 96, 99):
+        return "storm"
+    if code in (71, 73, 75, 77, 85, 86) or "snow" in effects:
+        return "snow"
+    if code in (51, 53, 55, 56, 57):
+        return "drizzle"
+    if code in (61, 63, 65, 66, 67, 80, 81, 82) or "rain" in effects:
+        return "rain"
+    if code in (45, 48):
+        return "fog"
+    if code == 3:
+        return "cloudy"
+    if code in (1, 2) or weather.cloud_cover >= 35:
+        return "partly"
+    if "wind" in effects:
+        return "wind"
+    if "cold" in effects:
+        return "cold"
+    if "hot" in effects:
+        return "hot"
+    return "clear"
+
+
+def _weather_condition_label(condition: str) -> str:
+    return {
+        "clear": "CLEAR",
+        "partly": "PART",
+        "cloudy": "CLOUD",
+        "fog": "FOG",
+        "drizzle": "DRIZ",
+        "rain": "RAIN",
+        "snow": "SNOW",
+        "storm": "STORM",
+        "wind": "WIND",
+        "cold": "COLD",
+        "hot": "HOT",
+    }.get(condition, condition.upper()[:5])
+
+
+def _draw_weather_icon(draw: ImageDraw.ImageDraw, condition: str, x: int, y: int, pal) -> None:
+    glyph, color = _weather_icon_glyph(condition, getattr(pal, "phase", ""))
+    glyph_font = icon_font(20)
+    bounds = draw.textbbox((0, 0), glyph, font=glyph_font)
+    draw.text((x + (24 - (bounds[2] - bounds[0])) // 2, y + (23 - (bounds[3] - bounds[1])) // 2 - bounds[1]), glyph, font=glyph_font, fill=color)
+
+
+def _weather_icon_glyph(condition: str, day_phase: str) -> tuple[str, tuple[int, int, int]]:
+    icons = {
+        "clear": ("\uf185", (176, 120, 48)),  # sun
+        "partly": ("\uf6c4", (176, 120, 48)),  # cloud-sun
+        "rain": ("\uf73d", (64, 128, 200)),  # cloud-rain
+        "drizzle": ("\uf73d", (64, 128, 200)),  # cloud-rain
+        "storm": ("\uf0e7", (176, 120, 48)),  # bolt
+        "snow": ("\uf2dc", (64, 128, 184)),  # snowflake
+        "fog": ("\uf75f", (104, 120, 136)),  # smog
+        "cloudy": ("\uf0c2", (104, 120, 136)),  # cloud
+        "wind": ("\uf72e", (64, 88, 112)),  # wind
+        "cold": ("\uf2dc", (64, 128, 184)),  # snowflake
+        "hot": ("\uf185", (176, 120, 48)),  # sun
+        "unknown": ("\uf059", (72, 88, 112)),  # circle-question
+    }
+    if condition == "clear" and day_phase == "night":
+        return "\uf186", (112, 112, 128)  # moon
+    if condition == "partly" and day_phase == "night":
+        return "\uf6c3", (112, 112, 128)  # cloud-moon
+    if condition in icons:
+        return icons[condition]
+    if day_phase == "night":
+        return "\uf186", (112, 112, 128)  # moon
+    return "\uf185", (176, 120, 48)  # sun
 
 
 def _draw_activity_panel(
@@ -273,23 +384,76 @@ def _draw_activity_panel(
     pal,
 ) -> None:
     PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
-    title_font = font(9)
     text_font = font(10)
     content_width = max(1, box[2] - box[0] - 16)
-    draw.text((box[0] + 8, box[1] + 6), "SIGNALS", font=title_font, fill=pal.blue)
     label = _activity_label(draw, event, pull_requests, now, content_width, text_font)
-    draw.text((box[0] + 8, box[1] + 20), label, font=text_font, fill=pal.ink)
+    draw.text((box[0] + 8, box[1] + 13), label, font=text_font, fill=pal.ink)
+
+
+def _draw_route_signal_panel(
+    draw: ImageDraw.ImageDraw,
+    event: CalendarEvent | None,
+    pull_requests: list[PullRequestSummary],
+    ai_usage: AIUsageSnapshot | None,
+    work_events: list[WorkEvent],
+    now: datetime,
+    box: tuple[int, int, int, int],
+    pal,
+) -> None:
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    signal = _route_signal(event, pull_requests, ai_usage, work_events, now)
+    glyph, color = _route_signal_icon(signal)
+    glyph_font = icon_font(14)
+    label_font = font(10)
+    icon_x = box[0] + 8
+    icon_y = box[1] + max(4, (box[3] - box[1] - 16) // 2)
+    bounds = draw.textbbox((0, 0), glyph, font=glyph_font)
+    draw.text((icon_x + (18 - (bounds[2] - bounds[0])) // 2, icon_y - bounds[1]), glyph, font=glyph_font, fill=color)
+    label = f"ROUTE {signal}"
+    draw.text((box[0] + 34, box[1] + 13), _fit_text(draw, label, box[2] - box[0] - 42, label_font), font=label_font, fill=pal.ink)
+
+
+def _route_signal(
+    event: CalendarEvent | None,
+    pull_requests: list[PullRequestSummary],
+    ai_usage: AIUsageSnapshot | None,
+    work_events: list[WorkEvent],
+    now: datetime,
+) -> str:
+    if event:
+        seconds_until = (event.starts_at - now).total_seconds()
+        if seconds_until <= 10 * 60:
+            return "MEET"
+    if any(event.category in (EventCategory.BUILD_BROKEN, EventCategory.DEPLOY_STARTED, EventCategory.DEPLOY_COMPLETED) for event in work_events):
+        return "OPS"
+    if any((not pr.draft) and pr.review_state.lower() in ("review", "changes_requested") for pr in pull_requests):
+        return "REVIEW"
+    if ai_usage and ai_usage.pressure >= 0.75:
+        return "AI"
+    if pull_requests:
+        return "CODE"
+    return "CALM"
+
+
+def _route_signal_icon(signal: str) -> tuple[str, tuple[int, int, int]]:
+    icons = {
+        "MEET": ("\uf073", (112, 112, 184)),  # calendar
+        "OPS": ("\uf135", (184, 104, 64)),  # rocket
+        "REVIEW": ("\uf06e", (80, 136, 192)),  # eye
+        "AI": ("\uf544", (136, 96, 184)),  # robot
+        "CODE": ("\uf121", (72, 144, 104)),  # code
+        "CALM": ("\uf14e", (96, 120, 160)),  # compass
+    }
+    return icons.get(signal, icons["CALM"])
 
 
 def _draw_ai_usage_panel(draw: ImageDraw.ImageDraw, ai_usage: AIUsageSnapshot | None, now: datetime, box: tuple[int, int, int, int], pal) -> None:
     PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
-    title_font = font(9)
     value_font = font(10)
-    draw.text((box[0] + 8, box[1] + 6), "AI GAUGE", font=title_font, fill=pal.blue)
     if not ai_usage or not ai_usage.gauges:
-        draw.text((box[0] + 8, box[1] + 20), "-", font=value_font, fill=pal.ink)
+        draw.text((box[0] + 8, box[1] + 13), "-", font=value_font, fill=pal.ink)
         return
-    _draw_ai_usage_compact(draw, ai_usage, now, box[0] + 8, box[1] + 22, pal)
+    _draw_ai_usage_compact(draw, ai_usage, now, box[0] + 8, box[1] + 13, pal)
 
 
 def _activity_label(
@@ -334,12 +498,11 @@ def _draw_ai_usage_compact(draw: ImageDraw.ImageDraw, ai_usage: AIUsageSnapshot,
         return
     small = font(7)
     bar_width = 46
-    draw.text((x, y - 2), "AI", font=small, fill=pal.blue)
     for index, gauge in enumerate(gauges):
         row_y = y + index * 10
         label = _ai_usage_gauge_short_label(gauge)
-        draw.text((x + 27, row_y - 2), label, font=small, fill=pal.ink)
-        bar_x = x + 40
+        draw.text((x, row_y - 2), label, font=small, fill=pal.ink)
+        bar_x = x + 14
         draw.rectangle((bar_x, row_y, bar_x + bar_width, row_y + 5), outline=pal.ink, fill=pal.panel)
         pct = gauge.used_percent
         if pct is None and gauge.provider != "openai_api" and gauge.total_tokens:
