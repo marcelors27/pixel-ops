@@ -69,8 +69,6 @@ class DiscordCompanionStore:
         except (OSError, ValueError):
             return
         root = raw.get("discord_people") if isinstance(raw, dict) else {}
-        if not root and isinstance(raw, dict):
-            root = raw.get("discord_companions", {})
         if not isinstance(root, dict):
             return
         self.max_recent = _int(root.get("max_recent"), self.max_recent)

@@ -20,7 +20,7 @@ def classify_slack_event(payload: dict[str, Any], bot_user_id: str | None = None
     if event_type == "message":
         channel_type = str(event.get("channel_type", ""))
         text = str(event.get("text", ""))
-        default_kind = SocialSignalKind.DIRECT_MESSAGE if channel_type == "im" else SocialSignalKind.CHANNEL_ACTIVITY
+        default_kind = SocialSignalKind.DIRECT_MESSAGE if channel_type == "im" else SocialSignalKind.ACTIVITY_SPIKE
         kind = classify_text_signal(text, default_kind=default_kind)
         if bot_user_id and f"<@{bot_user_id}>" in text:
             kind = SocialSignalKind.MENTION

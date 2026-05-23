@@ -31,12 +31,12 @@ class PokemonPlugin:
         }
 
     def maybe_handle_command(self, args: argparse.Namespace, root_dir: Path, config: dict) -> bool:
+        if not args.warm_cache:
+            return False
         pokemon_cfg = config["pokemon"]
         pokemon_api = self._pokemon_api(args, root_dir, pokemon_cfg)
-        if args.warm_cache:
-            pokemon_api.warm_cache(limit=args.pokemon_limit, include_animated=True)
-            return True
-        return False
+        pokemon_api.warm_cache(limit=args.pokemon_limit, include_animated=True)
+        return True
 
     def fps(self, config: dict, display_fps: int) -> int:
         return int(config["game"].get("fps", display_fps))

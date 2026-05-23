@@ -1,16 +1,16 @@
 # Graph Report - turing-smart-screen-python  (2026-05-23)
 
 ## Corpus Check
-- 140 files · ~52,747 words
+- 144 files · ~53,156 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1638 nodes · 2735 edges · 137 communities (110 shown, 27 thin omitted)
-- Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 408 edges (avg confidence: 0.62)
+- 1688 nodes · 2853 edges · 148 communities (117 shown, 31 thin omitted)
+- Extraction: 84% EXTRACTED · 16% INFERRED · 0% AMBIGUOUS · INFERRED: 456 edges (avg confidence: 0.62)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3e7eeb59`
+- Built from commit: `dfa65572`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -132,39 +132,49 @@
 - [[_COMMUNITY_Community 127|Community 127]]
 - [[_COMMUNITY_Community 128|Community 128]]
 - [[_COMMUNITY_Community 129|Community 129]]
+- [[_COMMUNITY_Community 130|Community 130]]
+- [[_COMMUNITY_Community 131|Community 131]]
 - [[_COMMUNITY_Community 132|Community 132]]
+- [[_COMMUNITY_Community 133|Community 133]]
+- [[_COMMUNITY_Community 134|Community 134]]
+- [[_COMMUNITY_Community 135|Community 135]]
+- [[_COMMUNITY_Community 136|Community 136]]
 - [[_COMMUNITY_Community 137|Community 137]]
+- [[_COMMUNITY_Community 138|Community 138]]
 - [[_COMMUNITY_Community 139|Community 139]]
+- [[_COMMUNITY_Community 140|Community 140]]
 - [[_COMMUNITY_Community 141|Community 141]]
 - [[_COMMUNITY_Community 142|Community 142]]
 - [[_COMMUNITY_Community 143|Community 143]]
 - [[_COMMUNITY_Community 144|Community 144]]
+- [[_COMMUNITY_Community 145|Community 145]]
+- [[_COMMUNITY_Community 146|Community 146]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `OverworldScene` - 80 edges
 2. `WorkEvent` - 40 edges
 3. `PokemonSelector` - 29 edges
-4. `GitHubEventSource` - 25 edges
-5. `EventCategory` - 24 edges
-6. `EventPriority` - 24 edges
-7. `game` - 23 edges
-8. `MapRouteManager` - 23 edges
-9. `DiscordGatewayClient` - 23 edges
-10. `pokemon` - 22 edges
+4. `EventBus` - 26 edges
+5. `DiscordGatewayClient` - 25 edges
+6. `GitHubEventSource` - 25 edges
+7. `EventCategory` - 25 edges
+8. `EventPriority` - 24 edges
+9. `game` - 23 edges
+10. `MapRouteManager` - 23 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `main()` --calls--> `NpcSpriteSet`  [INFERRED]
   scripts/generate_npc_sprite_previews.py → pixel_ops/plugins/pokemon/render/sprites.py
-- `_draw_ai_usage_gauges()` --calls--> `font()`  [INFERRED]
-  render/hud.py → pixel_ops/render/fonts.py
-- `Aggregates local/API AI usage into ambient gauges and threshold events.      The` --rationale_for--> `AIUsageSource`  [EXTRACTED]
-  data_sources/ai_usage.py → pixel_ops/data_sources/ai_usage.py
-- `Polls Open-Meteo current weather for a configured city.` --rationale_for--> `OpenMeteoWeatherSource`  [EXTRACTED]
-  data_sources/weather.py → pixel_ops/data_sources/weather.py
-- `Polls GitHub for open pull requests and keeps a compact HUD list.` --rationale_for--> `GitHubEventSource`  [EXTRACTED]
-  events/github_events.py → pixel_ops/events/github_events.py
+- `VisualAndAiPluginTests` --uses--> `OpenAiChatGptPlugin`  [INFERRED]
+  tests/test_visual_and_ai_plugins.py → pixel_ops/plugins/ai/plugin.py
+- `DiscordAndSocialTests` --uses--> `DiscordBusEventSource`  [INFERRED]
+  tests/test_discord_and_social.py → pixel_ops/integrations/discord/gateway.py
+- `DiscordAndSocialTests` --uses--> `DiscordVoiceStateTracker`  [INFERRED]
+  tests/test_discord_and_social.py → pixel_ops/integrations/discord/voice_state.py
+- `DiscordAndSocialTests` --uses--> `DiscordGatewayClient`  [INFERRED]
+  tests/test_discord_and_social.py → pixel_ops/integrations/discord/client.py
 
-## Communities (137 total, 27 thin omitted)
+## Communities (148 total, 31 thin omitted)
 
 ### Community 0 - "AI Usage Telemetry"
 Cohesion: 0.22
@@ -176,23 +186,23 @@ Nodes (33): day_night_palette(), DayNightPalette, apply_battle_ambience(), _draw
 
 ### Community 2 - "AI Decision Plugin"
 Cohesion: 0.08
-Nodes (26): AiDecisionPlugin, AiDecisionRequest, build_ai_plugin(), _env_bool(), OpenAiChatGptPlugin, Generic Pixel OPs AI decision plugin backed by the OpenAI Responses API., AiPokemonChoice, AiThrottle (+18 more)
+Nodes (25): AiDecisionRequest, build_ai_plugin(), _env_bool(), OpenAiChatGptPlugin, Generic Pixel OPs AI decision plugin backed by the OpenAI Responses API., AiPokemonChoice, AiThrottle, _compact_metadata() (+17 more)
 
 ### Community 3 - "Core App Runtime"
-Cohesion: 0.05
-Nodes (40): AIUsageSource, PixelOpsApp, PixelOpsScene, PullRequestSource, Hardware-agnostic frame producer for a Pixel OPs interface plugin., WeatherSource, CalendarEvent, _matches_recurrence() (+32 more)
+Cohesion: 0.06
+Nodes (34): AIUsageSource, PixelOpsApp, PixelOpsScene, PullRequestSource, Hardware-agnostic frame producer for a Pixel OPs interface plugin., WeatherSource, parse_hhmm(), status_for() (+26 more)
 
 ### Community 4 - "AI Usage Config"
 Cohesion: 0.25
 Nodes (6): enabled, paths, poll_seconds, integrations, ics, social_bus_limit
 
 ### Community 5 - "Pokemon World Loop"
-Cohesion: 0.05
-Nodes (34): biome(), World, AnimationClock, first_frame(), SpriteAnimation, palette_for_hour(), apply_scanlines(), draw_panel() (+26 more)
+Cohesion: 0.07
+Nodes (29): biome(), World, AnimationClock, first_frame(), SpriteAnimation, apply_scanlines(), draw_panel(), PixelRenderer (+21 more)
 
 ### Community 6 - "Display Outputs"
-Cohesion: 0.14
-Nodes (7): repo_types(), time_types(), _env_bool(), _metadata_types(), PokemonSelector, _priority_index(), rarity_for_priority()
+Cohesion: 0.15
+Nodes (7): AiDecisionPlugin, _env_bool(), _metadata_types(), PokemonSelection, PokemonSelector, _priority_index(), rarity_for_priority()
 
 ### Community 7 - "Social Signal Classification"
 Cohesion: 0.14
@@ -215,8 +225,8 @@ Cohesion: 0.06
 Nodes (12): discordSpriteVariants, equipmentOptions, fallbackTimezones, IconComponent, integrationIcons, integrations, layoutItems, ResizeDirection (+4 more)
 
 ### Community 12 - "JSON Config Loader"
-Cohesion: 0.12
-Nodes (29): config_path(), ConfigWatcher, load_config(), load_config_prefer_json(), build_output(), build_parser(), env_bool(), env_int() (+21 more)
+Cohesion: 0.29
+Nodes (17): build_output(), build_parser(), env_bool(), env_int(), env_value(), load_config(), load_env(), load_runtime_config() (+9 more)
 
 ### Community 13 - "Encounter Timing Config"
 Cohesion: 0.09
@@ -239,24 +249,24 @@ Cohesion: 0.05
 Nodes (24): AIUsageIntegrationPlugin, plugin(), download_ics(), CalendarEventSource, Polls an ICS calendar and emits meeting encounters., GitHubIntegrationPlugin, plugin(), GoogleCalendarIntegrationPlugin (+16 more)
 
 ### Community 18 - "Community 18"
-Cohesion: 0.08
-Nodes (15): Encounter, EncounterSpawner, _offline(), PokemonPlugin, PokeApiClient, get_pokemon(), pokemon, api_base_url (+7 more)
+Cohesion: 0.1
+Nodes (13): Encounter, EncounterSpawner, PokeApiClient, get_pokemon(), pokemon, api_base_url, cache_dir, generation_limit (+5 more)
 
 ### Community 19 - "Event Bus"
-Cohesion: 0.12
-Nodes (6): BusEnvelope, EventBus, Tiny in-process bus for sequential ambient events.      The display loop is sing, SlackEventSource, SlackBusEventSource, SlackBusEventSource
+Cohesion: 0.1
+Nodes (7): BusEnvelope, EventBus, Tiny in-process bus for sequential ambient events.      The display loop is sing, SlackEventSource, SlackBusEventSource, SlackBusEventSource, DiscordAndSocialTests
 
 ### Community 20 - "USB Display Hardware"
-Cohesion: 0.22
-Nodes (4): Command, Minimal USB bulk transport for TURZX/Turing Rev. A style displays., UsbBulkRevA, IntEnum
+Cohesion: 0.17
+Nodes (5): image_to_rgb565(), Command, Minimal USB bulk transport for TURZX/Turing Rev. A style displays., UsbBulkRevA, IntEnum
 
 ### Community 21 - "Calendar Event Sources"
-Cohesion: 0.16
-Nodes (29): font(), icon_font(), _activity_label(), _ai_usage_gauge_short_label(), _ai_usage_gauge_value(), _ai_usage_label(), _ai_usage_reset_countdown(), _draw_activity_panel() (+21 more)
+Cohesion: 0.09
+Nodes (34): font(), icon_font(), _activity_label(), _ai_usage_gauge_short_label(), _ai_usage_gauge_value(), _ai_usage_label(), _ai_usage_reset_countdown(), _draw_activity_panel() (+26 more)
 
 ### Community 22 - "Discord Integration"
 Cohesion: 0.06
-Nodes (32): AI Decision Plugins, code:bash (python pixel_ops/main.py --plugin pokemon --output preview), code:env (PIXEL_OPS_GITHUB_TOKEN=github_pat_...), code:json ({), code:json ({), code:env (OPENAI_ADMIN_KEY=sk-admin-...), code:json ({), code:env (PIXEL_OPS_SLACK_APP_TOKEN=xapp-...) (+24 more)
+Nodes (43): AI Decision Plugins, AI Usage, Architecture Records, Calendars, code:bash (python pixel_ops/main.py --plugin pokemon --output preview), code:json ({), code:json ({), code:json ({) (+35 more)
 
 ### Community 23 - "Provider Plugins"
 Cohesion: 0.1
@@ -267,8 +277,8 @@ Cohesion: 0.12
 Nodes (16): Agent Guide, AI Calls, Architecture, code:bash (python -m graphify update .), code:text (Provider transport), code:json ({), code:bash (python pixel_ops/main.py --plugin pokemon --output preview), code:bash (python pixel_ops/main.py --plugin pokemon --warm-cache) (+8 more)
 
 ### Community 25 - "HUD Rendering"
-Cohesion: 0.1
-Nodes (17): BaseWeatherSource, build_weather_source(), _effects(), OpenMeteoWeatherSource, _openweathermap_to_wmo(), OpenWeatherMapWeatherSource, _optional_float(), primary_effect() (+9 more)
+Cohesion: 0.06
+Nodes (22): BaseWeatherSource, build_weather_source(), _effects(), OpenMeteoWeatherSource, _openweathermap_to_wmo(), OpenWeatherMapWeatherSource, _optional_float(), primary_effect() (+14 more)
 
 ### Community 26 - "Social Visual Effects"
 Cohesion: 0.53
@@ -279,8 +289,8 @@ Cohesion: 0.61
 Nodes (6): component_is_map(), connected_components(), is_background(), main(), slugify(), split_sheet()
 
 ### Community 28 - "Slack Integration"
-Cohesion: 0.05
-Nodes (63): AIUsageGauge, AIUsageSnapshot, AIUsageSource, _aware(), _claude_row(), _codex_rate_limit_status(), _codex_row(), _CodexRateLimitStatus (+55 more)
+Cohesion: 0.12
+Nodes (30): AIUsageGauge, AIUsageSource, _aware(), _claude_row(), _codex_rate_limit_status(), _codex_row(), _compact_number(), _find_first_string() (+22 more)
 
 ### Community 29 - "Google Calendar"
 Cohesion: 0.13
@@ -309,6 +319,10 @@ Nodes (11): deployment_workflows, enabled, fetch_deployments, fetch_pull_request
 ### Community 59 - "Community 59"
 Cohesion: 0.56
 Nodes (7): _blend_region(), _draw_crowd(), _draw_embers(), _draw_glyphs(), _draw_lanterns(), draw_social_world_effects(), _draw_sparks()
+
+### Community 60 - "Community 60"
+Cohesion: 0.22
+Nodes (3): DisplayOutput, GifOutput, Collects frames and writes an animated GIF when stopped.
 
 ### Community 61 - "Community 61"
 Cohesion: 0.29
@@ -359,8 +373,8 @@ Cohesion: 0.4
 Nodes (5): height, width, x, y, gauges
 
 ### Community 73 - "Community 73"
-Cohesion: 0.29
-Nodes (6): Build, code:bash (cd config-studio), code:bash (npm run build), Files Edited, Pixel OPs Config Studio, Run
+Cohesion: 0.22
+Nodes (8): Build, code:bash (cd config-studio), code:bash (npm run build), Files Edited, Local API, Pixel OPs Config Studio, Run, What It Edits
 
 ### Community 74 - "Community 74"
 Cohesion: 0.29
@@ -442,10 +456,6 @@ Nodes (5): timezones, height, width, x, y
 Cohesion: 0.4
 Nodes (5): weather, height, width, x, y
 
-### Community 94 - "Community 94"
-Cohesion: 0.22
-Nodes (3): DisplayOutput, PreviewOutput, Writes preview PNG frames locally without requiring display hardware.
-
 ### Community 95 - "Community 95"
 Cohesion: 0.08
 Nodes (17): type, _env_bool(), GitHubEventSource, label(), _parse_github_datetime(), Polls GitHub for open pull requests and keeps a compact HUD list., Polls GitHub for open pull requests and keeps a compact HUD list., _workflow_category() (+9 more)
@@ -523,19 +533,39 @@ Cohesion: 0.5
 Nodes (3): discord_companions, max_recent, people
 
 ### Community 125 - "Community 125"
-Cohesion: 0.29
+Cohesion: 0.33
 Nodes (5): classify_discord_dispatch(), _discord_actor(), _discord_timestamp(), classify_text_signal(), signal_to_work_event()
 
 ### Community 126 - "Community 126"
 Cohesion: 0.5
 Nodes (4): cloneConfig(), applyEquipment(), defaultLayoutFor(), ensureConfigDefaults()
 
+### Community 129 - "Community 129"
+Cohesion: 0.23
+Nodes (8): AmbientSignal, AmbientIntegration, AmbientSignalClassifier, PollingAmbientIntegration, Start long-running integration work if needed., Turn provider-specific payloads into normalized ambient signals., Return normalized ambient signals for polling-based providers., Protocol
+
+### Community 130 - "Community 130"
+Cohesion: 0.22
+Nodes (18): AIUsageSnapshot, _CodexRateLimitStatus, NullAIUsageSource, Enum, AmbientProvider, AmbientSignalKind, EventCategory, EventPriority (+10 more)
+
+### Community 131 - "Community 131"
+Cohesion: 0.22
+Nodes (3): EncounterContext, EncounterSystem, _env_bool()
+
 ### Community 132 - "Community 132"
-Cohesion: 0.46
-Nodes (4): parse_hhmm(), status_for(), build_people_times(), PersonTime
+Cohesion: 0.57
+Nodes (6): _cover_resize(), _draw_pixel_grid(), _logo_path(), render_splash(), splash_frame_count(), splash_seconds()
+
+### Community 134 - "Community 134"
+Cohesion: 0.29
+Nodes (6): frame_in_phase(), from_seconds(), GamePhase, GameStateMachine, _next_phase(), progress()
+
+### Community 135 - "Community 135"
+Cohesion: 0.36
+Nodes (6): ambient_signal_to_work_event(), classify_text_kind(), _event_shape(), classify_zoom_event(), _parse_datetime(), _participant()
 
 ### Community 137 - "Community 137"
-Cohesion: 0.21
+Cohesion: 0.24
 Nodes (5): DiscordBusEventSource, DiscordGatewayAdapter, Gateway dispatch adapter.      The project intentionally avoids a runtime websoc, Gateway dispatch adapter.      The project intentionally avoids a runtime websoc, DiscordVoiceSnapshot
 
 ### Community 139 - "Community 139"
@@ -554,25 +584,29 @@ Nodes (4): 0014 - Discord Voice Companions Are Provider State With Visual Mappin
 Cohesion: 0.4
 Nodes (4): 0015 - Timezone Config Is Derived From IANA Selection, Consequences, Context, Decision
 
+### Community 145 - "Community 145"
+Cohesion: 0.73
+Nodes (4): _actor(), classify_teams_event(), _external_id(), _parse_datetime()
+
 ## Knowledge Gaps
-- **441 isolated node(s):** `social_bus_limit`, `enabled`, `app_token_env`, `bot_token_env`, `bot_user_id` (+436 more)
+- **425 isolated node(s):** `social_bus_limit`, `enabled`, `app_token_env`, `bot_token_env`, `bot_user_id` (+420 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **27 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **31 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `OverworldScene` connect `Pokemon Ambience Rendering` to `AI Decision Plugin`, `Core App Runtime`, `Community 132`, `Pokemon World Loop`, `Display Outputs`, `Weather Data Source`, `Pokemon Map Routing`, `Community 18`, `HUD Rendering`, `Slack Integration`?**
-  _High betweenness centrality (0.136) - this node is a cross-community bridge._
-- **Why does `WorkEvent` connect `Slack Integration` to `Pokemon Ambience Rendering`, `AI Decision Plugin`, `Core App Runtime`, `Display Outputs`, `Weather Data Source`, `Integration Plugin Core`, `Community 95`?**
-  _High betweenness centrality (0.073) - this node is a cross-community bridge._
-- **Why does `EventSource` connect `Slack Integration` to `Integration Plugin Core`, `Community 18`, `Core App Runtime`?**
-  _High betweenness centrality (0.049) - this node is a cross-community bridge._
+- **Why does `OverworldScene` connect `Pokemon Ambience Rendering` to `Community 130`, `Core App Runtime`, `Community 131`, `Pokemon World Loop`, `Display Outputs`, `Community 134`, `Weather Data Source`, `Pokemon Map Routing`, `Community 18`, `HUD Rendering`?**
+  _High betweenness centrality (0.115) - this node is a cross-community bridge._
+- **Why does `WorkEvent` connect `Community 130` to `Pokemon Ambience Rendering`, `AI Decision Plugin`, `Community 131`, `Community 129`, `Display Outputs`, `Community 135`, `Weather Data Source`, `Community 144`, `Integration Plugin Core`, `Slack Integration`, `Community 95`?**
+  _High betweenness centrality (0.046) - this node is a cross-community bridge._
+- **Why does `EventSource` connect `Community 130` to `Community 129`, `Community 131`, `Integration Plugin Core`, `HUD Rendering`, `Slack Integration`?**
+  _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Are the 22 inferred relationships involving `OverworldScene` (e.g. with `PokemonPlugin` and `AIUsageSnapshot`) actually correct?**
   _`OverworldScene` has 22 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 38 inferred relationships involving `WorkEvent` (e.g. with `VoiceCompanionState` and `OverworldScene`) actually correct?**
   _`WorkEvent` has 38 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 14 inferred relationships involving `PokemonSelector` (e.g. with `VoiceCompanionState` and `OverworldScene`) actually correct?**
   _`PokemonSelector` has 14 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 5 inferred relationships involving `GitHubEventSource` (e.g. with `GitHubIntegrationPlugin` and `EventCategory`) actually correct?**
-  _`GitHubEventSource` has 5 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 19 inferred relationships involving `EventBus` (e.g. with `DiscordGatewayAdapter` and `DiscordBusEventSource`) actually correct?**
+  _`EventBus` has 19 INFERRED edges - model-reasoned connections that need verification._

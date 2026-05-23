@@ -2,34 +2,69 @@
   "discord_people": {
     "max_recent": 50,
     "people": {
-      "135844077781516289": {
-        "display_name": "Grifus",
+      "830530156048285716": {
+        "display_name": "Lofi Radio",
         "nicknames": [
-          "Grifus"
+          "Lofi Radio"
         ],
-        "last_seen_at": "2026-05-23T22:54:09.912931+00:00"
+        "last_seen_at": "2026-05-23T23:10:54.880270+00:00"
       },
       "533459625341616148": {
-        "display_name": "Onlypães",
+        "display_name": "Henrique Pozza",
         "nicknames": [
           "Henrique Pozza",
-          "Onlypães"
+          "Onlyp\u00e3es"
         ],
-        "last_seen_at": "2026-05-23T22:52:52.258621+00:00"
+        "last_seen_at": "2026-05-23T23:10:54.880065+00:00"
       },
-      "242829666488942593": {
-        "display_name": "Marcelo Schmitz",
+      "429437142817701898": {
+        "display_name": "Luiz Motta",
         "nicknames": [
-          "Marcelo Schmitz"
+          "Luiz Motta"
         ],
-        "last_seen_at": "2026-05-23T22:35:41.678908+00:00"
+        "last_seen_at": "2026-05-23T23:10:54.879842+00:00"
+      },
+      "406174064005218305": {
+        "display_name": "Marcelo Ungaretti",
+        "nicknames": [
+          "Marcelo Ungaretti"
+        ],
+        "last_seen_at": "2026-05-23T23:10:54.879626+00:00"
+      },
+      "403309503417679872": {
+        "display_name": "Pirata",
+        "nicknames": [
+          "Pirata"
+        ],
+        "last_seen_at": "2026-05-23T23:10:54.879381+00:00"
       },
       "281205158682034177": {
         "display_name": "Kr3m3r",
         "nicknames": [
           "Kr3m3r"
         ],
-        "last_seen_at": "2026-05-23T22:22:13.669448+00:00"
+        "last_seen_at": "2026-05-23T23:10:54.879086+00:00"
+      },
+      "242829666488942593": {
+        "display_name": "Marcelo Schmitz",
+        "nicknames": [
+          "Marcelo Schmitz"
+        ],
+        "last_seen_at": "2026-05-23T23:10:54.878837+00:00"
+      },
+      "135844077781516289": {
+        "display_name": "Grifus",
+        "nicknames": [
+          "Grifus"
+        ],
+        "last_seen_at": "2026-05-23T23:10:54.878546+00:00"
+      },
+      "135406909233692673": {
+        "display_name": "Ander",
+        "nicknames": [
+          "Ander"
+        ],
+        "last_seen_at": "2026-05-23T23:10:54.876470+00:00"
       },
       "141559772188114944": {
         "display_name": "Corti",
@@ -37,41 +72,6 @@
           "Corti"
         ],
         "last_seen_at": "2026-05-23T22:03:36.346911+00:00"
-      },
-      "830530156048285716": {
-        "display_name": "Lofi Radio",
-        "nicknames": [
-          "Lofi Radio"
-        ],
-        "last_seen_at": "2026-05-23T21:58:25.324654+00:00"
-      },
-      "429437142817701898": {
-        "display_name": "Luiz Motta",
-        "nicknames": [
-          "Luiz Motta"
-        ],
-        "last_seen_at": "2026-05-23T21:58:25.324186+00:00"
-      },
-      "406174064005218305": {
-        "display_name": "Marcelo Ungaretti",
-        "nicknames": [
-          "Marcelo Ungaretti"
-        ],
-        "last_seen_at": "2026-05-23T21:58:25.323966+00:00"
-      },
-      "403309503417679872": {
-        "display_name": "Pirata",
-        "nicknames": [
-          "Pirata"
-        ],
-        "last_seen_at": "2026-05-23T21:58:25.323739+00:00"
-      },
-      "135406909233692673": {
-        "display_name": "Ander",
-        "nicknames": [
-          "Ander"
-        ],
-        "last_seen_at": "2026-05-23T21:58:25.320458+00:00"
       }
     }
   }
