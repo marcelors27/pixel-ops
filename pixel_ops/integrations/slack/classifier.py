@@ -7,7 +7,6 @@ from pixel_ops.events.social_events import (
     SocialPlatform,
     SocialSignal,
     SocialSignalKind,
-    classify_text_signal,
 )
 
 
@@ -20,8 +19,7 @@ def classify_slack_event(payload: dict[str, Any], bot_user_id: str | None = None
     if event_type == "message":
         channel_type = str(event.get("channel_type", ""))
         text = str(event.get("text", ""))
-        default_kind = SocialSignalKind.DIRECT_MESSAGE if channel_type == "im" else SocialSignalKind.ACTIVITY_SPIKE
-        kind = classify_text_signal(text, default_kind=default_kind)
+        kind = SocialSignalKind.DIRECT_MESSAGE if channel_type == "im" else SocialSignalKind.ACTIVITY_SPIKE
         if bot_user_id and f"<@{bot_user_id}>" in text:
             kind = SocialSignalKind.MENTION
         return SocialSignal(
@@ -29,17 +27,16 @@ def classify_slack_event(payload: dict[str, Any], bot_user_id: str | None = None
             kind=kind,
             actor=_actor(event),
             space=str(event.get("channel", "")) or None,
-            intensity=1.0 if channel_type == "im" else 0.7,
+            intensity=1.15 if kind == SocialSignalKind.MENTION else 1.0 if channel_type == "im" else 0.25,
             occurred_at=occurred_at,
             external_id=event_id or None,
             metadata={"channel_type": channel_type},
         )
 
     if event_type == "app_mention":
-        kind = classify_text_signal(str(event.get("text", "")), default_kind=SocialSignalKind.MENTION)
         return SocialSignal(
             provider=SocialPlatform.SLACK,
-            kind=kind,
+            kind=SocialSignalKind.MENTION,
             actor=_actor(event),
             space=str(event.get("channel", "")) or None,
             intensity=1.2,
@@ -69,14 +66,16 @@ def classify_slack_event(payload: dict[str, Any], bot_user_id: str | None = None
             external_id=event_id or None,
         )
 
-    if event_type in ("call_started", "call_updated"):
+    if event_type in ("call_started", "call_updated", "huddle_thread_started", "huddle_thread_replied"):
         return SocialSignal(
             provider=SocialPlatform.SLACK,
             kind=SocialSignalKind.VOICE_ACTIVITY,
             actor=_actor(event),
+            space=str(event.get("channel") or event.get("channel_id") or "") or None,
             intensity=0.9,
             occurred_at=occurred_at,
             external_id=event_id or None,
+            metadata={"meeting_type": "huddle", "meeting_mood": "focused", "slack_event_type": event_type},
         )
 
     return None

@@ -10,7 +10,7 @@ from typing import Any
 import requests
 
 from pixel_ops.events.event_bus import EventBus
-from pixel_ops.events.social_events import signal_to_work_event
+from pixel_ops.integrations.slack.activity import SlackAmbientAggregator
 from pixel_ops.integrations.slack.classifier import classify_slack_event
 
 
@@ -30,6 +30,7 @@ class SlackSocketModeClient:
         bot_user_id: str | None = None,
         enabled: bool = False,
         reconnect_seconds: int = 10,
+        aggregator: SlackAmbientAggregator | None = None,
     ):
         self.bus = bus
         self.app_token = app_token or os.environ.get("PIXEL_OPS_SLACK_APP_TOKEN", "")
@@ -37,6 +38,7 @@ class SlackSocketModeClient:
         self.bot_user_id = bot_user_id or os.environ.get("PIXEL_OPS_SLACK_BOT_USER_ID", "")
         self.enabled = enabled
         self.reconnect_seconds = max(1, reconnect_seconds)
+        self.aggregator = aggregator or SlackAmbientAggregator()
         self._thread: Thread | None = None
         self._running = False
         self._warned_missing_dependency = False
@@ -113,7 +115,8 @@ class SlackSocketModeClient:
             return
         signal = classify_slack_event(payload, bot_user_id=self.bot_user_id or None)
         if signal:
-            self.bus.publish(signal_to_work_event(signal))
+            for event in self.aggregator.observe(signal):
+                self.bus.publish(event)
 
     @staticmethod
     def _ack(ws, envelope_id: str) -> None:

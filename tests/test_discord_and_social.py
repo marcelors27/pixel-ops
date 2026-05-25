@@ -12,6 +12,7 @@ from pixel_ops.integrations.discord.client import DiscordGatewayClient
 from pixel_ops.integrations.discord.companions import DiscordCompanionStore
 from pixel_ops.integrations.discord.gateway import DiscordBusEventSource
 from pixel_ops.integrations.discord.voice_state import DiscordVoiceStateTracker
+from pixel_ops.integrations.slack.activity import SlackAmbientAggregator
 from pixel_ops.integrations.slack.classifier import classify_slack_event
 from pixel_ops.integrations.slack.source import SlackBusEventSource
 
@@ -55,9 +56,23 @@ class DiscordAndSocialTests(unittest.TestCase):
 
         self.assertEqual(snapshot.channel_id, "c1")
         self.assertEqual(snapshot.channel_name, "General")
+        self.assertEqual(snapshot.focus_user_id, "me")
         self.assertEqual(len(snapshot.members), 1)
         self.assertEqual(snapshot.members[0].name, "Ana")
         self.assertTrue(snapshot.members[0].muted)
+
+    def test_voice_tracker_marks_active_streams_in_selected_channel(self):
+        tracker = DiscordVoiceStateTracker(guild_id="g", focus_user_id="me", max_companions=5)
+        tracker.observe_guild({"id": "g", "channels": [{"id": "c1", "name": "General"}]})
+        tracker.observe_voice_state({"guild_id": "g", "user_id": "me", "channel_id": "c1", "self_stream": True})
+        tracker.observe_voice_state({"guild_id": "g", "user_id": "u1", "channel_id": "c1", "member": {"user": {"id": "u1", "username": "Ana"}}})
+
+        snapshot = tracker.snapshot()
+
+        self.assertEqual(snapshot.active_stream_user_ids, ("me",))
+        self.assertEqual(snapshot.focus_user_id, "me")
+        self.assertTrue(snapshot.focus_streaming)
+        self.assertFalse(snapshot.members[0].streaming)
 
     def test_discord_gateway_client_publishes_voice_join_but_presence_only_updates_tracker(self):
         bus = EventBus(maxlen=8)
@@ -96,6 +111,41 @@ class DiscordAndSocialTests(unittest.TestCase):
 
         self.assertIsNotNone(signal)
         self.assertEqual(signal.kind.value, "mention")
+
+    def test_slack_channel_messages_do_not_become_operational_keyword_events(self):
+        signal = classify_slack_event(
+            {"event_id": "E2", "event": {"type": "message", "channel_type": "channel", "text": "deploy incident p0", "user": "U1", "channel": "C1"}},
+            bot_user_id="BOT",
+        )
+
+        self.assertIsNotNone(signal)
+        self.assertEqual(signal.kind.value, "activity_spike")
+
+    def test_slack_activity_aggregator_emits_only_channel_spikes(self):
+        aggregator = SlackAmbientAggregator(activity_window_seconds=60, activity_threshold=3, activity_cooldown_seconds=300)
+        events = []
+        for ts in ("1000.0", "1010.0", "1020.0"):
+            signal = classify_slack_event(
+                {"event_id": f"E{ts}", "event": {"type": "message", "channel_type": "channel", "text": "ambient", "user": "U1", "channel": "C1", "ts": ts}},
+                bot_user_id="BOT",
+            )
+            events.extend(aggregator.observe(signal))
+
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0].category, EventCategory.SOCIAL_ACTIVITY)
+        self.assertEqual(events[0].metadata["activity_count"], "3")
+
+    def test_slack_dm_and_huddle_emit_immediately(self):
+        aggregator = SlackAmbientAggregator(activity_threshold=10)
+        dm = classify_slack_event({"event_id": "D1", "event": {"type": "message", "channel_type": "im", "text": "hey", "user": "U1", "channel": "D1"}})
+        huddle = classify_slack_event({"event_id": "H1", "event": {"type": "call_started", "user": "U1", "channel": "C1"}})
+
+        dm_events = aggregator.observe(dm)
+        huddle_events = aggregator.observe(huddle)
+
+        self.assertEqual(dm_events[0].category, EventCategory.MESSAGE_IMPORTANT)
+        self.assertEqual(huddle_events[0].category, EventCategory.MEETING)
+        self.assertEqual(huddle_events[0].metadata["meeting_type"], "huddle")
 
 
 if __name__ == "__main__":

@@ -85,6 +85,7 @@ class OverworldScene:
         cfg = game_config or {}
         self.companion_config = companion_config or {}
         self.display_layout = display_layout or {}
+        self.movement_config = cfg.get("movement", {}) if isinstance(cfg.get("movement", {}), dict) else {}
         encounter_cfg = cfg.get("encounter", {})
         self.renderer = PixelRenderer(width, height)
         self.primary_timezone = primary_timezone
@@ -150,13 +151,41 @@ class OverworldScene:
             require_local=bool(cfg.get("require_ash_sprite", False)),
         )
         self.npc_sprites = NpcSpriteSet(self.asset_root, scene_fps=scene_fps, scale=2)
-        map_viewport = (self.map_box[2] - self.map_box[0], self.map_box[3] - self.map_box[1])
+        map_viewport = (
+            max(1, self.map_box[2] - self.map_box[0]),
+            max(1, self.map_box[3] - self.map_box[1]),
+        )
         self.map_routes = MapRouteManager(
             Path(__file__).resolve().parents[1] / "assets/maps/firered_leafgreen_clean",
             map_viewport,
             switch_seconds=int(cfg.get("map_switch_seconds", 300)),
+            allowed_map_keys=self._configured_walkable_map_keys(),
+            walkable_source_rects=self._configured_walkable_source_rects(),
         )
         self._battle_backgrounds: dict[str, Image.Image] = {}
+
+    def _configured_walkable_map_keys(self) -> set[str]:
+        return set(self._configured_walkable_source_rects())
+
+    def _configured_walkable_source_rects(self) -> dict[str, list[tuple[int, int, int, int]]]:
+        if not isinstance(self.movement_config, dict):
+            return {}
+        raw_walkable = self.movement_config.get("walkable", {})
+        raw_rects = raw_walkable.get("source_rects", []) if isinstance(raw_walkable, dict) else []
+        if not isinstance(raw_rects, list):
+            return {}
+        rects_by_map: dict[str, list[tuple[int, int, int, int]]] = {}
+        for item in raw_rects:
+            if not isinstance(item, dict):
+                continue
+            map_id = str(item.get("map") or item.get("map_id") or "").strip()
+            x = int(item.get("x", 0))
+            y = int(item.get("y", 0))
+            w = int(item.get("w", item.get("width", 0)))
+            h = int(item.get("h", item.get("height", 0)))
+            if map_id and w > 0 and h > 0:
+                rects_by_map.setdefault(map_id, []).append((x, y, x + w, y + h))
+        return rects_by_map
 
     @property
     def text_box(self) -> tuple[int, int, int, int]:
@@ -291,6 +320,7 @@ class OverworldScene:
         self._draw_world(img, draw, pal, base_now, weather)
         self.current_mood = self.mood_engine.state(base_now, weather=weather, calendar_event=event)
         draw_social_world_effects(img, self.map_box, self.current_mood, self.frame)
+        self._draw_movement_debug_overlay(draw, pal)
         draw_hud(
             draw,
             people,
@@ -855,6 +885,8 @@ class OverworldScene:
 
     def _sprite_layers(self, phase: GamePhase) -> list[tuple[Image.Image, int, int, str]]:
         layers: list[tuple[Image.Image, int, int, str]] = []
+        snapshot = self._discord_voice_snapshot()
+        ash_streaming = bool(getattr(snapshot, "focus_streaming", False)) if snapshot is not None else False
         ash_x, route_y, direction = self._ash_pose_for_phase(phase)
         if direction:
             self.ash_direction = direction
@@ -865,8 +897,16 @@ class OverworldScene:
         walking = phase in (GamePhase.WALKING, GamePhase.RESUME_WALKING)
         step_index = int(self.frame * 6 / max(1, self.scene_fps))
         ash_y = route_y + (1 if walking and step_index % 2 else 0)
-        layers.extend(self._voice_companion_layers(ash_x, ash_y, phase))
+        if ash_streaming:
+            self.ash_direction = "down"
+            ash_y = route_y
+            ash = self.ash_sprites.frame("idle_down", self.frame)
+        layers.extend(self._voice_companion_layers(ash_x, ash_y, phase, snapshot=snapshot))
         layers.append((ash, ash_x, ash_y, ""))
+        if ash_streaming:
+            screen = self._live_screen_sprite()
+            sx, sy = self._live_screen_position(ash_x, ash_y, ash.width, ash.height, screen)
+            layers.append((screen, sx, sy, ""))
 
         if phase in (GamePhase.ENCOUNTER_START, GamePhase.POKEMON_APPEARS, GamePhase.ASH_THROWS, GamePhase.BALL_SHAKE):
             sprite_path = self.encounter.pokemon.animated_sprite_path or self.encounter.pokemon.sprite_path
@@ -907,9 +947,18 @@ class OverworldScene:
                 boxes.append((x - 18, y + sprite.height, x + sprite.width + 18, y + sprite.height + 12))
         return self._pad_box(self._union_many(boxes), 4)
 
-    def _voice_companion_layers(self, ash_x: int, ash_y: int, phase: GamePhase) -> list[tuple[Image.Image, int, int, str]]:
-        snapshot = self._discord_voice_snapshot()
-        if snapshot is None or not snapshot.members:
+    def _voice_companion_layers(
+        self,
+        ash_x: int,
+        ash_y: int,
+        phase: GamePhase,
+        snapshot=None,
+    ) -> list[tuple[Image.Image, int, int, str]]:
+        if snapshot is None:
+            self._voice_companions.clear()
+            return []
+        stream_active = bool(getattr(snapshot, "active_stream_user_ids", ()))
+        if not snapshot.members and not stream_active:
             self._voice_companions.clear()
             return []
         active_ids = {member.user_id for member in snapshot.members}
@@ -917,27 +966,78 @@ class OverworldScene:
             if user_id not in active_ids:
                 self._voice_companions.pop(user_id, None)
         layers: list[tuple[Image.Image, int, int, str]] = []
+        streamer_ids = set(getattr(snapshot, "active_stream_user_ids", ()))
         for member in snapshot.members:
             seed = int(hashlib.sha1(member.user_id.encode("utf-8")).hexdigest()[:8], 16)
             visual = self._discord_companion_visual(member.user_id)
             state = self._voice_companion_state(member.user_id, seed, ash_x, ash_y, visual.get("sprite_variant"))
             muted = bool(getattr(member, "muted", False))
-            if muted:
+            streaming = stream_active and member.user_id in streamer_ids
+            watching_stream = stream_active and not streaming
+            if streaming:
+                state.target_x = state.x
+                state.target_y = state.y
+                state.direction = "down"
+            elif muted:
                 state.target_x = state.x
                 state.target_y = state.y
             else:
                 self._update_voice_companion_state(state)
             anim = f"walk_{state.direction}"
-            if muted or (abs(state.x - state.target_x) < 0.6 and abs(state.y - state.target_y) < 0.6):
+            if streaming or muted or (abs(state.x - state.target_x) < 0.6 and abs(state.y - state.target_y) < 0.6):
                 anim = f"idle_{state.direction}"
             companion = self.npc_sprites.frame(state.variant, anim, self.frame)
+            if watching_stream:
+                companion = self._stream_viewer_sprite(companion)
             if muted:
                 companion = self._muted_companion_sprite(companion)
             x = self._clamp_sprite_x(int(round(state.x)), companion.width)
             y = self._clamp_sprite_y(int(round(state.y)), companion.height)
             label = str(visual.get("label") or member.name)
             layers.append((companion, x, y, self._short_companion_name(label)))
+            if streaming:
+                screen = self._live_screen_sprite()
+                sx, sy = self._live_screen_position(x, y, companion.width, companion.height, screen)
+                layers.append((screen, sx, sy, ""))
         return sorted(layers, key=lambda item: item[2] + item[0].height)
+
+    def _live_screen_position(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        screen: Image.Image,
+    ) -> tuple[int, int]:
+        right_x = x + width - 4
+        left_x = x - screen.width + 4
+        sx = right_x if right_x + screen.width <= self.map_box[2] - 2 else left_x
+        sy = y + max(0, (height - screen.height) // 2) - 2
+        return self._clamp_sprite_x(sx, screen.width), self._clamp_sprite_y(sy, screen.height)
+
+    def _live_screen_sprite(self) -> Image.Image:
+        sprite = Image.new("RGBA", (34, 22), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(sprite)
+        pulse = (self.frame // max(1, self.scene_fps // 2)) % 2
+        border = (28, 32, 48, 255)
+        panel = (232, 242, 250, 255) if pulse else (214, 232, 246, 255)
+        red = (220, 42, 54, 255)
+        text_x = 5 + int((self.frame // max(1, self.scene_fps // 4)) % 5)
+        draw.rectangle((2, 1, 31, 17), fill=border)
+        draw.rectangle((4, 3, 29, 15), fill=panel)
+        draw.rectangle((14, 17, 19, 20), fill=border)
+        draw.rectangle((9, 20, 24, 21), fill=border)
+        draw.text((text_x, 5), "LIVE", font=font(7), fill=red)
+        return sprite
+
+    @staticmethod
+    def _stream_viewer_sprite(sprite: Image.Image) -> Image.Image:
+        rgba = sprite.convert("RGBA")
+        alpha = rgba.getchannel("A")
+        glow = Image.new("RGBA", rgba.size, (72, 126, 210, 255))
+        tinted = Image.blend(rgba, glow, 0.16)
+        tinted.putalpha(alpha)
+        return tinted
 
     @staticmethod
     def _muted_companion_sprite(sprite: Image.Image) -> Image.Image:
@@ -973,7 +1073,7 @@ class OverworldScene:
         sprite_w = sample.width
         sprite_h = sample.height
         x, y = self._random_companion_target(rng, sprite_w, sprite_h)
-        if not self._voice_companions:
+        if not self._voice_companions and not self._movement_screen_rects("companions"):
             x = self._clamp_sprite_x(ash_x + rng.randint(-52, 52), sprite_w)
             y = self._clamp_sprite_y(ash_y + rng.randint(-48, 28), sprite_h)
         state = VoiceCompanionState(
@@ -992,13 +1092,28 @@ class OverworldScene:
         return state
 
     def _update_voice_companion_state(self, state: VoiceCompanionState) -> None:
+        sprite = self.npc_sprites.frame(state.variant, "idle_down", self.frame)
+        if self._movement_screen_rects("companions") and not self._sprite_movement_rect(
+            "companions",
+            int(round(state.x)),
+            int(round(state.y)),
+            sprite.width,
+            sprite.height,
+        ):
+            target = self._random_movement_target("companions", state.rng, sprite.width, sprite.height)
+            if target is not None:
+                state.x = float(target[0])
+                state.y = float(target[1])
+                state.target_x = state.x
+                state.target_y = state.y
+                state.direction = "down"
+                return
         dx = state.target_x - state.x
         dy = state.target_y - state.y
         distance = max(0.01, (dx * dx + dy * dy) ** 0.5)
         if distance <= state.speed or self.frame >= state.next_target_frame:
             state.x = state.target_x
             state.y = state.target_y
-            sprite = self.npc_sprites.frame(state.variant, "idle_down", self.frame)
             self._set_next_companion_target(state, sprite.width, sprite.height)
             state.next_target_frame = self.frame + state.rng.randint(self.scene_fps * 2, self.scene_fps * 7)
             return
@@ -1007,6 +1122,9 @@ class OverworldScene:
         state.y += dy / distance * step
 
     def _random_companion_target(self, rng: random.Random, width: int, height: int) -> tuple[int, int]:
+        configured = self._random_movement_target("companions", rng, width, height)
+        if configured is not None:
+            return configured
         x0, y0, x1, y1 = self.map_box
         min_x = x0 + 8
         max_x = max(min_x, x1 - width - 8)
@@ -1015,6 +1133,34 @@ class OverworldScene:
         return rng.randint(min_x, max_x), rng.randint(min_y, max_y)
 
     def _set_next_companion_target(self, state: VoiceCompanionState, width: int, height: int) -> None:
+        configured = self._random_movement_target("companions", state.rng, width, height)
+        if configured is not None:
+            current_rect = self._sprite_movement_rect(
+                "companions",
+                int(round(state.x)),
+                int(round(state.y)),
+                width,
+                height,
+            )
+            if current_rect is None:
+                state.x = float(configured[0])
+                state.y = float(configured[1])
+                state.target_x = state.x
+                state.target_y = state.y
+                state.direction = "down"
+                return
+            configured = self._random_target_in_screen_rect(state.rng, width, height, current_rect) or configured
+            state.target_x = float(configured[0])
+            state.target_y = float(configured[1])
+            dx = state.target_x - state.x
+            dy = state.target_y - state.y
+            if abs(dx) > abs(dy):
+                state.target_y = state.y
+                state.direction = "right" if dx > 0 else "left"
+            else:
+                state.target_x = state.x
+                state.direction = "down" if dy > 0 else "up"
+            return
         x0, y0, x1, y1 = self.map_box
         min_x = x0 + 8
         max_x = max(min_x, x1 - width - 8)
@@ -1063,6 +1209,149 @@ class OverworldScene:
     def _clamp_sprite_y(self, y: int, height: int) -> int:
         _, y0, _, y1 = self.map_box
         return max(y0 + 4, min(y1 - height - 14, y))
+
+    def _movement_source_rects(self, actor: str, key: str = "source_rects") -> list[tuple[int, int, int, int]]:
+        area = self.current_map_area
+        if area is None:
+            return []
+        raw_sections = []
+        if isinstance(self.movement_config, dict):
+            if actor in ("ash", "companions"):
+                raw_sections.append(self.movement_config.get("walkable", {}))
+                raw_sections.append(self.movement_config.get(actor, {}))
+            else:
+                raw_sections.append(self.movement_config.get(actor, {}))
+        rects: list[tuple[int, int, int, int]] = []
+        for raw_actor in raw_sections:
+            raw_rects = raw_actor.get(key, []) if isinstance(raw_actor, dict) else []
+            if not isinstance(raw_rects, list):
+                continue
+            for item in raw_rects:
+                if not isinstance(item, dict):
+                    continue
+                map_id = str(item.get("map") or item.get("map_id") or "")
+                if map_id and map_id not in (area.map_key, area.source_path.name, str(area.source_path)):
+                    continue
+                x = int(item.get("x", 0))
+                y = int(item.get("y", 0))
+                w = int(item.get("w", item.get("width", 0)))
+                h = int(item.get("h", item.get("height", 0)))
+                if w > 0 and h > 0:
+                    rects.append((x, y, x + w, y + h))
+        return rects
+
+    def _source_rect_to_screen(self, rect: tuple[int, int, int, int]) -> tuple[int, int, int, int] | None:
+        area = self.current_map_area
+        if area is None:
+            return None
+        crop_x0, crop_y0, crop_x1, crop_y1 = area.crop_box
+        ix0 = max(rect[0], crop_x0)
+        iy0 = max(rect[1], crop_y0)
+        ix1 = min(rect[2], crop_x1)
+        iy1 = min(rect[3], crop_y1)
+        if ix1 <= ix0 or iy1 <= iy0:
+            return None
+        viewport_w = self.map_box[2] - self.map_box[0]
+        viewport_h = self.map_box[3] - self.map_box[1]
+        crop_w = crop_x1 - crop_x0
+        crop_h = crop_y1 - crop_y0
+        paste_x = (viewport_w - crop_w) // 2
+        paste_y = (viewport_h - crop_h) // 2
+        screen_x0 = self.map_box[0] + paste_x + ix0 - crop_x0
+        screen_y0 = self.map_box[1] + paste_y + iy0 - crop_y0
+        screen_x1 = self.map_box[0] + paste_x + ix1 - crop_x0
+        screen_y1 = self.map_box[1] + paste_y + iy1 - crop_y0
+        return screen_x0, screen_y0, screen_x1, screen_y1
+
+    def _movement_screen_rects(self, actor: str, key: str = "source_rects") -> list[tuple[int, int, int, int]]:
+        rects = []
+        for rect in self._movement_source_rects(actor, key):
+            screen_rect = self._source_rect_to_screen(rect)
+            if screen_rect is not None:
+                rects.append(screen_rect)
+        return rects
+
+    def _sprite_movement_rect(
+        self,
+        actor: str,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+    ) -> tuple[int, int, int, int] | None:
+        for x0, y0, x1, y1 in self._movement_screen_rects(actor):
+            if x0 <= x and y0 <= y and x + width <= x1 and y + height <= y1:
+                return x0, y0, x1, y1
+        return None
+
+    @staticmethod
+    def _random_target_in_screen_rect(
+        rng: random.Random,
+        width: int,
+        height: int,
+        rect: tuple[int, int, int, int],
+    ) -> tuple[int, int] | None:
+        x0, y0, x1, y1 = rect
+        max_x = x1 - width
+        max_y = y1 - height
+        if max_x < x0 or max_y < y0:
+            return None
+        return rng.randint(x0, max_x), rng.randint(y0, max_y)
+
+    @staticmethod
+    def _point_in_rects(x: int, y: int, rects: list[tuple[int, int, int, int]]) -> bool:
+        return any(x0 <= x <= x1 and y0 <= y <= y1 for x0, y0, x1, y1 in rects)
+
+    def _random_movement_target(self, actor: str, rng: random.Random, width: int, height: int) -> tuple[int, int] | None:
+        walkable = self._movement_screen_rects(actor)
+        if not walkable:
+            return None
+        avoid = self._movement_screen_rects(actor, "avoid_source_rects") + self._movement_screen_rects("blocked")
+        candidates = []
+        for x0, y0, x1, y1 in walkable:
+            min_x = x0
+            max_x = x1 - width
+            min_y = y0
+            max_y = y1 - height
+            if max_x >= min_x and max_y >= min_y:
+                candidates.append((min_x, min_y, max_x, max_y))
+        if not candidates:
+            return None
+        for _ in range(16):
+            min_x, min_y, max_x, max_y = candidates[rng.randrange(len(candidates))]
+            x = rng.randint(min_x, max_x)
+            y = rng.randint(min_y, max_y)
+            if not avoid or not self._point_in_rects(x + width // 2, y + height, avoid):
+                return self._clamp_sprite_x(x, width), self._clamp_sprite_y(y, height)
+        min_x, min_y, max_x, max_y = candidates[0]
+        return self._clamp_sprite_x(min_x, width), self._clamp_sprite_y(min_y, height)
+
+    def _clamp_point_to_movement(self, actor: str, x: int, y: int) -> tuple[int, int]:
+        walkable = self._movement_screen_rects(actor)
+        if not walkable:
+            return x, y
+        if self._point_in_rects(x, y, walkable):
+            return x, y
+        best = None
+        for x0, y0, x1, y1 in walkable:
+            cx = max(x0, min(x1, x))
+            cy = max(y0, min(y1, y))
+            distance = abs(cx - x) + abs(cy - y)
+            if best is None or distance < best[0]:
+                best = (distance, cx, cy)
+        return (best[1], best[2]) if best else (x, y)
+
+    def _draw_movement_debug_overlay(self, draw: ImageDraw.ImageDraw, pal) -> None:
+        if not (bool(self.movement_config.get("debug_overlay", False)) if isinstance(self.movement_config, dict) else False):
+            return
+        colors = (
+            ("walkable", "source_rects", pal.green),
+            ("walkable", "avoid_source_rects", pal.red),
+            ("blocked", "source_rects", pal.red),
+        )
+        for actor, key, color in colors:
+            for rect in self._movement_screen_rects(actor, key):
+                draw.rectangle(rect, outline=color, width=2)
 
     @staticmethod
     def _short_companion_name(name: str) -> str:
@@ -1122,10 +1411,12 @@ class OverworldScene:
                 self.overworld_walk_frame,
                 self.route_speed_px,
             )
-            return self._moving_ash_pose(self.map_box[0] + x, self.map_box[1] + y, direction)
+            target_x, target_y = self._clamp_point_to_movement("ash", self.map_box[0] + x, self.map_box[1] + y)
+            return self._moving_ash_pose(target_x, target_y, direction)
         x = self._ash_x_for_phase(phase)
         if moving:
-            return self._moving_ash_pose(x, self.ash_y, None)
+            x, y = self._clamp_point_to_movement("ash", x, self.ash_y)
+            return self._moving_ash_pose(x, y, None)
         self._ash_render_x = float(x)
         self._ash_render_y = float(self.ash_y)
         self._ash_motion_axis = "horizontal"

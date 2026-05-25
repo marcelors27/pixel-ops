@@ -276,7 +276,7 @@ class NpcSpriteSet:
     """Small loader for FireRed/LeafGreen overworld NPC rows."""
 
     # Character rows in the bundled NPC sheet. Each row contains four
-    # directions in 16x20 cells spaced 17 pixels apart: down, up, right, left.
+    # directions in 16x20 cells spaced 17 pixels apart: down, up, left, right.
     ROWS = (
         72,
         96,
@@ -374,8 +374,8 @@ class NpcSpriteSet:
             return {}
         down = self._sequence(frames, (0, 1, 2, 1))
         up = self._sequence(frames, (3, 4, 5, 4))
-        right = self._sequence(frames, (6, 7, 8, 7))
-        left = self._sequence(frames, (9, 10, 11, 10))
+        left = self._sequence(frames, (6, 7, 8, 7))
+        right = self._sequence(frames, (9, 10, 11, 10))
         return {
             "walk_down": SpriteAnimation(down, fps=6),
             "walk_up": SpriteAnimation(up, fps=6),

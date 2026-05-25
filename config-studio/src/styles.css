@@ -426,6 +426,14 @@ textarea:focus {
   margin-top: 22px;
 }
 
+.pluginmaps-main {
+  padding-top: 22px;
+}
+
+.pluginmaps-panel {
+  min-height: calc(100vh - 190px);
+}
+
 .integration-grid {
   grid-template-columns: repeat(7, minmax(0, 1fr));
 }
@@ -824,6 +832,112 @@ textarea:focus {
   border-color: var(--mint);
   background: #173436;
   color: var(--text);
+}
+
+.movement-editor {
+  display: grid;
+  gap: 12px;
+}
+
+.movement-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px 96px 90px 90px auto;
+  gap: 8px;
+  align-items: start;
+}
+
+.movement-toolbar .secondary-button,
+.movement-toolbar .switch {
+  margin-top: 0;
+}
+
+.movement-map-shell {
+  max-height: 420px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  background: #111723;
+  padding: 10px;
+}
+
+.movement-editor-expanded .movement-map-shell {
+  max-height: calc(100vh - 330px);
+}
+
+.movement-map {
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.movement-map img {
+  display: block;
+  position: relative;
+  z-index: 0;
+  height: auto;
+  image-rendering: pixelated;
+  user-select: none;
+}
+
+.movement-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.22) 1px, transparent 1px);
+}
+
+.movement-rect {
+  position: absolute;
+  z-index: 2;
+  border: 2px solid;
+  background: rgba(126, 224, 189, 0.18);
+  cursor: move;
+}
+
+.movement-rect span {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  background: rgba(9, 11, 18, 0.74);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 2px 3px;
+}
+
+.movement-rect-walkable {
+  border-color: var(--mint);
+}
+
+.movement-rect-blocked {
+  border-color: var(--coral);
+  background: rgba(239, 132, 109, 0.2);
+}
+
+.movement-rect.is-selected {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.movement-rect .resize-handle-n,
+.movement-rect .resize-handle-s,
+.movement-rect .resize-handle-e,
+.movement-rect .resize-handle-w {
+  background: rgba(9, 11, 18, 0.46);
+}
+
+.movement-fields {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.movement-fields .secondary-button {
+  margin-top: 0;
 }
 
 .sprite-auto {

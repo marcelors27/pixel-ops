@@ -14,6 +14,7 @@ class DiscordVoiceMember:
     channel_id: str
     channel_name: str = ""
     muted: bool = False
+    streaming: bool = False
 
 
 @dataclass(frozen=True)
@@ -21,6 +22,11 @@ class DiscordVoiceSnapshot:
     channel_id: str = ""
     channel_name: str = ""
     members: tuple[DiscordVoiceMember, ...] = ()
+    active_stream_user_ids: tuple[str, ...] = ()
+    focus_user_id: str = ""
+    focus_name: str = ""
+    focus_muted: bool = False
+    focus_streaming: bool = False
 
 
 @dataclass
@@ -29,6 +35,7 @@ class _VoiceRecord:
     name: str
     channel_id: str
     muted: bool = False
+    streaming: bool = False
 
 
 @dataclass
@@ -95,15 +102,26 @@ class DiscordVoiceStateTracker:
                     channel_id=record.channel_id,
                     channel_name=self._channels.get(record.channel_id, ""),
                     muted=record.muted,
+                    streaming=record.streaming,
                 )
                 for record in records
                 if record.channel_id == channel_id and record.user_id != self.focus_user_id
             ]
             members.sort(key=lambda item: item.name.lower())
+            focus_record = self._voice.get(self.focus_user_id) if self.focus_user_id else None
+            focus_in_channel = focus_record if focus_record and focus_record.channel_id == channel_id else None
+            active_stream_user_ids = tuple(
+                sorted(record.user_id for record in records if record.channel_id == channel_id and record.streaming)
+            )
             return DiscordVoiceSnapshot(
                 channel_id=channel_id,
                 channel_name=self._channels.get(channel_id, ""),
                 members=tuple(members[: self.max_companions]),
+                active_stream_user_ids=active_stream_user_ids,
+                focus_user_id=focus_in_channel.user_id if focus_in_channel else "",
+                focus_name=focus_in_channel.name if focus_in_channel else "",
+                focus_muted=focus_in_channel.muted if focus_in_channel else False,
+                focus_streaming=focus_in_channel.streaming if focus_in_channel else False,
             )
 
     def _observe_voice_state_unlocked(self, data: dict[str, Any]) -> DiscordVoiceMember | None:
@@ -122,13 +140,21 @@ class DiscordVoiceStateTracker:
             profile = self.companion_store.record_member(user_id, name)
             name = profile.display_name
         muted = bool(data.get("self_mute") or data.get("mute") or data.get("self_deaf") or data.get("deaf"))
-        self._voice[user_id] = _VoiceRecord(user_id=user_id, name=name, channel_id=channel_id, muted=muted)
+        streaming = bool(data.get("self_stream"))
+        self._voice[user_id] = _VoiceRecord(
+            user_id=user_id,
+            name=name,
+            channel_id=channel_id,
+            muted=muted,
+            streaming=streaming,
+        )
         return DiscordVoiceMember(
             user_id=user_id,
             name=name,
             channel_id=channel_id,
             channel_name=self._channels.get(channel_id, ""),
             muted=muted,
+            streaming=streaming,
         )
 
     def _remember_channel(self, channel: dict[str, Any]) -> None:

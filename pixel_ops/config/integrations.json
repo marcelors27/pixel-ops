@@ -61,7 +61,7 @@
         "claude",
         "openai_api"
       ],
-      "poll_seconds": 300,
+      "poll_seconds": 60,
       "codex_home": "~/.codex",
       "claude_projects_path": "~/.claude/projects",
       "openai_admin_key_env": "OPENAI_ADMIN_KEY",

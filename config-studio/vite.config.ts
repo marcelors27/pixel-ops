@@ -221,6 +221,44 @@ async function ensureSpritePreviews() {
   return outputDir;
 }
 
+async function listPokemonMaps() {
+  const mapsRoot = path.join(repoRoot, "pixel_ops/plugins/pokemon/assets/maps/firered_leafgreen_clean");
+  const entries: Array<{ key: string; label: string; width: number; height: number; url: string }> = [];
+  async function walk(dir: string) {
+    const dirEntries = await fs.readdir(dir, { withFileTypes: true });
+    for (const entry of dirEntries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        await walk(fullPath);
+      } else if (entry.isFile() && entry.name.endsWith(".png")) {
+        const relative = path.relative(mapsRoot, fullPath).replaceAll(path.sep, "/");
+        const key = path.basename(entry.name, ".png");
+        const dimensions = await pngDimensions(fullPath);
+        entries.push({
+          key,
+          label: relative.replace(".png", ""),
+          width: dimensions.width,
+          height: dimensions.height,
+          url: `/api/pokemon-maps/${encodeURIComponent(relative)}`,
+        });
+      }
+    }
+  }
+  await walk(mapsRoot);
+  return entries.sort((a, b) => a.label.localeCompare(b.label));
+}
+
+async function pngDimensions(filePath: string): Promise<{ width: number; height: number }> {
+  const handle = await fs.open(filePath, "r");
+  try {
+    const buffer = Buffer.alloc(24);
+    await handle.read(buffer, 0, 24, 0);
+    return { width: buffer.readUInt32BE(16), height: buffer.readUInt32BE(20) };
+  } finally {
+    await handle.close();
+  }
+}
+
 async function sendFile(res: ServerResponse, filePath: string, contentType: string) {
   const data = await fs.readFile(filePath);
   res.statusCode = 200;
@@ -278,6 +316,25 @@ function runtimeConfigApi(): Plugin {
             return;
           }
           await sendFile(res, path.join(outputDir, `${match[1]}.gif`), "image/gif");
+        } catch (error) {
+          sendJson(res, 500, { error: error instanceof Error ? error.message : String(error) });
+        }
+      });
+      server.middlewares.use("/api/pokemon-maps", async (req, res) => {
+        try {
+          const mapsRoot = path.join(repoRoot, "pixel_ops/plugins/pokemon/assets/maps/firered_leafgreen_clean");
+          const url = req.url || "/";
+          if (url === "/" || url === "") {
+            sendJson(res, 200, { maps: await listPokemonMaps() });
+            return;
+          }
+          const relative = decodeURIComponent(url.replace(/^\//, ""));
+          const target = path.normalize(path.join(mapsRoot, relative));
+          if (!target.startsWith(mapsRoot) || !target.endsWith(".png")) {
+            sendJson(res, 404, { error: "Map not found." });
+            return;
+          }
+          await sendFile(res, target, "image/png");
         } catch (error) {
           sendJson(res, 500, { error: error instanceof Error ? error.message : String(error) });
         }

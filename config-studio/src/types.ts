@@ -133,6 +133,7 @@ export type RuntimeConfig = {
       map_switch_seconds: number;
       route_speed_px: number;
       vertical_wander_px: number;
+      movement: MovementConfig;
       hud_height: number;
       text_box_height: number;
       events: {
@@ -185,6 +186,27 @@ export type LayoutBox = {
   y: number;
   width: number;
   height: number;
+};
+
+export type MovementRect = {
+  map: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+};
+
+export type MovementActorConfig = {
+  source_rects: MovementRect[];
+  avoid_source_rects?: MovementRect[];
+};
+
+export type MovementConfig = {
+  debug_overlay: boolean;
+  walkable: MovementActorConfig;
+  blocked: {
+    source_rects: MovementRect[];
+  };
 };
 
 export type IntegrationToggle = {

@@ -15,16 +15,18 @@ import {
   Settings2,
   Users,
 } from "lucide-react";
-import { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { ComponentType, DragEvent, MouseEvent, ReactNode } from "react";
 import mascotAlertImg from "./assets/pixelops-mascot-angry.png";
 import mascotImg from "./assets/pixelops-mascot.png";
 import mascotSleepyImg from "./assets/pixelops-mascot-sleepy.png";
 import { PixelMascot } from "./components/PixelMascot";
 import { cloneConfig, loadConfig, loadConfigManifest, saveConfig } from "./lib/configApi";
-import type { ConfigManifest, DetectedPlugin, DiscordPersonConfig, IntegrationToggle, LayoutBox, LayoutKey, PersonConfig, RuntimeConfig } from "./types";
+import type { ConfigManifest, DetectedPlugin, DiscordPersonConfig, IntegrationToggle, LayoutBox, LayoutKey, MovementConfig, MovementRect, PersonConfig, RuntimeConfig } from "./types";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
+type MovementLayer = "walkable" | "blocked";
+type PokemonMapOption = { key: string; label: string; width: number; height: number; url: string };
 
 const integrationIcons: Record<string, IconComponent> = {
   github: Github,
@@ -84,6 +86,8 @@ export function App() {
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [selectedLayout, setSelectedLayout] = useState<LayoutKey>("game");
   const [draggingPersonIndex, setDraggingPersonIndex] = useState<number | null>(null);
+  const [pokemonMaps, setPokemonMaps] = useState<PokemonMapOption[]>([]);
+  const [pathName, setPathName] = useState(() => window.location.pathname);
   const timezoneOptions = useMemo(() => buildTimezoneOptions(), []);
 
   useEffect(() => {
@@ -94,6 +98,19 @@ export function App() {
     if (!manifest) return;
     void refreshConfig(selectedPluginKeys);
   }, [manifest, selectedPluginKeys]);
+
+  useEffect(() => {
+    void fetch("/api/pokemon-maps")
+      .then((response) => (response.ok ? response.json() : { maps: [] }))
+      .then((payload) => setPokemonMaps(Array.isArray(payload.maps) ? payload.maps : []))
+      .catch(() => setPokemonMaps([]));
+  }, []);
+
+  useEffect(() => {
+    const updatePath = () => setPathName(window.location.pathname);
+    window.addEventListener("popstate", updatePath);
+    return () => window.removeEventListener("popstate", updatePath);
+  }, []);
 
   const dirty = useMemo(() => JSON.stringify(config) !== JSON.stringify(baseline), [baseline, config]);
 
@@ -156,6 +173,11 @@ export function App() {
     });
   }
 
+  function navigate(path: string) {
+    window.history.pushState({}, "", path);
+    setPathName(path);
+  }
+
   if (!config || !manifest) {
     return (
       <main className="loading-shell">
@@ -173,6 +195,7 @@ export function App() {
   const discordPeopleConfig = config.discord_people?.discord_people ?? { max_recent: 50, people: {} };
   const discordPeople = discordPersonEntries(discordPeopleConfig.people);
   const enabledCount = manifest.integrations.filter(({ key }) => Boolean(integrationConfig(config, key).enabled)).length;
+  const isPluginMapsRoute = pathName === "/pluginmaps";
 
   return (
     <div className="app-shell">
@@ -184,15 +207,49 @@ export function App() {
           </div>
         </div>
         <nav>
-          <a href="#layout">Layout</a>
-          <a href="#display">Display</a>
-          <a href="#plugins">Plugins</a>
-          <a href="#integrations">Integrations</a>
-          <a href="#people">People</a>
-          {hasPokemonPlugin ? <a href="#pokemon">Pokemon</a> : null}
+          <a href="/" onClick={(event) => { event.preventDefault(); navigate("/"); }}>Home</a>
+          {!isPluginMapsRoute ? <a href="#layout">Layout</a> : null}
+          {!isPluginMapsRoute ? <a href="#display">Display</a> : null}
+          {!isPluginMapsRoute ? <a href="#plugins">Plugins</a> : null}
+          {!isPluginMapsRoute ? <a href="#integrations">Integrations</a> : null}
+          {!isPluginMapsRoute ? <a href="#people">People</a> : null}
+          {hasPokemonPlugin && !isPluginMapsRoute ? <a href="#pokemon">Pokemon</a> : null}
+          {hasPokemonPlugin ? <a href="/pluginmaps" onClick={(event) => { event.preventDefault(); navigate("/pluginmaps"); }}>Plugin maps</a> : null}
         </nav>
       </header>
 
+      {isPluginMapsRoute ? (
+      <main className="pluginmaps-main">
+        {error ? <div className="error-banner">{error}</div> : null}
+        {hasPokemonPlugin && game ? (
+          <section className="wide-panel pluginmaps-panel">
+            <div className="section-heading">
+              <MoveDiagonal2 size={20} />
+              <div>
+                <h2>Plugin Maps</h2>
+                <p>Draw Pokemon movement areas directly on full map images. Rectangles are saved in source-map coordinates.</p>
+              </div>
+            </div>
+            <MovementAreaEditor
+              maps={pokemonMaps}
+              movement={game.movement}
+              onChange={(movement) => mutate((draft) => void (draft.game!.game.movement = movement))}
+              expanded
+            />
+          </section>
+        ) : (
+          <section className="wide-panel">
+            <div className="section-heading">
+              <MoveDiagonal2 size={20} />
+              <div>
+                <h2>Plugin Maps</h2>
+                <p>Select the Pokemon visual plugin to load map movement configuration.</p>
+              </div>
+            </div>
+          </section>
+        )}
+      </main>
+      ) : (
       <main>
         <section className="hero">
           <div className="hero-copy">
@@ -655,6 +712,14 @@ export function App() {
             </div>
           </Panel>
 
+          <Panel title="Movement Areas" icon={MoveDiagonal2} subtitle="Draw walkable regions on full map images">
+            <MovementAreaEditor
+              maps={pokemonMaps}
+              movement={game.movement}
+              onChange={(movement) => mutate((draft) => void (draft.game!.game.movement = movement))}
+            />
+          </Panel>
+
           <Panel title="Pokemon AI Selector" icon={Bot} subtitle="Throttled Pokemon-specific AI selection">
             <Field label="Selector enabled">
               <Switch checked={aiSelector.enabled} onChange={(value) => mutate((draft) => void (draft.game!.game.events.ai_selector.enabled = value))} />
@@ -721,6 +786,7 @@ export function App() {
         </section>
         ) : null}
       </main>
+      )}
 
       <footer className="save-bar">
         <div>
@@ -1085,6 +1151,256 @@ function PersonRow({
   );
 }
 
+function MovementAreaEditor({
+  maps,
+  movement,
+  onChange,
+  expanded = false,
+}: {
+  maps: PokemonMapOption[];
+  movement: MovementConfig;
+  onChange: (movement: MovementConfig) => void;
+  expanded?: boolean;
+}) {
+  const [layer, setLayer] = useState<MovementLayer>("walkable");
+  const [selectedMapKey, setSelectedMapKey] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [gridEnabled, setGridEnabled] = useState(false);
+  const [gridSize, setGridSize] = useState(16);
+  const [zoomPercent, setZoomPercent] = useState(expanded ? 300 : 100);
+  const imageRef = useRef<HTMLImageElement | null>(null);
+  const activeMap = maps.find((item) => item.key === selectedMapKey) ?? maps[0];
+  const mapKey = activeMap?.key ?? "";
+  const rects = movementRectsForLayer(movement, layer).filter((rect) => rect.map === mapKey);
+
+  useEffect(() => {
+    if (!selectedMapKey && maps[0]) {
+      setSelectedMapKey(maps[0].key);
+    }
+  }, [maps, selectedMapKey]);
+
+  function commit(nextRects: MovementRect[]) {
+    const next = JSON.parse(JSON.stringify(movement)) as MovementConfig;
+    const existing = movementRectsForLayer(next, layer).filter((rect) => rect.map !== mapKey);
+    setMovementRectsForLayer(next, layer, [...existing, ...nextRects]);
+    onChange(next);
+  }
+
+  function snap(value: number): number {
+    if (!gridEnabled) return Math.round(value);
+    const size = Math.max(1, gridSize);
+    return Math.round(value / size) * size;
+  }
+
+  function snapRect(rect: MovementRect): MovementRect {
+    if (!gridEnabled) return rect;
+    return {
+      ...rect,
+      x: snap(rect.x),
+      y: snap(rect.y),
+      w: Math.max(gridSize, snap(rect.w)),
+      h: Math.max(gridSize, snap(rect.h)),
+    };
+  }
+
+  function imagePoint(event: MouseEvent<HTMLElement>) {
+    const image = imageRef.current;
+    if (!image || !activeMap) return null;
+    const bounds = image.getBoundingClientRect();
+    const scaleX = activeMap.width / bounds.width;
+    const scaleY = activeMap.height / bounds.height;
+    return {
+      x: Math.round((event.clientX - bounds.left) * scaleX),
+      y: Math.round((event.clientY - bounds.top) * scaleY),
+      scaleX,
+      scaleY,
+    };
+  }
+
+  function addRect(event: MouseEvent<HTMLDivElement>) {
+    if ((event.target as HTMLElement).closest(".movement-rect")) return;
+    const point = imagePoint(event);
+    if (!point || !activeMap) return;
+    const nextRect = clampMovementRect(
+      snapRect({ map: activeMap.key, x: point.x - 30, y: point.y - 18, w: 60, h: 36 }),
+      activeMap.width,
+      activeMap.height,
+    );
+    commit([...rects, nextRect]);
+    setSelectedIndex(rects.length);
+  }
+
+  function dragRect(event: MouseEvent<HTMLDivElement>, index: number) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!activeMap) return;
+    setSelectedIndex(index);
+    const point = imagePoint(event);
+    if (!point) return;
+    const start = rects[index];
+    const startPoint = point;
+    const move = (moveEvent: globalThis.MouseEvent) => {
+      const image = imageRef.current;
+      if (!image) return;
+      const bounds = image.getBoundingClientRect();
+      const x = Math.round((moveEvent.clientX - bounds.left) * (activeMap.width / bounds.width));
+      const y = Math.round((moveEvent.clientY - bounds.top) * (activeMap.height / bounds.height));
+      const next = rects.map((rect, rectIndex) =>
+        rectIndex === index
+          ? clampMovementRect(snapRect({ ...rect, x: start.x + x - startPoint.x, y: start.y + y - startPoint.y }), activeMap.width, activeMap.height)
+          : rect,
+      );
+      commit(next);
+    };
+    const up = () => {
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseup", up);
+    };
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", up);
+  }
+
+  function resizeRect(event: MouseEvent<HTMLDivElement>, index: number, direction: ResizeDirection) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!activeMap) return;
+    setSelectedIndex(index);
+    const point = imagePoint(event);
+    if (!point) return;
+    const start = rects[index];
+    const startPoint = point;
+    const move = (moveEvent: globalThis.MouseEvent) => {
+      const image = imageRef.current;
+      if (!image) return;
+      const bounds = image.getBoundingClientRect();
+      const x = Math.round((moveEvent.clientX - bounds.left) * (activeMap.width / bounds.width));
+      const y = Math.round((moveEvent.clientY - bounds.top) * (activeMap.height / bounds.height));
+      const dx = x - startPoint.x;
+      const dy = y - startPoint.y;
+      const nextRect = { ...start };
+      if (direction.includes("e")) nextRect.w = start.w + dx;
+      if (direction.includes("s")) nextRect.h = start.h + dy;
+      if (direction.includes("w")) {
+        nextRect.x = start.x + dx;
+        nextRect.w = start.w - dx;
+      }
+      if (direction.includes("n")) {
+        nextRect.y = start.y + dy;
+        nextRect.h = start.h - dy;
+      }
+      commit(
+        rects.map((rect, rectIndex) =>
+          rectIndex === index ? clampMovementRect(snapRect(nextRect), activeMap.width, activeMap.height) : rect,
+        ),
+      );
+    };
+    const up = () => {
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseup", up);
+    };
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", up);
+  }
+
+  function selectedRect(): MovementRect | null {
+    return selectedIndex == null ? null : rects[selectedIndex] ?? null;
+  }
+
+  if (!activeMap) {
+    return <span className="empty-note">No Pokemon maps found.</span>;
+  }
+
+  const selected = selectedRect();
+  const scale = Math.max(25, Math.min(500, zoomPercent)) / 100;
+
+  return (
+    <div className={`movement-editor ${expanded ? "movement-editor-expanded" : ""}`}>
+      <div className="movement-toolbar">
+        <Select value={mapKey} options={maps.map((item) => item.key)} onChange={(value) => { setSelectedMapKey(value); setSelectedIndex(null); }} />
+        <Select value={layer} options={["walkable", "blocked"]} onChange={(value) => { setLayer(value as MovementLayer); setSelectedIndex(null); }} />
+        <button className={`switch ${gridEnabled ? "is-on" : ""}`} type="button" onClick={() => setGridEnabled((value) => !value)} aria-pressed={gridEnabled}>
+          <span />
+          Grid
+        </button>
+        <Field label="Grid px">
+          <NumberInput value={gridSize} onChange={(value) => setGridSize(clampNumber(value, 2, 128))} />
+        </Field>
+        <Field label="Zoom %">
+          <NumberInput value={zoomPercent} onChange={(value) => setZoomPercent(clampNumber(value, 25, 500))} />
+        </Field>
+        <button className="secondary-button" type="button" onClick={() => onChange({ ...movement, debug_overlay: !movement.debug_overlay })}>
+          {movement.debug_overlay ? "Hide overlay" : "Show overlay"}
+        </button>
+      </div>
+      <div className="movement-map-shell">
+        <div className="movement-map" style={{ width: activeMap.width * scale }} onMouseDown={addRect}>
+          <img ref={imageRef} src={activeMap.url} alt="" style={{ width: activeMap.width * scale }} />
+          {gridEnabled ? (
+            <div
+              className="movement-grid"
+              style={{
+                backgroundSize: `${gridSize * scale}px ${gridSize * scale}px`,
+              }}
+            />
+          ) : null}
+          {rects.map((rect, index) => (
+            <div
+              key={`${rect.map}-${index}`}
+              className={`movement-rect movement-rect-${layer} ${selectedIndex === index ? "is-selected" : ""}`}
+              style={{ left: rect.x * scale, top: rect.y * scale, width: rect.w * scale, height: rect.h * scale }}
+              onMouseDown={(event) => dragRect(event, index)}
+            >
+              <span>{layer}</span>
+              {selectedIndex === index
+                ? resizeDirections.map((direction) => (
+                    <div
+                      key={direction}
+                      className={`resize-handle resize-handle-${direction}`}
+                      role="presentation"
+                      title="Resize"
+                      onMouseDown={(event) => resizeRect(event, index, direction)}
+                    >
+                      {direction.length === 2 ? <MoveDiagonal2 size={10} strokeWidth={3} /> : null}
+                    </div>
+                  ))
+                : null}
+            </div>
+          ))}
+        </div>
+      </div>
+      {selected ? (
+        <div className="movement-fields">
+          {(["x", "y", "w", "h"] as const).map((key) => (
+            <Field key={key} label={key.toUpperCase()}>
+              <NumberInput
+                value={selected[key]}
+                onChange={(value) => {
+                  const next = rects.map((rect, index) =>
+                    index === selectedIndex ? clampMovementRect(snapRect({ ...rect, [key]: value }), activeMap.width, activeMap.height) : rect,
+                  );
+                  commit(next);
+                }}
+              />
+            </Field>
+          ))}
+          <button
+            className="secondary-button"
+            type="button"
+            onClick={() => {
+              commit(rects.filter((_, index) => index !== selectedIndex));
+              setSelectedIndex(null);
+            }}
+          >
+            Delete selected
+          </button>
+        </div>
+      ) : (
+        <span className="empty-note">Click the map to add a rectangle. Drag rectangles to move them.</span>
+      )}
+    </div>
+  );
+}
+
 function CompanionSpriteRow({
   userId,
   person,
@@ -1294,6 +1610,33 @@ function compactTimezoneKey(value: string): string {
     .slice(0, 5);
 }
 
+function movementRectsForLayer(movement: MovementConfig, layer: MovementLayer): MovementRect[] {
+  if (layer === "blocked") {
+    return movement.blocked.source_rects;
+  }
+  return movement.walkable.source_rects;
+}
+
+function setMovementRectsForLayer(movement: MovementConfig, layer: MovementLayer, rects: MovementRect[]) {
+  if (layer === "blocked") {
+    movement.blocked.source_rects = rects;
+  } else {
+    movement.walkable.source_rects = rects;
+  }
+}
+
+function clampMovementRect(rect: MovementRect, width: number, height: number): MovementRect {
+  const w = Math.max(4, Math.min(width, Math.round(rect.w)));
+  const h = Math.max(4, Math.min(height, Math.round(rect.h)));
+  return {
+    ...rect,
+    x: Math.max(0, Math.min(width - w, Math.round(rect.x))),
+    y: Math.max(0, Math.min(height - h, Math.round(rect.y))),
+    w,
+    h,
+  };
+}
+
 function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
   const next = cloneConfig(config);
   const display = next.display.display;
@@ -1329,6 +1672,30 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
   }
   if (next.pokemon) {
     next.pokemon.pokemon.offline = Boolean(next.pokemon.pokemon.offline);
+  }
+  if (next.game) {
+    const legacyMovement = next.game.game.movement as MovementConfig & {
+      ash?: { source_rects?: MovementRect[]; avoid_source_rects?: MovementRect[] };
+      companions?: { source_rects?: MovementRect[]; avoid_source_rects?: MovementRect[] };
+    };
+    next.game.game.movement = {
+      debug_overlay: Boolean(next.game.game.movement?.debug_overlay),
+      walkable: {
+        source_rects: [
+          ...(legacyMovement.walkable?.source_rects ?? []),
+          ...(legacyMovement.ash?.source_rects ?? []),
+          ...(legacyMovement.companions?.source_rects ?? []),
+        ],
+        avoid_source_rects: [
+          ...(legacyMovement.walkable?.avoid_source_rects ?? []),
+          ...(legacyMovement.ash?.avoid_source_rects ?? []),
+          ...(legacyMovement.companions?.avoid_source_rects ?? []),
+        ],
+      },
+      blocked: {
+        source_rects: next.game.game.movement?.blocked?.source_rects ?? [],
+      },
+    };
   }
   if (next.pokemon_companions) {
     next.pokemon_companions.companions.discord = next.pokemon_companions.companions.discord ?? {};

@@ -4,7 +4,7 @@ import os
 import random
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Iterable
 
 from PIL import Image
 
@@ -13,6 +13,7 @@ from PIL import Image
 class MapArea:
     area_id: str
     source_path: Path
+    map_key: str
     crop_box: tuple[int, int, int, int]
     source_bounds: tuple[int, int, int, int]
     route: tuple[tuple[int, int], ...]
@@ -28,11 +29,26 @@ class MapRouteManager:
         viewport_size: tuple[int, int],
         switch_seconds: int = 300,
         seed: int = 251,
+        allowed_map_keys: Iterable[str] | None = None,
+        walkable_source_rects: dict[str,
+                                    Iterable[tuple[int, int, int, int]]] | None = None,
+        min_walkable_coverage: float = 0.4,
     ):
         self.maps_dir = maps_dir
         self.viewport_size = viewport_size
         self.switch_seconds = switch_seconds
         self.rng = random.Random(seed)
+        self.walkable_source_rects = {
+            key: tuple(rects)
+            for key, rects in (walkable_source_rects or {}).items()
+            if key and rects
+        }
+        raw_allowed_keys = allowed_map_keys
+        if raw_allowed_keys is None and self.walkable_source_rects:
+            raw_allowed_keys = self.walkable_source_rects.keys()
+        self.allowed_map_keys = {
+            key for key in raw_allowed_keys if key} if raw_allowed_keys is not None else None
+        self.min_walkable_coverage = max(0.0, min(1.0, min_walkable_coverage))
         self.areas = self._load_areas()
         self._background_cache: dict[tuple[str, str], Image.Image] = {}
 
@@ -45,7 +61,8 @@ class MapRouteManager:
         return areas[rng.randrange(len(areas))]
 
     def _filtered_areas_for_mock(self) -> list[MapArea]:
-        environment = os.environ.get("PIXEL_OPS_MAP_MOCK_ENVIRONMENT", "").strip().lower()
+        environment = os.environ.get(
+            "PIXEL_OPS_MAP_MOCK_ENVIRONMENT", "").strip().lower()
         if not environment:
             return []
         if environment == "sheltered":
@@ -63,7 +80,8 @@ class MapRouteManager:
             crop = source.convert("RGB").crop(area.crop_box)
         crop = self._black_out_light_border(crop)
         background = Image.new("RGB", self.viewport_size, (0, 0, 0))
-        background.paste(crop, ((self.viewport_size[0] - crop.width) // 2, (self.viewport_size[1] - crop.height) // 2))
+        background.paste(crop, ((
+            self.viewport_size[0] - crop.width) // 2, (self.viewport_size[1] - crop.height) // 2))
         if tint:
             background = tint(background)
         self._background_cache[key] = background
@@ -85,7 +103,8 @@ class MapRouteManager:
         segments = []
         total = 0.0
         for start, end in zip(route, route[1:]):
-            length = ((end[0] - start[0]) ** 2 + (end[1] - start[1]) ** 2) ** 0.5
+            length = ((end[0] - start[0]) ** 2 +
+                      (end[1] - start[1]) ** 2) ** 0.5
             segments.append((start, end, length))
             total += length
         if total <= 0:
@@ -122,15 +141,20 @@ class MapRouteManager:
         paths = sorted(self.maps_dir.glob("**/*.png"))
         areas: list[MapArea] = []
         for path in paths:
+            if self.allowed_map_keys is not None and path.stem not in self.allowed_map_keys:
+                continue
             with Image.open(path) as image:
                 source = image.convert("RGB")
                 bounds = self._main_map_bounds(source)
                 width = bounds[2] - bounds[0]
                 height = bounds[3] - bounds[1]
             crop_w, crop_h = self._crop_size(width, height)
-            centers = self._centers_for_map(width, height, crop_w, crop_h)
+            centers = self._centers_for_map(
+                path.stem, width, height, crop_w, crop_h, bounds)
+            candidates: list[tuple[float, MapArea]] = []
             for index, center in enumerate(centers):
-                local_box = self._crop_box(width, height, crop_w, crop_h, center)
+                local_box = self._crop_box(
+                    width, height, crop_w, crop_h, center)
                 box = (
                     bounds[0] + local_box[0],
                     bounds[1] + local_box[1],
@@ -138,21 +162,32 @@ class MapRouteManager:
                     bounds[1] + local_box[3],
                 )
                 area_id = f"{path.stem}:{index}"
-                route = self._route_for_crop(source.crop(box))
+                coverage = self._walkable_coverage(path.stem, box)
+                if self.walkable_source_rects and coverage < self.min_walkable_coverage:
+                    continue
+                route = self._route_for_crop(source.crop(
+                    box)) or self._route_for_source_rects(path.stem, box)
                 if route:
-                    environment, sheltered, location_kind = self._classify_area(path)
-                    areas.append(
-                        MapArea(
-                            area_id,
-                            path,
-                            box,
-                            bounds,
-                            route,
-                            environment=environment,
-                            sheltered=sheltered,
-                            location_kind=location_kind,
+                    environment, sheltered, location_kind = self._classify_area(
+                        path)
+                    candidates.append(
+                        (
+                            coverage,
+                            MapArea(
+                                area_id,
+                                path,
+                                path.stem,
+                                box,
+                                bounds,
+                                route,
+                                environment=environment,
+                                sheltered=sheltered,
+                                location_kind=location_kind,
+                            ),
                         )
                     )
+            candidates.sort(key=lambda item: item[0], reverse=True)
+            areas.extend(area for _, area in candidates)
         return areas
 
     @staticmethod
@@ -191,16 +226,23 @@ class MapRouteManager:
         # Clean split maps do not, so only apply header trimming when the outer border is mostly light.
         border_sample = []
         if height > 20:
-            border_sample.extend(image.getpixel((x, 0)) for x in range(0, width, max(1, width // 80)))
-            border_sample.extend(image.getpixel((x, height - 1)) for x in range(0, width, max(1, width // 80)))
-            border_sample.extend(image.getpixel((0, y)) for y in range(0, height, max(1, height // 80)))
-            border_sample.extend(image.getpixel((width - 1, y)) for y in range(0, height, max(1, height // 80)))
-        has_light_border = bool(border_sample) and sum(1 for pixel in border_sample if self._is_light(pixel)) > len(border_sample) * 0.7
-        header_sample = [image.getpixel((x, 8)) for x in range(0, width, max(1, width // 80))] if has_light_border else []
+            border_sample.extend(image.getpixel((x, 0))
+                                 for x in range(0, width, max(1, width // 80)))
+            border_sample.extend(image.getpixel((x, height - 1))
+                                 for x in range(0, width, max(1, width // 80)))
+            border_sample.extend(image.getpixel((0, y))
+                                 for y in range(0, height, max(1, height // 80)))
+            border_sample.extend(image.getpixel((width - 1, y))
+                                 for y in range(0, height, max(1, height // 80)))
+        has_light_border = bool(border_sample) and sum(
+            1 for pixel in border_sample if self._is_light(pixel)) > len(border_sample) * 0.7
+        header_sample = [image.getpixel((x, 8)) for x in range(
+            0, width, max(1, width // 80))] if has_light_border else []
         if header_sample and sum(1 for pixel in header_sample if self._is_light(pixel)) > len(header_sample) * 0.5:
             top = min(18, height - 1)
         for y in range(top, min(40, height)):
-            row = [image.getpixel((x, y)) for x in range(0, width, max(1, width // 80))]
+            row = [image.getpixel((x, y))
+                   for x in range(0, width, max(1, width // 80))]
             non_light = sum(1 for pixel in row if not self._is_light(pixel))
             if non_light > len(row) * 0.55:
                 top = y
@@ -209,7 +251,8 @@ class MapRouteManager:
         # If the sheet has interiors/legend panels on the right, keep the main outdoor map.
         gap_start = None
         for x in range(max(220, width // 4), width):
-            sample = [image.getpixel((x, y)) for y in range(top, height, max(1, (height - top) // 80))]
+            sample = [image.getpixel((x, y)) for y in range(
+                top, height, max(1, (height - top) // 80))]
             light = sum(1 for pixel in sample if self._is_light(pixel))
             if light > len(sample) * 0.92:
                 if gap_start is None:
@@ -224,7 +267,8 @@ class MapRouteManager:
 
         # Trim fully light margins left after choosing the main panel.
         for x in range(0, right):
-            sample = [image.getpixel((x, y)) for y in range(top, height, max(1, (height - top) // 80))]
+            sample = [image.getpixel((x, y)) for y in range(
+                top, height, max(1, (height - top) // 80))]
             if sum(1 for pixel in sample if not self._is_light(pixel)) > len(sample) * 0.2:
                 left = x
                 break
@@ -270,9 +314,17 @@ class MapRouteManager:
 
     def _crop_size(self, width: int, height: int) -> tuple[int, int]:
         view_w, view_h = self.viewport_size
-        return min(width, view_w), min(height, view_h)
+        return max(1, min(width, view_w)), max(1, min(height, view_h))
 
-    def _centers_for_map(self, width: int, height: int, crop_w: int, crop_h: int) -> list[tuple[int, int]]:
+    def _centers_for_map(
+        self,
+        map_key: str,
+        width: int,
+        height: int,
+        crop_w: int,
+        crop_h: int,
+        source_bounds: tuple[int, int, int, int] = (0, 0, 0, 0),
+    ) -> list[tuple[int, int]]:
         xs = [width // 2]
         ys = [height // 2]
         if width > crop_w * 1.35:
@@ -280,7 +332,67 @@ class MapRouteManager:
         if height > crop_h * 1.35:
             ys = [crop_h // 2, height // 2, height - crop_h // 2]
         centers = [(x, y) for y in ys for x in xs]
-        return centers[:6]
+        bounds_x0, bounds_y0, _, _ = source_bounds
+        for x0, y0, x1, y1 in self.walkable_source_rects.get(map_key, ()):
+            cx = (x0 + x1) // 2 - bounds_x0
+            cy = (y0 + y1) // 2 - bounds_y0
+            centers.append((cx, cy))
+            centers.append((max(0, x0 - bounds_x0 + crop_w // 2), cy))
+            centers.append((min(width, x1 - bounds_x0 - crop_w // 2), cy))
+            centers.append((cx, max(0, y0 - bounds_y0 + crop_h // 2)))
+            centers.append((cx, min(height, y1 - bounds_y0 - crop_h // 2)))
+        unique: list[tuple[int, int]] = []
+        seen = set()
+        for center in centers:
+            box = self._crop_box(width, height, crop_w, crop_h, center)
+            key = (box[0], box[1])
+            if key in seen:
+                continue
+            seen.add(key)
+            unique.append(center)
+        return unique
+
+    def _walkable_coverage(self, map_key: str, box: tuple[int, int, int, int]) -> float:
+        rects = self.walkable_source_rects.get(map_key, ())
+        if not rects:
+            return 1.0
+        box_area = max(1, (box[2] - box[0]) * (box[3] - box[1]))
+        clipped = []
+        for x0, y0, x1, y1 in rects:
+            ix0 = max(x0, box[0])
+            iy0 = max(y0, box[1])
+            ix1 = min(x1, box[2])
+            iy1 = min(y1, box[3])
+            if ix1 > ix0 and iy1 > iy0:
+                clipped.append((ix0, iy0, ix1, iy1))
+        return min(1.0, self._rect_union_area(clipped) / box_area)
+
+    @staticmethod
+    def _rect_union_area(rects: Iterable[tuple[int, int, int, int]]) -> int:
+        rect_list = list(rects)
+        if not rect_list:
+            return 0
+        xs = sorted({x for x0, _, x1, _ in rect_list for x in (x0, x1)})
+        total = 0
+        for left, right in zip(xs, xs[1:]):
+            if right <= left:
+                continue
+            intervals = [(y0, y1) for x0, y0, x1,
+                         y1 in rect_list if x0 < right and x1 > left]
+            if not intervals:
+                continue
+            intervals.sort()
+            merged = 0
+            current_start, current_end = intervals[0]
+            for start, end in intervals[1:]:
+                if start > current_end:
+                    merged += current_end - current_start
+                    current_start, current_end = start, end
+                else:
+                    current_end = max(current_end, end)
+            merged += current_end - current_start
+            total += (right - left) * merged
+        return total
 
     @staticmethod
     def _crop_box(
@@ -332,11 +444,50 @@ class MapRouteManager:
         _, y, start, end = best
         start = min(max(4, start + 8), width - 40)
         end = max(min(width - 40, end - 8), start + 48)
-        route = self._route_with_vertical_segments(image, start, end, y, walkable)
+        route = self._route_with_vertical_segments(
+            image, start, end, y, walkable)
         route = tuple(point for point in route if walkable(point[0], point[1]))
         if len(route) < 2:
             return ()
         return tuple((x + offset_x, y + offset_y) for x, y in route)
+
+    def _route_for_source_rects(
+        self,
+        map_key: str,
+        crop_box: tuple[int, int, int, int],
+    ) -> tuple[tuple[int, int], ...]:
+        rects = self.walkable_source_rects.get(map_key, ())
+        if not rects:
+            return ()
+        crop_x0, crop_y0, crop_x1, crop_y1 = crop_box
+        best: tuple[int, tuple[int, int, int, int]] | None = None
+        for rect_x0, rect_y0, rect_x1, rect_y1 in rects:
+            ix0 = max(rect_x0, crop_x0)
+            iy0 = max(rect_y0, crop_y0)
+            ix1 = min(rect_x1, crop_x1)
+            iy1 = min(rect_y1, crop_y1)
+            if ix1 <= ix0 or iy1 <= iy0:
+                continue
+            area = (ix1 - ix0) * (iy1 - iy0)
+            if best is None or area > best[0]:
+                best = (area, (ix0, iy0, ix1, iy1))
+        if best is None:
+            return ()
+
+        _, (ix0, iy0, ix1, iy1) = best
+        crop_w = crop_x1 - crop_x0
+        crop_h = crop_y1 - crop_y0
+        offset_x = (self.viewport_size[0] - crop_w) // 2
+        offset_y = (self.viewport_size[1] - crop_h) // 2
+        sx0 = ix0 - crop_x0 + offset_x
+        sy0 = iy0 - crop_y0 + offset_y
+        sx1 = ix1 - crop_x0 + offset_x
+        sy1 = iy1 - crop_y0 + offset_y
+        if sx1 - sx0 >= sy1 - sy0:
+            y = max(sy0 + 1, min(sy1 - 1, sy0 + int((sy1 - sy0) * 0.68)))
+            return (sx0 + 1, y), (max(sx0 + 2, sx1 - 1), y)
+        x = max(sx0 + 1, min(sx1 - 1, (sx0 + sx1) // 2))
+        return (x, sy0 + 1), (x, max(sy0 + 2, sy1 - 1))
 
     def _route_with_vertical_segments(
         self,
@@ -346,19 +497,24 @@ class MapRouteManager:
         y: int,
         walkable: Callable[[int, int], bool],
     ) -> tuple[tuple[int, int], ...]:
-        candidates = [start + (end - start) // 3, start + (end - start) * 2 // 3, (start + end) // 2]
+        candidates = [start + (end - start) // 3, start +
+                      (end - start) * 2 // 3, (start + end) // 2]
         for x in candidates:
             up = self._vertical_reach(image, x, y, -1, walkable)
             down = self._vertical_reach(image, x, y, 1, walkable)
             if y - up > 42:
-                upper_run = self._horizontal_run_containing(image, up, x, walkable)
+                upper_run = self._horizontal_run_containing(
+                    image, up, x, walkable)
                 if upper_run:
-                    upper_end = upper_run[1] if abs(upper_run[1] - x) >= abs(x - upper_run[0]) else upper_run[0]
+                    upper_end = upper_run[1] if abs(
+                        upper_run[1] - x) >= abs(x - upper_run[0]) else upper_run[0]
                     return ((start, y), (x, y), (x, up), (upper_end, up))
             if down - y > 42:
-                lower_run = self._horizontal_run_containing(image, down, x, walkable)
+                lower_run = self._horizontal_run_containing(
+                    image, down, x, walkable)
                 if lower_run:
-                    lower_end = lower_run[1] if abs(lower_run[1] - x) >= abs(x - lower_run[0]) else lower_run[0]
+                    lower_end = lower_run[1] if abs(
+                        lower_run[1] - x) >= abs(x - lower_run[0]) else lower_run[0]
                     return ((start, y), (x, y), (x, down), (lower_end, down))
         return ((start, y), (end, y))
 
@@ -420,7 +576,8 @@ class MapRouteManager:
             count = np.zeros((max_y, max_x), dtype=np.uint8)
             for x_offset in (12, 19, 26):
                 for y_offset in (36, 38, 40, 42):
-                    count += pixel_walkable[y_offset : y_offset + max_y, x_offset : x_offset + max_x]
+                    count += pixel_walkable[y_offset: y_offset +
+                                            max_y, x_offset: x_offset + max_x]
             rows[:max_y, :max_x] = count >= 10
 
         def walkable(x: int, y: int) -> bool:
@@ -436,7 +593,8 @@ class MapRouteManager:
         if foot_y >= image.height or right_x >= image.width or left_x < 0:
             return False
         samples = [
-            image.getpixel((min(max(0, px), image.width - 1), min(max(0, foot_y + dy), image.height - 1)))
+            image.getpixel((min(max(0, px), image.width - 1),
+                           min(max(0, foot_y + dy), image.height - 1)))
             for px in (left_x, (left_x + right_x) // 2, right_x)
             for dy in (-2, 0, 2, 4)
         ]
