@@ -8,6 +8,7 @@ from pixel_ops.integration_plugins.base import (
     IntegrationContext,
     IntegrationContribution,
     NullAIUsageSource,
+    NullPCStatsSource,
     NullPullRequestSource,
     NullWeatherSource,
 )
@@ -21,6 +22,7 @@ PLUGIN_MODULES = {
     "ics": "pixel_ops.integrations.ics.plugin",
     "weather": "pixel_ops.integrations.weather.plugin",
     "ai_usage": "pixel_ops.integrations.ai_usage.plugin",
+    "pc_stats": "pixel_ops.integrations.pc_stats.plugin",
 }
 
 PLUGIN_ENABLES = {
@@ -31,6 +33,7 @@ PLUGIN_ENABLES = {
     "ics": "PIXEL_OPS_ICS_ENABLED",
     "weather": "PIXEL_OPS_WEATHER_ENABLED",
     "ai_usage": "PIXEL_OPS_AI_USAGE_ENABLED",
+    "pc_stats": "PIXEL_OPS_PC_STATS_ENABLED",
 }
 
 
@@ -44,6 +47,7 @@ class IntegrationRuntime:
     pull_request_source: object = field(default_factory=NullPullRequestSource)
     weather_source: object = field(default_factory=NullWeatherSource)
     ai_usage_source: object = field(default_factory=NullAIUsageSource)
+    pc_stats_source: object = field(default_factory=NullPCStatsSource)
     loaded_plugins: list[str] = field(default_factory=list)
 
     def start(self) -> None:
@@ -99,3 +103,5 @@ def _merge(runtime: IntegrationRuntime, contribution: IntegrationContribution) -
         runtime.weather_source = contribution.weather_source
     if contribution.ai_usage_source is not None:
         runtime.ai_usage_source = contribution.ai_usage_source
+    if contribution.pc_stats_source is not None:
+        runtime.pc_stats_source = contribution.pc_stats_source

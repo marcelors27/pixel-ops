@@ -82,6 +82,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--window-scale", type=int, help="Desktop window pixel scale.")
     parser.add_argument("--preview", action="store_true", help="Render a single PNG preview.")
     parser.add_argument("--gif", action="store_true", help="Render an animated GIF preview.")
+    parser.add_argument("--orientation", choices=("vertical", "horizontal"), help="Display layout orientation.")
     parser.add_argument("--preview-sequence", action="store_true", help="Write numbered PNG frames for preview output.")
     parser.add_argument("--seconds", type=float)
     parser.add_argument("--forever", action="store_true", help="Run display loop until Ctrl+C.")
@@ -125,6 +126,26 @@ def selected_output(args: argparse.Namespace) -> str:
 def runtime_device_config(display_cfg: dict) -> dict:
     cfg = display_cfg.get("device", {})
     return cfg if isinstance(cfg, dict) else {}
+
+
+def runtime_orientation(args: argparse.Namespace, display_cfg: dict) -> str:
+    orientation = args.orientation or display_cfg.get("orientation") or "vertical"
+    orientation = str(orientation).strip().lower()
+    return orientation if orientation in ("vertical", "horizontal") else "vertical"
+
+
+def runtime_display_config(args: argparse.Namespace, display_cfg: dict) -> dict:
+    orientation = runtime_orientation(args, display_cfg)
+    profiles = display_cfg.get("orientations", {})
+    profile = profiles.get(orientation, {}) if isinstance(profiles, dict) else {}
+    if not isinstance(profile, dict):
+        profile = {}
+    active = dict(display_cfg)
+    for key in ("width", "height", "layout"):
+        if key in profile:
+            active[key] = profile[key]
+    active["orientation"] = orientation
+    return active
 
 
 def runtime_output(args: argparse.Namespace, display_cfg: dict) -> str:
@@ -187,7 +208,7 @@ def main() -> int:
     plugin = get_plugin(args.plugin)
     plugin_dir = APP_DIR / "plugins" / plugin.name
     runtime_config = load_runtime_config()
-    display_cfg = load_config(APP_DIR / "config/display.json")["display"]
+    display_cfg = runtime_display_config(args, load_config(APP_DIR / "config/display.json")["display"])
     people_cfg = load_config(APP_DIR / "config/people.json")["people"]
     plugin_cfg = plugin.load_config(plugin_dir, load_config)
     config_watcher = ConfigWatcher(
@@ -229,7 +250,7 @@ def main() -> int:
 
     def build_runtime_app():
         nonlocal integration_runtime
-        current_display_cfg = load_config(APP_DIR / "config/display.json")["display"]
+        current_display_cfg = runtime_display_config(args, load_config(APP_DIR / "config/display.json")["display"])
         current_people_cfg = load_config(APP_DIR / "config/people.json")["people"]
         current_plugin_cfg = plugin.load_config(plugin_dir, load_config)
         current_events_cfg = plugin.event_config(current_plugin_cfg)
@@ -251,6 +272,7 @@ def main() -> int:
             pull_request_source=integration_runtime.pull_request_source,
             weather_source=integration_runtime.weather_source,
             ai_usage_source=integration_runtime.ai_usage_source,
+            pc_stats_source=integration_runtime.pc_stats_source,
             ai_plugin=build_ai_plugin(current_display_cfg.get("ai", {})),
             event_sources=current_event_sources,
         )

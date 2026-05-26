@@ -9,8 +9,10 @@ from pixel_ops.render.renderer import PixelRenderer
 
 ASSET_DIR = Path(__file__).resolve().parents[1] / "assets/sprites/ash"
 MENU_SHEET = ASSET_DIR / "Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - HP Bars & In-battle Menu.png"
-TEXT_BOX_MAX_LINES = 3
 TEXT_BOX_TEXT_TOP_PADDING = 14
+TEXT_BOX_LINE_HEIGHT = 18
+TEXT_BOX_BOTTOM_PADDING = 18
+TEXT_BOX_CURSOR_HEIGHT = 14
 
 _TEXT_BOX_FRAME: Image.Image | None = None
 
@@ -48,15 +50,14 @@ def draw_text_box(image: Image.Image, box: tuple[int, int, int, int], text: str,
     lines = wrap_text_lines(draw, text, text_font, max_text_width)
 
     y = text_y
-    line_height = 18
-    bottom_padding = 18
     max_lines = text_box_visible_lines((x0, y0, x1, y1), text, text_y=text_y)
     visible_lines = _scroll_lines(lines, max_lines, frame)
     for line in visible_lines:
         draw.text((text_x, y), line, font=text_font, fill=text_fill)
-        y += line_height
+        y += TEXT_BOX_LINE_HEIGHT
     if frame % 20 < 10:
-        cursor_y = y1 - 25
+        cursor_y = min(y1 - TEXT_BOX_CURSOR_HEIGHT - 4, y + 1)
+        cursor_y = max(y0 + TEXT_BOX_TEXT_TOP_PADDING, cursor_y)
         draw.polygon([(x1 - 24, cursor_y), (x1 - 14, cursor_y + 7), (x1 - 24, cursor_y + 14)], fill=cursor_fill)
 
 
@@ -96,4 +97,7 @@ def wrap_text_lines(draw: ImageDraw.ImageDraw, text: str, text_font, max_text_wi
 
 
 def text_box_visible_lines(box: tuple[int, int, int, int], text: str, text_y: int | None = None) -> int:
-    return TEXT_BOX_MAX_LINES
+    _, y0, _, y1 = box
+    first_line_y = text_y if text_y is not None else y0 + TEXT_BOX_TEXT_TOP_PADDING
+    available_height = max(0, y1 - first_line_y - TEXT_BOX_BOTTOM_PADDING)
+    return max(1, available_height // TEXT_BOX_LINE_HEIGHT)

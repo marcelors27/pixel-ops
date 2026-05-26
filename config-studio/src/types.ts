@@ -11,6 +11,7 @@ export type DetectedPlugin = {
   label: string;
   configKeys: string[];
   configs: ConfigDescriptor[];
+  layoutWindows?: LayoutWindowOption[];
 };
 
 export type ConfigManifest = {
@@ -24,6 +25,15 @@ export type RuntimeConfig = {
     display: {
       width: number;
       height: number;
+      orientation?: string;
+      orientations?: Record<
+        string,
+        {
+          width?: number;
+          height?: number;
+          layout?: Record<LayoutKey, LayoutBox>;
+        }
+      >;
       device: {
         target: string;
         output: string;
@@ -114,6 +124,12 @@ export type RuntimeConfig = {
         thresholds: number[];
         timeout_seconds: number;
       };
+      pc_stats: IntegrationToggle & {
+        fields: string[];
+        poll_seconds: number;
+        top_process_count: number;
+        disk_path: string;
+      };
     };
   };
   discord_people?: {
@@ -179,9 +195,16 @@ export type RuntimeConfig = {
   };
 };
 
-export type LayoutKey = "timezones" | "gauges" | "weather" | "activity" | "route_signal" | "game" | "text_box";
+export type LayoutKey = string;
+
+export type LayoutWindowOption = {
+  kind: string;
+  label: string;
+  tone: string;
+};
 
 export type LayoutBox = {
+  kind?: string;
   x: number;
   y: number;
   width: number;

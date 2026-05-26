@@ -71,6 +71,21 @@
         90
       ],
       "timeout_seconds": 15
+    },
+    "pc_stats": {
+      "enabled": true,
+      "fields": [
+        "cpu",
+        "ram",
+        "top_ram_app",
+        "temperature",
+        "gpu",
+        "disk",
+        "uptime"
+      ],
+      "poll_seconds": 5,
+      "top_process_count": 1,
+      "disk_path": "/"
     }
   }
 }

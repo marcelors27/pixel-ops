@@ -17,6 +17,12 @@ type ConfigDescriptor = {
   owner?: string;
 };
 
+type LayoutWindowDescriptor = {
+  kind: string;
+  label: string;
+  tone: string;
+};
+
 const coreConfigFiles: ConfigDescriptor[] = [
   { key: "display", label: "Display", relativePath: "pixel_ops/config/display.json", scope: "core" },
   { key: "integrations", label: "Integrations", relativePath: "pixel_ops/config/integrations.json", scope: "core" },
@@ -32,6 +38,20 @@ const integrationSidecars: Record<string, ConfigDescriptor[]> = {
       scope: "integration",
       owner: "discord",
     },
+  ],
+};
+
+const integrationLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
+  ai_usage: [{ kind: "gauges", label: "AI Gauges", tone: "#7ee0bd" }],
+  pc_stats: [{ kind: "pc_stats", label: "PC Stats", tone: "#9bd0ff" }],
+  weather: [{ kind: "weather", label: "Weather", tone: "#e8c766" }],
+};
+
+const visualPluginLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
+  pokemon: [
+    { kind: "route_signal", label: "Route", tone: "#f0a35d" },
+    { kind: "game", label: "Game", tone: "#8fbf7a" },
+    { kind: "text_box", label: "Text box", tone: "#d8d0ff" },
   ],
 };
 
@@ -115,6 +135,7 @@ async function detectVisualPlugins() {
       label: titleize(name),
       configKeys: configs.map((config) => config.key),
       configs,
+      layoutWindows: visualPluginLayoutWindows[name] ?? [],
     });
   }
   return plugins;
@@ -131,6 +152,7 @@ async function detectIntegrationPlugins() {
       label: titleize(name),
       configKeys: integrationSidecars[name]?.map((config) => config.key) ?? [],
       configs: integrationSidecars[name] ?? [],
+      layoutWindows: integrationLayoutWindows[name] ?? [],
     });
   }
   return integrations;

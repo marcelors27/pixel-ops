@@ -45,6 +45,7 @@ class IntegrationContribution:
     pull_request_source: Any | None = None
     weather_source: Any | None = None
     ai_usage_source: Any | None = None
+    pc_stats_source: Any | None = None
     closers: list[Callable[[], None]] = field(default_factory=list)
 
 
@@ -77,3 +78,8 @@ class NullAIUsageSource:
 
     def poll(self, now: datetime):
         return []
+
+
+class NullPCStatsSource:
+    def current(self, now: datetime | None = None):
+        return None

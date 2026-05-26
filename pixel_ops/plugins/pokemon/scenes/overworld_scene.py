@@ -11,6 +11,7 @@ from PIL import Image, ImageDraw
 
 from pixel_ops.data_sources.ai_usage import AIUsageSnapshot
 from pixel_ops.data_sources.calendar import CalendarEvent
+from pixel_ops.data_sources.pc_stats import PCStatsSnapshot
 from pixel_ops.data_sources.weather import WeatherState
 from pixel_ops.plugins.pokemon.pokemon_api import PokeApiClient
 from pixel_ops.data_sources.timezones import PersonTime
@@ -143,6 +144,7 @@ class OverworldScene:
         self._text_scroll_started_frame = 0
         self._previous_was_battle = False
         self._previous_map_area_id: str | None = None
+        self._actor_map_area_id: str | None = None
         asset_root = Path(__file__).resolve().parents[1] / "assets/sprites/ash"
         self.asset_root = ash_assets_dir or asset_root
         self.ash_sprites = AshSpriteSet(
@@ -204,6 +206,11 @@ class OverworldScene:
 
     def _layout_box(self, key: str, fallback: tuple[int, int, int, int]) -> tuple[int, int, int, int]:
         raw = self.display_layout.get(key) if isinstance(self.display_layout, dict) else None
+        if not isinstance(raw, dict) and isinstance(self.display_layout, dict):
+            for item_key, item in self.display_layout.items():
+                if isinstance(item, dict) and str(item.get("kind") or item_key) == key:
+                    raw = item
+                    break
         if not isinstance(raw, dict):
             return fallback
         try:
@@ -252,6 +259,7 @@ class OverworldScene:
         pull_requests: list[PullRequestSummary] | None = None,
         weather: WeatherState | None = None,
         ai_usage: AIUsageSnapshot | None = None,
+        pc_stats: PCStatsSnapshot | None = None,
         work_events: list[WorkEvent] | None = None,
     ):
         base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
@@ -265,6 +273,7 @@ class OverworldScene:
             pull_requests=pull_requests,
             weather=weather,
             ai_usage=ai_usage,
+            pc_stats=pc_stats,
             work_events=recent_events,
         )
 
@@ -277,6 +286,7 @@ class OverworldScene:
         pull_requests: list[PullRequestSummary] | None = None,
         weather: WeatherState | None = None,
         ai_usage: AIUsageSnapshot | None = None,
+        pc_stats: PCStatsSnapshot | None = None,
         work_events: list[WorkEvent] | None = None,
     ) -> Image.Image:
         phase = phase or self.state.phase
@@ -289,6 +299,7 @@ class OverworldScene:
             pull_requests=pull_requests,
             weather=weather,
             ai_usage=ai_usage,
+            pc_stats=pc_stats,
             work_events=work_events,
         )
         if self._is_battle_phase(phase):
@@ -309,11 +320,12 @@ class OverworldScene:
         pull_requests: list[PullRequestSummary] | None = None,
         weather: WeatherState | None = None,
         ai_usage: AIUsageSnapshot | None = None,
+        pc_stats: PCStatsSnapshot | None = None,
         work_events: list[WorkEvent] | None = None,
     ) -> Image.Image:
         base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
         pal = day_night_palette(base_now.hour)
-        img = self.renderer.canvas(pal.sky_top)
+        img = self.renderer.canvas(pal.panel_shadow)
         draw = ImageDraw.Draw(img)
 
         self._draw_sky(draw, pal)
@@ -331,6 +343,7 @@ class OverworldScene:
             ai_usage=ai_usage,
             weather=weather,
             work_events=work_events,
+            pc_stats=pc_stats,
             layout=self.display_layout,
         )
         return img
@@ -472,18 +485,24 @@ class OverworldScene:
             color = tuple(int(pal.sky_top[i] * (1 - t) + pal.sky_bottom[i] * t) for i in range(3))
             draw.line((x0, y, x1, y), fill=color)
         if pal.phase == "night":
-            for x, y in ((38, 150), (82, 162), (166, 146), (244, 158), (286, 168)):
+            star_y = y0 + 10
+            for x, y in ((38, star_y), (82, star_y + 12), (166, star_y - 4), (244, star_y + 8), (286, star_y + 18)):
                 if x0 <= x <= x1 and y0 <= y <= self.map_box[3]:
                     draw.point((x, y), fill=pal.light)
                     draw.point((x + 1, y), fill=pal.light)
         else:
-            draw.ellipse((252, 144, 286, 178), fill=pal.light, outline=pal.panel_shadow)
+            sun_size = 34
+            sun_x1 = min(x1 - 8, x0 + 286)
+            sun_y0 = y0 + 8
+            if sun_x1 - sun_size >= x0 and sun_y0 + sun_size <= self.map_box[3]:
+                draw.ellipse((sun_x1 - sun_size, sun_y0, sun_x1, sun_y0 + sun_size), fill=pal.light, outline=pal.panel_shadow)
 
     def _draw_world(self, img, draw: ImageDraw.ImageDraw, pal, now: datetime, weather: WeatherState | None = None) -> None:
         area = self.map_routes.area_for_timestamp(now.timestamp())
         if area:
             self.current_map_area = area
             self.current_map_timestamp = now.timestamp()
+            self._reposition_actors_for_map_change(area)
             img.paste(self._map_background_image(area, pal), (self.map_box[0], self.map_box[1]))
             if weather:
                 self._draw_weather_effects(img, weather, area, pal)
@@ -508,6 +527,45 @@ class OverworldScene:
         self._draw_static_props(draw, pal, top, trail_top)
         if weather:
             self._draw_weather_effects(img, weather, None, pal)
+
+    def _reposition_actors_for_map_change(self, area: MapArea) -> None:
+        if area.area_id == self._actor_map_area_id:
+            return
+        self._actor_map_area_id = area.area_id
+        self._reposition_ash_in_walkable_area()
+        self._reposition_companions_in_walkable_area()
+
+    def _reposition_ash_in_walkable_area(self) -> None:
+        if not self._movement_screen_rects("ash"):
+            return
+        ash = self.ash_sprites.frame(f"idle_{self.ash_direction}", self.frame)
+        rng = random.Random(f"{self.current_map_area.area_id}:ash" if self.current_map_area else "ash")
+        target = self._random_movement_target("ash", rng, ash.width, ash.height)
+        if target is None:
+            return
+        x, y = target
+        self.encounter_x = x
+        self.ash_y = y
+        self._ash_render_x = float(x)
+        self._ash_render_y = float(y)
+        self._ash_vertical_target_y = None
+        self._ash_motion_axis = "horizontal"
+        self._ash_motion_until_frame = self.frame + self._random_horizontal_frames()
+
+    def _reposition_companions_in_walkable_area(self) -> None:
+        if not self._voice_companions or not self._movement_screen_rects("companions"):
+            return
+        for state in self._voice_companions.values():
+            sprite = self.npc_sprites.frame(state.variant, "idle_down", self.frame)
+            target = self._random_movement_target("companions", state.rng, sprite.width, sprite.height)
+            if target is None:
+                continue
+            state.x = float(target[0])
+            state.y = float(target[1])
+            state.target_x = state.x
+            state.target_y = state.y
+            state.direction = "down"
+            state.next_target_frame = self.frame + state.rng.randint(self.scene_fps * 2, self.scene_fps * 6)
 
     def _tile_row_for_biome(self) -> list[str]:
         biome = self.world.biome
@@ -565,8 +623,11 @@ class OverworldScene:
             self._draw_rain(draw, box)
         if outdoor and "snow" in effects:
             self._draw_snow(draw, box)
-        if not (isinstance(self.display_layout, dict) and isinstance(self.display_layout.get("weather"), dict)):
+        if self._should_draw_legacy_weather_badge():
             self._draw_weather_badge(draw, weather, pal)
+
+    def _should_draw_legacy_weather_badge(self) -> bool:
+        return not isinstance(self.display_layout, dict) or not self.display_layout
 
     @staticmethod
     def _blend_map_region(img: Image.Image, box: tuple[int, int, int, int], color: tuple[int, int, int], alpha: float) -> None:
@@ -901,6 +962,21 @@ class OverworldScene:
             self.ash_direction = "down"
             ash_y = route_y
             ash = self.ash_sprites.frame("idle_down", self.frame)
+        clamped_ash_x, clamped_ash_y = self._clamp_sprite_to_movement(
+            "ash",
+            ash_x,
+            ash_y,
+            ash.width,
+            ash.height,
+            self.vertical_wander_rng,
+        )
+        if (clamped_ash_x, clamped_ash_y) != (ash_x, ash_y):
+            ash_x, ash_y = clamped_ash_x, clamped_ash_y
+            self.encounter_x = ash_x
+            self.ash_y = ash_y
+            self._ash_render_x = float(ash_x)
+            self._ash_render_y = float(ash_y)
+            self._ash_vertical_target_y = None
         layers.extend(self._voice_companion_layers(ash_x, ash_y, phase, snapshot=snapshot))
         layers.append((ash, ash_x, ash_y, ""))
         if ash_streaming:
@@ -991,8 +1067,19 @@ class OverworldScene:
                 companion = self._stream_viewer_sprite(companion)
             if muted:
                 companion = self._muted_companion_sprite(companion)
-            x = self._clamp_sprite_x(int(round(state.x)), companion.width)
-            y = self._clamp_sprite_y(int(round(state.y)), companion.height)
+            x, y = self._clamp_sprite_to_movement(
+                "companions",
+                int(round(state.x)),
+                int(round(state.y)),
+                companion.width,
+                companion.height,
+                state.rng,
+            )
+            if (x, y) != (int(round(state.x)), int(round(state.y))):
+                state.x = float(x)
+                state.y = float(y)
+                state.target_x = state.x
+                state.target_y = state.y
             label = str(visual.get("label") or member.name)
             layers.append((companion, x, y, self._short_companion_name(label)))
             if streaming:
@@ -1257,10 +1344,12 @@ class OverworldScene:
         crop_h = crop_y1 - crop_y0
         paste_x = (viewport_w - crop_w) // 2
         paste_y = (viewport_h - crop_h) // 2
-        screen_x0 = self.map_box[0] + paste_x + ix0 - crop_x0
-        screen_y0 = self.map_box[1] + paste_y + iy0 - crop_y0
-        screen_x1 = self.map_box[0] + paste_x + ix1 - crop_x0
-        screen_y1 = self.map_box[1] + paste_y + iy1 - crop_y0
+        screen_x0 = max(self.map_box[0], self.map_box[0] + paste_x + ix0 - crop_x0)
+        screen_y0 = max(self.map_box[1], self.map_box[1] + paste_y + iy0 - crop_y0)
+        screen_x1 = min(self.map_box[2], self.map_box[0] + paste_x + ix1 - crop_x0)
+        screen_y1 = min(self.map_box[3], self.map_box[1] + paste_y + iy1 - crop_y0)
+        if screen_x1 <= screen_x0 or screen_y1 <= screen_y0:
+            return None
         return screen_x0, screen_y0, screen_x1, screen_y1
 
     def _movement_screen_rects(self, actor: str, key: str = "source_rects") -> list[tuple[int, int, int, int]]:
@@ -1280,9 +1369,20 @@ class OverworldScene:
         height: int,
     ) -> tuple[int, int, int, int] | None:
         for x0, y0, x1, y1 in self._movement_screen_rects(actor):
-            if x0 <= x and y0 <= y and x + width <= x1 and y + height <= y1:
+            sprite_rect = (x, y, x + width, y + height)
+            if (
+                x0 <= x
+                and y0 <= y
+                and x + width <= x1
+                and y + height <= y1
+                and not self._sprite_intersects_movement_blockers(actor, sprite_rect)
+            ):
                 return x0, y0, x1, y1
         return None
+
+    def _sprite_intersects_movement_blockers(self, actor: str, sprite_rect: tuple[int, int, int, int]) -> bool:
+        blockers = self._movement_screen_rects(actor, "avoid_source_rects") + self._movement_screen_rects("blocked")
+        return any(self._rects_intersect(sprite_rect, blocker) for blocker in blockers)
 
     @staticmethod
     def _random_target_in_screen_rect(
@@ -1306,7 +1406,6 @@ class OverworldScene:
         walkable = self._movement_screen_rects(actor)
         if not walkable:
             return None
-        avoid = self._movement_screen_rects(actor, "avoid_source_rects") + self._movement_screen_rects("blocked")
         candidates = []
         for x0, y0, x1, y1 in walkable:
             min_x = x0
@@ -1321,10 +1420,47 @@ class OverworldScene:
             min_x, min_y, max_x, max_y = candidates[rng.randrange(len(candidates))]
             x = rng.randint(min_x, max_x)
             y = rng.randint(min_y, max_y)
-            if not avoid or not self._point_in_rects(x + width // 2, y + height, avoid):
-                return self._clamp_sprite_x(x, width), self._clamp_sprite_y(y, height)
+            if self._sprite_movement_rect(actor, x, y, width, height):
+                return x, y
         min_x, min_y, max_x, max_y = candidates[0]
-        return self._clamp_sprite_x(min_x, width), self._clamp_sprite_y(min_y, height)
+        for x in range(min_x, max_x + 1, max(1, width // 2)):
+            for y in range(min_y, max_y + 1, max(1, height // 2)):
+                if self._sprite_movement_rect(actor, x, y, width, height):
+                    return x, y
+        return None
+
+    def _clamp_sprite_to_movement(
+        self,
+        actor: str,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        rng: random.Random | None = None,
+    ) -> tuple[int, int]:
+        if not self._movement_screen_rects(actor):
+            return self._clamp_sprite_x(x, width), self._clamp_sprite_y(y, height)
+        if self._sprite_movement_rect(actor, x, y, width, height):
+            return x, y
+        best = None
+        for x0, y0, x1, y1 in self._movement_screen_rects(actor):
+            max_x = x1 - width
+            max_y = y1 - height
+            if max_x < x0 or max_y < y0:
+                continue
+            cx = max(x0, min(max_x, x))
+            cy = max(y0, min(max_y, y))
+            if not self._sprite_movement_rect(actor, cx, cy, width, height):
+                continue
+            distance = abs(cx - x) + abs(cy - y)
+            if best is None or distance < best[0]:
+                best = (distance, cx, cy)
+        if best is not None:
+            return best[1], best[2]
+        target = self._random_movement_target(actor, rng or random.Random(0), width, height)
+        if target is not None:
+            return target
+        return self._clamp_sprite_x(x, width), self._clamp_sprite_y(y, height)
 
     def _clamp_point_to_movement(self, actor: str, x: int, y: int) -> tuple[int, int]:
         walkable = self._movement_screen_rects(actor)
@@ -1340,6 +1476,13 @@ class OverworldScene:
             if best is None or distance < best[0]:
                 best = (distance, cx, cy)
         return (best[1], best[2]) if best else (x, y)
+
+    @staticmethod
+    def _rects_intersect(
+        a: tuple[int, int, int, int],
+        b: tuple[int, int, int, int],
+    ) -> bool:
+        return a[0] < b[2] and a[2] > b[0] and a[1] < b[3] and a[3] > b[1]
 
     def _draw_movement_debug_overlay(self, draw: ImageDraw.ImageDraw, pal) -> None:
         if not (bool(self.movement_config.get("debug_overlay", False)) if isinstance(self.movement_config, dict) else False):
@@ -1469,8 +1612,8 @@ class OverworldScene:
 
     def _start_vertical_wander(self, base_y: int) -> None:
         assert self._ash_render_y is not None
-        min_y = self.hud_height + 6
-        max_y = self.text_box[1] - 48
+        min_y = self.map_box[1] + 4
+        max_y = self.map_box[3] - 48
         target = float(base_y + self.vertical_wander_rng.randint(-self.vertical_wander_px, self.vertical_wander_px))
         target = min(max_y, max(min_y, target))
         if abs(target - self._ash_render_y) < 8:

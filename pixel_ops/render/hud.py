@@ -6,6 +6,7 @@ from PIL import ImageDraw
 
 from pixel_ops.data_sources.ai_usage import AIUsageSnapshot
 from pixel_ops.data_sources.calendar import CalendarEvent
+from pixel_ops.data_sources.pc_stats import PCStatsSnapshot
 from pixel_ops.data_sources.timezones import PersonTime
 from pixel_ops.data_sources.weather import WeatherState
 from pixel_ops.events.base import EventCategory, WorkEvent
@@ -124,10 +125,11 @@ def draw_hud(
     ai_usage: AIUsageSnapshot | None = None,
     weather: WeatherState | None = None,
     work_events: list[WorkEvent] | None = None,
+    pc_stats: PCStatsSnapshot | None = None,
     layout: dict | None = None,
 ) -> None:
     if layout:
-        _draw_configured_hud(draw, people, event, now, pal, pull_requests or [], ai_usage, weather, work_events or [], layout)
+        _draw_configured_hud(draw, people, event, now, pal, pull_requests or [], ai_usage, weather, work_events or [], pc_stats, layout)
         return
 
     PixelRenderer.draw_panel(draw, (8, 8, 312, 212), pal.panel, pal.panel_shadow, pal.ink)
@@ -172,34 +174,57 @@ def _draw_configured_hud(
     ai_usage: AIUsageSnapshot | None,
     weather: WeatherState | None,
     work_events: list[WorkEvent],
+    pc_stats: PCStatsSnapshot | None,
     layout: dict,
 ) -> None:
     small_font = font(11)
     chip_font = font(9)
     zone_font = font(8)
     name_font = font(7)
-    timezones_box = _layout_box(layout, "timezones", (8, 8, 154, 162))
-    PixelRenderer.draw_panel(draw, timezones_box, pal.panel, pal.panel_shadow, pal.ink)
-    _draw_timezone_flex_grid(draw, people, timezones_box, chip_font, zone_font, name_font, pal)
+    for timezones_box in _layout_boxes(layout, "timezones"):
+        PixelRenderer.draw_panel(draw, timezones_box, pal.panel, pal.panel_shadow, pal.ink)
+        _draw_timezone_flex_grid(draw, people, timezones_box, chip_font, zone_font, name_font, pal)
 
-    activity_box = _layout_box(layout, "activity", (8, 164, 312, 204))
-    _draw_activity_panel(draw, event, pull_requests, now, activity_box, pal)
+    for activity_box in _layout_boxes(layout, "activity"):
+        _draw_activity_panel(draw, event, pull_requests, now, activity_box, pal)
 
-    if "route_signal" in layout:
-        route_box = _layout_box(layout, "route_signal", (8, 120, 176, 160))
+    for route_box in _layout_boxes(layout, "route_signal"):
         _draw_route_signal_panel(draw, event, pull_requests, ai_usage, work_events, now, route_box, pal)
 
-    gauges_box = _layout_box(layout, "gauges", (8, 120, 153, 160))
-    _draw_ai_usage_panel(draw, ai_usage, now, gauges_box, pal)
+    for gauges_box in _layout_boxes(layout, "gauges"):
+        _draw_ai_usage_panel(draw, ai_usage, now, gauges_box, pal)
 
-    weather_box = _layout_box(layout, "weather", (184, 120, 304, 160))
-    _draw_weather_compact(draw, weather, weather_box, pal)
+    for weather_box in _layout_boxes(layout, "weather"):
+        _draw_weather_compact(draw, weather, weather_box, pal)
+
+    for pc_box in _layout_boxes(layout, "pc_stats"):
+        _draw_pc_stats_panel(draw, pc_stats, pc_box, pal)
+
+
+def _layout_boxes(layout: dict, key: str) -> list[tuple[int, int, int, int]]:
+    boxes = []
+    for item_key, raw in layout.items():
+        if not isinstance(raw, dict):
+            continue
+        kind = str(raw.get("kind") or item_key)
+        if kind == key:
+            boxes.append(_layout_raw_box(raw, (0, 0, 1, 1)))
+    return boxes
 
 
 def _layout_box(layout: dict, key: str, fallback: tuple[int, int, int, int]) -> tuple[int, int, int, int]:
     raw = layout.get(key)
     if not isinstance(raw, dict):
+        for item_key, item in layout.items():
+            if isinstance(item, dict) and str(item.get("kind") or item_key) == key:
+                raw = item
+                break
+    if not isinstance(raw, dict):
         return fallback
+    return _layout_raw_box(raw, fallback)
+
+
+def _layout_raw_box(raw: dict, fallback: tuple[int, int, int, int]) -> tuple[int, int, int, int]:
     try:
         x = int(raw.get("x", fallback[0]))
         y = int(raw.get("y", fallback[1]))
@@ -454,6 +479,38 @@ def _draw_ai_usage_panel(draw: ImageDraw.ImageDraw, ai_usage: AIUsageSnapshot | 
         draw.text((box[0] + 8, box[1] + 13), "-", font=value_font, fill=pal.ink)
         return
     _draw_ai_usage_compact(draw, ai_usage, now, box[0] + 8, box[1] + 13, pal)
+
+
+def _draw_pc_stats_panel(draw: ImageDraw.ImageDraw, pc_stats: PCStatsSnapshot | None, box: tuple[int, int, int, int], pal) -> None:
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    label_font = font(7)
+    value_font = font(9)
+    if not pc_stats or not pc_stats.metrics:
+        draw.text((box[0] + 8, box[1] + 13), "PC -", font=value_font, fill=pal.ink)
+        return
+    x0, y0, x1, y1 = box
+    content_w = max(1, x1 - x0 - 12)
+    row_h = 12
+    max_rows = max(1, (y1 - y0 - 8) // row_h)
+    metrics = pc_stats.metrics[:max_rows]
+    for index, metric in enumerate(metrics):
+        y = y0 + 6 + index * row_h
+        color = _pc_metric_color(metric.status, pal)
+        draw.rectangle((x0 + 6, y + 2, x0 + 10, y + 6), fill=color, outline=pal.ink)
+        label = _fit_text(draw, metric.label, 26, label_font)
+        draw.text((x0 + 14, y - 1), label, font=label_font, fill=pal.blue)
+        value_x = x0 + 43
+        draw.text((value_x, y - 2), _fit_text(draw, metric.value, content_w - 37, value_font), font=value_font, fill=pal.ink)
+
+
+def _pc_metric_color(status: str, pal):
+    if status == "critical":
+        return pal.red
+    if status == "warn":
+        return pal.yellow
+    if status == "unknown":
+        return pal.panel_shadow
+    return pal.green
 
 
 def _activity_label(

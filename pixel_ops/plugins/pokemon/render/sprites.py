@@ -10,6 +10,7 @@ import yaml
 from pixel_ops.render.animation import SpriteAnimation
 
 ASSET_DIR = Path(__file__).resolve().parents[1] / "assets/sprites/ash"
+NEW_NPC_SPRITES_DIR = Path(__file__).resolve().parents[1] / "assets/sprites/new_sprites"
 POKEBALL_SHEET = ASSET_DIR / "Game Boy Advance - Pokemon FireRed _ LeafGreen - Battle Effects - Poke Balls.png"
 PLAYER_SHEET = ASSET_DIR / "Game Boy Advance - Pokemon FireRed _ LeafGreen - Playable Characters - Player Sprites.png"
 NPC_SHEET = ASSET_DIR / "Game Boy Advance - Pokemon FireRed _ LeafGreen - Trainers & Non-Playable Characters - Overworld NPCs.png"
@@ -338,6 +339,9 @@ class NpcSpriteSet:
     STEP_X = 17
     FRAME_W = 16
     FRAME_H = 20
+    NEW_SHEET_CELL_W = 18
+    NEW_SHEET_CELL_H = 26
+    NEW_SHEET_COLUMNS = 12
 
     def __init__(self, asset_dir: Path, scene_fps: int = 10, scale: int = 2):
         self.asset_dir = asset_dir
@@ -359,14 +363,25 @@ class NpcSpriteSet:
 
     def _load(self) -> None:
         path = self.asset_dir / NPC_SHEET.name
-        if not path.exists():
+        if path.exists():
+            with Image.open(path) as image:
+                sheet = image.convert("RGBA")
+            for row in self.ROWS:
+                animations = self._animations_for_row(sheet, row)
+                if animations:
+                    self._variants.append(animations)
+        self._load_new_sprite_sheets()
+
+    def _load_new_sprite_sheets(self) -> None:
+        if not NEW_NPC_SPRITES_DIR.exists():
             return
-        with Image.open(path) as image:
-            sheet = image.convert("RGBA")
-        for row in self.ROWS:
-            animations = self._animations_for_row(sheet, row)
-            if animations:
-                self._variants.append(animations)
+        for path in sorted(NEW_NPC_SPRITES_DIR.glob("*.png")):
+            with Image.open(path) as image:
+                sheet = image.convert("RGBA")
+            for row in range(sheet.height // self.NEW_SHEET_CELL_H):
+                animations = self._animations_for_new_sheet_row(sheet, row)
+                if animations:
+                    self._variants.append(animations)
 
     def _animations_for_row(self, sheet: Image.Image, row: int) -> dict[str, SpriteAnimation]:
         frames = [self._frame(sheet, self.X0 + index * self.STEP_X, row) for index in range(12)]
@@ -387,9 +402,35 @@ class NpcSpriteSet:
             "idle_left": SpriteAnimation((left[0],), fps=1),
         }
 
+    def _animations_for_new_sheet_row(self, sheet: Image.Image, row: int) -> dict[str, SpriteAnimation]:
+        frames = [
+            self._new_sheet_frame(sheet, index * self.NEW_SHEET_CELL_W, row * self.NEW_SHEET_CELL_H)
+            for index in range(self.NEW_SHEET_COLUMNS)
+        ]
+        if len(frames) < 12 or any(_visible_pixels(frame) < 12 for frame in frames):
+            return {}
+        down = self._sequence(frames, (0, 1, 2, 1))
+        up = self._sequence(frames, (3, 4, 5, 4))
+        left = self._sequence(frames, (6, 7, 8, 7))
+        right = self._sequence(frames, (9, 10, 11, 10))
+        return {
+            "walk_down": SpriteAnimation(down, fps=6),
+            "walk_up": SpriteAnimation(up, fps=6),
+            "walk_right": SpriteAnimation(right, fps=6),
+            "walk_left": SpriteAnimation(left, fps=6),
+            "idle_down": SpriteAnimation((down[0],), fps=1),
+            "idle_up": SpriteAnimation((up[0],), fps=1),
+            "idle_right": SpriteAnimation((right[0],), fps=1),
+            "idle_left": SpriteAnimation((left[0],), fps=1),
+        }
+
     def _frame(self, sheet: Image.Image, x: int, y: int) -> Image.Image:
         frame = sheet.crop((x, y, x + self.FRAME_W, y + self.FRAME_H)).convert("RGBA")
         self._clear_connected_background(frame)
+        return scale_sprite(frame, self.scale)
+
+    def _new_sheet_frame(self, sheet: Image.Image, x: int, y: int) -> Image.Image:
+        frame = sheet.crop((x, y, x + self.NEW_SHEET_CELL_W, y + self.NEW_SHEET_CELL_H)).convert("RGBA")
         return scale_sprite(frame, self.scale)
 
     @staticmethod

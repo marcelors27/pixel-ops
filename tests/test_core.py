@@ -12,13 +12,14 @@ from PIL import Image
 from pixel_ops.config_loader import ConfigWatcher, load_config_prefer_json
 from pixel_ops.core.app import PixelOpsApp
 from pixel_ops.events.event_bus import EventBus
+from pixel_ops.main import runtime_display_config
 
 
 class DummyScene:
     def __init__(self):
         self.last = None
 
-    def render(self, people_times, next_event, now, pull_requests, weather, ai_usage):
+    def render(self, people_times, next_event, now, pull_requests, weather, ai_usage, pc_stats=None):
         self.last = {
             "people_times": people_times,
             "next_event": next_event,
@@ -26,6 +27,7 @@ class DummyScene:
             "pull_requests": pull_requests,
             "weather": weather,
             "ai_usage": ai_usage,
+            "pc_stats": pc_stats,
         }
         return Image.new("RGB", (2, 2), "black")
 
@@ -43,6 +45,11 @@ class DummyWeather:
 class DummyAiUsage:
     def current(self, now=None):
         return {"usage": "low"}
+
+
+class DummyPCStats:
+    def current(self, now=None):
+        return {"cpu": "10%"}
 
 
 class CoreTests(unittest.TestCase):
@@ -77,6 +84,7 @@ class CoreTests(unittest.TestCase):
             pull_request_source=DummyPullRequests(),
             weather_source=DummyWeather(),
             ai_usage_source=DummyAiUsage(),
+            pc_stats_source=DummyPCStats(),
         )
 
         frame = app.render_frame(now)
@@ -86,6 +94,7 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(scene.last["pull_requests"], [{"title": "PR"}])
         self.assertEqual(scene.last["weather"], {"weather": "clear"})
         self.assertEqual(scene.last["ai_usage"], {"usage": "low"})
+        self.assertEqual(scene.last["pc_stats"], {"cpu": "10%"})
         self.assertEqual(scene.last["people_times"][0].timezone, "America/Sao_Paulo")
 
     def test_config_loader_prefers_json_over_yaml(self):
@@ -108,6 +117,44 @@ class CoreTests(unittest.TestCase):
 
             self.assertTrue(watcher.changed())
             self.assertFalse(watcher.changed())
+
+    def test_runtime_display_config_applies_horizontal_profile(self):
+        args = type("Args", (), {"orientation": None})()
+        display_cfg = {
+            "width": 320,
+            "height": 480,
+            "orientation": "horizontal",
+            "layout": {"game": {"width": 320}},
+            "orientations": {
+                "horizontal": {
+                    "width": 480,
+                    "height": 320,
+                    "layout": {"game": {"width": 480}},
+                }
+            },
+        }
+
+        active = runtime_display_config(args, display_cfg)
+
+        self.assertEqual(active["orientation"], "horizontal")
+        self.assertEqual(active["width"], 480)
+        self.assertEqual(active["height"], 320)
+        self.assertEqual(active["layout"]["game"]["width"], 480)
+
+    def test_runtime_display_config_cli_orientation_overrides_config(self):
+        args = type("Args", (), {"orientation": "vertical"})()
+        display_cfg = {
+            "width": 320,
+            "height": 480,
+            "orientation": "horizontal",
+            "orientations": {"horizontal": {"width": 480, "height": 320}},
+        }
+
+        active = runtime_display_config(args, display_cfg)
+
+        self.assertEqual(active["orientation"], "vertical")
+        self.assertEqual(active["width"], 320)
+        self.assertEqual(active["height"], 480)
 
 
 if __name__ == "__main__":

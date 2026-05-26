@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import platform
 import time
 from enum import IntEnum
 
@@ -49,7 +50,10 @@ class UsbBulkRevA:
         except (NotImplementedError, usb.core.USBError):
             pass
 
-        usb.util.claim_interface(self.dev, CDC_DATA_INTERFACE)
+        try:
+            usb.util.claim_interface(self.dev, CDC_DATA_INTERFACE)
+        except usb.core.USBError as error:
+            raise RuntimeError(_usb_claim_error_message(vid, pid, error)) from error
         self.endpoint = self._find_out_endpoint()
         self._portrait_ready = False
 
@@ -139,3 +143,18 @@ class UsbBulkRevA:
         if endpoint is None:
             raise RuntimeError(f"OUT endpoint 0x{OUT_ENDPOINT:02x} not found")
         return endpoint
+
+
+def _usb_claim_error_message(vid: int, pid: int, error: usb.core.USBError) -> str:
+    message = f"Could not claim USB device {vid:04x}:{pid:04x}: {error}"
+    if platform.system() == "Linux":
+        return (
+            f"{message}. On Linux, install libusb and add a udev rule such as "
+            f'SUBSYSTEM=="usb", ATTR{{idVendor}}=="{vid:04x}", ATTR{{idProduct}}=="{pid:04x}", MODE="0666", TAG+="uaccess".'
+        )
+    if platform.system() == "Windows":
+        return (
+            f"{message}. On Windows, install a WinUSB/libusb-compatible driver for this device, "
+            "for example with Zadig, then reconnect the display."
+        )
+    return message

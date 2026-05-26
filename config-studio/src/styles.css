@@ -506,6 +506,14 @@ textarea:focus {
   background: var(--mint);
 }
 
+.layout-toolbar {
+  display: grid;
+  grid-template-columns: auto 110px;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 18px;
+}
+
 .layout-workbench {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 270px;
@@ -539,9 +547,19 @@ textarea:focus {
   opacity: 0.22;
 }
 
+.layout-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.26) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.26) 1px, transparent 1px);
+}
+
 .layout-region {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -652,6 +670,25 @@ textarea:focus {
 .layout-controls {
   display: grid;
   gap: 12px;
+}
+
+.layout-add-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.danger-button {
+  min-height: 38px;
+  border: 1px solid #8c3d47;
+  border-radius: 6px;
+  background: #321b24;
+  color: #ffb8c2;
+  font-weight: 800;
+}
+
+.danger-button:disabled {
+  opacity: 0.45;
 }
 
 .people-list {

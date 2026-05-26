@@ -25,8 +25,13 @@ class AIUsageSource(Protocol):
         ...
 
 
+class PCStatsSource(Protocol):
+    def current(self, now: datetime | None = None):
+        ...
+
+
 class PixelOpsScene(Protocol):
-    def render(self, people_times, next_event, now: datetime, pull_requests, weather, ai_usage) -> Image.Image:
+    def render(self, people_times, next_event, now: datetime, pull_requests, weather, ai_usage, pc_stats=None) -> Image.Image:
         ...
 
 
@@ -41,6 +46,7 @@ class PixelOpsApp:
         pull_request_source: PullRequestSource,
         weather_source: WeatherSource | None = None,
         ai_usage_source: AIUsageSource | None = None,
+        pc_stats_source: PCStatsSource | None = None,
     ):
         self.scene = scene
         self.people_config = people_config
@@ -48,6 +54,7 @@ class PixelOpsApp:
         self.pull_request_source = pull_request_source
         self.weather_source = weather_source
         self.ai_usage_source = ai_usage_source
+        self.pc_stats_source = pc_stats_source
 
     def render_frame(self, now: datetime) -> Image.Image:
         return self.scene.render(
@@ -57,4 +64,5 @@ class PixelOpsApp:
             self.pull_request_source.open_pull_requests(now),
             self.weather_source.current(now) if self.weather_source else None,
             self.ai_usage_source.current(now) if self.ai_usage_source else None,
+            self.pc_stats_source.current(now) if self.pc_stats_source else None,
         )

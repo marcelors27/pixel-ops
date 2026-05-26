@@ -2,6 +2,7 @@
   "display": {
     "width": 320,
     "height": 480,
+    "orientation": "vertical",
     "device": {
       "target": "window",
       "output": "window",
@@ -12,47 +13,32 @@
       "full_frame": false
     },
     "layout": {
-      "timezones": {
-        "x": 0,
-        "y": 0,
-        "width": 318,
-        "height": 136
-      },
-      "route_signal": {
-        "x": 0,
-        "y": 172,
-        "width": 185,
-        "height": 39
-      },
-      "gauges": {
-        "x": 185,
-        "y": 172,
-        "width": 131,
-        "height": 40
-      },
-      "weather": {
-        "x": 194,
-        "y": 216,
-        "width": 120,
-        "height": 40
-      },
-      "activity": {
-        "x": 0,
-        "y": 137,
-        "width": 316,
-        "height": 35
-      },
       "game": {
         "x": 0,
-        "y": 211,
+        "y": 0,
         "width": 320,
-        "height": 172
+        "height": 381
       },
-      "text_box": {
+      "gauges": {
         "x": 0,
-        "y": 385,
-        "width": 320,
-        "height": 92
+        "y": 0,
+        "width": 190,
+        "height": 37,
+        "kind": "gauges"
+      }
+    },
+    "orientations": {
+      "horizontal": {
+        "width": 480,
+        "height": 320,
+        "layout": {
+          "game": {
+            "x": 0,
+            "y": 112,
+            "width": 480,
+            "height": 112
+          }
+        }
       }
     },
     "backend": "usb_bulk_rev_a",

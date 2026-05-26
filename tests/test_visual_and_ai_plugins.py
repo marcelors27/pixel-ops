@@ -11,12 +11,19 @@ from zoneinfo import ZoneInfo
 
 from PIL import Image
 
-from pixel_ops.data_sources.weather import OpenMeteoWeatherSource, OpenWeatherMapWeatherSource, WttrInWeatherSource, build_weather_source
+from pixel_ops.data_sources.weather import (
+    OpenMeteoWeatherSource,
+    OpenWeatherMapWeatherSource,
+    WeatherState,
+    WttrInWeatherSource,
+    build_weather_source,
+)
 from pixel_ops.integrations.discord.voice_state import DiscordVoiceMember, DiscordVoiceSnapshot
 from pixel_ops.plugins.ai.plugin import OpenAiChatGptPlugin, build_ai_plugin
 from pixel_ops.plugins.pokemon.game.map_routes import MapArea, MapRouteManager
 from pixel_ops.plugins.pokemon.plugin import PokemonPlugin
-from pixel_ops.plugins.pokemon.scenes.overworld_scene import OverworldScene
+from pixel_ops.plugins.pokemon.render.sprites import NpcSpriteSet
+from pixel_ops.plugins.pokemon.scenes.overworld_scene import OverworldScene, VoiceCompanionState
 from pixel_ops.plugins.registry import available_plugins, get_plugin
 
 
@@ -66,6 +73,14 @@ class VisualAndAiPluginTests(unittest.TestCase):
         self.assertIsInstance(build_weather_source("openweathermap"), OpenWeatherMapWeatherSource)
         with self.assertRaises(ValueError):
             build_weather_source("unsupported")
+
+    def test_npc_sprite_set_includes_new_sprite_sheets(self):
+        asset_dir = Path("pixel_ops/plugins/pokemon/assets/sprites/ash")
+        sprites = NpcSpriteSet(asset_dir)
+
+        self.assertGreaterEqual(sprites.count, len(NpcSpriteSet.ROWS) + 48)
+        frame = sprites.frame(len(NpcSpriteSet.ROWS), "idle_down", 0)
+        self.assertIsNotNone(frame.getbbox())
 
     def test_pokemon_scene_renders_live_screen_beside_discord_streamer(self):
         snapshot = DiscordVoiceSnapshot(
@@ -180,6 +195,195 @@ class VisualAndAiPluginTests(unittest.TestCase):
                 sprite.height,
             )
         )
+
+    def test_pokemon_scene_clamps_rendered_ash_to_walkable_area(self):
+        scene = OverworldScene(
+            320,
+            240,
+            "America/Sao_Paulo",
+            scanlines=False,
+            pokemon_api=None,
+            lazy_download=False,
+            game_config={
+                "hud_height": 72,
+                "text_box_height": 76,
+                "movement": {
+                    "walkable": {
+                        "source_rects": [{"map": "town", "x": 40, "y": 40, "w": 180, "h": 80}],
+                    }
+                },
+            },
+        )
+        scene.current_map_area = MapArea(
+            area_id="town:0",
+            source_path=Path("town.png"),
+            map_key="town",
+            crop_box=(0, 0, 320, 160),
+            source_bounds=(0, 0, 320, 160),
+            route=((0, 0), (1, 1)),
+        )
+        scene.encounter_x = -200
+        scene.ash_y = 400
+
+        ash_layers = [layer for layer in scene._sprite_layers(scene.state.phase) if not layer[3]]
+
+        self.assertEqual(len(ash_layers), 1)
+        ash, x, y, _ = ash_layers[0]
+        self.assertIsNotNone(scene._sprite_movement_rect("ash", x, y, ash.width, ash.height))
+        self.assertGreaterEqual(x, scene.map_box[0])
+        self.assertGreaterEqual(y, scene.map_box[1])
+        self.assertLessEqual(x + ash.width, scene.map_box[2])
+        self.assertLessEqual(y + ash.height, scene.map_box[3])
+
+    def test_pokemon_scene_keeps_rendered_companions_out_of_blocked_areas(self):
+        snapshot = DiscordVoiceSnapshot(
+            channel_id="c1",
+            members=(DiscordVoiceMember("u1", "Ana", "c1"),),
+        )
+        source = type("DiscordSource", (), {"discord_voice_snapshot": lambda self: snapshot})()
+        scene = OverworldScene(
+            320,
+            240,
+            "America/Sao_Paulo",
+            scanlines=False,
+            pokemon_api=None,
+            lazy_download=False,
+            game_config={
+                "hud_height": 72,
+                "text_box_height": 76,
+                "movement": {
+                    "walkable": {
+                        "source_rects": [{"map": "town", "x": 40, "y": 40, "w": 180, "h": 80}],
+                    },
+                    "blocked": {
+                        "source_rects": [{"map": "town", "x": 80, "y": 48, "w": 72, "h": 64}],
+                    },
+                },
+            },
+            event_sources=[source],
+        )
+        scene.current_map_area = MapArea(
+            area_id="town:0",
+            source_path=Path("town.png"),
+            map_key="town",
+            crop_box=(0, 0, 320, 160),
+            source_bounds=(0, 0, 320, 160),
+            route=((0, 0), (1, 1)),
+        )
+        blocked = scene._movement_screen_rects("blocked")[0]
+        scene._voice_companions["u1"] = VoiceCompanionState(
+            x=blocked[0],
+            y=blocked[1],
+            target_x=blocked[0],
+            target_y=blocked[1],
+            direction="down",
+            next_target_frame=scene.frame + 100,
+            speed=1.0,
+            rng=random.Random(7),
+            variant=0,
+        )
+
+        companion_layers = [layer for layer in scene._sprite_layers(scene.state.phase) if layer[3] == "Ana"]
+
+        self.assertEqual(len(companion_layers), 1)
+        companion, x, y, _ = companion_layers[0]
+        sprite_rect = (x, y, x + companion.width, y + companion.height)
+        self.assertIsNotNone(scene._sprite_movement_rect("companions", x, y, companion.width, companion.height))
+        self.assertFalse(scene._rects_intersect(sprite_rect, blocked))
+
+    def test_pokemon_scene_does_not_draw_legacy_weather_badge_with_configured_layout(self):
+        scene = OverworldScene(
+            320,
+            240,
+            "America/Sao_Paulo",
+            scanlines=False,
+            pokemon_api=None,
+            lazy_download=False,
+            display_layout={
+                "game": {"x": 0, "y": 80, "width": 320, "height": 90},
+                "gauges": {"x": 0, "y": 0, "width": 180, "height": 36, "kind": "gauges"},
+            },
+        )
+        weather = WeatherState(
+            city="Porto Alegre",
+            temperature_c=18,
+            temperature_min_c=14,
+            temperature_max_c=22,
+            apparent_temperature_c=18,
+            precipitation_mm=0,
+            rain_mm=0,
+            snowfall_cm=0,
+            cloud_cover=20,
+            wind_speed_kmh=8,
+            wind_gusts_kmh=14,
+            weather_code=0,
+            effects=("clear",),
+        )
+        calls = []
+        scene._draw_weather_badge = lambda *args: calls.append(args)
+
+        scene.render_base([], None, datetime.now(ZoneInfo("America/Sao_Paulo")), weather=weather)
+
+        self.assertEqual(calls, [])
+
+    def test_pokemon_scene_repositions_actors_when_map_changes(self):
+        scene = OverworldScene(
+            320,
+            240,
+            "America/Sao_Paulo",
+            scanlines=False,
+            pokemon_api=None,
+            lazy_download=False,
+            game_config={
+                "hud_height": 72,
+                "text_box_height": 76,
+                "movement": {
+                    "walkable": {
+                        "source_rects": [
+                            {"map": "town", "x": 40, "y": 20, "w": 120, "h": 60},
+                            {"map": "cave", "x": 160, "y": 24, "w": 120, "h": 58},
+                        ],
+                    }
+                },
+            },
+        )
+        cave = MapArea(
+            area_id="cave:0",
+            source_path=Path("cave.png"),
+            map_key="cave",
+            crop_box=(0, 0, 320, 90),
+            source_bounds=(0, 0, 320, 90),
+            route=((0, 0), (1, 1)),
+        )
+        scene.current_map_area = cave
+        scene._voice_companions["u1"] = VoiceCompanionState(
+            x=0,
+            y=0,
+            target_x=0,
+            target_y=0,
+            direction="left",
+            next_target_frame=0,
+            speed=1.0,
+            rng=random.Random(5),
+            variant=0,
+        )
+
+        scene._reposition_actors_for_map_change(cave)
+
+        ash = scene.ash_sprites.frame(f"idle_{scene.ash_direction}", scene.frame)
+        companion_state = scene._voice_companions["u1"]
+        companion = scene.npc_sprites.frame(companion_state.variant, "idle_down", scene.frame)
+        self.assertIsNotNone(scene._sprite_movement_rect("ash", scene.encounter_x, scene.ash_y, ash.width, ash.height))
+        self.assertIsNotNone(
+            scene._sprite_movement_rect(
+                "companions",
+                int(round(companion_state.x)),
+                int(round(companion_state.y)),
+                companion.width,
+                companion.height,
+            )
+        )
+        self.assertEqual((companion_state.x, companion_state.y), (companion_state.target_x, companion_state.target_y))
 
     def test_pokemon_scene_limits_routes_to_maps_with_walkable_areas(self):
         scene = OverworldScene(

@@ -176,17 +176,27 @@ class AIUsageSource(EventSource):
         roots = [root, self.codex_home / "archived_sessions"]
         rows = _scan_jsonl_roots(roots, since, until, mode="codex")
         status = _scan_codex_rate_limit_status(roots, since, until)
+        primary_percent = _active_codex_limit_percent(
+            status.primary_percent if status else None,
+            status.primary_reset_at if status else None,
+            until,
+        )
+        secondary_percent = _active_codex_limit_percent(
+            status.secondary_percent if status else None,
+            status.secondary_reset_at if status else None,
+            until,
+        )
         return [
             _tokens_gauge(
                 "codex",
                 "Codex 5H",
                 _rows_since(rows, until - timedelta(hours=5)),
                 used_percent=(
-                    status.primary_percent
-                    if status and status.primary_percent is not None
+                    primary_percent
+                    if primary_percent is not None
                     else _inferred_codex_pressure(rows, until, window=timedelta(hours=5))
                 ),
-                reset_at=status.primary_reset_at if status else None,
+                reset_at=status.primary_reset_at if primary_percent is not None and status else None,
                 detail_suffix="last 5h",
             ),
             _tokens_gauge(
@@ -194,11 +204,11 @@ class AIUsageSource(EventSource):
                 "Codex W",
                 _rows_since(rows, until - timedelta(days=7)),
                 used_percent=(
-                    status.secondary_percent
-                    if status and status.secondary_percent is not None
+                    secondary_percent
+                    if secondary_percent is not None
                     else _inferred_codex_pressure(rows, until, window=timedelta(days=7))
                 ),
-                reset_at=status.secondary_reset_at if status else None,
+                reset_at=status.secondary_reset_at if secondary_percent is not None and status else None,
                 detail_suffix="last 7d",
             ),
         ]
@@ -377,6 +387,14 @@ def _codex_rate_limit_status(timestamp: datetime, rate_limits: dict[str, Any]) -
         secondary_percent=secondary_percent,
         secondary_reset_at=_timestamp_seconds(secondary.get("resets_at")) if secondary else None,
     )
+
+
+def _active_codex_limit_percent(percent: float | None, reset_at: datetime | None, now: datetime) -> float | None:
+    if percent is None:
+        return None
+    if reset_at is not None and reset_at <= _aware(now):
+        return None
+    return percent
 
 
 def _scan_jsonl_file(path: Path, since: datetime, until: datetime, mode: str) -> list[_UsageRow]:

@@ -35,6 +35,11 @@ pixel_ops/output/preview.png
 pixel_ops/output/preview.gif
 ```
 
+Platform setup and USB display notes:
+
+- [Linux](docs/linux.md)
+- [Windows](docs/windows.md)
+
 ## Config Studio
 
 Config Studio is the local React UI for editing runtime JSON config.

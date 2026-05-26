@@ -22,7 +22,7 @@ import mascotImg from "./assets/pixelops-mascot.png";
 import mascotSleepyImg from "./assets/pixelops-mascot-sleepy.png";
 import { PixelMascot } from "./components/PixelMascot";
 import { cloneConfig, loadConfig, loadConfigManifest, saveConfig } from "./lib/configApi";
-import type { ConfigManifest, DetectedPlugin, DiscordPersonConfig, IntegrationToggle, LayoutBox, LayoutKey, MovementConfig, MovementRect, PersonConfig, RuntimeConfig } from "./types";
+import type { ConfigManifest, DetectedPlugin, DiscordPersonConfig, IntegrationToggle, LayoutBox, LayoutKey, LayoutWindowOption, MovementConfig, MovementRect, PersonConfig, RuntimeConfig } from "./types";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 type MovementLayer = "walkable" | "blocked";
@@ -34,6 +34,7 @@ const integrationIcons: Record<string, IconComponent> = {
   ics: CalendarDays,
   weather: CloudSun,
   ai_usage: Activity,
+  pc_stats: Cpu,
   slack: Bot,
   discord: Bot,
 };
@@ -42,14 +43,9 @@ const visualPluginIcons: Record<string, IconComponent> = {
   pokemon: Code2,
 };
 
-const layoutItems: Array<{ key: LayoutKey; label: string; tone: string }> = [
-  { key: "timezones", label: "Timezones", tone: "#7fb2e6" },
-  { key: "gauges", label: "Gauges", tone: "#7ee0bd" },
-  { key: "weather", label: "Weather", tone: "#e8c766" },
-  { key: "activity", label: "Activity", tone: "#ef846d" },
-  { key: "route_signal", label: "Route", tone: "#f0a35d" },
-  { key: "game", label: "Game", tone: "#8fbf7a" },
-  { key: "text_box", label: "Text box", tone: "#d8d0ff" },
+const layoutWindowCatalog: LayoutWindowOption[] = [
+  { kind: "timezones", label: "Timezones", tone: "#7fb2e6" },
+  { kind: "activity", label: "Activity", tone: "#ef846d" },
 ];
 
 const resizeDirections = ["n", "s", "e", "w", "nw", "ne", "sw", "se"] as const;
@@ -192,6 +188,7 @@ export function App() {
   const pokemon = config.pokemon?.pokemon;
   const aiSelector = game?.events.ai_selector;
   const hasPokemonPlugin = selectedPluginKeys.includes("pokemon") && Boolean(game && pokemon && config.pokemon_companions);
+  const layoutOptions = layoutWindowOptions(config, manifest, selectedPluginKeys);
   const discordPeopleConfig = config.discord_people?.discord_people ?? { max_recent: 50, people: {} };
   const discordPeople = discordPersonEntries(discordPeopleConfig.people);
   const enabledCount = manifest.integrations.filter(({ key }) => Boolean(integrationConfig(config, key).enabled)).length;
@@ -316,9 +313,36 @@ export function App() {
 
         <LayoutPreview
           config={config}
+          options={layoutOptions}
           selected={selectedLayout}
           onSelect={setSelectedLayout}
           onChange={(key, box) => mutate((draft) => void (draft.display.display.layout[key] = box))}
+          onAdd={(kind) =>
+            mutate((draft) => {
+              const display = draft.display.display;
+              const key = nextLayoutWindowKey(display.layout, kind);
+              display.layout[key] = layoutBoxForNewWindow(kind, display.width, display.height, display.layout);
+              setSelectedLayout(key);
+            })
+          }
+          onRemove={(key) =>
+            mutate((draft) => {
+              removeLayoutWindow(draft.display.display.layout, key);
+              for (const profile of Object.values(draft.display.display.orientations ?? {})) {
+                if (profile.layout) {
+                  removeLayoutWindow(profile.layout, key, true);
+                }
+              }
+              setSelectedLayout(firstLayoutWindowKey(draft.display.display.layout) ?? "game");
+            })
+          }
+          onFactoryDefault={() =>
+            mutate((draft) => {
+              const display = draft.display.display;
+              display.layout = defaultLayoutFor(display.width, display.height);
+              setSelectedLayout("game");
+            })
+          }
           onEquipment={(target) => mutate((draft) => applyEquipment(draft, target))}
         />
 
@@ -521,6 +545,37 @@ export function App() {
               </Field>
             </Panel>
 
+            <Panel title="PC Stats" icon={Cpu} subtitle="Local machine metrics for layout windows">
+              <Field label="Fields">
+                <TextInput
+                  value={config.integrations.integrations.pc_stats.fields.join(", ")}
+                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.pc_stats.fields = csv(value)))}
+                />
+              </Field>
+              <Field label="Poll seconds">
+                <NumberInput
+                  value={config.integrations.integrations.pc_stats.poll_seconds}
+                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.pc_stats.poll_seconds = clampNumber(value, 1, 300)))}
+                />
+              </Field>
+              <Field label="Disk path">
+                <TextInput
+                  value={config.integrations.integrations.pc_stats.disk_path}
+                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.pc_stats.disk_path = value || "/"))}
+                />
+              </Field>
+              <Field label="Top processes">
+                <NumberInput
+                  value={config.integrations.integrations.pc_stats.top_process_count}
+                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.pc_stats.top_process_count = clampNumber(value, 1, 5)))}
+                />
+              </Field>
+              <div className="field field-wide">
+                <span>Available fields</span>
+                <span className="empty-note">cpu, ram, top_ram_app, temperature, gpu, disk, uptime, battery, load</span>
+              </div>
+            </Panel>
+
             <Panel title="Calendars" icon={CalendarDays} subtitle="Meeting encounters from Google Calendar or ICS">
               <Field label="Google ICS URLs">
                 <TextArea
@@ -712,14 +767,6 @@ export function App() {
             </div>
           </Panel>
 
-          <Panel title="Movement Areas" icon={MoveDiagonal2} subtitle="Draw walkable regions on full map images">
-            <MovementAreaEditor
-              maps={pokemonMaps}
-              movement={game.movement}
-              onChange={(movement) => mutate((draft) => void (draft.game!.game.movement = movement))}
-            />
-          </Panel>
-
           <Panel title="Pokemon AI Selector" icon={Bot} subtitle="Throttled Pokemon-specific AI selection">
             <Field label="Selector enabled">
               <Switch checked={aiSelector.enabled} onChange={(value) => mutate((draft) => void (draft.game!.game.events.ai_selector.enabled = value))} />
@@ -810,22 +857,74 @@ export function App() {
 
 function LayoutPreview({
   config,
+  options,
   selected,
   onSelect,
   onChange,
+  onAdd,
+  onRemove,
+  onFactoryDefault,
   onEquipment,
 }: {
   config: RuntimeConfig;
+  options: LayoutWindowOption[];
   selected: LayoutKey;
   onSelect: (key: LayoutKey) => void;
   onChange: (key: LayoutKey, box: LayoutBox) => void;
+  onAdd: (kind: string) => void;
+  onRemove: (key: LayoutKey) => void;
+  onFactoryDefault: () => void;
   onEquipment: (target: string) => void;
 }) {
   const display = config.display.display;
-  const box = display.layout[selected];
   const frameWidth = display.width;
   const frameHeight = display.height;
   const scale = Math.min(1.7, 520 / Math.max(frameWidth, 1), 560 / Math.max(frameHeight, 1));
+  const [gridEnabled, setGridEnabled] = useState(false);
+  const [gridSize, setGridSize] = useState(8);
+  const [addKind, setAddKind] = useState(options[0]?.kind ?? "activity");
+  const optionByKind = new Map(options.map((option) => [option.kind, option]));
+  const layoutItems = Object.entries(display.layout)
+    .map(([key, box]) => {
+      const kind = layoutWindowKind(key, box);
+      const option = optionByKind.get(kind) ?? { kind, label: titleize(kind), tone: "#aeb7c8" };
+      return { key, kind, box, option };
+    });
+  const activeKey = display.layout[selected] ? selected : layoutItems[0]?.key;
+  const box = (activeKey ? display.layout[activeKey] : undefined) ?? { x: 0, y: 0, width: frameWidth, height: frameHeight };
+
+  useEffect(() => {
+    if (!options.some((option) => option.kind === addKind)) {
+      setAddKind(options[0]?.kind ?? "activity");
+    }
+  }, [addKind, options]);
+
+  useEffect(() => {
+    if (activeKey && activeKey !== selected) {
+      onSelect(activeKey);
+    }
+  }, [activeKey, onSelect, selected]);
+
+  function snap(value: number): number {
+    if (!gridEnabled) return Math.round(value);
+    const size = Math.max(1, gridSize);
+    return Math.round(value / size) * size;
+  }
+
+  function snapBox(nextBox: LayoutBox): LayoutBox {
+    if (!gridEnabled) return nextBox;
+    return {
+      ...nextBox,
+      x: snap(nextBox.x),
+      y: snap(nextBox.y),
+      width: Math.max(gridSize, snap(nextBox.width)),
+      height: Math.max(gridSize, snap(nextBox.height)),
+    };
+  }
+
+  function commitBox(key: LayoutKey, nextBox: LayoutBox) {
+    onChange(key, clampBox(snapBox(nextBox), frameWidth, frameHeight));
+  }
 
   function dragStart(event: MouseEvent<HTMLDivElement>, key: LayoutKey) {
     event.preventDefault();
@@ -836,11 +935,11 @@ function LayoutPreview({
 
     const move = (moveEvent: globalThis.MouseEvent) => {
       const next = clampBox(
-        {
+        snapBox({
           ...startBox,
           x: Math.round(startBox.x + (moveEvent.clientX - startX) / scale),
           y: Math.round(startBox.y + (moveEvent.clientY - startY) / scale),
-        },
+        }),
         frameWidth,
         frameHeight,
       );
@@ -882,7 +981,7 @@ function LayoutPreview({
         next.y = startBox.y + dy;
         next.height = startBox.height - dy;
       }
-      onChange(key, clampBox(next, frameWidth, frameHeight));
+      commitBox(key, next);
     };
 
     const up = () => {
@@ -917,11 +1016,29 @@ function LayoutPreview({
         ))}
       </div>
 
+      <div className="layout-toolbar">
+        <button className={`switch ${gridEnabled ? "is-on" : ""}`} type="button" onClick={() => setGridEnabled((value) => !value)} aria-pressed={gridEnabled}>
+          <span />
+          Grid snap
+        </button>
+        <Field label="Grid px">
+          <NumberInput value={gridSize} onChange={(value) => setGridSize(clampNumber(value, 2, 64))} />
+        </Field>
+      </div>
+
       <div className="layout-workbench">
         <div className="screen-preview-shell">
           <div className="screen-preview" style={{ width: frameWidth * scale, height: frameHeight * scale }}>
+            {gridEnabled ? (
+              <div
+                className="layout-grid"
+                style={{
+                  backgroundSize: `${gridSize * scale}px ${gridSize * scale}px`,
+                }}
+              />
+            ) : null}
             {layoutItems.map((item) => {
-              const current = display.layout[item.key];
+              const current = item.box;
               return (
                 <div
                   key={item.key}
@@ -933,8 +1050,8 @@ function LayoutPreview({
                     top: current.y * scale,
                     width: current.width * scale,
                     height: current.height * scale,
-                    borderColor: item.tone,
-                    backgroundColor: `${item.tone}24`,
+                    borderColor: item.option.tone,
+                    backgroundColor: `${item.option.tone}24`,
                   }}
                   onMouseDown={(event) => dragStart(event, item.key)}
                   onKeyDown={(event) => {
@@ -944,7 +1061,7 @@ function LayoutPreview({
                     }
                   }}
                 >
-                  <span className="layout-region-label">{item.label}</span>
+                  <span className="layout-region-label">{item.option.label}</span>
                   {selected === item.key
                     ? resizeDirections.map((direction) => (
                         <div
@@ -965,23 +1082,35 @@ function LayoutPreview({
         </div>
 
         <div className="layout-controls">
+          <div className="layout-add-row">
+            <Select value={addKind} options={options.map((item) => item.kind)} onChange={setAddKind} />
+            <button className="secondary-button" type="button" onClick={() => onAdd(addKind)}>
+              Add
+            </button>
+          </div>
           <Field label="Selected">
-            <Select value={selected} options={layoutItems.map((item) => item.key)} onChange={(value) => onSelect(value as LayoutKey)} />
+            <Select value={activeKey ?? ""} options={layoutItems.map((item) => item.key)} onChange={(value) => onSelect(value as LayoutKey)} />
           </Field>
           <Field label="X">
-            <NumberInput value={box.x} onChange={(value) => onChange(selected, clampBox({ ...box, x: value }, frameWidth, frameHeight))} />
+            <NumberInput value={box.x} onChange={(value) => activeKey && commitBox(activeKey, { ...box, x: value })} />
           </Field>
           <Field label="Y">
-            <NumberInput value={box.y} onChange={(value) => onChange(selected, clampBox({ ...box, y: value }, frameWidth, frameHeight))} />
+            <NumberInput value={box.y} onChange={(value) => activeKey && commitBox(activeKey, { ...box, y: value })} />
           </Field>
           <Field label="Width">
-            <NumberInput value={box.width} onChange={(value) => onChange(selected, clampBox({ ...box, width: value }, frameWidth, frameHeight))} />
+            <NumberInput value={box.width} onChange={(value) => activeKey && commitBox(activeKey, { ...box, width: value })} />
           </Field>
           <Field label="Height">
-            <NumberInput value={box.height} onChange={(value) => onChange(selected, clampBox({ ...box, height: value }, frameWidth, frameHeight))} />
+            <NumberInput value={box.height} onChange={(value) => activeKey && commitBox(activeKey, { ...box, height: value })} />
           </Field>
-          <button className="secondary-button" type="button" onClick={() => onChange(selected, defaultLayoutFor(frameWidth, frameHeight)[selected])}>
+          <button className="secondary-button" type="button" disabled={!activeKey} onClick={() => activeKey && onChange(activeKey, layoutBoxForNewWindow(layoutWindowKind(activeKey, box), frameWidth, frameHeight, display.layout))}>
             Reset selected
+          </button>
+          <button className="danger-button" type="button" disabled={!activeKey} onClick={() => activeKey && onRemove(activeKey)}>
+            Remove selected
+          </button>
+          <button className="danger-button" type="button" onClick={onFactoryDefault}>
+            Factory default
           </button>
         </div>
       </div>
@@ -1649,12 +1778,25 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
     preview_sequence: false,
     full_frame: false,
   };
-  display.layout = { ...defaultLayoutFor(display.width, display.height), ...(display.layout ?? {}) };
+  if (!display.layout || typeof display.layout !== "object") {
+    display.layout = defaultLayoutFor(display.width, display.height);
+  }
   next.integrations.integrations.github.fetch_deployments = next.integrations.integrations.github.fetch_deployments ?? true;
   next.integrations.integrations.github.deployment_workflows = next.integrations.integrations.github.deployment_workflows ?? [];
   next.integrations.integrations.weather.provider = next.integrations.integrations.weather.provider ?? "open_meteo";
   next.integrations.integrations.weather.timeout_seconds = next.integrations.integrations.weather.timeout_seconds ?? 8;
   next.integrations.integrations.weather.api_key_env = next.integrations.integrations.weather.api_key_env ?? "OPENWEATHERMAP_API_KEY";
+  next.integrations.integrations.pc_stats = next.integrations.integrations.pc_stats ?? {
+    enabled: false,
+    fields: ["cpu", "ram", "top_ram_app", "temperature", "gpu", "disk", "uptime"],
+    poll_seconds: 5,
+    top_process_count: 1,
+    disk_path: "/",
+  };
+  next.integrations.integrations.pc_stats.fields = next.integrations.integrations.pc_stats.fields ?? ["cpu", "ram", "top_ram_app", "temperature", "gpu", "disk", "uptime"];
+  next.integrations.integrations.pc_stats.poll_seconds = next.integrations.integrations.pc_stats.poll_seconds ?? 5;
+  next.integrations.integrations.pc_stats.top_process_count = next.integrations.integrations.pc_stats.top_process_count ?? 1;
+  next.integrations.integrations.pc_stats.disk_path = next.integrations.integrations.pc_stats.disk_path ?? "/";
   next.integrations.integrations.discord.bot_token_env = next.integrations.integrations.discord.bot_token_env ?? "PIXEL_OPS_DISCORD_BOT_TOKEN";
   next.integrations.integrations.discord.guild_id = next.integrations.integrations.discord.guild_id ?? "";
   next.integrations.integrations.discord.focus_user_id = next.integrations.integrations.discord.focus_user_id ?? "";
@@ -1714,6 +1856,14 @@ function digits(value: string): string {
   return value.replace(/\D/g, "");
 }
 
+function titleize(value: string): string {
+  return value
+    .split(/[_-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
 function clampNumber(value: number, min: number, max: number): number {
   if (!Number.isFinite(value)) {
     return min;
@@ -1746,10 +1896,86 @@ function defaultLayoutFor(width: number, height: number): Record<LayoutKey, Layo
     route_signal: { x: 8, y: middleHudY, width: Math.max(88, Math.round(width * 0.28)), height: 40 },
     gauges: { x: Math.max(104, Math.round(width * 0.33)), y: middleHudY, width: Math.max(72, Math.round(width * 0.24)), height: 40 },
     weather: { x: Math.max(8, width - 120), y: middleHudY, width: 112, height: 40 },
+    pc_stats: { x: Math.max(8, width - 132), y: 8, width: 124, height: Math.max(54, middleHudY - 12) },
     activity: { x: 8, y: lowerHudY, width: contentWidth, height: 40 },
     game: { x: 0, y: gameY, width, height: Math.max(1, textY - gameY - 4) },
     text_box: { x: 8, y: textY, width: Math.max(1, width - 16), height: Math.max(1, height - textY - 2) },
   };
+}
+
+function layoutWindowOptions(config: RuntimeConfig, manifest: ConfigManifest, selectedPluginKeys: string[]): LayoutWindowOption[] {
+  const options = [...layoutWindowCatalog];
+  for (const integration of manifest.integrations) {
+    if (integrationConfig(config, integration.key).enabled) {
+      options.push(...(integration.layoutWindows ?? []));
+    }
+  }
+  for (const plugin of manifest.visualPlugins) {
+    if (selectedPluginKeys.includes(plugin.key)) {
+      options.push(...(plugin.layoutWindows ?? []));
+    }
+  }
+  const seen = new Set<string>();
+  return options.filter((option) => {
+    if (seen.has(option.kind)) return false;
+    seen.add(option.kind);
+    return true;
+  });
+}
+
+function layoutWindowKind(key: string, box: LayoutBox): string {
+  return box.kind || key;
+}
+
+function firstLayoutWindowKey(layout: Record<LayoutKey, LayoutBox>): string | null {
+  return Object.keys(layout)[0] ?? null;
+}
+
+function removeLayoutWindow(layout: Record<LayoutKey, LayoutBox>, key: string, removeSameKind = false) {
+  const removed = layout[key];
+  const removedKind = removed ? layoutWindowKind(key, removed) : key;
+  for (const [candidateKey, box] of Object.entries(layout)) {
+    if (candidateKey === key || (removeSameKind && layoutWindowKind(candidateKey, box) === removedKind)) {
+      delete layout[candidateKey];
+    }
+  }
+}
+
+function nextLayoutWindowKey(layout: Record<LayoutKey, LayoutBox>, kind: string): string {
+  if (!(kind in layout)) {
+    return kind;
+  }
+  let index = 2;
+  while (`${kind}_${index}` in layout) {
+    index += 1;
+  }
+  return `${kind}_${index}`;
+}
+
+function layoutBoxForNewWindow(
+  kind: string,
+  frameWidth: number,
+  frameHeight: number,
+  layout: Record<LayoutKey, LayoutBox>,
+): LayoutBox {
+  const defaults = defaultLayoutFor(frameWidth, frameHeight);
+  const base = defaults[kind] ?? {
+    x: 8,
+    y: 8,
+    width: Math.max(40, Math.round(frameWidth * 0.35)),
+    height: Math.max(32, Math.round(frameHeight * 0.16)),
+  };
+  const sameKindCount = Object.entries(layout).filter(([key, box]) => layoutWindowKind(key, box) === kind).length;
+  return clampBox(
+    {
+      ...base,
+      kind,
+      x: base.x + sameKindCount * 12,
+      y: base.y + sameKindCount * 12,
+    },
+    frameWidth,
+    frameHeight,
+  );
 }
 
 function clampBox(box: LayoutBox, frameWidth: number, frameHeight: number): LayoutBox {
