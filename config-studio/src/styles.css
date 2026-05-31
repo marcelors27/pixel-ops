@@ -114,7 +114,7 @@ p {
 }
 
 main {
-  width: min(1180px, calc(100% - 32px));
+  width: min(1800px, calc(100% - 32px));
   margin: 0 auto;
 }
 
@@ -426,6 +426,37 @@ textarea:focus {
   margin-top: 22px;
 }
 
+.runtime-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.runtime-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.runtime-actions .secondary-button {
+  margin-top: 0;
+}
+
+.runtime-log {
+  min-height: 150px;
+  max-height: 260px;
+  overflow: auto;
+  margin: 0;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: #101420;
+  color: #dbe7c8;
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
 .pluginmaps-main {
   padding-top: 22px;
 }
@@ -473,6 +504,113 @@ textarea:focus {
   color: var(--mint);
 }
 
+.plugin-tabs {
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+
+.plugin-tab-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.plugin-tab-list button {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid var(--line);
+  background: var(--panel-2);
+  color: var(--muted);
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.plugin-tab-list button.is-active {
+  border-color: var(--mint);
+  color: var(--text);
+}
+
+.plugin-tab-list button.is-active svg {
+  color: var(--mint);
+}
+
+.plugin-tab-list button.is-integration.is-active {
+  border-color: var(--amber);
+}
+
+.plugin-tab-list button.is-integration.is-active svg {
+  color: var(--amber);
+}
+
+.plugin-tab-panel {
+  min-height: 72px;
+}
+
+.provider-runtime {
+  margin-top: 26px;
+  border-top: 1px solid rgba(232, 199, 102, 0.36);
+  padding-top: 22px;
+}
+
+.provider-runtime .section-heading svg {
+  color: var(--amber);
+}
+
+.provider-card {
+  border-color: rgba(232, 199, 102, 0.28);
+}
+
+.provider-card svg {
+  color: var(--amber);
+}
+
+.provider-card.is-on {
+  border-color: var(--amber);
+}
+
+.provider-card.is-on strong,
+.provider-card.is-on svg {
+  color: var(--amber);
+}
+
+.plugin-tab-panel.is-integration-panel .panel {
+  border-color: rgba(232, 199, 102, 0.46);
+}
+
+.empty-provider-tab {
+  border-color: rgba(232, 199, 102, 0.4);
+}
+
+.plugin-subtabs {
+  display: grid;
+  gap: 16px;
+}
+
+.plugin-subtab-list {
+  margin-bottom: 0;
+}
+
+.plugin-subtab-panel .panel {
+  box-shadow: none;
+}
+
+.empty-plugin-tab {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  gap: 10px;
+  border: 1px dashed var(--line);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  padding: 16px;
+  font-size: 14px;
+}
+
 .settings-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-top: 18px;
@@ -516,7 +654,7 @@ textarea:focus {
 
 .layout-workbench {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 270px;
+  grid-template-columns: minmax(0, 1fr) 240px;
   gap: 18px;
   align-items: start;
 }
@@ -525,7 +663,8 @@ textarea:focus {
   overflow: auto;
   border: 1px solid var(--line);
   background: #121723;
-  padding: 18px;
+  min-height: 420px;
+  padding: 12px;
 }
 
 .screen-preview {
@@ -788,7 +927,8 @@ textarea:focus {
 
 .sprite-current img {
   width: 40px;
-  height: 48px;
+  height: 56px;
+  object-fit: contain;
   image-rendering: pixelated;
 }
 
@@ -803,6 +943,8 @@ textarea:focus {
 }
 
 .sprite-modal {
+  display: flex;
+  flex-direction: column;
   width: min(760px, 100%);
   max-height: min(720px, calc(100vh - 40px));
   overflow: hidden;
@@ -832,17 +974,21 @@ textarea:focus {
 }
 
 .sprite-picker {
+  flex: 1;
+  min-height: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+  align-content: start;
   gap: 8px;
-  max-height: calc(100vh - 160px);
-  overflow: auto;
-  padding-right: 2px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 6px 2px 0;
+  scrollbar-gutter: stable;
 }
 
 .sprite-option {
   min-width: 0;
-  min-height: 58px;
+  min-height: 66px;
   border: 2px solid #38435d;
   border-radius: 6px;
   background: #202637;
@@ -855,7 +1001,8 @@ textarea:focus {
 .sprite-option img {
   display: block;
   width: 40px;
-  height: 48px;
+  height: 56px;
+  object-fit: contain;
   margin: 0 auto;
   image-rendering: pixelated;
 }

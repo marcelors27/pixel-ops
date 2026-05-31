@@ -193,7 +193,7 @@ game:
   ash_sprite_source: https://www.spriters-resource.com/game_boy_advance/pokemonfireredleafgreen/asset/52432/
   ash_sprite_file: pixel_ops/plugins/pokemon/assets/sprites/ash/ash_overworld.png
   world_speed_px: 0
-  map_switch_seconds: 300
+  map_switch_seconds: 60
   ash_x: 118
   ash_y: 292
   walk_start_x: 28

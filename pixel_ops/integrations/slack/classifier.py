@@ -22,15 +22,20 @@ def classify_slack_event(payload: dict[str, Any], bot_user_id: str | None = None
         kind = SocialSignalKind.DIRECT_MESSAGE if channel_type == "im" else SocialSignalKind.ACTIVITY_SPIKE
         if bot_user_id and f"<@{bot_user_id}>" in text:
             kind = SocialSignalKind.MENTION
+        metadata = {"channel_type": channel_type}
+        if channel_type == "im":
+            metadata["attention_surface"] = "direct_message"
+        elif kind == SocialSignalKind.MENTION:
+            metadata["attention_surface"] = "mention"
         return SocialSignal(
             provider=SocialPlatform.SLACK,
             kind=kind,
             actor=_actor(event),
             space=str(event.get("channel", "")) or None,
-            intensity=1.15 if kind == SocialSignalKind.MENTION else 1.0 if channel_type == "im" else 0.25,
+            intensity=1.35 if kind == SocialSignalKind.MENTION else 1.1 if channel_type == "im" else 0.25,
             occurred_at=occurred_at,
             external_id=event_id or None,
-            metadata={"channel_type": channel_type},
+            metadata=metadata,
         )
 
     if event_type == "app_mention":
@@ -39,9 +44,10 @@ def classify_slack_event(payload: dict[str, Any], bot_user_id: str | None = None
             kind=SocialSignalKind.MENTION,
             actor=_actor(event),
             space=str(event.get("channel", "")) or None,
-            intensity=1.2,
+            intensity=1.35,
             occurred_at=occurred_at,
             external_id=event_id or None,
+            metadata={"attention_surface": "app_mention"},
         )
 
     if event_type == "reaction_added":

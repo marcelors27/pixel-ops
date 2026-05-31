@@ -20,6 +20,20 @@ export type ConfigManifest = {
   visualPlugins: DetectedPlugin[];
 };
 
+export type RuntimeStatus = {
+  running: boolean;
+  pid: number | null;
+  logs: string[];
+  ok?: boolean;
+  stdout?: string;
+  stderr?: string;
+};
+
+export type NpcSpriteManifest = {
+  count: number;
+  variants: number[];
+};
+
 export type RuntimeConfig = {
   display: {
     display: {
@@ -42,6 +56,26 @@ export type RuntimeConfig = {
         forever: boolean;
         preview_sequence: boolean;
         full_frame: boolean;
+        thermalright?: {
+          vid: string;
+          pid: string;
+          timeout_ms: number;
+          jpeg_quality: number;
+          image_width: number;
+          image_height: number;
+          min_frame_interval_ms?: number;
+          packet_delay_ms?: number;
+          packet_size?: number;
+          hard_reset_on_start?: boolean;
+          hard_reset_wait_ms?: number;
+          handshake_on_first_frame?: boolean;
+          require_handshake?: boolean;
+          send_start_init?: boolean;
+          read_start_ack?: boolean;
+          read_frame_ack?: boolean;
+          start_retries?: number;
+          debug: boolean;
+        };
       };
       layout: Record<LayoutKey, LayoutBox>;
       backend: string;
@@ -76,6 +110,20 @@ export type RuntimeConfig = {
         bot_token_env: string;
         bot_user_id: string;
         socket_reconnect_seconds: number;
+        activity_window_seconds: number;
+        activity_threshold: number;
+        activity_cooldown_seconds: number;
+        summary_window_seconds: number;
+        channels: Record<
+          string,
+          {
+            label: string;
+            tone: string;
+            weight: number;
+            activity_threshold: number;
+            dominant_types: string[];
+          }
+        >;
       };
       discord: IntegrationToggle & {
         bot_token_env: string;
@@ -129,6 +177,18 @@ export type RuntimeConfig = {
         poll_seconds: number;
         top_process_count: number;
         disk_path: string;
+      };
+      clickup: IntegrationToggle & {
+        token_env: string;
+        team_id: string;
+        assignee_id: string;
+        poll_seconds: number;
+        max_tasks: number;
+        due_within_days: number;
+        include_overdue: boolean;
+        include_subtasks: boolean;
+        include_closed: boolean;
+        timeout_seconds: number;
       };
     };
   };

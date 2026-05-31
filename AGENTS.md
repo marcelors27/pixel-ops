@@ -57,6 +57,7 @@ Key files:
 
 - `pixel_ops/events/ambient_signals.py`: provider-neutral social/meeting vocabulary.
 - `pixel_ops/events/event_bus.py`: bounded in-process event queue.
+- `pixel_ops/events/github_events.py`: GitHub polling, PR HUD summaries, and GitHub work events.
 - `pixel_ops/integration_plugins/base.py`: integration plugin contract.
 - `pixel_ops/integration_plugins/registry.py`: enable-driven runtime loader.
 - `pixel_ops/main.py`: CLI, config loading, hot reload, runtime rebuild.
@@ -64,6 +65,7 @@ Key files:
 - `pixel_ops/plugins/pokemon/scenes/overworld_scene.py`: current main scene.
 - `pixel_ops/plugins/pokemon/game/social_weather.py`: social weather/world mood logic.
 - `pixel_ops/plugins/pokemon/game/ai_selector.py`: Pokemon-specific AI selection and throttling.
+- `config-studio/`: local React UI for editing JSON config and runtime layout.
 
 ## Configuration
 
@@ -72,8 +74,10 @@ JSON is the primary runtime config format:
 - `pixel_ops/config/display.json`: display, output paths, timezone, AI provider settings.
 - `pixel_ops/config/people.json`: people and time zones.
 - `pixel_ops/config/integrations.json`: integration enables and non-secret provider settings.
+- `pixel_ops/config/discord_people.json`: recent Discord people captured by the Discord integration.
 - `pixel_ops/plugins/pokemon/game.json`: Pokemon scene, encounters, event mappings, AI selector throttle.
 - `pixel_ops/plugins/pokemon/pokemon.json`: PokeAPI/cache/sprite settings.
+- `pixel_ops/plugins/pokemon/companions.json`: Pokemon visual mapping for provider-owned companion state.
 
 YAML is only a fallback when the matching JSON file does not exist.
 
@@ -81,11 +85,16 @@ YAML is only a fallback when the matching JSON file does not exist.
 
 - `PIXEL_OPS_SLACK_APP_TOKEN`
 - `PIXEL_OPS_SLACK_BOT_TOKEN`
+- `PIXEL_OPS_DISCORD_BOT_TOKEN`
 - `PIXEL_OPS_GITHUB_TOKEN`
+- `PIXEL_OPS_CLICKUP_TOKEN`
+- `OPENWEATHERMAP_API_KEY`
 - `OPENAI_API_KEY`
 - `OPENAI_ADMIN_KEY`
 
 Do not move non-secret toggles back into `.env`. Use JSON so future UI tooling can edit config graphically.
+
+Config Studio edits JSON config through its Vite dev server. Treat layout windows as presentation only: removing an `activity`, `route_signal`, `pc_stats`, `weather`, `tasks`, or similar display region must not disable the underlying integration or stop runtime snapshot/event production.
 
 ## Integration Plugins
 
@@ -100,7 +109,9 @@ Each integration is loaded only when enabled by config:
     "google_calendar": { "enabled": true },
     "ics": { "enabled": true },
     "weather": { "enabled": false },
-    "ai_usage": { "enabled": true }
+    "ai_usage": { "enabled": true },
+    "pc_stats": { "enabled": true },
+    "clickup": { "enabled": false }
   }
 }
 ```
@@ -114,14 +125,22 @@ Current plugin module map:
 - `ics` -> `pixel_ops.integrations.ics.plugin`
 - `weather` -> `pixel_ops.integrations.weather.plugin`
 - `ai_usage` -> `pixel_ops.integrations.ai_usage.plugin`
+- `pc_stats` -> `pixel_ops.integrations.pc_stats.plugin`
+- `clickup` -> `pixel_ops.integrations.clickup.plugin`
 
 Slack uses Socket Mode only. Do not re-add webhook fallback unless an ADR changes that decision.
 
-Discord currently exposes a Gateway dispatch adapter and event source boundary. A bot runner can feed dispatch payloads into the adapter.
+Discord currently exposes a Gateway client, dispatch adapter, voice state tracker, event source boundary, and companion people store. Voice/presence state may become companion movement or ambience, but provider state should still normalize through the integration boundary before the visual plugin interprets it.
 
 Teams and Zoom have placeholder classifiers/client boundaries. They should also normalize into `AmbientSignal`, not into provider-specific renderer state.
 
 AI usage follows the same provider boundary. Codex, Claude, and OpenAI API usage are normalized into gauges and `ai_usage` work events. Do not render raw logs, prompts, responses, or billing tables.
+
+PC stats are local runtime metrics. They expose compact gauges such as CPU, RAM, disk, battery, temperature, top process, GPU identity, uptime, and load. Keep collection in `pixel_ops/data_sources/pc_stats.py` and the `pc_stats` integration; visual plugins should consume snapshots, not call platform APIs directly.
+
+ClickUp tasks are work planning state. Keep API polling in `pixel_ops/data_sources/clickup.py` and the `clickup` integration; visual plugins should consume snapshots and render compact task pressure, due dates, and remaining time rather than raw comments or activity feeds.
+
+GitHub exposes both `pull_request_source` for compact HUD summaries and an event source for encounters/mood. These paths must stay independent from layout visibility: hiding PR/activity/route windows cannot stop PR opened, merged, closed, build, or deploy events from entering the event queue.
 
 ## AI Calls
 
@@ -172,6 +191,15 @@ python -m graphify update .
 ```
 
 The generated graph artifacts live in `graphify-out/`.
+
+Run Config Studio:
+
+```bash
+cd config-studio
+npm run dev
+```
+
+The Config Studio runtime panel can check config, render a preview, and start/stop window mode through local `/api/runtime/*` endpoints.
 
 ## Documentation
 

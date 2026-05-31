@@ -27,7 +27,7 @@ class MapRouteManager:
         self,
         maps_dir: Path,
         viewport_size: tuple[int, int],
-        switch_seconds: int = 300,
+        switch_seconds: int = 60,
         seed: int = 251,
         allowed_map_keys: Iterable[str] | None = None,
         walkable_source_rects: dict[str,
@@ -37,6 +37,7 @@ class MapRouteManager:
         self.maps_dir = maps_dir
         self.viewport_size = viewport_size
         self.switch_seconds = switch_seconds
+        self.seed = seed
         self.rng = random.Random(seed)
         self.walkable_source_rects = {
             key: tuple(rects)
@@ -57,8 +58,21 @@ class MapRouteManager:
             return None
         areas = self._filtered_areas_for_mock() or self.areas
         bucket = int(timestamp // max(1, self.switch_seconds))
-        rng = random.Random(bucket)
-        return areas[rng.randrange(len(areas))]
+        groups = self._areas_by_map_key(areas)
+        map_keys = list(groups)
+        map_key = map_keys[(bucket + self.seed) % len(map_keys)]
+        candidates = groups[map_key]
+        if len(candidates) == 1:
+            return candidates[0]
+        rng = random.Random(bucket + self.seed)
+        return candidates[rng.randrange(len(candidates))]
+
+    @staticmethod
+    def _areas_by_map_key(areas: list[MapArea]) -> dict[str, list[MapArea]]:
+        groups: dict[str, list[MapArea]] = {}
+        for area in areas:
+            groups.setdefault(area.map_key, []).append(area)
+        return groups
 
     def _filtered_areas_for_mock(self) -> list[MapArea]:
         environment = os.environ.get(

@@ -22,6 +22,8 @@ class SlackIntegrationPlugin:
             activity_window_seconds=int(cfg.get("activity_window_seconds", 120)),
             activity_threshold=int(cfg.get("activity_threshold", 5)),
             activity_cooldown_seconds=int(cfg.get("activity_cooldown_seconds", 300)),
+            summary_window_seconds=int(cfg.get("summary_window_seconds", 900)),
+            channel_rules=SlackAmbientAggregator.rules_from_config(cfg.get("channels", {})),
         )
         client = SlackSocketModeClient(
             bus,

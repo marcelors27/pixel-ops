@@ -12,6 +12,7 @@ from PIL import Image, ImageDraw
 from pixel_ops.data_sources.ai_usage import AIUsageSnapshot
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.pc_stats import PCStatsSnapshot
+from pixel_ops.data_sources.tasks import TaskSnapshot
 from pixel_ops.data_sources.weather import WeatherState
 from pixel_ops.plugins.pokemon.pokemon_api import PokeApiClient
 from pixel_ops.data_sources.timezones import PersonTime
@@ -25,7 +26,7 @@ from pixel_ops.plugins.pokemon.game.map_routes import MapArea, MapRouteManager
 from pixel_ops.plugins.pokemon.game.pokemon_selector import PokemonSelector
 from pixel_ops.plugins.pokemon.game.state_machine import GamePhase, GameStateMachine
 from pixel_ops.plugins.pokemon.game.world import World
-from pixel_ops.render.fonts import font
+from pixel_ops.render.fonts import font, font_scale_for_canvas, scaled_px
 from pixel_ops.render.hud import draw_hud
 from pixel_ops.render.renderer import PixelRenderer
 from pixel_ops.plugins.pokemon.render.sprites import (
@@ -39,9 +40,9 @@ from pixel_ops.plugins.pokemon.render.sprites import (
 from pixel_ops.plugins.pokemon.render.battle_ambience import apply_battle_ambience
 from pixel_ops.plugins.pokemon.render.social_effects import draw_social_world_effects
 from pixel_ops.plugins.pokemon.render.text_box import (
-    TEXT_BOX_TEXT_TOP_PADDING,
     draw_text_box,
     scroll_line_start,
+    text_box_top_padding,
     text_box_visible_lines,
     wrap_text_lines,
 )
@@ -160,7 +161,7 @@ class OverworldScene:
         self.map_routes = MapRouteManager(
             Path(__file__).resolve().parents[1] / "assets/maps/firered_leafgreen_clean",
             map_viewport,
-            switch_seconds=int(cfg.get("map_switch_seconds", 300)),
+            switch_seconds=int(cfg.get("map_switch_seconds", 60)),
             allowed_map_keys=self._configured_walkable_map_keys(),
             walkable_source_rects=self._configured_walkable_source_rects(),
         )
@@ -260,22 +261,25 @@ class OverworldScene:
         weather: WeatherState | None = None,
         ai_usage: AIUsageSnapshot | None = None,
         pc_stats: PCStatsSnapshot | None = None,
+        task_snapshot: TaskSnapshot | None = None,
         work_events: list[WorkEvent] | None = None,
     ):
-        base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
-        phase = self.advance(base_now, weather=weather)
-        recent_events = work_events if work_events is not None else self.encounter_system.recent(base_now)
-        return self.render_full(
-            people,
-            event,
-            base_now,
-            phase,
-            pull_requests=pull_requests,
-            weather=weather,
-            ai_usage=ai_usage,
-            pc_stats=pc_stats,
-            work_events=recent_events,
-        )
+        with font_scale_for_canvas(self.renderer.width, self.renderer.height):
+            base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
+            phase = self.advance(base_now, weather=weather)
+            recent_events = work_events if work_events is not None else self.encounter_system.recent(base_now)
+            return self.render_full(
+                people,
+                event,
+                base_now,
+                phase,
+                pull_requests=pull_requests,
+                weather=weather,
+                ai_usage=ai_usage,
+                pc_stats=pc_stats,
+                task_snapshot=task_snapshot,
+                work_events=recent_events,
+            )
 
     def render_full(
         self,
@@ -287,30 +291,33 @@ class OverworldScene:
         weather: WeatherState | None = None,
         ai_usage: AIUsageSnapshot | None = None,
         pc_stats: PCStatsSnapshot | None = None,
+        task_snapshot: TaskSnapshot | None = None,
         work_events: list[WorkEvent] | None = None,
     ) -> Image.Image:
-        phase = phase or self.state.phase
-        base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
-        pal = day_night_palette(base_now.hour)
-        img = self.render_base(
-            people,
-            event,
-            base_now,
-            pull_requests=pull_requests,
-            weather=weather,
-            ai_usage=ai_usage,
-            pc_stats=pc_stats,
-            work_events=work_events,
-        )
-        if self._is_battle_phase(phase):
-            self._draw_battle_scene(img, phase, pal)
-        else:
-            self._draw_sprites(img, phase, pal)
-        message = self._display_message(self.encounter.message_for(phase))
-        draw_text_box(img, self.text_box, message, pal, self._text_frame(message))
-        if self.scanlines:
-            img = self.renderer.apply_scanlines(img)
-        return img
+        with font_scale_for_canvas(self.renderer.width, self.renderer.height):
+            phase = phase or self.state.phase
+            base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
+            pal = day_night_palette(base_now.hour)
+            img = self.render_base(
+                people,
+                event,
+                base_now,
+                pull_requests=pull_requests,
+                weather=weather,
+                ai_usage=ai_usage,
+                pc_stats=pc_stats,
+                task_snapshot=task_snapshot,
+                work_events=work_events,
+            )
+            if self._is_battle_phase(phase):
+                self._draw_battle_scene(img, phase, pal)
+            else:
+                self._draw_sprites(img, phase, pal)
+            message = self._display_message(self.encounter.message_for(phase))
+            draw_text_box(img, self.text_box, message, pal, self._text_frame(message))
+            if self.scanlines:
+                img = self.renderer.apply_scanlines(img)
+            return img
 
     def render_base(
         self,
@@ -321,32 +328,35 @@ class OverworldScene:
         weather: WeatherState | None = None,
         ai_usage: AIUsageSnapshot | None = None,
         pc_stats: PCStatsSnapshot | None = None,
+        task_snapshot: TaskSnapshot | None = None,
         work_events: list[WorkEvent] | None = None,
     ) -> Image.Image:
-        base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
-        pal = day_night_palette(base_now.hour)
-        img = self.renderer.canvas(pal.panel_shadow)
-        draw = ImageDraw.Draw(img)
+        with font_scale_for_canvas(self.renderer.width, self.renderer.height):
+            base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
+            pal = day_night_palette(base_now.hour)
+            img = self.renderer.canvas(pal.panel_shadow)
+            draw = ImageDraw.Draw(img)
 
-        self._draw_sky(draw, pal)
-        self._draw_world(img, draw, pal, base_now, weather)
-        self.current_mood = self.mood_engine.state(base_now, weather=weather, calendar_event=event)
-        draw_social_world_effects(img, self.map_box, self.current_mood, self.frame)
-        self._draw_movement_debug_overlay(draw, pal)
-        draw_hud(
-            draw,
-            people,
-            event,
-            base_now,
-            pal,
-            pull_requests=pull_requests,
-            ai_usage=ai_usage,
-            weather=weather,
-            work_events=work_events,
-            pc_stats=pc_stats,
-            layout=self.display_layout,
-        )
-        return img
+            self._draw_sky(draw, pal)
+            self._draw_world(img, draw, pal, base_now, weather)
+            self.current_mood = self.mood_engine.state(base_now, weather=weather, calendar_event=event)
+            draw_social_world_effects(img, self.map_box, self.current_mood, self.frame)
+            self._draw_movement_debug_overlay(draw, pal)
+            draw_hud(
+                draw,
+                people,
+                event,
+                base_now,
+                pal,
+                pull_requests=pull_requests,
+                ai_usage=ai_usage,
+                weather=weather,
+                work_events=work_events,
+                pc_stats=pc_stats,
+                task_snapshot=task_snapshot,
+                layout=self.display_layout,
+            )
+            return img
 
     def render_dirty_regions(self, base: Image.Image, now: datetime | None = None) -> list[tuple[int, int, Image.Image]]:
         base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
@@ -451,24 +461,24 @@ class OverworldScene:
 
     def _text_scroll_start(self, message: str, text_frame: int) -> int:
         x0, y0, x1, y1 = self.text_box
-        text_x = x0 + 12
-        text_y = y0 + TEXT_BOX_TEXT_TOP_PADDING
+        text_x = x0 + scaled_px(12)
+        text_y = y0 + text_box_top_padding()
         max_lines = text_box_visible_lines(self.text_box, message, text_y=text_y)
         scratch = Image.new("RGB", (1, 1))
         draw = ImageDraw.Draw(scratch)
-        lines = wrap_text_lines(draw, message, font(14), x1 - text_x - 26)
+        lines = wrap_text_lines(draw, message, font(14), x1 - text_x - scaled_px(26))
         return scroll_line_start(lines, max_lines, text_frame)
 
     def _message_scroll_seconds(self, message: str) -> float:
         if not message:
             return 0.0
         x0, y0, x1, y1 = self.text_box
-        text_x = x0 + 12
-        text_y = y0 + TEXT_BOX_TEXT_TOP_PADDING
+        text_x = x0 + scaled_px(12)
+        text_y = y0 + text_box_top_padding()
         max_lines = text_box_visible_lines(self.text_box, message, text_y=text_y)
         scratch = Image.new("RGB", (1, 1))
         draw = ImageDraw.Draw(scratch)
-        lines = wrap_text_lines(draw, message, font(14), x1 - text_x - 26)
+        lines = wrap_text_lines(draw, message, font(14), x1 - text_x - scaled_px(26))
         hidden_lines = max(0, len(lines) - max_lines)
         if hidden_lines == 0:
             return 0.0
@@ -746,6 +756,28 @@ class OverworldScene:
     def battle_box(self) -> tuple[int, int, int, int]:
         return self.map_box
 
+    def _battle_local_pokemon_x(self) -> int:
+        x0, _, x1, _ = self.battle_box
+        width = x1 - x0
+        if width <= 360:
+            return BATTLE_POKEMON_X
+        return int(width * 0.68)
+
+    def _battle_pokemon_x(self) -> int:
+        x0, _, _, _ = self.battle_box
+        return x0 + self._battle_local_pokemon_x()
+
+    def _battle_local_ash_x(self) -> int:
+        x0, _, x1, _ = self.battle_box
+        width = x1 - x0
+        if width <= 360:
+            return BATTLE_ASH_X
+        return int(width * 0.15)
+
+    def _battle_ash_x(self) -> int:
+        x0, _, _, _ = self.battle_box
+        return x0 + self._battle_local_ash_x()
+
     def _battle_pokemon_base_y(self) -> int:
         _, y0, _, y1 = self.battle_box
         return min(y1 - 58, y0 + BATTLE_POKEMON_BASE_OFFSET_Y)
@@ -775,7 +807,7 @@ class OverworldScene:
 
         self._draw_battle_platform(
             draw,
-            (BATTLE_POKEMON_X, self._battle_pokemon_base_y() - y0),
+            (self._battle_local_pokemon_x(), self._battle_pokemon_base_y() - y0),
             (124, 34),
             pal,
             near=False,
@@ -783,7 +815,7 @@ class OverworldScene:
         ash = scale_sprite(battle_ash_frame(1), 2)
         self._draw_battle_platform(
             draw,
-            (BATTLE_ASH_X + ash.width // 2, y1 - y0 - BATTLE_ASH_BOTTOM_PAD - 16),
+            (self._battle_local_ash_x() + ash.width // 2, y1 - y0 - BATTLE_ASH_BOTTOM_PAD - 16),
             (154, 42),
             pal,
             near=True,
@@ -842,7 +874,7 @@ class OverworldScene:
                 scale=pokemon_scale,
                 loop=False,
             )
-            pokemon_x = BATTLE_POKEMON_X - poke.width // 2
+            pokemon_x = self._battle_pokemon_x() - poke.width // 2
             pokemon_y = pokemon_base_y - poke.height
             if phase == GamePhase.ENCOUNTER_START:
                 pokemon_y += int(10 * (1 - self.state.progress))
@@ -867,7 +899,7 @@ class OverworldScene:
         else:
             ash_step = 1
         ash = scale_sprite(battle_ash_frame(ash_step), 2)
-        layers.append((ash, BATTLE_ASH_X, y1 - ash.height - BATTLE_ASH_BOTTOM_PAD))
+        layers.append((ash, self._battle_ash_x(), y1 - ash.height - BATTLE_ASH_BOTTOM_PAD))
 
         if ball_layer:
             layers.append(ball_layer)
@@ -882,16 +914,16 @@ class OverworldScene:
     ) -> tuple[int, int]:
         if phase == GamePhase.ASH_THROWS:
             progress = self.state.progress
-            start_x = 112
+            start_x = self._battle_ash_x() + 104
             start_y = battle_y1 - 108
-            end_x = BATTLE_POKEMON_X - ball.width // 2
+            end_x = self._battle_pokemon_x() - ball.width // 2
             end_y = pokemon_base_y - ball.height // 2
             x = int(start_x + (end_x - start_x) * progress)
             y = int(start_y + (end_y - start_y) * progress - 42 * progress * (1 - progress))
             return x, y
 
         shake = (-5, 5, 0, -3, 3, 0)[(self.frame // 2) % 6]
-        return BATTLE_POKEMON_X - ball.width // 2 + shake, pokemon_base_y - ball.height // 2
+        return self._battle_pokemon_x() - ball.width // 2 + shake, pokemon_base_y - ball.height // 2
 
     @staticmethod
     def _boxes_overlap(first: tuple[int, int, int, int], second: tuple[int, int, int, int]) -> bool:
@@ -1187,14 +1219,19 @@ class OverworldScene:
             sprite.width,
             sprite.height,
         ):
-            target = self._random_movement_target("companions", state.rng, sprite.width, sprite.height)
-            if target is not None:
-                state.x = float(target[0])
-                state.y = float(target[1])
-                state.target_x = state.x
-                state.target_y = state.y
-                state.direction = "down"
-                return
+            x, y = self._clamp_sprite_to_movement(
+                "companions",
+                int(round(state.x)),
+                int(round(state.y)),
+                sprite.width,
+                sprite.height,
+            )
+            state.x = float(x)
+            state.y = float(y)
+            state.target_x = state.x
+            state.target_y = state.y
+            state.direction = "down"
+            return
         dx = state.target_x - state.x
         dy = state.target_y - state.y
         distance = max(0.01, (dx * dx + dy * dy) ** 0.5)
@@ -1230,8 +1267,15 @@ class OverworldScene:
                 height,
             )
             if current_rect is None:
-                state.x = float(configured[0])
-                state.y = float(configured[1])
+                x, y = self._clamp_sprite_to_movement(
+                    "companions",
+                    int(round(state.x)),
+                    int(round(state.y)),
+                    width,
+                    height,
+                )
+                state.x = float(x)
+                state.y = float(y)
                 state.target_x = state.x
                 state.target_y = state.y
                 state.direction = "down"
@@ -1442,7 +1486,20 @@ class OverworldScene:
             return self._clamp_sprite_x(x, width), self._clamp_sprite_y(y, height)
         if self._sprite_movement_rect(actor, x, y, width, height):
             return x, y
-        best = None
+        target = self._nearest_movement_target(actor, x, y, width, height)
+        if target is not None:
+            return target
+        return self._clamp_sprite_x(x, width), self._clamp_sprite_y(y, height)
+
+    def _nearest_movement_target(
+        self,
+        actor: str,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+    ) -> tuple[int, int] | None:
+        best: tuple[int, int, int] | None = None
         for x0, y0, x1, y1 in self._movement_screen_rects(actor):
             max_x = x1 - width
             max_y = y1 - height
@@ -1450,17 +1507,25 @@ class OverworldScene:
                 continue
             cx = max(x0, min(max_x, x))
             cy = max(y0, min(max_y, y))
-            if not self._sprite_movement_rect(actor, cx, cy, width, height):
-                continue
-            distance = abs(cx - x) + abs(cy - y)
-            if best is None or distance < best[0]:
-                best = (distance, cx, cy)
+            candidates = [(cx, cy)]
+            step_x = max(1, width // 2)
+            step_y = max(1, height // 2)
+            xs = list(range(x0, max_x + 1, step_x))
+            ys = list(range(y0, max_y + 1, step_y))
+            if not xs or xs[-1] != max_x:
+                xs.append(max_x)
+            if not ys or ys[-1] != max_y:
+                ys.append(max_y)
+            candidates.extend((scan_x, scan_y) for scan_x in xs for scan_y in ys)
+            for candidate_x, candidate_y in candidates:
+                if not self._sprite_movement_rect(actor, candidate_x, candidate_y, width, height):
+                    continue
+                distance = abs(candidate_x - x) + abs(candidate_y - y)
+                if best is None or distance < best[0]:
+                    best = (distance, candidate_x, candidate_y)
         if best is not None:
             return best[1], best[2]
-        target = self._random_movement_target(actor, rng or random.Random(0), width, height)
-        if target is not None:
-            return target
-        return self._clamp_sprite_x(x, width), self._clamp_sprite_y(y, height)
+        return None
 
     def _clamp_point_to_movement(self, actor: str, x: int, y: int) -> tuple[int, int]:
         walkable = self._movement_screen_rects(actor)

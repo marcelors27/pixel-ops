@@ -11,7 +11,7 @@ from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.plugins.pokemon.pokemon import get_pokemon
 from pixel_ops.plugins.pokemon.pokemon_api import PokeApiClient
 from pixel_ops.data_sources.timezones import PersonTime
-from pixel_ops.render.fonts import font
+from pixel_ops.render.fonts import font, font_scale_for_canvas
 from pixel_ops.plugins.pokemon.render.palette import palette_for_hour
 from pixel_ops.render.renderer import PixelRenderer
 from pixel_ops.plugins.pokemon.render.sprites import AshSpriteSet, PokemonSpriteStore, pokeball, scale_sprite
@@ -56,21 +56,22 @@ class MainScene:
             self.encounter = PokemonEncounter(self.load_pokemon(self.rng.randrange(1, 152)))
 
     def render(self, people: list[PersonTime], event: CalendarEvent | None, now: datetime | None = None):
-        self.frame += 1
-        self.update_encounter()
-        base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
-        pal = palette_for_hour(base_now.hour)
-        img = self.renderer.canvas(pal["bg"])
-        draw = ImageDraw.Draw(img)
+        with font_scale_for_canvas(self.renderer.width, self.renderer.height):
+            self.frame += 1
+            self.update_encounter()
+            base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
+            pal = palette_for_hour(base_now.hour)
+            img = self.renderer.canvas(pal["bg"])
+            draw = ImageDraw.Draw(img)
 
-        self._draw_background(draw, pal)
-        self._draw_time_panel(draw, pal, people)
-        self._draw_calendar(draw, pal, event, base_now)
-        self._draw_world(img, draw, pal)
+            self._draw_background(draw, pal)
+            self._draw_time_panel(draw, pal, people)
+            self._draw_calendar(draw, pal, event, base_now)
+            self._draw_world(img, draw, pal)
 
-        if self.scanlines:
-            img = self.renderer.apply_scanlines(img)
-        return img
+            if self.scanlines:
+                img = self.renderer.apply_scanlines(img)
+            return img
 
     def _draw_background(self, draw, pal) -> None:
         for y in range(0, 292, 16):

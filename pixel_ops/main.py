@@ -18,7 +18,7 @@ from pixel_ops.config_loader import ConfigWatcher, load_config_prefer_json
 from pixel_ops.events.mock_events import MockEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext
 from pixel_ops.integration_plugins.registry import build_integration_runtime
-from pixel_ops.outputs import GifOutput, PreviewOutput, TURZXOutput, WindowOutput
+from pixel_ops.outputs import GifOutput, PreviewOutput, TURZXOutput, ThermalrightOutput, WindowOutput
 from pixel_ops.outputs.base import DisplayOutput
 from pixel_ops.plugins.ai.plugin import build_ai_plugin
 from pixel_ops.plugins.registry import available_plugins, get_plugin
@@ -76,7 +76,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Pixel OPs timezone dashboard renderer.")
     plugin_names = sorted(available_plugins())
     parser.add_argument("--plugin", choices=plugin_names, default="pokemon", help="Interface plugin to render.")
-    parser.add_argument("--output", choices=("preview", "gif", "turzx", "window"), help="Frame output target.")
+    parser.add_argument("--output", choices=("preview", "gif", "turzx", "thermalright", "window"), help="Frame output target.")
     parser.add_argument("--display", action="store_true", help="Send frames to UsbMonitor via USB bulk.")
     parser.add_argument("--window", action="store_true", help="Render frames in a desktop window.")
     parser.add_argument("--window-scale", type=int, help="Desktop window pixel scale.")
@@ -155,7 +155,7 @@ def runtime_output(args: argparse.Namespace, display_cfg: dict) -> str:
     output = str(device_cfg.get("output") or device_cfg.get("target") or "preview")
     if output == "display":
         return "turzx"
-    if output in ("preview", "gif", "turzx", "window"):
+    if output in ("preview", "gif", "turzx", "thermalright", "window"):
         return output
     return "preview"
 
@@ -197,9 +197,41 @@ def build_output(
         return GifOutput(root_dir / display_cfg["gif_output"], fps=fps)
     if output_name == "turzx":
         return TURZXOutput(width=width, height=height)
+    if output_name == "thermalright":
+        device_cfg = runtime_device_config(display_cfg)
+        thermalright_cfg = device_cfg.get("thermalright", {})
+        if not isinstance(thermalright_cfg, dict):
+            thermalright_cfg = {}
+        return ThermalrightOutput(
+            vid=parse_hex_int(thermalright_cfg.get("vid", "0x0416")),
+            pid=parse_hex_int(thermalright_cfg.get("pid", "0x5408")),
+            timeout_ms=int(thermalright_cfg.get("timeout_ms", 5000)),
+            jpeg_quality=int(thermalright_cfg.get("jpeg_quality", 85)),
+            image_width=int(thermalright_cfg.get("image_width", 1920)),
+            image_height=int(thermalright_cfg.get("image_height", 462)),
+            min_frame_interval_ms=int(thermalright_cfg.get("min_frame_interval_ms", 0)),
+            packet_delay_ms=int(thermalright_cfg.get("packet_delay_ms", 0)),
+            packet_size=int(thermalright_cfg.get("packet_size", 4096)),
+            hard_reset_on_start=bool(thermalright_cfg.get("hard_reset_on_start", True)),
+            hard_reset_wait_ms=int(thermalright_cfg.get("hard_reset_wait_ms", 1500)),
+            handshake_on_first_frame=bool(thermalright_cfg.get("handshake_on_first_frame", False)),
+            require_handshake=bool(thermalright_cfg.get("require_handshake", True)),
+            send_start_init=bool(thermalright_cfg.get("send_start_init", True)),
+            read_start_ack=bool(thermalright_cfg.get("read_start_ack", True)),
+            read_frame_ack=bool(thermalright_cfg.get("read_frame_ack", True)),
+            start_retries=int(thermalright_cfg.get("start_retries", 0)),
+            debug=bool(thermalright_cfg.get("debug", False)),
+        )
     if output_name == "window":
         return WindowOutput(width=width, height=height, scale=runtime_window_scale(args, display_cfg))
     raise ValueError(f"Unsupported output: {output_name}")
+
+
+def parse_hex_int(value) -> int:
+    if isinstance(value, int):
+        return value
+    text = str(value).strip().lower()
+    return int(text, 16) if text.startswith("0x") else int(text, 10)
 
 
 def main() -> int:
@@ -273,6 +305,7 @@ def main() -> int:
             weather_source=integration_runtime.weather_source,
             ai_usage_source=integration_runtime.ai_usage_source,
             pc_stats_source=integration_runtime.pc_stats_source,
+            task_source=integration_runtime.task_source,
             ai_plugin=build_ai_plugin(current_display_cfg.get("ai", {})),
             event_sources=current_event_sources,
         )

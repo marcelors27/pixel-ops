@@ -1,5 +1,5 @@
 import react from "@vitejs/plugin-react";
-import { execFile } from "node:child_process";
+import { execFile, execFileSync, spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
@@ -8,6 +8,10 @@ import { defineConfig, type Plugin } from "vite";
 
 const repoRoot = path.resolve(__dirname, "..");
 const execFileAsync = promisify(execFile);
+const pythonCmd = resolvePythonCommand();
+let runtimeProcess: ChildProcessWithoutNullStreams | null = null;
+const runtimeLogs: string[] = [];
+const npcSpritePreviewFormatVersion = 2;
 
 type ConfigDescriptor = {
   key: string;
@@ -45,6 +49,7 @@ const integrationLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
   ai_usage: [{ kind: "gauges", label: "AI Gauges", tone: "#7ee0bd" }],
   pc_stats: [{ kind: "pc_stats", label: "PC Stats", tone: "#9bd0ff" }],
   weather: [{ kind: "weather", label: "Weather", tone: "#e8c766" }],
+  clickup: [{ kind: "tasks", label: "Tasks", tone: "#b58cff" }],
 };
 
 const visualPluginLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
@@ -65,6 +70,28 @@ function sendJson(res: ServerResponse, status: number, body: unknown) {
   res.statusCode = status;
   res.setHeader("content-type", "application/json; charset=utf-8");
   res.end(JSON.stringify(body, null, 2));
+}
+
+function resolvePythonCommand() {
+  const candidates = [
+    process.env.PIXEL_OPS_PYTHON,
+    process.platform === "win32" ? path.join(repoRoot, ".venv", "Scripts", "python.exe") : path.join(repoRoot, ".venv", "bin", "python"),
+    process.platform === "win32" ? "python" : "python3",
+    "python",
+    "py",
+  ].filter(Boolean) as string[];
+  for (const candidate of candidates) {
+    try {
+      execFileSync(candidate, ["-c", "import PIL, yaml, requests"], {
+        cwd: repoRoot,
+        stdio: "ignore",
+      });
+      return candidate;
+    } catch {
+      continue;
+    }
+  }
+  return candidates[0] || "python";
 }
 
 async function readBody(req: IncomingMessage): Promise<string> {
@@ -224,23 +251,120 @@ async function saveRuntimeConfig(payload: unknown) {
   );
 }
 
+function pushRuntimeLog(value: string) {
+  const clean = value.replace(/\r\n/g, "\n").trimEnd();
+  if (!clean) return;
+  runtimeLogs.push(...clean.split("\n"));
+  while (runtimeLogs.length > 240) {
+    runtimeLogs.shift();
+  }
+}
+
+function runtimeStatus() {
+  return {
+    running: runtimeProcess !== null,
+    pid: runtimeProcess?.pid ?? null,
+    logs: runtimeLogs.slice(-80),
+  };
+}
+
+async function runRuntimeCommand(args: string[]) {
+  try {
+    const { stdout, stderr } = await execFileAsync(pythonCmd, args, {
+      cwd: repoRoot,
+      maxBuffer: 1024 * 1024 * 4,
+    });
+    pushRuntimeLog(stdout);
+    pushRuntimeLog(stderr);
+    return { ok: true, stdout, stderr, ...runtimeStatus() };
+  } catch (error) {
+    const err = error as Error & { stdout?: string; stderr?: string };
+    pushRuntimeLog(err.stdout || "");
+    pushRuntimeLog(err.stderr || err.message);
+    return { ok: false, stdout: err.stdout || "", stderr: err.stderr || err.message, ...runtimeStatus() };
+  }
+}
+
+function startRuntimeWindow() {
+  if (runtimeProcess) {
+    return runtimeStatus();
+  }
+  runtimeProcess = spawn(
+    pythonCmd,
+    ["pixel_ops/main.py", "--plugin", "pokemon", "--output", "window", "--forever", "--offline"],
+    {
+      cwd: repoRoot,
+      env: { ...process.env, PYTHONUNBUFFERED: "1" },
+    },
+  );
+  pushRuntimeLog(`Started window runtime pid=${runtimeProcess.pid ?? "unknown"}`);
+  runtimeProcess.stdout.on("data", (chunk) => pushRuntimeLog(String(chunk)));
+  runtimeProcess.stderr.on("data", (chunk) => pushRuntimeLog(String(chunk)));
+  runtimeProcess.on("exit", (code, signal) => {
+    pushRuntimeLog(`Window runtime exited code=${code ?? "-"} signal=${signal ?? "-"}`);
+    runtimeProcess = null;
+  });
+  return runtimeStatus();
+}
+
+function stopRuntimeWindow() {
+  if (!runtimeProcess) {
+    return runtimeStatus();
+  }
+  pushRuntimeLog(`Stopping window runtime pid=${runtimeProcess.pid ?? "unknown"}`);
+  runtimeProcess.kill();
+  runtimeProcess = null;
+  return runtimeStatus();
+}
+
 async function ensureSpritePreviews() {
   const outputDir = path.join(repoRoot, "pixel_ops/cache/config_studio/npc_sprites");
   const manifestPath = path.join(outputDir, "manifest.json");
+  const sourceMtimeMs = await npcSpriteSourceMtimeMs();
   try {
     const raw = await fs.readFile(manifestPath, "utf8");
-    const manifest = JSON.parse(raw) as { count?: number };
-    if (manifest.count === 55) {
+    const manifest = JSON.parse(raw) as { count?: number; format_version?: number; source_mtime_ms?: number };
+    if (
+      typeof manifest.count === "number" &&
+      manifest.format_version === npcSpritePreviewFormatVersion &&
+      manifest.source_mtime_ms === sourceMtimeMs
+    ) {
       return outputDir;
     }
   } catch {
     // Regenerate below.
   }
   await fs.mkdir(outputDir, { recursive: true });
-  await execFileAsync("python3", ["scripts/generate_npc_sprite_previews.py", outputDir], {
+  await execFileAsync(pythonCmd, ["scripts/generate_npc_sprite_previews.py", outputDir], {
     cwd: repoRoot,
   });
   return outputDir;
+}
+
+async function npcSpriteSourceMtimeMs(): Promise<number> {
+  const files = [
+    path.join(
+      repoRoot,
+      "pixel_ops/plugins/pokemon/assets/sprites/ash/Game Boy Advance - Pokemon FireRed _ LeafGreen - Trainers & Non-Playable Characters - Overworld NPCs.png",
+    ),
+  ];
+  const newSpritesDir = path.join(repoRoot, "pixel_ops/plugins/pokemon/assets/sprites/new_sprites");
+  try {
+    const entries = await fs.readdir(newSpritesDir, { withFileTypes: true });
+    files.push(...entries.filter((entry) => entry.isFile() && entry.name.endsWith(".png")).map((entry) => path.join(newSpritesDir, entry.name)));
+  } catch {
+    // Optional sprite directory.
+  }
+  const stats = await Promise.all(
+    files.map(async (file) => {
+      try {
+        return await fs.stat(file);
+      } catch {
+        return null;
+      }
+    }),
+  );
+  return Math.max(0, ...stats.filter(Boolean).map((stat) => Math.floor(stat!.mtimeMs)));
 }
 
 async function listPokemonMaps() {
@@ -321,6 +445,35 @@ function runtimeConfigApi(): Plugin {
           sendJson(res, 200, await buildConfigManifest());
         } catch (error) {
           sendJson(res, 500, { error: error instanceof Error ? error.message : String(error) });
+        }
+      });
+      server.middlewares.use("/api/runtime", async (req, res) => {
+        try {
+          const url = new URL(req.url || "/", "http://localhost");
+          if (req.method === "GET" && url.pathname === "/status") {
+            sendJson(res, 200, runtimeStatus());
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/check") {
+            const script = process.platform === "win32" ? "scripts/windows_check.py" : "scripts/linux_check.py";
+            sendJson(res, 200, await runRuntimeCommand([script]));
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/preview") {
+            sendJson(res, 200, await runRuntimeCommand(["pixel_ops/main.py", "--plugin", "pokemon", "--output", "preview", "--offline"]));
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/window/start") {
+            sendJson(res, 200, startRuntimeWindow());
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/window/stop") {
+            sendJson(res, 200, stopRuntimeWindow());
+            return;
+          }
+          sendJson(res, 404, { error: "Runtime endpoint not found." });
+        } catch (error) {
+          sendJson(res, 500, { error: error instanceof Error ? error.message : String(error), ...runtimeStatus() });
         }
       });
       server.middlewares.use("/api/npc-sprites", async (req, res) => {

@@ -26,3 +26,6 @@ Current ADRs:
 - [0013 - Config Studio Discovers Plugin-Owned Config](0013-config-studio-discovers-plugin-configs.md)
 - [0014 - Discord Voice Companions Are Provider State With Visual Mapping](0014-discord-voice-companions-are-provider-state-with-visual-mapping.md)
 - [0015 - Timezone Config Is Derived From IANA Selection](0015-timezone-config-is-derived-from-iana-selection.md)
+- [0016 - PC Stats Are Local Integration Metrics](0016-pc-stats-are-local-integration-metrics.md)
+- [0017 - Linux And Windows Are Supported Runtime Targets](0017-linux-and-windows-are-supported-runtime-targets.md)
+- [0018 - ClickUp Tasks Are Planning Snapshots](0018-clickup-tasks-are-planning-snapshots.md)

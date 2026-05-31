@@ -10,6 +10,7 @@ from pixel_ops.integration_plugins.base import (
     NullAIUsageSource,
     NullPCStatsSource,
     NullPullRequestSource,
+    NullTaskSource,
     NullWeatherSource,
 )
 
@@ -23,6 +24,7 @@ PLUGIN_MODULES = {
     "weather": "pixel_ops.integrations.weather.plugin",
     "ai_usage": "pixel_ops.integrations.ai_usage.plugin",
     "pc_stats": "pixel_ops.integrations.pc_stats.plugin",
+    "clickup": "pixel_ops.integrations.clickup.plugin",
 }
 
 PLUGIN_ENABLES = {
@@ -34,6 +36,7 @@ PLUGIN_ENABLES = {
     "weather": "PIXEL_OPS_WEATHER_ENABLED",
     "ai_usage": "PIXEL_OPS_AI_USAGE_ENABLED",
     "pc_stats": "PIXEL_OPS_PC_STATS_ENABLED",
+    "clickup": "PIXEL_OPS_CLICKUP_ENABLED",
 }
 
 
@@ -48,6 +51,7 @@ class IntegrationRuntime:
     weather_source: object = field(default_factory=NullWeatherSource)
     ai_usage_source: object = field(default_factory=NullAIUsageSource)
     pc_stats_source: object = field(default_factory=NullPCStatsSource)
+    task_source: object = field(default_factory=NullTaskSource)
     loaded_plugins: list[str] = field(default_factory=list)
 
     def start(self) -> None:
@@ -105,3 +109,5 @@ def _merge(runtime: IntegrationRuntime, contribution: IntegrationContribution) -
         runtime.ai_usage_source = contribution.ai_usage_source
     if contribution.pc_stats_source is not None:
         runtime.pc_stats_source = contribution.pc_stats_source
+    if contribution.task_source is not None:
+        runtime.task_source = contribution.task_source

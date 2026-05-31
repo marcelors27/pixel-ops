@@ -12,7 +12,9 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from pixel_ops.data_sources.pc_stats import PCStatsSource
-from pixel_ops.hardware.usb_bulk import PRODUCT_ID, VENDOR_ID
+
+VENDOR_ID = 0x1A86
+PRODUCT_ID = 0x5722
 
 
 def main() -> int:

@@ -1,17 +1,20 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 from PIL import ImageDraw
 
 from pixel_ops.data_sources.ai_usage import AIUsageSnapshot
+from pixel_ops.data_sources.availability import status_for
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.pc_stats import PCStatsSnapshot
+from pixel_ops.data_sources.tasks import TaskItem, TaskSnapshot
 from pixel_ops.data_sources.timezones import PersonTime
 from pixel_ops.data_sources.weather import WeatherState
 from pixel_ops.events.base import EventCategory, WorkEvent
 from pixel_ops.events.github_events import PullRequestSummary
-from pixel_ops.render.fonts import font, icon_font
+from pixel_ops.render.fonts import font, icon_font, scaled_px
 from pixel_ops.render.renderer import PixelRenderer
 
 
@@ -126,10 +129,11 @@ def draw_hud(
     weather: WeatherState | None = None,
     work_events: list[WorkEvent] | None = None,
     pc_stats: PCStatsSnapshot | None = None,
+    task_snapshot: TaskSnapshot | None = None,
     layout: dict | None = None,
 ) -> None:
     if layout:
-        _draw_configured_hud(draw, people, event, now, pal, pull_requests or [], ai_usage, weather, work_events or [], pc_stats, layout)
+        _draw_configured_hud(draw, people, event, now, pal, pull_requests or [], ai_usage, weather, work_events or [], pc_stats, task_snapshot, layout)
         return
 
     PixelRenderer.draw_panel(draw, (8, 8, 312, 212), pal.panel, pal.panel_shadow, pal.ink)
@@ -175,6 +179,7 @@ def _draw_configured_hud(
     weather: WeatherState | None,
     work_events: list[WorkEvent],
     pc_stats: PCStatsSnapshot | None,
+    task_snapshot: TaskSnapshot | None,
     layout: dict,
 ) -> None:
     small_font = font(11)
@@ -184,6 +189,10 @@ def _draw_configured_hud(
     for timezones_box in _layout_boxes(layout, "timezones"):
         PixelRenderer.draw_panel(draw, timezones_box, pal.panel, pal.panel_shadow, pal.ink)
         _draw_timezone_flex_grid(draw, people, timezones_box, chip_font, zone_font, name_font, pal)
+
+    for timezones_box in _layout_boxes(layout, "timezones_clock"):
+        PixelRenderer.draw_panel(draw, timezones_box, pal.panel, pal.panel_shadow, pal.ink)
+        _draw_timezone_clock_grid(draw, people, timezones_box, chip_font, zone_font, name_font, pal)
 
     for activity_box in _layout_boxes(layout, "activity"):
         _draw_activity_panel(draw, event, pull_requests, now, activity_box, pal)
@@ -199,6 +208,9 @@ def _draw_configured_hud(
 
     for pc_box in _layout_boxes(layout, "pc_stats"):
         _draw_pc_stats_panel(draw, pc_stats, pc_box, pal)
+
+    for task_box in [*_layout_boxes(layout, "tasks"), *_layout_boxes(layout, "clickup_tasks")]:
+        _draw_tasks_panel(draw, task_snapshot, now, task_box, pal)
 
 
 def _layout_boxes(layout: dict, key: str) -> list[tuple[int, int, int, int]]:
@@ -247,38 +259,191 @@ def _draw_timezone_flex_grid(
     if not people:
         return
     padding_x = 8
-    gap_x = 6
     gap_y = 2
     content_x = box[0] + padding_x
-    content_y = box[1] + 8
+    content_y = box[1] + 7
     content_w = max(1, box[2] - box[0] - padding_x * 2)
     content_h = max(1, box[3] - content_y - 8)
-    min_cell_w = 92 if any(person.show_flag for person in people) else 62
-    max_columns = max(1, content_w // min_cell_w)
-    columns = min(len(people), max_columns)
-    rows = (len(people) + columns - 1) // columns
-    while rows * 30 + (rows - 1) * gap_y > content_h and columns < len(people):
-        columns += 1
-        rows = (len(people) + columns - 1) // columns
-    cell_w = max(1, (content_w - gap_x * (columns - 1)) // columns)
-    cell_h = max(28, min(42, (content_h - gap_y * (rows - 1)) // rows))
-    for index, person in enumerate(people):
-        row = index // columns
+    label_w = _timezone_label_width(content_w)
+    timeline_w = max(1, content_w - label_w - 4)
+    block_count = _timezone_block_count(timeline_w)
+    header_h = 17 if content_h >= 54 else 0
+    if header_h:
+        _draw_timezone_timeline_header(draw, people[0], content_x + label_w + 4, content_y, timeline_w, block_count, zone_font, pal)
+        content_y += header_h
+        content_h = max(1, content_h - header_h)
+    row_h = 24 if content_w >= 220 else 18
+    max_rows = max(1, (content_h + gap_y) // (row_h + gap_y))
+    visible_people = people[:max_rows]
+    block_h = len(visible_people) * row_h + max(0, len(visible_people) - 1) * gap_y
+    start_y = content_y + max(0, (content_h - block_h) // 2)
+    for index, person in enumerate(visible_people):
+        y = start_y + index * (row_h + gap_y)
+        _draw_timezone_timeline_row(draw, person, content_x, y, content_w, row_h, chip_font, zone_font, pal)
+
+
+def _draw_timezone_clock_grid(
+    draw: ImageDraw.ImageDraw,
+    people: list[PersonTime],
+    box: tuple[int, int, int, int],
+    chip_font,
+    zone_font,
+    name_font,
+    pal,
+) -> None:
+    if not people:
+        return
+    padding_x = 8
+    padding_y = 7
+    gap_x = 8
+    gap_y = 4
+    content_x = box[0] + padding_x
+    content_y = box[1] + padding_y
+    content_w = max(1, box[2] - box[0] - padding_x * 2)
+    content_h = max(1, box[3] - box[1] - padding_y * 2)
+    columns = 2 if content_w >= 180 else 1
+    card_w = max(1, (content_w - gap_x * (columns - 1)) // columns)
+    row_h = 34 if card_w >= 72 else 24
+    max_rows = max(1, (content_h + gap_y) // (row_h + gap_y))
+    visible_people = people[: max_rows * columns]
+    for index, person in enumerate(visible_people):
         column = index % columns
-        x = content_x + column * (cell_w + gap_x)
-        y = content_y + row * (cell_h + gap_y)
-        _draw_timezone_chip(
-            draw,
-            person,
-            x,
-            y,
-            cell_w,
-            chip_font,
-            zone_font,
-            name_font,
-            pal,
-            show_status=True,
+        row = index // columns
+        x = content_x + column * (card_w + gap_x)
+        y = content_y + row * (row_h + gap_y)
+        if row_h >= 34:
+            _draw_timezone_chip(draw, person, x, y, card_w, chip_font, zone_font, name_font, pal, show_status=True)
+        else:
+            label = _fit_text(draw, f"{person.display_key or person.key} {person.local_time:%H:%M}", card_w, chip_font)
+            draw.text((x, y + 4), label, font=chip_font, fill=pal.ink)
+
+
+def _draw_timezone_timeline_row(
+    draw: ImageDraw.ImageDraw,
+    person: PersonTime,
+    x: int,
+    y: int,
+    width: int,
+    height: int,
+    label_font,
+    time_font,
+    pal,
+) -> None:
+    label_w = _timezone_label_width(width)
+    timeline_w = max(1, width - label_w - 4)
+    block_count = _timezone_block_count(timeline_w)
+    block_w = max(8, timeline_w // block_count)
+    label = person.name or person.timezone_label or person.display_key or person.key
+    key_label = person.display_key or person.key
+    current = person.local_time.strftime("%H:%M")
+    if width >= 220:
+        if person.show_flag and person.country:
+            _draw_flag(draw, x, y + 2, person.country, pal.ink)
+            text_x = x + 19
+            label_width = max(1, label_w - 21)
+        else:
+            text_x = x
+            label_width = max(1, label_w - 2)
+        draw.text((text_x, y), _fit_text(draw, label, label_width, label_font), font=label_font, fill=pal.ink)
+        draw.text((text_x, y + 11), _fit_text(draw, f"{key_label} {current}", label_width, time_font), font=time_font, fill=pal.blue)
+    else:
+        if person.name and width >= 180:
+            label = person.name.split()[0]
+        draw.text((x, y + 2), _fit_text(draw, label, label_w - 2, label_font), font=label_font, fill=pal.ink)
+    block_x = x + label_w + 4
+    for index in range(block_count):
+        offset = index
+        local_time = _future_local_time(person, offset)
+        status = status_for(local_time, person.work_start, person.work_end)
+        fill = _timezone_timeline_fill(status, pal)
+        x0 = block_x + index * block_w
+        x1 = min(x + width, block_x + (index + 1) * block_w)
+        if x1 <= x0:
+            continue
+        draw.rectangle((x0, y, x1, y + height), fill=fill)
+        outline = pal.ink if index == 0 else _mix_color(pal.ink, pal.panel, 0.55)
+        draw.rectangle((x0, y, x1, y + height), outline=outline)
+        if index == 0:
+            draw.rectangle((x0 + 1, y + 1, x1 - 1, y + height - 1), outline=pal.ink)
+        time_label = _compact_hour_label(local_time) if block_w >= 28 else local_time.strftime("%H")
+        text_box = draw.textbbox((0, 0), time_label, font=time_font)
+        text_w = text_box[2] - text_box[0]
+        text_h = text_box[3] - text_box[1]
+        draw.text(
+            (x0 + max(1, (x1 - x0 - text_w) // 2), y + max(1, (height - text_h) // 2) - 1),
+            time_label,
+            font=time_font,
+            fill=pal.ink,
         )
+
+
+def _timezone_label_width(width: int) -> int:
+    if width >= 360:
+        return min(width // 2, scaled_px(92))
+    if width >= 220:
+        return min(width // 2, scaled_px(78))
+    return min(48, max(26, width // 4))
+
+
+def _timezone_block_count(timeline_width: int) -> int:
+    return min(10, max(4, timeline_width // 30))
+
+
+def _draw_timezone_timeline_header(
+    draw: ImageDraw.ImageDraw,
+    anchor: PersonTime,
+    x: int,
+    y: int,
+    width: int,
+    block_count: int,
+    text_font,
+    pal,
+) -> None:
+    block_w = max(8, width // block_count)
+    for index in range(block_count):
+        local_time = _future_local_time(anchor, index)
+        x0 = x + index * block_w
+        x1 = min(x + width, x + (index + 1) * block_w)
+        if x1 <= x0:
+            continue
+        if index == 0:
+            draw.rectangle((x0, y, x1, y + 15), fill=pal.blue, outline=pal.ink)
+            fill = pal.panel
+        else:
+            draw.line((x0, y + 3, x0, y + 15), fill=_mix_color(pal.ink, pal.panel, 0.55))
+            fill = pal.blue
+        date_label = local_time.strftime("%b %-d") if index == 0 or local_time.hour == 0 else ""
+        hour_label = _compact_hour_label(local_time)
+        if date_label and block_w >= 34:
+            label = date_label
+        else:
+            label = hour_label
+        text_w = draw.textbbox((0, 0), label, font=text_font)[2]
+        draw.text((x0 + max(1, (x1 - x0 - text_w) // 2), y + 3), label, font=text_font, fill=fill)
+
+
+def _future_local_time(person: PersonTime, offset_hours: int) -> datetime:
+    base = person.local_time.astimezone()
+    return (base + timedelta(hours=offset_hours)).astimezone(ZoneInfo(person.timezone))
+
+
+def _compact_hour_label(value: datetime) -> str:
+    hour = int(value.strftime("%I"))
+    suffix = value.strftime("%p").lower()[:1]
+    return f"{hour}{suffix}"
+
+
+def _timezone_timeline_fill(status: str, pal):
+    if status == "working":
+        return _mix_color(pal.blue, pal.panel, 0.28)
+    if status == "ending":
+        return pal.yellow
+    return _mix_color(pal.panel_shadow, pal.panel, 0.35)
+
+
+def _mix_color(first, second, second_weight: float):
+    first_weight = 1.0 - second_weight
+    return tuple(int(first[index] * first_weight + second[index] * second_weight) for index in range(3))
 
 
 def _draw_weather_compact(draw: ImageDraw.ImageDraw, weather: WeatherState | None, box: tuple[int, int, int, int], pal) -> None:
@@ -478,7 +643,7 @@ def _draw_ai_usage_panel(draw: ImageDraw.ImageDraw, ai_usage: AIUsageSnapshot | 
     if not ai_usage or not ai_usage.gauges:
         draw.text((box[0] + 8, box[1] + 13), "-", font=value_font, fill=pal.ink)
         return
-    _draw_ai_usage_compact(draw, ai_usage, now, box[0] + 8, box[1] + 13, pal)
+    _draw_ai_usage_window(draw, ai_usage, now, box, pal)
 
 
 def _draw_pc_stats_panel(draw: ImageDraw.ImageDraw, pc_stats: PCStatsSnapshot | None, box: tuple[int, int, int, int], pal) -> None:
@@ -501,6 +666,78 @@ def _draw_pc_stats_panel(draw: ImageDraw.ImageDraw, pc_stats: PCStatsSnapshot | 
         draw.text((x0 + 14, y - 1), label, font=label_font, fill=pal.blue)
         value_x = x0 + 43
         draw.text((value_x, y - 2), _fit_text(draw, metric.value, content_w - 37, value_font), font=value_font, fill=pal.ink)
+
+
+def _draw_tasks_panel(
+    draw: ImageDraw.ImageDraw,
+    snapshot: TaskSnapshot | None,
+    now: datetime,
+    box: tuple[int, int, int, int],
+    pal,
+) -> None:
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    title_font = font(8)
+    task_font = font(8)
+    due_font = font(7)
+    x0, y0, x1, y1 = box
+    content_x = x0 + 8
+    content_w = max(1, x1 - x0 - 16)
+    label = (snapshot.provider if snapshot and snapshot.provider else "tasks").upper()
+    draw.text((content_x, y0 + 5), _fit_text(draw, label, content_w, title_font), font=title_font, fill=pal.blue)
+    if not snapshot or not snapshot.tasks:
+        draw.text((content_x, y0 + 20), "No dated tasks", font=task_font, fill=pal.ink)
+        return
+    row_h = 23 if content_w >= 150 else 18
+    max_rows = max(1, (y1 - y0 - 22) // row_h)
+    for index, task in enumerate(snapshot.tasks[:max_rows]):
+        y = y0 + 19 + index * row_h
+        color = _task_color(task, now, pal)
+        draw.rectangle((content_x, y + 2, content_x + 5, y + 7), fill=color, outline=pal.ink)
+        label_x = content_x + 9
+        due_label = _task_due_label(task, now)
+        if row_h >= 23:
+            draw.text((label_x, y - 2), _fit_text(draw, task.title, content_w - 9, task_font), font=task_font, fill=pal.ink)
+            draw.text((label_x, y + 10), _fit_text(draw, due_label, content_w - 9, due_font), font=due_font, fill=pal.blue)
+        else:
+            label = f"{task.title} {due_label}"
+            draw.text((label_x, y - 1), _fit_text(draw, label, content_w - 9, task_font), font=task_font, fill=pal.ink)
+
+
+def _task_color(task: TaskItem, now: datetime, pal):
+    if not task.due_at:
+        return pal.panel_shadow
+    seconds = (task.due_at.astimezone(now.tzinfo) - now).total_seconds()
+    if seconds < 0:
+        return pal.red
+    if seconds <= 24 * 3600:
+        return pal.yellow
+    return pal.green
+
+
+def _task_due_label(task: TaskItem, now: datetime) -> str:
+    if not task.due_at:
+        return "NO DUE"
+    due_at = task.due_at.astimezone(now.tzinfo)
+    remaining = due_at - now
+    prefix = due_at.strftime("%b %-d")
+    seconds = int(remaining.total_seconds())
+    if seconds < 0:
+        return f"{prefix} OVERDUE {_duration_short(abs(seconds))}"
+    return f"{prefix} {_duration_short(seconds)} left"
+
+
+def _duration_short(seconds: int) -> str:
+    seconds = max(0, int(seconds))
+    days = seconds // 86400
+    hours = (seconds % 86400) // 3600
+    minutes = (seconds % 3600) // 60
+    if days >= 2:
+        return f"{days}d"
+    if days == 1:
+        return f"1d {hours}h"
+    if hours >= 1:
+        return f"{hours}h {minutes}m"
+    return f"{max(1, minutes)}m"
 
 
 def _pc_metric_color(status: str, pal):
@@ -573,20 +810,79 @@ def _draw_ai_usage_compact(draw: ImageDraw.ImageDraw, ai_usage: AIUsageSnapshot,
         draw.text((bar_x + bar_width + 3, row_y - 2), _fit_text(draw, value, 45, small), font=small, fill=pal.ink)
 
 
+def _draw_ai_usage_window(draw: ImageDraw.ImageDraw, ai_usage: AIUsageSnapshot, now: datetime, box: tuple[int, int, int, int], pal) -> None:
+    gauges = _visible_ai_usage_gauges(ai_usage, now)
+    if not gauges:
+        draw.text((box[0] + 8, box[1] + 13), "-", font(10), fill=pal.ink)
+        return
+    label_font = font(7)
+    x0, y0, x1, y1 = box
+    content_x = x0 + 8
+    content_w = max(1, x1 - x0 - 16)
+    available_h = max(1, y1 - y0 - 8)
+    row_h = max(12, min(18, available_h // max(1, len(gauges))))
+    row_visual_h = 14
+    block_h = (len(gauges) - 1) * row_h + row_visual_h
+    start_y = y0 + max(5, (y1 - y0 - block_h) // 2)
+    for index, gauge in enumerate(gauges):
+        row_y = start_y + index * row_h
+        if row_y + 9 >= y1:
+            break
+        pct = _ai_usage_percent(gauge)
+        label = f"{_ai_usage_gauge_short_label(gauge)} {_ai_usage_gauge_value(gauge, pct, now)}"
+        draw.text((content_x, row_y - 1), _fit_text(draw, label, content_w, label_font), font=label_font, fill=pal.ink)
+        bar_y = row_y + 8
+        draw.rectangle((content_x, bar_y, content_x + content_w, bar_y + 5), outline=pal.ink, fill=pal.panel)
+        if pct is None:
+            continue
+        fill_width = int(content_w * max(0.0, min(100.0, pct)) / 100.0)
+        if fill_width <= 0:
+            continue
+        color = pal.red if pct >= 90 else pal.yellow if pct >= 75 else pal.green
+        draw.rectangle((content_x + 1, bar_y + 1, content_x + fill_width, bar_y + 4), fill=color)
+
+
+def _visible_ai_usage_gauges(ai_usage: AIUsageSnapshot, now: datetime) -> list:
+    codex = [item for item in ai_usage.gauges if item.provider == "codex" and item.status != "quiet"]
+    codex_5h = next((item for item in codex if "5H" in item.label), None)
+    codex_weekly = next((item for item in codex if "5H" not in item.label), None)
+    openai_api = next((item for item in ai_usage.gauges if item.provider == "openai_api" and item.status != "quiet"), None)
+    second = openai_api if openai_api and int(now.timestamp() // 6) % 2 == 0 else codex_weekly
+    return [item for item in (codex_5h, second or openai_api) if item is not None]
+
+
 def _ai_usage_gauge_short_label(gauge) -> str:
     if gauge.provider == "openai_api":
         return "API"
     return "5H" if "5H" in gauge.label else "W"
 
 
+def _ai_usage_percent(gauge) -> float | None:
+    pct = gauge.used_percent
+    if pct is None and gauge.provider != "openai_api" and gauge.total_tokens:
+        pct = min(100.0, gauge.total_tokens / 250_000 * 100.0)
+    return pct
+
+
 def _ai_usage_gauge_value(gauge, pct: float | None, now: datetime) -> str:
     if gauge.status == "error":
         return "ERR"
+    usage = _ai_usage_used_label(gauge, pct)
     if gauge.provider == "openai_api":
-        return _ai_usage_label(gauge.total_tokens, gauge.cost_usd)
+        return usage
     if pct is not None and gauge.reset_at:
-        return f"{_ai_usage_reset_countdown(now, gauge.reset_at)} +{max(0.0, min(100.0, pct)):.0f}%"
-    return _ai_usage_label(gauge.total_tokens, gauge.cost_usd)
+        return f"{usage} used | {_ai_usage_reset_countdown(now, gauge.reset_at)} reset"
+    return usage
+
+
+def _ai_usage_used_label(gauge, pct: float | None) -> str:
+    tokens = _ai_usage_label(gauge.total_tokens, gauge.cost_usd)
+    if pct is None:
+        return tokens
+    pct_label = f"{max(0.0, min(100.0, pct)):.0f}%"
+    if tokens != "-":
+        return f"{tokens} {pct_label}"
+    return pct_label
 
 
 def _ai_usage_reset_countdown(now: datetime, reset_at: datetime) -> str:
@@ -599,8 +895,9 @@ def _ai_usage_reset_countdown(now: datetime, reset_at: datetime) -> str:
     if minutes < 60:
         return f"{max(1, minutes)}m"
     hours = int(minutes // 60)
+    remaining_minutes = minutes % 60
     if hours < 48:
-        return f"{hours}h"
+        return f"{hours}h {remaining_minutes}m"
     return f"{hours // 24}d"
 
 

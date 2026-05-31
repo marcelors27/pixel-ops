@@ -8,6 +8,7 @@ from pathlib import Path
 from pixel_ops.integration_plugins.base import IntegrationContext
 from pixel_ops.integration_plugins.registry import build_integration_runtime
 from pixel_ops.integrations.ai_usage.plugin import plugin as ai_usage_plugin
+from pixel_ops.integrations.clickup.plugin import plugin as clickup_plugin
 from pixel_ops.integrations.discord.plugin import plugin as discord_plugin
 from pixel_ops.integrations.github.plugin import plugin as github_plugin
 from pixel_ops.integrations.google_calendar.plugin import plugin as google_calendar_plugin
@@ -33,6 +34,7 @@ class IntegrationPluginTests(unittest.TestCase):
     def test_plugin_factories_expose_stable_names(self):
         factories = {
             "ai_usage": ai_usage_plugin,
+            "clickup": clickup_plugin,
             "discord": discord_plugin,
             "github": github_plugin,
             "google_calendar": google_calendar_plugin,
@@ -61,6 +63,7 @@ class IntegrationPluginTests(unittest.TestCase):
                     "weather": {"enabled": True, "provider": "open_meteo"},
                     "ai_usage": {"enabled": True, "providers": ["codex"], "thresholds": [80]},
                     "pc_stats": {"enabled": True, "fields": ["cpu", "ram"], "poll_seconds": 5},
+                    "clickup": {"enabled": True, "team_id": "123", "assignee_id": "456"},
                 }
             }
 
@@ -68,7 +71,7 @@ class IntegrationPluginTests(unittest.TestCase):
 
             self.assertEqual(
                 runtime.loaded_plugins,
-                ["slack", "discord", "github", "google_calendar", "ics", "weather", "ai_usage", "pc_stats"],
+                ["slack", "discord", "github", "google_calendar", "ics", "weather", "ai_usage", "pc_stats", "clickup"],
             )
             self.assertGreaterEqual(len(runtime.event_sources), 5)
             self.assertIn(ics_path, runtime.calendar_paths)
@@ -76,6 +79,7 @@ class IntegrationPluginTests(unittest.TestCase):
             self.assertIsNotNone(runtime.weather_source)
             self.assertIsNotNone(runtime.ai_usage_source)
             self.assertIsNotNone(runtime.pc_stats_source)
+            self.assertIsNotNone(runtime.task_source)
             self.assertGreaterEqual(len(runtime.starters), 2)
             self.assertGreaterEqual(len(runtime.closers), 2)
 

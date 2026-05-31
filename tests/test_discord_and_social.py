@@ -122,7 +122,14 @@ class DiscordAndSocialTests(unittest.TestCase):
         self.assertEqual(signal.kind.value, "activity_spike")
 
     def test_slack_activity_aggregator_emits_only_channel_spikes(self):
-        aggregator = SlackAmbientAggregator(activity_window_seconds=60, activity_threshold=3, activity_cooldown_seconds=300)
+        aggregator = SlackAmbientAggregator(
+            activity_window_seconds=60,
+            activity_threshold=3,
+            activity_cooldown_seconds=300,
+            channel_rules=SlackAmbientAggregator.rules_from_config(
+                {"C1": {"label": "engineering", "tone": "busy", "activity_threshold": 3, "dominant_types": ["electric", "fighting"]}}
+            ),
+        )
         events = []
         for ts in ("1000.0", "1010.0", "1020.0"):
             signal = classify_slack_event(
@@ -134,6 +141,8 @@ class DiscordAndSocialTests(unittest.TestCase):
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0].category, EventCategory.SOCIAL_ACTIVITY)
         self.assertEqual(events[0].metadata["activity_count"], "3")
+        self.assertEqual(events[0].metadata["channel_label"], "engineering")
+        self.assertEqual(events[0].metadata["dominant_types"], "electric,fighting")
 
     def test_slack_dm_and_huddle_emit_immediately(self):
         aggregator = SlackAmbientAggregator(activity_threshold=10)
@@ -144,8 +153,30 @@ class DiscordAndSocialTests(unittest.TestCase):
         huddle_events = aggregator.observe(huddle)
 
         self.assertEqual(dm_events[0].category, EventCategory.MESSAGE_IMPORTANT)
+        self.assertEqual(dm_events[0].metadata["attention_pressure"], "medium")
         self.assertEqual(huddle_events[0].category, EventCategory.MEETING)
         self.assertEqual(huddle_events[0].metadata["meeting_type"], "huddle")
+
+    def test_slack_aggregator_emits_periodic_summary_without_message_text(self):
+        aggregator = SlackAmbientAggregator(activity_window_seconds=60, activity_threshold=10, summary_window_seconds=60)
+        first = classify_slack_event(
+            {"event_id": "S1", "event": {"type": "message", "channel_type": "channel", "text": "sensitive message body", "user": "U1", "channel": "C1", "ts": "1000.0"}},
+            bot_user_id="BOT",
+        )
+        mention = classify_slack_event(
+            {"event_id": "S2", "event": {"type": "message", "channel_type": "channel", "text": "hey <@BOT> private details", "user": "U2", "channel": "C2", "ts": "1070.0"}},
+            bot_user_id="BOT",
+        )
+
+        self.assertEqual(aggregator.observe(first), [])
+        events = aggregator.observe(mention)
+        summary = events[-1]
+
+        self.assertEqual(summary.title, "Slack ambient pressure summary")
+        self.assertEqual(summary.metadata["activity_count"], "1")
+        self.assertEqual(summary.metadata["mentions"], "1")
+        self.assertNotIn("sensitive", str(summary.metadata))
+        self.assertNotIn("private details", str(summary.metadata))
 
 
 if __name__ == "__main__":

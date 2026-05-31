@@ -119,6 +119,8 @@ class GitHubEventSource:
                 with self._lock:
                     self._refresh_running = False
 
+        Thread(target=worker, name="pixel-ops-github-refresh", daemon=True).start()
+
     def _refresh_sync(self, now: datetime, since: datetime, include_closed: bool) -> None:
         open_pull_requests = self._fetch_open_pull_requests()
         closed_pull_requests: list[PullRequestSummary] = []

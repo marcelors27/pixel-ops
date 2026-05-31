@@ -341,7 +341,8 @@ class NpcSpriteSet:
     FRAME_H = 20
     NEW_SHEET_CELL_W = 18
     NEW_SHEET_CELL_H = 26
-    NEW_SHEET_COLUMNS = 12
+    NEW_SHEET_BLOCK_COLUMNS = 3
+    NEW_SHEET_BLOCK_ROWS = 4
 
     def __init__(self, asset_dir: Path, scene_fps: int = 10, scale: int = 2):
         self.asset_dir = asset_dir
@@ -378,10 +379,13 @@ class NpcSpriteSet:
         for path in sorted(NEW_NPC_SPRITES_DIR.glob("*.png")):
             with Image.open(path) as image:
                 sheet = image.convert("RGBA")
-            for row in range(sheet.height // self.NEW_SHEET_CELL_H):
-                animations = self._animations_for_new_sheet_row(sheet, row)
-                if animations:
-                    self._variants.append(animations)
+            block_w = self.NEW_SHEET_CELL_W * self.NEW_SHEET_BLOCK_COLUMNS
+            block_h = self.NEW_SHEET_CELL_H * self.NEW_SHEET_BLOCK_ROWS
+            for y in range(0, sheet.height - block_h + 1, block_h):
+                for x in range(0, sheet.width - block_w + 1, block_w):
+                    animations = self._animations_for_new_sheet_block(sheet, x, y)
+                    if animations:
+                        self._variants.append(animations)
 
     def _animations_for_row(self, sheet: Image.Image, row: int) -> dict[str, SpriteAnimation]:
         frames = [self._frame(sheet, self.X0 + index * self.STEP_X, row) for index in range(12)]
@@ -402,17 +406,21 @@ class NpcSpriteSet:
             "idle_left": SpriteAnimation((left[0],), fps=1),
         }
 
-    def _animations_for_new_sheet_row(self, sheet: Image.Image, row: int) -> dict[str, SpriteAnimation]:
-        frames = [
-            self._new_sheet_frame(sheet, index * self.NEW_SHEET_CELL_W, row * self.NEW_SHEET_CELL_H)
-            for index in range(self.NEW_SHEET_COLUMNS)
+    def _animations_for_new_sheet_block(self, sheet: Image.Image, x: int, y: int) -> dict[str, SpriteAnimation]:
+        rows = [
+            [
+                self._new_sheet_frame(sheet, x + col * self.NEW_SHEET_CELL_W, y + row * self.NEW_SHEET_CELL_H)
+                for col in range(self.NEW_SHEET_BLOCK_COLUMNS)
+            ]
+            for row in range(self.NEW_SHEET_BLOCK_ROWS)
         ]
-        if len(frames) < 12 or any(_visible_pixels(frame) < 12 for frame in frames):
+        frames = [frame for row in rows for frame in row]
+        if any(_visible_pixels(frame) < 12 for frame in frames):
             return {}
-        down = self._sequence(frames, (0, 1, 2, 1))
-        up = self._sequence(frames, (3, 4, 5, 4))
-        left = self._sequence(frames, (6, 7, 8, 7))
-        right = self._sequence(frames, (9, 10, 11, 10))
+        down = self._sequence(rows[0], (0, 1, 2, 1))
+        left = self._sequence(rows[1], (0, 1, 2, 1))
+        right = self._sequence(rows[2], (0, 1, 2, 1))
+        up = self._sequence(rows[3], (0, 1, 2, 1))
         return {
             "walk_down": SpriteAnimation(down, fps=6),
             "walk_up": SpriteAnimation(up, fps=6),

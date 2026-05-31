@@ -18,6 +18,7 @@ python pixel_ops/main.py --plugin pokemon --output preview
 python pixel_ops/main.py --plugin pokemon --output window --forever
 python pixel_ops/main.py --plugin pokemon --output gif --seconds 8
 python pixel_ops/main.py --plugin pokemon --output turzx --forever --fps 10 --offline
+python pixel_ops/main.py --plugin pokemon --output thermalright --forever --fps 2 --offline
 ```
 
 Window mode:
@@ -39,6 +40,23 @@ Platform setup and USB display notes:
 
 - [Linux](docs/linux.md)
 - [Windows](docs/windows.md)
+
+## Platform Support
+
+Supported development/runtime targets:
+
+- Linux: `preview`, `gif`, `window`, and TURZX USB with libusb plus udev permissions.
+- Windows: `preview`, `gif`, `window`, and TURZX USB with a WinUSB/libusb driver such as Zadig.
+- macOS: useful for development and preview/window output, but USB display support is not the primary target.
+
+Run the platform check before testing hardware:
+
+```bash
+python scripts/linux_check.py
+python scripts/windows_check.py
+```
+
+Both checks validate Python dependencies, local system tools, PC stats availability, and expected TURZX USB setup. CI runs Linux and Windows workflows for Python tests, Config Studio build, and offline preview rendering.
 
 ## Config Studio
 
@@ -83,6 +101,7 @@ PIXEL_OPS_SLACK_APP_TOKEN=xapp-...
 PIXEL_OPS_SLACK_BOT_TOKEN=xoxb-...
 PIXEL_OPS_DISCORD_BOT_TOKEN=...
 PIXEL_OPS_GITHUB_TOKEN=github_pat_...
+PIXEL_OPS_CLICKUP_TOKEN=pk_...
 OPENAI_API_KEY=sk-...
 OPENAI_ADMIN_KEY=sk-admin-...
 OPENWEATHERMAP_API_KEY=...
@@ -236,6 +255,26 @@ Google Calendar via private ICS URL:
 ```
 
 GitHub pull requests feed the compact HUD. When `fetch_deployments` is enabled, recent GitHub Actions workflow runs are normalized into ambient deploy/build events. Leave `deployment_workflows` empty to observe all workflows.
+
+### ClickUp
+
+```json
+{
+  "integrations": {
+    "clickup": {
+      "enabled": true,
+      "token_env": "PIXEL_OPS_CLICKUP_TOKEN",
+      "team_id": "",
+      "assignee_id": "",
+      "poll_seconds": 120,
+      "max_tasks": 5,
+      "due_within_days": 14
+    }
+  }
+}
+```
+
+ClickUp tasks feed the optional `tasks` HUD window with assigned task names, due dates, and remaining time. Leave `team_id` and `assignee_id` empty to resolve the first authorized Workspace and current API user.
 
 ### Weather
 

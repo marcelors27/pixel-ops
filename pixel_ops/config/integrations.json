@@ -6,7 +6,43 @@
       "app_token_env": "PIXEL_OPS_SLACK_APP_TOKEN",
       "bot_token_env": "PIXEL_OPS_SLACK_BOT_TOKEN",
       "bot_user_id": "",
-      "socket_reconnect_seconds": 10
+      "socket_reconnect_seconds": 10,
+      "activity_window_seconds": 120,
+      "activity_threshold": 5,
+      "activity_cooldown_seconds": 300,
+      "summary_window_seconds": 900,
+      "channels": {
+        "C_INCIDENTS": {
+          "label": "incident",
+          "tone": "tense",
+          "weight": 1.5,
+          "activity_threshold": 3,
+          "dominant_types": [
+            "ghost",
+            "electric"
+          ]
+        },
+        "C_ENGINEERING": {
+          "label": "engineering",
+          "tone": "busy",
+          "weight": 1.1,
+          "activity_threshold": 5,
+          "dominant_types": [
+            "electric",
+            "fighting"
+          ]
+        },
+        "C_RELEASES": {
+          "label": "release",
+          "tone": "ceremony",
+          "weight": 1.25,
+          "activity_threshold": 4,
+          "dominant_types": [
+            "fire",
+            "dragon"
+          ]
+        }
+      }
     },
     "discord": {
       "enabled": true,
@@ -86,6 +122,19 @@
       "poll_seconds": 5,
       "top_process_count": 1,
       "disk_path": "/"
+    },
+    "clickup": {
+      "enabled": false,
+      "token_env": "PIXEL_OPS_CLICKUP_TOKEN",
+      "team_id": "",
+      "assignee_id": "",
+      "poll_seconds": 120,
+      "max_tasks": 5,
+      "due_within_days": 14,
+      "include_overdue": true,
+      "include_subtasks": true,
+      "include_closed": false,
+      "timeout_seconds": 10
     }
   }
 }

@@ -9,8 +9,10 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from PIL import Image
+from PIL import Image, ImageDraw
 
+from pixel_ops.data_sources.ai_usage import AIUsageGauge, AIUsageSnapshot
+from pixel_ops.data_sources.timezones import build_people_times
 from pixel_ops.data_sources.weather import (
     OpenMeteoWeatherSource,
     OpenWeatherMapWeatherSource,
@@ -20,11 +22,21 @@ from pixel_ops.data_sources.weather import (
 )
 from pixel_ops.integrations.discord.voice_state import DiscordVoiceMember, DiscordVoiceSnapshot
 from pixel_ops.plugins.ai.plugin import OpenAiChatGptPlugin, build_ai_plugin
+from pixel_ops.plugins.pokemon.game.day_night import day_night_palette
 from pixel_ops.plugins.pokemon.game.map_routes import MapArea, MapRouteManager
+from pixel_ops.plugins.pokemon.game.state_machine import GamePhase
 from pixel_ops.plugins.pokemon.plugin import PokemonPlugin
 from pixel_ops.plugins.pokemon.render.sprites import NpcSpriteSet
 from pixel_ops.plugins.pokemon.scenes.overworld_scene import OverworldScene, VoiceCompanionState
 from pixel_ops.plugins.registry import available_plugins, get_plugin
+from pixel_ops.render.fonts import font
+from pixel_ops.render.hud import (
+    _ai_usage_gauge_value,
+    _draw_ai_usage_panel,
+    _draw_timezone_timeline_row,
+    _future_local_time,
+    _timezone_timeline_fill,
+)
 
 
 class VisualAndAiPluginTests(unittest.TestCase):
@@ -235,6 +247,31 @@ class VisualAndAiPluginTests(unittest.TestCase):
         self.assertLessEqual(x + ash.width, scene.map_box[2])
         self.assertLessEqual(y + ash.height, scene.map_box[3])
 
+    def test_pokemon_battle_sprites_stay_inside_wide_game_layout(self):
+        scene = OverworldScene(
+            1920,
+            462,
+            "America/Sao_Paulo",
+            scanlines=False,
+            pokemon_api=None,
+            lazy_download=False,
+            game_config={"hud_height": 72, "text_box_height": 76},
+            display_layout={
+                "game": {"x": 672, "y": 98, "width": 1210, "height": 244},
+                "text_box": {"x": 902, "y": 398, "width": 994, "height": 54},
+            },
+        )
+
+        layers = scene._battle_sprite_layers(GamePhase.POKEMON_APPEARS)
+
+        self.assertGreaterEqual(len(layers), 2)
+        x0, y0, x1, y1 = scene.battle_box
+        for sprite, x, y in layers:
+            self.assertGreaterEqual(x, x0)
+            self.assertGreaterEqual(y, y0)
+            self.assertLessEqual(x + sprite.width, x1)
+            self.assertLessEqual(y + sprite.height, y1)
+
     def test_pokemon_scene_keeps_rendered_companions_out_of_blocked_areas(self):
         snapshot = DiscordVoiceSnapshot(
             channel_id="c1",
@@ -291,6 +328,56 @@ class VisualAndAiPluginTests(unittest.TestCase):
         self.assertIsNotNone(scene._sprite_movement_rect("companions", x, y, companion.width, companion.height))
         self.assertFalse(scene._rects_intersect(sprite_rect, blocked))
 
+    def test_pokemon_scene_clamps_companions_to_nearest_walkable_area(self):
+        scene = OverworldScene(
+            320,
+            240,
+            "America/Sao_Paulo",
+            scanlines=False,
+            pokemon_api=None,
+            lazy_download=False,
+            game_config={
+                "hud_height": 72,
+                "text_box_height": 76,
+                "movement": {
+                    "walkable": {
+                        "source_rects": [
+                            {"map": "town", "x": 40, "y": 40, "w": 150, "h": 80},
+                            {"map": "town", "x": 220, "y": 40, "w": 80, "h": 80},
+                        ],
+                    },
+                    "blocked": {
+                        "source_rects": [{"map": "town", "x": 56, "y": 48, "w": 44, "h": 64}],
+                    },
+                },
+            },
+        )
+        scene.current_map_area = MapArea(
+            area_id="town:0",
+            source_path=Path("town.png"),
+            map_key="town",
+            crop_box=(0, 0, 320, 160),
+            source_bounds=(0, 0, 320, 160),
+            route=((0, 0), (1, 1)),
+        )
+        blocked = scene._movement_screen_rects("blocked")[0]
+        sprite = scene.npc_sprites.frame(0, "idle_down", scene.frame)
+
+        x, y = scene._clamp_sprite_to_movement(
+            "companions",
+            blocked[0],
+            blocked[1],
+            sprite.width,
+            sprite.height,
+        )
+
+        left_walkable = scene._movement_screen_rects("companions")[0]
+        right_walkable = scene._movement_screen_rects("companions")[1]
+        self.assertIsNotNone(scene._sprite_movement_rect("companions", x, y, sprite.width, sprite.height))
+        self.assertGreaterEqual(x, left_walkable[0])
+        self.assertLessEqual(x + sprite.width, left_walkable[2])
+        self.assertFalse(right_walkable[0] <= x <= right_walkable[2])
+
     def test_pokemon_scene_does_not_draw_legacy_weather_badge_with_configured_layout(self):
         scene = OverworldScene(
             320,
@@ -325,6 +412,47 @@ class VisualAndAiPluginTests(unittest.TestCase):
         scene.render_base([], None, datetime.now(ZoneInfo("America/Sao_Paulo")), weather=weather)
 
         self.assertEqual(calls, [])
+
+    def test_ai_usage_panel_draws_full_width_progress_and_used_label(self):
+        now = datetime(2026, 5, 26, 12, 0, tzinfo=ZoneInfo("UTC"))
+        gauge = AIUsageGauge(
+            provider="codex",
+            label="Codex 5H",
+            used_percent=100,
+            total_tokens=250_000,
+            reset_at=datetime(2026, 5, 26, 14, 0, tzinfo=ZoneInfo("UTC")),
+        )
+        snapshot = AIUsageSnapshot(gauges=[gauge], updated_at=now)
+        pal = day_night_palette(12)
+        img = Image.new("RGB", (180, 36), pal.panel_shadow)
+
+        _draw_ai_usage_panel(ImageDraw.Draw(img), snapshot, now, (0, 0, 180, 36), pal)
+
+        self.assertEqual(img.getpixel((171, 20)), pal.red)
+        self.assertIn("250k 100% used | 2h 0m reset", _ai_usage_gauge_value(gauge, 100, now))
+
+    def test_timezone_timeline_row_shows_future_local_hours_in_blocks(self):
+        now = datetime(2026, 5, 26, 12, 0, tzinfo=ZoneInfo("UTC"))
+        person = build_people_times(
+            [
+                {
+                    "key": "BRT",
+                    "name": "Marcelo",
+                    "timezone": "America/Sao_Paulo",
+                    "timezone_label": "Brazil",
+                    "work_start": "09:00",
+                    "work_end": "18:00",
+                }
+            ],
+            now,
+        )[0]
+        pal = day_night_palette(12)
+        img = Image.new("RGB", (180, 24), pal.panel)
+
+        _draw_timezone_timeline_row(ImageDraw.Draw(img), person, 0, 2, 160, 18, font(9), font(8), pal)
+
+        self.assertEqual(_future_local_time(person, 4).strftime("%H:%M"), "13:00")
+        self.assertEqual(img.getpixel((54, 17)), _timezone_timeline_fill("working", pal))
 
     def test_pokemon_scene_repositions_actors_when_map_changes(self):
         scene = OverworldScene(
@@ -452,6 +580,28 @@ class VisualAndAiPluginTests(unittest.TestCase):
             self.assertTrue(
                 all(manager._walkable_coverage(area.map_key, area.crop_box) >= 0.6 for area in manager.areas)
             )
+
+    def test_map_route_manager_rotates_without_consecutive_repeats(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            maps_dir = Path(tmp)
+            Image.new("RGB", (160, 120), (64, 150, 86)).save(maps_dir / "alpha.png")
+            Image.new("RGB", (160, 120), (64, 150, 86)).save(maps_dir / "beta.png")
+            manager = MapRouteManager(
+                maps_dir,
+                (120, 90),
+                switch_seconds=60,
+                seed=0,
+                walkable_source_rects={
+                    "alpha": [(0, 0, 160, 120)],
+                    "beta": [(0, 0, 160, 120)],
+                },
+                min_walkable_coverage=0.2,
+            )
+
+            selected = [manager.area_for_timestamp(minute * 60).map_key for minute in range(6)]
+
+            self.assertGreaterEqual(len(set(selected)), 2)
+            self.assertTrue(all(current != previous for previous, current in zip(selected, selected[1:])))
 
 
 if __name__ == "__main__":

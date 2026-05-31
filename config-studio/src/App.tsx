@@ -10,9 +10,12 @@ import {
   GripVertical,
   Monitor,
   MoveDiagonal2,
+  FileImage,
+  Play,
   RefreshCw,
   Save,
-  Settings2,
+  Square,
+  Terminal,
   Users,
 } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
@@ -21,12 +24,22 @@ import mascotAlertImg from "./assets/pixelops-mascot-angry.png";
 import mascotImg from "./assets/pixelops-mascot.png";
 import mascotSleepyImg from "./assets/pixelops-mascot-sleepy.png";
 import { PixelMascot } from "./components/PixelMascot";
-import { cloneConfig, loadConfig, loadConfigManifest, saveConfig } from "./lib/configApi";
-import type { ConfigManifest, DetectedPlugin, DiscordPersonConfig, IntegrationToggle, LayoutBox, LayoutKey, LayoutWindowOption, MovementConfig, MovementRect, PersonConfig, RuntimeConfig } from "./types";
+import { cloneConfig, loadConfig, loadConfigManifest, loadNpcSpriteManifest, loadRuntimeStatus, runRuntimeAction, saveConfig } from "./lib/configApi";
+import type { ConfigManifest, DetectedPlugin, DiscordPersonConfig, IntegrationToggle, LayoutBox, LayoutKey, LayoutWindowOption, MovementConfig, MovementRect, PersonConfig, RuntimeConfig, RuntimeStatus } from "./types";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 type MovementLayer = "walkable" | "blocked";
 type PokemonMapOption = { key: string; label: string; width: number; height: number; url: string };
+type PokemonGameConfig = NonNullable<RuntimeConfig["game"]>["game"];
+type PokemonDataConfig = NonNullable<RuntimeConfig["pokemon"]>["pokemon"];
+type PokemonAiSelectorConfig = PokemonGameConfig["events"]["ai_selector"];
+type PokemonPanelKey = "scene" | "companions" | "ai" | "data";
+type SettingsTabItem = {
+  key: string;
+  label: string;
+  icon: IconComponent;
+  tone?: "plugin" | "integration";
+};
 
 const integrationIcons: Record<string, IconComponent> = {
   github: Github,
@@ -35,6 +48,7 @@ const integrationIcons: Record<string, IconComponent> = {
   weather: CloudSun,
   ai_usage: Activity,
   pc_stats: Cpu,
+  clickup: Check,
   slack: Bot,
   discord: Bot,
 };
@@ -44,7 +58,8 @@ const visualPluginIcons: Record<string, IconComponent> = {
 };
 
 const layoutWindowCatalog: LayoutWindowOption[] = [
-  { kind: "timezones", label: "Timezones", tone: "#7fb2e6" },
+  { kind: "timezones", label: "Timezones timeline", tone: "#7fb2e6" },
+  { kind: "timezones_clock", label: "Timezones clock", tone: "#9ad18b" },
   { kind: "activity", label: "Activity", tone: "#ef846d" },
 ];
 
@@ -55,11 +70,12 @@ const equipmentOptions = [
   { target: "window", label: "Window", width: 320, height: 480, output: "window" },
   { target: "turzx_35", label: "TURZX 3.5", width: 320, height: 480, output: "turzx" },
   { target: "turzx_94", label: "TURZX 9.4", width: 480, height: 320, output: "turzx" },
+  { target: "thermalright", label: "Thermalright LY", width: 1920, height: 462, output: "thermalright" },
   { target: "preview", label: "Preview PNG", width: 320, height: 480, output: "preview" },
   { target: "gif", label: "GIF", width: 320, height: 480, output: "gif" },
 ] as const;
 
-const discordSpriteVariants = Array.from({ length: 55 }, (_, index) => index);
+const fallbackDiscordSpriteVariants = Array.from({ length: 55 }, (_, index) => index);
 const fallbackTimezones = [
   "America/Sao_Paulo",
   "America/Mexico_City",
@@ -83,7 +99,11 @@ export function App() {
   const [selectedLayout, setSelectedLayout] = useState<LayoutKey>("game");
   const [draggingPersonIndex, setDraggingPersonIndex] = useState<number | null>(null);
   const [pokemonMaps, setPokemonMaps] = useState<PokemonMapOption[]>([]);
+  const [npcSpriteVariants, setNpcSpriteVariants] = useState<number[]>(fallbackDiscordSpriteVariants);
   const [pathName, setPathName] = useState(() => window.location.pathname);
+  const [runtimeStatus, setRuntimeStatus] = useState<RuntimeStatus | null>(null);
+  const [runtimeBusy, setRuntimeBusy] = useState<string | null>(null);
+  const [activeSettingsTab, setActiveSettingsTab] = useState<string>("");
   const timezoneOptions = useMemo(() => buildTimezoneOptions(), []);
 
   useEffect(() => {
@@ -100,6 +120,18 @@ export function App() {
       .then((response) => (response.ok ? response.json() : { maps: [] }))
       .then((payload) => setPokemonMaps(Array.isArray(payload.maps) ? payload.maps : []))
       .catch(() => setPokemonMaps([]));
+  }, []);
+
+  useEffect(() => {
+    void loadNpcSpriteManifest()
+      .then((manifest) => setNpcSpriteVariants(Array.isArray(manifest.variants) && manifest.variants.length ? manifest.variants : fallbackDiscordSpriteVariants))
+      .catch(() => setNpcSpriteVariants(fallbackDiscordSpriteVariants));
+  }, []);
+
+  useEffect(() => {
+    void refreshRuntimeStatus();
+    const interval = window.setInterval(() => void refreshRuntimeStatus(false), 2500);
+    return () => window.clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -141,6 +173,28 @@ export function App() {
     } catch (caught) {
       setSaveState("error");
       setError(caught instanceof Error ? caught.message : String(caught));
+    }
+  }
+
+  async function refreshRuntimeStatus(reportError = true) {
+    try {
+      setRuntimeStatus(await loadRuntimeStatus());
+    } catch (caught) {
+      if (reportError) {
+        setError(caught instanceof Error ? caught.message : String(caught));
+      }
+    }
+  }
+
+  async function triggerRuntimeAction(action: "check" | "preview" | "window/start" | "window/stop") {
+    setRuntimeBusy(action);
+    setError(null);
+    try {
+      setRuntimeStatus(await runRuntimeAction(action));
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : String(caught));
+    } finally {
+      setRuntimeBusy(null);
     }
   }
 
@@ -192,6 +246,25 @@ export function App() {
   const discordPeopleConfig = config.discord_people?.discord_people ?? { max_recent: 50, people: {} };
   const discordPeople = discordPersonEntries(discordPeopleConfig.people);
   const enabledCount = manifest.integrations.filter(({ key }) => Boolean(integrationConfig(config, key).enabled)).length;
+  const activeVisualPlugins = manifest.visualPlugins.filter((plugin) => selectedPluginKeys.includes(plugin.key));
+  const activeIntegrations = manifest.integrations.filter(({ key }) => Boolean(integrationConfig(config, key).enabled));
+  const settingsTabs: SettingsTabItem[] = [
+    ...activeVisualPlugins.map((plugin) => ({
+      key: `plugin:${plugin.key}`,
+      label: plugin.label,
+      icon: visualPluginIcons[plugin.key] ?? Code2,
+      tone: "plugin" as const,
+    })),
+    ...activeIntegrations.map((integration) => ({
+      key: `integration:${integration.key}`,
+      label: integration.label,
+      icon: integrationIcons[integration.key] ?? Bot,
+      tone: "integration" as const,
+    })),
+  ];
+  const activeSettingsKey = settingsTabs.some((tab) => tab.key === activeSettingsTab) ? activeSettingsTab : settingsTabs[0]?.key ?? "";
+  const activePluginKey = activeSettingsKey.startsWith("plugin:") ? activeSettingsKey.slice("plugin:".length) : "";
+  const activeIntegrationKey = activeSettingsKey.startsWith("integration:") ? activeSettingsKey.slice("integration:".length) : "";
   const isPluginMapsRoute = pathName === "/pluginmaps";
 
   return (
@@ -207,10 +280,9 @@ export function App() {
           <a href="/" onClick={(event) => { event.preventDefault(); navigate("/"); }}>Home</a>
           {!isPluginMapsRoute ? <a href="#layout">Layout</a> : null}
           {!isPluginMapsRoute ? <a href="#display">Display</a> : null}
-          {!isPluginMapsRoute ? <a href="#plugins">Plugins</a> : null}
-          {!isPluginMapsRoute ? <a href="#integrations">Integrations</a> : null}
+          {!isPluginMapsRoute ? <a href="#runtime">Runtime</a> : null}
+          {!isPluginMapsRoute ? <a href="#plugins">Plugins + Integrations</a> : null}
           {!isPluginMapsRoute ? <a href="#people">People</a> : null}
-          {hasPokemonPlugin && !isPluginMapsRoute ? <a href="#pokemon">Pokemon</a> : null}
           {hasPokemonPlugin ? <a href="/pluginmaps" onClick={(event) => { event.preventDefault(); navigate("/pluginmaps"); }}>Plugin maps</a> : null}
         </nav>
       </header>
@@ -264,7 +336,7 @@ export function App() {
               <a className="hero-button primary" href="#display">
                 Start setup
               </a>
-              <a className="hero-button secondary" href="#integrations">
+              <a className="hero-button secondary" href="#plugins">
                 View summary
               </a>
             </div>
@@ -291,12 +363,21 @@ export function App() {
 
         {error ? <div className="error-banner">{error}</div> : null}
 
+        <RuntimePanel
+          status={runtimeStatus}
+          busy={runtimeBusy}
+          onCheck={() => void triggerRuntimeAction("check")}
+          onPreview={() => void triggerRuntimeAction("preview")}
+          onStartWindow={() => void triggerRuntimeAction("window/start")}
+          onStopWindow={() => void triggerRuntimeAction("window/stop")}
+        />
+
         <section id="plugins" className="wide-panel">
           <div className="section-heading">
             <Code2 size={20} />
             <div>
-              <h2>Visual Plugins</h2>
-              <p>Detected interface plugins determine which plugin-owned JSON configs are loaded.</p>
+              <h2>Plugins And Integrations</h2>
+              <p>Visual plugins own interface configs. Runtime integrations feed ambient state into the app.</p>
             </div>
           </div>
           <div className="integration-grid">
@@ -305,10 +386,65 @@ export function App() {
                 key={plugin.key}
                 plugin={plugin}
                 selected={selectedPluginKeys.includes(plugin.key)}
-                onToggle={() => toggleVisualPlugin(plugin.key)}
+                onToggle={() => {
+                  if (!selectedPluginKeys.includes(plugin.key)) {
+                    setActiveSettingsTab(`plugin:${plugin.key}`);
+                  }
+                  toggleVisualPlugin(plugin.key);
+                }}
               />
             ))}
+            {manifest.integrations.map(({ key, label }) => {
+              const item = integrationConfig(config, key);
+              const Icon = integrationIcons[key] ?? Bot;
+              return (
+                <button
+                  className={`integration-card provider-card ${item.enabled ? "is-on" : ""}`}
+                  key={key}
+                  type="button"
+                  onClick={() => {
+                    if (!item.enabled) {
+                      setActiveSettingsTab(`integration:${key}`);
+                    }
+                    mutate((draft) => {
+                      const current = integrationConfig(draft, key);
+                      draft.integrations.integrations[key] = { ...current, enabled: !current.enabled };
+                    });
+                  }}
+                >
+                  <Icon size={18} />
+                  <span>{label}</span>
+                  <strong>{item.enabled ? "ON" : "OFF"}</strong>
+                </button>
+              );
+            })}
           </div>
+          <SettingsTabs tabs={settingsTabs} activeKey={activeSettingsKey} onSelect={setActiveSettingsTab}>
+            {activePluginKey === "pokemon" && hasPokemonPlugin && game && pokemon && aiSelector && config.pokemon_companions ? (
+              <PokemonPluginPanels
+                game={game}
+                pokemon={pokemon}
+                aiSelector={aiSelector}
+                config={config}
+                discordPeople={discordPeople}
+                spriteVariants={npcSpriteVariants}
+                onMutate={mutate}
+              />
+            ) : activePluginKey ? (
+              <div className="empty-plugin-tab">
+                <Code2 size={18} />
+                <span>No editable panels are registered for this plugin yet.</span>
+              </div>
+            ) : activeIntegrationKey ? (
+              <IntegrationPanel
+                activeKey={activeIntegrationKey}
+                config={config}
+                discordPeople={discordPeople}
+                discordPeopleConfig={discordPeopleConfig}
+                onMutate={mutate}
+              />
+            ) : null}
+          </SettingsTabs>
         </section>
 
         <LayoutPreview
@@ -358,8 +494,16 @@ export function App() {
             <Field label="Output">
               <Select
                 value={display.device.output}
-                options={["window", "preview", "gif", "turzx"]}
-                onChange={(value) => mutate((draft) => void (draft.display.display.device.output = value))}
+                options={["window", "preview", "gif", "turzx", "thermalright"]}
+                onChange={(value) =>
+                  mutate((draft) => {
+                    if (value === "thermalright") {
+                      applyEquipment(draft, "thermalright");
+                    } else {
+                      draft.display.display.device.output = value;
+                    }
+                  })
+                }
               />
             </Field>
             <Field label="Width">
@@ -439,239 +583,6 @@ export function App() {
           </Panel>
         </section>
 
-        <section id="integrations" className="wide-panel">
-          <div className="section-heading">
-            <Settings2 size={20} />
-            <div>
-              <h2>Integration Runtime</h2>
-              <p>Provider settings normalize into ambient events. Secrets stay as environment variable names.</p>
-            </div>
-          </div>
-          <div className="integration-grid">
-            {manifest.integrations.map(({ key, label }) => {
-              const item = integrationConfig(config, key);
-              const Icon = integrationIcons[key] ?? Bot;
-              return (
-                <button
-                  className={`integration-card ${item.enabled ? "is-on" : ""}`}
-                  key={key}
-                  type="button"
-                  onClick={() =>
-                    mutate((draft) => {
-                      const current = integrationConfig(draft, key);
-                      draft.integrations.integrations[key] = { ...current, enabled: !current.enabled };
-                    })
-                  }
-                >
-                  <Icon size={18} />
-                  <span>{label}</span>
-                  <strong>{item.enabled ? "ON" : "OFF"}</strong>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="settings-grid">
-            <Panel title="GitHub" icon={Github} subtitle="Pull requests in the compact HUD">
-              <Field label="Repos">
-                <TextArea
-                  value={config.integrations.integrations.github.repos.join("\n")}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.github.repos = lines(value)))}
-                />
-              </Field>
-              <Field label="Poll seconds">
-                <NumberInput
-                  value={config.integrations.integrations.github.poll_seconds}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.github.poll_seconds = value))}
-                />
-              </Field>
-              <Field label="Max pull requests">
-                <NumberInput
-                  value={config.integrations.integrations.github.max_pull_requests}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.github.max_pull_requests = value))}
-                />
-              </Field>
-              <Field label="Deploy signals">
-                <Switch
-                  checked={config.integrations.integrations.github.fetch_deployments}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.github.fetch_deployments = value))}
-                />
-              </Field>
-              <Field label="Deploy workflows">
-                <TextArea
-                  value={config.integrations.integrations.github.deployment_workflows.join("\n")}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.github.deployment_workflows = lines(value)))}
-                />
-              </Field>
-            </Panel>
-
-            <Panel title="Weather" icon={CloudSun} subtitle="Weather-like mood source">
-              <Field label="Provider">
-                <Select
-                  value={config.integrations.integrations.weather.provider}
-                  options={["open_meteo", "wttr_in", "openweathermap"]}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.weather.provider = value))}
-                />
-              </Field>
-              <Field label="City">
-                <TextInput
-                  value={config.integrations.integrations.weather.city}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.weather.city = value))}
-                />
-              </Field>
-              <Field label="Country code">
-                <TextInput
-                  value={config.integrations.integrations.weather.country_code}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.weather.country_code = value.toUpperCase()))}
-                />
-              </Field>
-              <Field label="Poll seconds">
-                <NumberInput
-                  value={config.integrations.integrations.weather.poll_seconds}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.weather.poll_seconds = value))}
-                />
-              </Field>
-              <Field label="Timeout seconds">
-                <NumberInput
-                  value={config.integrations.integrations.weather.timeout_seconds}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.weather.timeout_seconds = value))}
-                />
-              </Field>
-              <Field label="API key env">
-                <TextInput
-                  value={config.integrations.integrations.weather.api_key_env}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.weather.api_key_env = value))}
-                />
-              </Field>
-            </Panel>
-
-            <Panel title="PC Stats" icon={Cpu} subtitle="Local machine metrics for layout windows">
-              <Field label="Fields">
-                <TextInput
-                  value={config.integrations.integrations.pc_stats.fields.join(", ")}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.pc_stats.fields = csv(value)))}
-                />
-              </Field>
-              <Field label="Poll seconds">
-                <NumberInput
-                  value={config.integrations.integrations.pc_stats.poll_seconds}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.pc_stats.poll_seconds = clampNumber(value, 1, 300)))}
-                />
-              </Field>
-              <Field label="Disk path">
-                <TextInput
-                  value={config.integrations.integrations.pc_stats.disk_path}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.pc_stats.disk_path = value || "/"))}
-                />
-              </Field>
-              <Field label="Top processes">
-                <NumberInput
-                  value={config.integrations.integrations.pc_stats.top_process_count}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.pc_stats.top_process_count = clampNumber(value, 1, 5)))}
-                />
-              </Field>
-              <div className="field field-wide">
-                <span>Available fields</span>
-                <span className="empty-note">cpu, ram, top_ram_app, temperature, gpu, disk, uptime, battery, load</span>
-              </div>
-            </Panel>
-
-            <Panel title="Calendars" icon={CalendarDays} subtitle="Meeting encounters from Google Calendar or ICS">
-              <Field label="Google ICS URLs">
-                <TextArea
-                  value={config.integrations.integrations.google_calendar.ics_urls.join("\n")}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.google_calendar.ics_urls = lines(value)))}
-                />
-              </Field>
-              <Field label="Local ICS paths">
-                <TextArea
-                  value={config.integrations.integrations.ics.paths.join("\n")}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.ics.paths = lines(value)))}
-                />
-              </Field>
-            </Panel>
-
-            <Panel title="Discord" icon={Bot} subtitle="Local Gateway voice companions and channel access events">
-              <Field label="Bot token env">
-                <TextInput
-                  value={config.integrations.integrations.discord.bot_token_env}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.discord.bot_token_env = value))}
-                />
-              </Field>
-              <Field label="Server ID">
-                <TextInput
-                  value={config.integrations.integrations.discord.guild_id}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.discord.guild_id = digits(value)))}
-                />
-              </Field>
-              <Field label="My user ID">
-                <TextInput
-                  value={config.integrations.integrations.discord.focus_user_id}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.discord.focus_user_id = digits(value)))}
-                />
-              </Field>
-              <Field label="Companions">
-                <NumberInput
-                  value={config.integrations.integrations.discord.max_companions}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.discord.max_companions = clampNumber(value, 0, 30)))}
-                />
-              </Field>
-              <Field label="Reconnect seconds">
-                <NumberInput
-                  value={config.integrations.integrations.discord.gateway_reconnect_seconds}
-                  onChange={(value) =>
-                    mutate((draft) => void (draft.integrations.integrations.discord.gateway_reconnect_seconds = clampNumber(value, 1, 120)))
-                  }
-                />
-              </Field>
-              <Field label="Remember nicks">
-                <NumberInput
-                  value={discordPeopleConfig.max_recent}
-                  onChange={(value) =>
-                    mutate((draft) => {
-                      draft.discord_people = draft.discord_people ?? { discord_people: { max_recent: 50, people: {} } };
-                      draft.discord_people.discord_people.max_recent = clampNumber(value, 1, 200);
-                    })
-                  }
-                />
-              </Field>
-              <div className="field field-wide">
-                <span>Recent Discord people</span>
-                <div className="companion-list">
-                  {discordPeople.length ? (
-                    discordPeople.map(([userId, person]) => (
-                      <DiscordPersonRow key={userId} userId={userId} person={person} />
-                    ))
-                  ) : (
-                    <span className="empty-note">No Discord voice people seen yet.</span>
-                  )}
-                </div>
-              </div>
-            </Panel>
-
-            <Panel title="AI Usage" icon={Activity} subtitle="Ambient provider gauges">
-              <Field label="Providers">
-                <TextInput
-                  value={config.integrations.integrations.ai_usage.providers.join(", ")}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.ai_usage.providers = csv(value)))}
-                />
-              </Field>
-              <Field label="Monthly budget USD">
-                <NumberInput
-                  value={config.integrations.integrations.ai_usage.openai_api_monthly_budget_usd}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.ai_usage.openai_api_monthly_budget_usd = value))}
-                />
-              </Field>
-              <Field label="Thresholds">
-                <TextInput
-                  value={config.integrations.integrations.ai_usage.thresholds.join(", ")}
-                  onChange={(value) => mutate((draft) => void (draft.integrations.integrations.ai_usage.thresholds = csv(value).map(Number).filter(Number.isFinite)))}
-                />
-              </Field>
-            </Panel>
-          </div>
-        </section>
-
         <section id="people" className="wide-panel">
           <div className="section-heading">
             <Users size={20} />
@@ -706,132 +617,6 @@ export function App() {
           </button>
         </section>
 
-        {hasPokemonPlugin && game && pokemon && aiSelector && config.pokemon_companions ? (
-        <section id="pokemon" className="panel-grid">
-          <Panel title="Pokemon Scene" icon={Code2} subtitle="World loop and HUD tuning">
-            <Field label="Game FPS">
-              <NumberInput value={game.fps} onChange={(value) => mutate((draft) => void (draft.game!.game.fps = value))} />
-            </Field>
-            <Field label="Map switch seconds">
-              <NumberInput
-                value={game.map_switch_seconds}
-                onChange={(value) => mutate((draft) => void (draft.game!.game.map_switch_seconds = value))}
-              />
-            </Field>
-            <Field label="Route speed px">
-              <NumberInput value={game.route_speed_px} onChange={(value) => mutate((draft) => void (draft.game!.game.route_speed_px = value))} />
-            </Field>
-            <Field label="HUD height">
-              <NumberInput value={game.hud_height} onChange={(value) => mutate((draft) => void (draft.game!.game.hud_height = value))} />
-            </Field>
-            <Field label="Static background">
-              <Switch
-                checked={game.static_background}
-                onChange={(value) => mutate((draft) => void (draft.game!.game.static_background = value))}
-              />
-            </Field>
-            <Field label="Mock events">
-              <Switch checked={game.events.mock_events} onChange={(value) => mutate((draft) => void (draft.game!.game.events.mock_events = value))} />
-            </Field>
-          </Panel>
-
-          <Panel title="Pokemon Companions" icon={Users} subtitle="Visual mapping for recent Discord people">
-            <div className="field field-wide">
-              <span>Discord sprites</span>
-              <div className="companion-list">
-                {discordPeople.length ? (
-                  discordPeople.map(([userId, person]) => (
-                    <CompanionSpriteRow
-                      key={userId}
-                      userId={userId}
-                      person={person}
-                      visual={config.pokemon_companions!.companions.discord[userId]}
-                      onSprite={(sprite_variant) =>
-                        mutate((draft) => {
-                          const current = draft.pokemon_companions!.companions.discord[userId] ?? { sprite_variant: null, label: "" };
-                          draft.pokemon_companions!.companions.discord[userId] = { ...current, sprite_variant };
-                        })
-                      }
-                      onLabel={(label) =>
-                        mutate((draft) => {
-                          const current = draft.pokemon_companions!.companions.discord[userId] ?? { sprite_variant: null, label: "" };
-                          draft.pokemon_companions!.companions.discord[userId] = { ...current, label };
-                        })
-                      }
-                    />
-                  ))
-                ) : (
-                  <span className="empty-note">Discord people will appear here after voice activity.</span>
-                )}
-              </div>
-            </div>
-          </Panel>
-
-          <Panel title="Pokemon AI Selector" icon={Bot} subtitle="Throttled Pokemon-specific AI selection">
-            <Field label="Selector enabled">
-              <Switch checked={aiSelector.enabled} onChange={(value) => mutate((draft) => void (draft.game!.game.events.ai_selector.enabled = value))} />
-            </Field>
-            <Field label="Async">
-              <Switch checked={aiSelector.async} onChange={(value) => mutate((draft) => void (draft.game!.game.events.ai_selector.async = value))} />
-            </Field>
-            <Field label="Ambient calls">
-              <Switch checked={aiSelector.ambient} onChange={(value) => mutate((draft) => void (draft.game!.game.events.ai_selector.ambient = value))} />
-            </Field>
-            <Field label="Candidate limit">
-              <NumberInput
-                value={aiSelector.candidate_limit}
-                onChange={(value) => mutate((draft) => void (draft.game!.game.events.ai_selector.candidate_limit = value))}
-              />
-            </Field>
-            <Field label="Cooldown seconds">
-              <NumberInput
-                value={aiSelector.throttle.cooldown_seconds}
-                onChange={(value) => mutate((draft) => void (draft.game!.game.events.ai_selector.throttle.cooldown_seconds = value))}
-              />
-            </Field>
-            <Field label="Requests per window">
-              <NumberInput
-                value={aiSelector.throttle.max_requests_per_window}
-                onChange={(value) => mutate((draft) => void (draft.game!.game.events.ai_selector.throttle.max_requests_per_window = value))}
-              />
-            </Field>
-          </Panel>
-
-          <Panel title="Pokemon Data" icon={Cpu} subtitle="PokeAPI, sprite cache and generation bounds">
-            <Field label="Generation limit">
-              <NumberInput
-                value={pokemon.generation_limit}
-                onChange={(value) => mutate((draft) => void (draft.pokemon!.pokemon.generation_limit = value))}
-              />
-            </Field>
-            <Field label="Sprite style">
-              <Select
-                value={pokemon.sprite_style}
-                options={["animated", "front_default", "official-artwork"]}
-                onChange={(value) => mutate((draft) => void (draft.pokemon!.pokemon.sprite_style = value))}
-              />
-            </Field>
-            <Field label="Lazy download">
-              <Switch
-                checked={pokemon.lazy_download}
-                onChange={(value) => mutate((draft) => void (draft.pokemon!.pokemon.lazy_download = value))}
-              />
-            </Field>
-            <Field label="Offline mode">
-              <Switch checked={pokemon.offline} onChange={(value) => mutate((draft) => void (draft.pokemon!.pokemon.offline = value))} />
-            </Field>
-            <Field label="Network timeout">
-              <NumberInput
-                value={pokemon.network_timeout_seconds}
-                onChange={(value) => mutate((draft) => void (draft.pokemon!.pokemon.network_timeout_seconds = value))}
-              />
-            </Field>
-            <Field label="Cache dir">
-              <TextInput value={pokemon.cache_dir} onChange={(value) => mutate((draft) => void (draft.pokemon!.pokemon.cache_dir = value))} />
-            </Field>
-          </Panel>
-        </section>
-        ) : null}
       </main>
       )}
 
@@ -879,7 +664,7 @@ function LayoutPreview({
   const display = config.display.display;
   const frameWidth = display.width;
   const frameHeight = display.height;
-  const scale = Math.min(1.7, 520 / Math.max(frameWidth, 1), 560 / Math.max(frameHeight, 1));
+  const scale = 1;
   const [gridEnabled, setGridEnabled] = useState(false);
   const [gridSize, setGridSize] = useState(8);
   const [addKind, setAddKind] = useState(options[0]?.kind ?? "activity");
@@ -1130,6 +915,54 @@ function Metric({ icon: Icon, label, value }: { icon: IconComponent; label: stri
   );
 }
 
+function RuntimePanel({
+  status,
+  busy,
+  onCheck,
+  onPreview,
+  onStartWindow,
+  onStopWindow,
+}: {
+  status: RuntimeStatus | null;
+  busy: string | null;
+  onCheck: () => void;
+  onPreview: () => void;
+  onStartWindow: () => void;
+  onStopWindow: () => void;
+}) {
+  const logs = status?.logs ?? [];
+  return (
+    <section id="runtime" className="wide-panel runtime-panel">
+      <div className="section-heading">
+        <Terminal size={20} />
+        <div>
+          <h2>Runtime</h2>
+          <p>{status?.running ? `Window mode running · pid ${status.pid ?? "-"}` : "Window mode stopped"}</p>
+        </div>
+      </div>
+      <div className="runtime-actions">
+        <button className="primary-button" type="button" disabled={busy !== null} onClick={onCheck}>
+          <Terminal size={16} />
+          Check
+        </button>
+        <button className="primary-button" type="button" disabled={busy !== null} onClick={onPreview}>
+          <FileImage size={16} />
+          Preview
+        </button>
+        <button className="secondary-button" type="button" disabled={busy !== null || Boolean(status?.running)} onClick={onStartWindow}>
+          <Play size={16} />
+          Start window
+        </button>
+        <button className="secondary-button" type="button" disabled={busy !== null || !status?.running} onClick={onStopWindow}>
+          <Square size={16} />
+          Stop window
+        </button>
+      </div>
+      <pre className="runtime-log">{logs.length ? logs.join("\n") : "No runtime logs yet."}</pre>
+    </section>
+  );
+}
+
 function PluginCard({ plugin, selected, onToggle }: { plugin: DetectedPlugin; selected: boolean; onToggle: () => void }) {
   const Icon = visualPluginIcons[plugin.key] ?? Code2;
   return (
@@ -1138,6 +971,594 @@ function PluginCard({ plugin, selected, onToggle }: { plugin: DetectedPlugin; se
       <span>{plugin.label}</span>
       <strong>{selected ? `${plugin.configKeys.length} configs` : "OFF"}</strong>
     </button>
+  );
+}
+
+function SettingsTabs({
+  tabs,
+  activeKey,
+  onSelect,
+  children,
+}: {
+  tabs: SettingsTabItem[];
+  activeKey: string;
+  onSelect: (key: string) => void;
+  children: ReactNode;
+}) {
+  if (!tabs.length) {
+    return <div className="empty-plugin-tab">Enable a plugin or integration to edit settings.</div>;
+  }
+  const activeTab = tabs.find((tab) => tab.key === activeKey);
+  return (
+    <div className="plugin-tabs">
+      <div className="plugin-tab-list" role="tablist" aria-label="Plugin and integration settings">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          const selected = tab.key === activeKey;
+          return (
+            <button
+              key={tab.key}
+              role="tab"
+              aria-selected={selected}
+              className={`${selected ? "is-active" : ""} ${tab.tone === "integration" ? "is-integration" : ""}`}
+              type="button"
+              onClick={() => onSelect(tab.key)}
+            >
+              <Icon size={16} />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
+      <div className={`plugin-tab-panel ${activeTab?.tone === "integration" ? "is-integration-panel" : ""}`} role="tabpanel">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function IntegrationPanel({
+  activeKey,
+  config,
+  discordPeople,
+  discordPeopleConfig,
+  onMutate,
+}: {
+  activeKey: string;
+  config: RuntimeConfig;
+  discordPeople: Array<[string, DiscordPersonConfig]>;
+  discordPeopleConfig: { max_recent: number; people: Record<string, DiscordPersonConfig> };
+  onMutate: (mutator: (draft: RuntimeConfig) => void) => void;
+}) {
+  if (activeKey === "github") {
+    return (
+      <Panel title="GitHub" icon={Github} subtitle="Pull requests in the compact HUD">
+        <Field label="Repos">
+          <TextArea
+            value={config.integrations.integrations.github.repos.join("\n")}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.repos = lines(value)))}
+          />
+        </Field>
+        <Field label="Poll seconds">
+          <NumberInput
+            value={config.integrations.integrations.github.poll_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.poll_seconds = value))}
+          />
+        </Field>
+        <Field label="Max pull requests">
+          <NumberInput
+            value={config.integrations.integrations.github.max_pull_requests}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.max_pull_requests = value))}
+          />
+        </Field>
+        <Field label="Deploy signals">
+          <Switch
+            checked={config.integrations.integrations.github.fetch_deployments}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.fetch_deployments = value))}
+          />
+        </Field>
+        <Field label="Deploy workflows">
+          <TextArea
+            value={config.integrations.integrations.github.deployment_workflows.join("\n")}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.deployment_workflows = lines(value)))}
+          />
+        </Field>
+      </Panel>
+    );
+  }
+
+  if (activeKey === "weather") {
+    return (
+      <Panel title="Weather" icon={CloudSun} subtitle="Weather-like mood source">
+        <Field label="Provider">
+          <Select
+            value={config.integrations.integrations.weather.provider}
+            options={["open_meteo", "wttr_in", "openweathermap"]}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.weather.provider = value))}
+          />
+        </Field>
+        <Field label="City">
+          <TextInput
+            value={config.integrations.integrations.weather.city}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.weather.city = value))}
+          />
+        </Field>
+        <Field label="Country code">
+          <TextInput
+            value={config.integrations.integrations.weather.country_code}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.weather.country_code = value.toUpperCase()))}
+          />
+        </Field>
+        <Field label="Poll seconds">
+          <NumberInput
+            value={config.integrations.integrations.weather.poll_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.weather.poll_seconds = value))}
+          />
+        </Field>
+        <Field label="Timeout seconds">
+          <NumberInput
+            value={config.integrations.integrations.weather.timeout_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.weather.timeout_seconds = value))}
+          />
+        </Field>
+        <Field label="API key env">
+          <TextInput
+            value={config.integrations.integrations.weather.api_key_env}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.weather.api_key_env = value))}
+          />
+        </Field>
+      </Panel>
+    );
+  }
+
+  if (activeKey === "pc_stats") {
+    return (
+      <Panel title="PC Stats" icon={Cpu} subtitle="Local machine metrics for layout windows">
+        <Field label="Fields">
+          <TextInput
+            value={config.integrations.integrations.pc_stats.fields.join(", ")}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.pc_stats.fields = csv(value)))}
+          />
+        </Field>
+        <Field label="Poll seconds">
+          <NumberInput
+            value={config.integrations.integrations.pc_stats.poll_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.pc_stats.poll_seconds = clampNumber(value, 1, 300)))}
+          />
+        </Field>
+        <Field label="Disk path">
+          <TextInput
+            value={config.integrations.integrations.pc_stats.disk_path}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.pc_stats.disk_path = value || "/"))}
+          />
+        </Field>
+        <Field label="Top processes">
+          <NumberInput
+            value={config.integrations.integrations.pc_stats.top_process_count}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.pc_stats.top_process_count = clampNumber(value, 1, 5)))}
+          />
+        </Field>
+        <div className="field field-wide">
+          <span>Available fields</span>
+          <span className="empty-note">cpu, ram, top_ram_app, temperature, gpu, disk, uptime, battery, load</span>
+        </div>
+      </Panel>
+    );
+  }
+
+  if (activeKey === "clickup") {
+    return (
+      <Panel title="ClickUp" icon={Check} subtitle="Assigned dated tasks for the task HUD">
+        <Field label="Token env">
+          <TextInput
+            value={config.integrations.integrations.clickup.token_env}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.token_env = value))}
+          />
+        </Field>
+        <Field label="Workspace ID">
+          <TextInput
+            value={config.integrations.integrations.clickup.team_id}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.team_id = digits(value)))}
+          />
+        </Field>
+        <Field label="Assignee ID">
+          <TextInput
+            value={config.integrations.integrations.clickup.assignee_id}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.assignee_id = digits(value)))}
+          />
+        </Field>
+        <Field label="Poll seconds">
+          <NumberInput
+            value={config.integrations.integrations.clickup.poll_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.poll_seconds = clampNumber(value, 30, 3600)))}
+          />
+        </Field>
+        <Field label="Max tasks">
+          <NumberInput
+            value={config.integrations.integrations.clickup.max_tasks}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.max_tasks = clampNumber(value, 1, 12)))}
+          />
+        </Field>
+        <Field label="Due within days">
+          <NumberInput
+            value={config.integrations.integrations.clickup.due_within_days}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.due_within_days = clampNumber(value, 1, 90)))}
+          />
+        </Field>
+        <Field label="Overdue">
+          <Switch
+            checked={config.integrations.integrations.clickup.include_overdue}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.include_overdue = value))}
+          />
+        </Field>
+        <Field label="Subtasks">
+          <Switch
+            checked={config.integrations.integrations.clickup.include_subtasks}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.include_subtasks = value))}
+          />
+        </Field>
+        <Field label="Closed">
+          <Switch
+            checked={config.integrations.integrations.clickup.include_closed}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.include_closed = value))}
+          />
+        </Field>
+      </Panel>
+    );
+  }
+
+  if (activeKey === "google_calendar") {
+    return (
+      <Panel title="Google Calendar" icon={CalendarDays} subtitle="Meeting encounters from shared ICS URLs">
+        <Field label="Google ICS URLs">
+          <TextArea
+            value={config.integrations.integrations.google_calendar.ics_urls.join("\n")}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.google_calendar.ics_urls = lines(value)))}
+          />
+        </Field>
+      </Panel>
+    );
+  }
+
+  if (activeKey === "ics") {
+    return (
+      <Panel title="ICS" icon={CalendarDays} subtitle="Meeting encounters from local calendar files">
+        <Field label="Local ICS paths">
+          <TextArea
+            value={config.integrations.integrations.ics.paths.join("\n")}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.ics.paths = lines(value)))}
+          />
+        </Field>
+      </Panel>
+    );
+  }
+
+  if (activeKey === "discord") {
+    return (
+      <Panel title="Discord" icon={Bot} subtitle="Local Gateway voice companions and channel access events">
+        <Field label="Bot token env">
+          <TextInput
+            value={config.integrations.integrations.discord.bot_token_env}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.bot_token_env = value))}
+          />
+        </Field>
+        <Field label="Server ID">
+          <TextInput
+            value={config.integrations.integrations.discord.guild_id}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.guild_id = digits(value)))}
+          />
+        </Field>
+        <Field label="My user ID">
+          <TextInput
+            value={config.integrations.integrations.discord.focus_user_id}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.focus_user_id = digits(value)))}
+          />
+        </Field>
+        <Field label="Companions">
+          <NumberInput
+            value={config.integrations.integrations.discord.max_companions}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.max_companions = clampNumber(value, 0, 30)))}
+          />
+        </Field>
+        <Field label="Reconnect seconds">
+          <NumberInput
+            value={config.integrations.integrations.discord.gateway_reconnect_seconds}
+            onChange={(value) =>
+              onMutate((draft) => void (draft.integrations.integrations.discord.gateway_reconnect_seconds = clampNumber(value, 1, 120)))
+            }
+          />
+        </Field>
+        <Field label="Remember nicks">
+          <NumberInput
+            value={discordPeopleConfig.max_recent}
+            onChange={(value) =>
+              onMutate((draft) => {
+                draft.discord_people = draft.discord_people ?? { discord_people: { max_recent: 50, people: {} } };
+                draft.discord_people.discord_people.max_recent = clampNumber(value, 1, 200);
+              })
+            }
+          />
+        </Field>
+        <div className="field field-wide">
+          <span>Recent Discord people</span>
+          <div className="companion-list">
+            {discordPeople.length ? (
+              discordPeople.map(([userId, person]) => (
+                <DiscordPersonRow key={userId} userId={userId} person={person} />
+              ))
+            ) : (
+              <span className="empty-note">No Discord voice people seen yet.</span>
+            )}
+          </div>
+        </div>
+      </Panel>
+    );
+  }
+
+  if (activeKey === "ai_usage") {
+    return (
+      <Panel title="AI Usage" icon={Activity} subtitle="Ambient provider gauges">
+        <Field label="Providers">
+          <TextInput
+            value={config.integrations.integrations.ai_usage.providers.join(", ")}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.ai_usage.providers = csv(value)))}
+          />
+        </Field>
+        <Field label="Monthly budget USD">
+          <NumberInput
+            value={config.integrations.integrations.ai_usage.openai_api_monthly_budget_usd}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.ai_usage.openai_api_monthly_budget_usd = value))}
+          />
+        </Field>
+        <Field label="Thresholds">
+          <TextInput
+            value={config.integrations.integrations.ai_usage.thresholds.join(", ")}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.ai_usage.thresholds = csv(value).map(Number).filter(Number.isFinite)))}
+          />
+        </Field>
+      </Panel>
+    );
+  }
+
+  if (activeKey === "slack") {
+    const channelCount = Object.keys(config.integrations.integrations.slack.channels ?? {}).length;
+    return (
+      <Panel title="Slack" icon={Bot} subtitle="Socket Mode signals normalized into ambient activity">
+        <Field label="App token env">
+          <TextInput
+            value={config.integrations.integrations.slack.app_token_env}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.slack.app_token_env = value))}
+          />
+        </Field>
+        <Field label="Bot token env">
+          <TextInput
+            value={config.integrations.integrations.slack.bot_token_env}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.slack.bot_token_env = value))}
+          />
+        </Field>
+        <Field label="Bot user ID">
+          <TextInput
+            value={config.integrations.integrations.slack.bot_user_id}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.slack.bot_user_id = value))}
+          />
+        </Field>
+        <Field label="Reconnect seconds">
+          <NumberInput
+            value={config.integrations.integrations.slack.socket_reconnect_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.slack.socket_reconnect_seconds = clampNumber(value, 1, 120)))}
+          />
+        </Field>
+        <Field label="Activity window">
+          <NumberInput
+            value={config.integrations.integrations.slack.activity_window_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.slack.activity_window_seconds = clampNumber(value, 10, 3600)))}
+          />
+        </Field>
+        <Field label="Activity threshold">
+          <NumberInput
+            value={config.integrations.integrations.slack.activity_threshold}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.slack.activity_threshold = clampNumber(value, 1, 200)))}
+          />
+        </Field>
+        <Field label="Cooldown seconds">
+          <NumberInput
+            value={config.integrations.integrations.slack.activity_cooldown_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.slack.activity_cooldown_seconds = clampNumber(value, 0, 7200)))}
+          />
+        </Field>
+        <Field label="Summary window">
+          <NumberInput
+            value={config.integrations.integrations.slack.summary_window_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.slack.summary_window_seconds = clampNumber(value, 60, 7200)))}
+          />
+        </Field>
+        <div className="field field-wide">
+          <span>Channel rules</span>
+          <span className="empty-note">{channelCount} configured channel rules. JSON editing can stay in integrations config for now.</span>
+        </div>
+      </Panel>
+    );
+  }
+
+  return (
+    <div className="empty-plugin-tab empty-provider-tab">
+      <Code2 size={18} />
+      <span>No editable runtime settings are registered for this integration yet.</span>
+    </div>
+  );
+}
+
+function PokemonPluginPanels({
+  game,
+  pokemon,
+  aiSelector,
+  config,
+  discordPeople,
+  spriteVariants,
+  onMutate,
+}: {
+  game: PokemonGameConfig;
+  pokemon: PokemonDataConfig;
+  aiSelector: PokemonAiSelectorConfig;
+  config: RuntimeConfig;
+  discordPeople: Array<[string, DiscordPersonConfig]>;
+  spriteVariants: number[];
+  onMutate: (mutator: (draft: RuntimeConfig) => void) => void;
+}) {
+  const [activePanel, setActivePanel] = useState<PokemonPanelKey>("scene");
+  const tabs: Array<{ key: PokemonPanelKey; label: string; icon: IconComponent }> = [
+    { key: "scene", label: "Scene", icon: Code2 },
+    { key: "companions", label: "Companions", icon: Users },
+    { key: "ai", label: "AI Selector", icon: Bot },
+    { key: "data", label: "Data", icon: Cpu },
+  ];
+
+  return (
+    <div className="plugin-subtabs">
+      <div className="plugin-tab-list plugin-subtab-list" role="tablist" aria-label="Pokemon settings">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          const selected = tab.key === activePanel;
+          return (
+            <button
+              key={tab.key}
+              role="tab"
+              aria-selected={selected}
+              className={selected ? "is-active" : ""}
+              type="button"
+              onClick={() => setActivePanel(tab.key)}
+            >
+              <Icon size={16} />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
+      <div className="plugin-subtab-panel" role="tabpanel">
+        {activePanel === "scene" ? (
+          <Panel title="Pokemon Scene" icon={Code2} subtitle="World loop and HUD tuning">
+            <Field label="Game FPS">
+              <NumberInput value={game.fps} onChange={(value) => onMutate((draft) => void (draft.game!.game.fps = value))} />
+            </Field>
+            <Field label="Map switch seconds">
+              <NumberInput
+                value={game.map_switch_seconds}
+                onChange={(value) => onMutate((draft) => void (draft.game!.game.map_switch_seconds = value))}
+              />
+            </Field>
+            <Field label="Route speed px">
+              <NumberInput value={game.route_speed_px} onChange={(value) => onMutate((draft) => void (draft.game!.game.route_speed_px = value))} />
+            </Field>
+            <Field label="HUD height">
+              <NumberInput value={game.hud_height} onChange={(value) => onMutate((draft) => void (draft.game!.game.hud_height = value))} />
+            </Field>
+            <Field label="Static background">
+              <Switch checked={game.static_background} onChange={(value) => onMutate((draft) => void (draft.game!.game.static_background = value))} />
+            </Field>
+            <Field label="Mock events">
+              <Switch checked={game.events.mock_events} onChange={(value) => onMutate((draft) => void (draft.game!.game.events.mock_events = value))} />
+            </Field>
+          </Panel>
+        ) : null}
+
+        {activePanel === "companions" ? (
+          <Panel title="Pokemon Companions" icon={Users} subtitle="Visual mapping for recent Discord people">
+            <div className="field field-wide">
+              <span>Discord sprites</span>
+              <div className="companion-list">
+                {discordPeople.length ? (
+                  discordPeople.map(([userId, person]) => (
+                    <CompanionSpriteRow
+                      key={userId}
+                      userId={userId}
+                      person={person}
+                      visual={config.pokemon_companions!.companions.discord[userId]}
+                      spriteVariants={spriteVariants}
+                      onSprite={(sprite_variant) =>
+                        onMutate((draft) => {
+                          const current = draft.pokemon_companions!.companions.discord[userId] ?? { sprite_variant: null, label: "" };
+                          draft.pokemon_companions!.companions.discord[userId] = { ...current, sprite_variant };
+                        })
+                      }
+                      onLabel={(label) =>
+                        onMutate((draft) => {
+                          const current = draft.pokemon_companions!.companions.discord[userId] ?? { sprite_variant: null, label: "" };
+                          draft.pokemon_companions!.companions.discord[userId] = { ...current, label };
+                        })
+                      }
+                    />
+                  ))
+                ) : (
+                  <span className="empty-note">Discord people will appear here after voice activity.</span>
+                )}
+              </div>
+            </div>
+          </Panel>
+        ) : null}
+
+        {activePanel === "ai" ? (
+          <Panel title="Pokemon AI Selector" icon={Bot} subtitle="Throttled Pokemon-specific AI selection">
+            <Field label="Selector enabled">
+              <Switch checked={aiSelector.enabled} onChange={(value) => onMutate((draft) => void (draft.game!.game.events.ai_selector.enabled = value))} />
+            </Field>
+            <Field label="Async">
+              <Switch checked={aiSelector.async} onChange={(value) => onMutate((draft) => void (draft.game!.game.events.ai_selector.async = value))} />
+            </Field>
+            <Field label="Ambient calls">
+              <Switch checked={aiSelector.ambient} onChange={(value) => onMutate((draft) => void (draft.game!.game.events.ai_selector.ambient = value))} />
+            </Field>
+            <Field label="Candidate limit">
+              <NumberInput
+                value={aiSelector.candidate_limit}
+                onChange={(value) => onMutate((draft) => void (draft.game!.game.events.ai_selector.candidate_limit = value))}
+              />
+            </Field>
+            <Field label="Cooldown seconds">
+              <NumberInput
+                value={aiSelector.throttle.cooldown_seconds}
+                onChange={(value) => onMutate((draft) => void (draft.game!.game.events.ai_selector.throttle.cooldown_seconds = value))}
+              />
+            </Field>
+            <Field label="Requests per window">
+              <NumberInput
+                value={aiSelector.throttle.max_requests_per_window}
+                onChange={(value) => onMutate((draft) => void (draft.game!.game.events.ai_selector.throttle.max_requests_per_window = value))}
+              />
+            </Field>
+          </Panel>
+        ) : null}
+
+        {activePanel === "data" ? (
+          <Panel title="Pokemon Data" icon={Cpu} subtitle="PokeAPI, sprite cache and generation bounds">
+            <Field label="Generation limit">
+              <NumberInput value={pokemon.generation_limit} onChange={(value) => onMutate((draft) => void (draft.pokemon!.pokemon.generation_limit = value))} />
+            </Field>
+            <Field label="Sprite style">
+              <Select
+                value={pokemon.sprite_style}
+                options={["animated", "front_default", "official-artwork"]}
+                onChange={(value) => onMutate((draft) => void (draft.pokemon!.pokemon.sprite_style = value))}
+              />
+            </Field>
+            <Field label="Lazy download">
+              <Switch checked={pokemon.lazy_download} onChange={(value) => onMutate((draft) => void (draft.pokemon!.pokemon.lazy_download = value))} />
+            </Field>
+            <Field label="Offline mode">
+              <Switch checked={pokemon.offline} onChange={(value) => onMutate((draft) => void (draft.pokemon!.pokemon.offline = value))} />
+            </Field>
+            <Field label="Network timeout">
+              <NumberInput
+                value={pokemon.network_timeout_seconds}
+                onChange={(value) => onMutate((draft) => void (draft.pokemon!.pokemon.network_timeout_seconds = value))}
+              />
+            </Field>
+            <Field label="Cache dir">
+              <TextInput value={pokemon.cache_dir} onChange={(value) => onMutate((draft) => void (draft.pokemon!.pokemon.cache_dir = value))} />
+            </Field>
+          </Panel>
+        ) : null}
+      </div>
+    </div>
   );
 }
 
@@ -1534,19 +1955,22 @@ function CompanionSpriteRow({
   userId,
   person,
   visual,
+  spriteVariants,
   onSprite,
   onLabel,
 }: {
   userId: string;
   person: DiscordPersonConfig;
   visual?: { sprite_variant: number | null; label: string };
+  spriteVariants: number[];
   onSprite: (spriteVariant: number | null) => void;
   onLabel: (label: string) => void;
 }) {
   const [open, setOpen] = useState(false);
   const nicknames = person.nicknames.length ? person.nicknames.join(", ") : userId;
   const selected = visual?.sprite_variant ?? null;
-  const activeVariant = selected ?? Math.abs(hashString(userId)) % discordSpriteVariants.length;
+  const variants = spriteVariants.length ? spriteVariants : fallbackDiscordSpriteVariants;
+  const activeVariant = selected ?? variants[Math.abs(hashString(userId)) % variants.length];
   function choose(spriteVariant: number | null) {
     onSprite(spriteVariant);
     setOpen(false);
@@ -1578,7 +2002,7 @@ function CompanionSpriteRow({
               <button className={`sprite-option sprite-auto ${selected == null ? "is-selected" : ""}`} type="button" onClick={() => choose(null)}>
                 Auto
               </button>
-              {discordSpriteVariants.map((variant) => (
+              {variants.map((variant) => (
                 <button
                   className={`sprite-option ${selected === variant ? "is-selected" : ""}`}
                   key={variant}
@@ -1778,11 +2202,21 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
     preview_sequence: false,
     full_frame: false,
   };
+  display.device.thermalright = display.device.thermalright ?? defaultThermalrightDeviceConfig();
   if (!display.layout || typeof display.layout !== "object") {
     display.layout = defaultLayoutFor(display.width, display.height);
   }
   next.integrations.integrations.github.fetch_deployments = next.integrations.integrations.github.fetch_deployments ?? true;
   next.integrations.integrations.github.deployment_workflows = next.integrations.integrations.github.deployment_workflows ?? [];
+  next.integrations.integrations.slack.app_token_env = next.integrations.integrations.slack.app_token_env ?? "PIXEL_OPS_SLACK_APP_TOKEN";
+  next.integrations.integrations.slack.bot_token_env = next.integrations.integrations.slack.bot_token_env ?? "PIXEL_OPS_SLACK_BOT_TOKEN";
+  next.integrations.integrations.slack.bot_user_id = next.integrations.integrations.slack.bot_user_id ?? "";
+  next.integrations.integrations.slack.socket_reconnect_seconds = next.integrations.integrations.slack.socket_reconnect_seconds ?? 10;
+  next.integrations.integrations.slack.activity_window_seconds = next.integrations.integrations.slack.activity_window_seconds ?? 120;
+  next.integrations.integrations.slack.activity_threshold = next.integrations.integrations.slack.activity_threshold ?? 5;
+  next.integrations.integrations.slack.activity_cooldown_seconds = next.integrations.integrations.slack.activity_cooldown_seconds ?? 300;
+  next.integrations.integrations.slack.summary_window_seconds = next.integrations.integrations.slack.summary_window_seconds ?? 900;
+  next.integrations.integrations.slack.channels = next.integrations.integrations.slack.channels ?? {};
   next.integrations.integrations.weather.provider = next.integrations.integrations.weather.provider ?? "open_meteo";
   next.integrations.integrations.weather.timeout_seconds = next.integrations.integrations.weather.timeout_seconds ?? 8;
   next.integrations.integrations.weather.api_key_env = next.integrations.integrations.weather.api_key_env ?? "OPENWEATHERMAP_API_KEY";
@@ -1797,6 +2231,29 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
   next.integrations.integrations.pc_stats.poll_seconds = next.integrations.integrations.pc_stats.poll_seconds ?? 5;
   next.integrations.integrations.pc_stats.top_process_count = next.integrations.integrations.pc_stats.top_process_count ?? 1;
   next.integrations.integrations.pc_stats.disk_path = next.integrations.integrations.pc_stats.disk_path ?? "/";
+  next.integrations.integrations.clickup = next.integrations.integrations.clickup ?? {
+    enabled: false,
+    token_env: "PIXEL_OPS_CLICKUP_TOKEN",
+    team_id: "",
+    assignee_id: "",
+    poll_seconds: 120,
+    max_tasks: 5,
+    due_within_days: 14,
+    include_overdue: true,
+    include_subtasks: true,
+    include_closed: false,
+    timeout_seconds: 10,
+  };
+  next.integrations.integrations.clickup.token_env = next.integrations.integrations.clickup.token_env ?? "PIXEL_OPS_CLICKUP_TOKEN";
+  next.integrations.integrations.clickup.team_id = next.integrations.integrations.clickup.team_id ?? "";
+  next.integrations.integrations.clickup.assignee_id = next.integrations.integrations.clickup.assignee_id ?? "";
+  next.integrations.integrations.clickup.poll_seconds = next.integrations.integrations.clickup.poll_seconds ?? 120;
+  next.integrations.integrations.clickup.max_tasks = next.integrations.integrations.clickup.max_tasks ?? 5;
+  next.integrations.integrations.clickup.due_within_days = next.integrations.integrations.clickup.due_within_days ?? 14;
+  next.integrations.integrations.clickup.include_overdue = next.integrations.integrations.clickup.include_overdue ?? true;
+  next.integrations.integrations.clickup.include_subtasks = next.integrations.integrations.clickup.include_subtasks ?? true;
+  next.integrations.integrations.clickup.include_closed = next.integrations.integrations.clickup.include_closed ?? false;
+  next.integrations.integrations.clickup.timeout_seconds = next.integrations.integrations.clickup.timeout_seconds ?? 10;
   next.integrations.integrations.discord.bot_token_env = next.integrations.integrations.discord.bot_token_env ?? "PIXEL_OPS_DISCORD_BOT_TOKEN";
   next.integrations.integrations.discord.guild_id = next.integrations.integrations.discord.guild_id ?? "";
   next.integrations.integrations.discord.focus_user_id = next.integrations.integrations.discord.focus_user_id ?? "";
@@ -1881,9 +2338,40 @@ function applyEquipment(config: RuntimeConfig, target: string) {
     display.height = option.height;
     display.layout = defaultLayoutFor(option.width, option.height);
   }
+  if (target === "thermalright") {
+    display.orientation = "vertical";
+    display.fps = Math.min(display.fps || 2, 2);
+    display.device.thermalright = display.device.thermalright ?? defaultThermalrightDeviceConfig();
+  }
+}
+
+function defaultThermalrightDeviceConfig() {
+  return {
+    vid: "0x0416",
+    pid: "0x5408",
+    timeout_ms: 5000,
+    jpeg_quality: 85,
+    image_width: 1920,
+    image_height: 462,
+    min_frame_interval_ms: 0,
+    packet_delay_ms: 0,
+    packet_size: 4096,
+    hard_reset_on_start: true,
+    hard_reset_wait_ms: 1500,
+    handshake_on_first_frame: false,
+    require_handshake: true,
+    send_start_init: true,
+    read_start_ack: true,
+    read_frame_ack: true,
+    start_retries: 0,
+    debug: false,
+  };
 }
 
 function defaultLayoutFor(width: number, height: number): Record<LayoutKey, LayoutBox> {
+  if (width >= 1600 && height <= 600) {
+    return defaultWideLayoutFor(width, height);
+  }
   const hudHeight = Math.min(212, Math.max(116, Math.round(height * 0.44)));
   const textHeight = Math.min(96, Math.max(62, Math.round(height * 0.19)));
   const gameY = hudHeight;
@@ -1900,6 +2388,26 @@ function defaultLayoutFor(width: number, height: number): Record<LayoutKey, Layo
     activity: { x: 8, y: lowerHudY, width: contentWidth, height: 40 },
     game: { x: 0, y: gameY, width, height: Math.max(1, textY - gameY - 4) },
     text_box: { x: 8, y: textY, width: Math.max(1, width - 16), height: Math.max(1, height - textY - 2) },
+  };
+}
+
+function defaultWideLayoutFor(width: number, height: number): Record<LayoutKey, LayoutBox> {
+  const margin = 24;
+  const topHeight = 74;
+  const bottomHeight = 72;
+  const gameY = topHeight + margin;
+  const gameHeight = Math.max(1, height - topHeight - bottomHeight - margin * 2);
+  const sideWidth = Math.round(width * 0.16);
+  const middleWidth = Math.max(1, width - sideWidth * 2 - margin * 4);
+  return {
+    timezones: { x: margin, y: 16, width: Math.round(width * 0.32), height: topHeight - 20 },
+    route_signal: { x: Math.round(width * 0.35), y: 16, width: Math.round(width * 0.16), height: topHeight - 20 },
+    gauges: { x: Math.round(width * 0.53), y: 16, width: Math.round(width * 0.16), height: topHeight - 20 },
+    weather: { x: Math.round(width * 0.71), y: 16, width: Math.round(width * 0.12), height: topHeight - 20 },
+    pc_stats: { x: Math.max(margin, width - Math.round(width * 0.14) - margin), y: 16, width: Math.round(width * 0.14), height: topHeight - 20 },
+    activity: { x: margin, y: height - bottomHeight + 8, width: Math.round(width * 0.44), height: bottomHeight - 18 },
+    game: { x: sideWidth + margin * 2, y: gameY, width: middleWidth, height: gameHeight },
+    text_box: { x: Math.round(width * 0.47), y: height - bottomHeight + 8, width: Math.max(1, Math.round(width * 0.53) - margin), height: bottomHeight - 18 },
   };
 }
 

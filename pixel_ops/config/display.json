@@ -1,30 +1,85 @@
 {
   "display": {
-    "width": 320,
-    "height": 480,
+    "width": 1920,
+    "height": 462,
     "orientation": "vertical",
     "device": {
-      "target": "window",
-      "output": "window",
+      "target": "thermalright",
+      "output": "thermalright",
       "window_scale": 2,
       "seconds": 20,
       "forever": true,
       "preview_sequence": false,
-      "full_frame": false
+      "full_frame": false,
+      "thermalright": {
+        "vid": "0x0416",
+        "pid": "0x5408",
+        "timeout_ms": 5000,
+        "jpeg_quality": 85,
+        "image_width": 1920,
+        "image_height": 462,
+        "min_frame_interval_ms": 0,
+        "packet_delay_ms": 0,
+        "packet_size": 4096,
+        "hard_reset_on_start": true,
+        "hard_reset_wait_ms": 1500,
+        "handshake_on_first_frame": false,
+        "require_handshake": true,
+        "send_start_init": true,
+        "read_start_ack": true,
+        "read_frame_ack": true,
+        "start_retries": 0,
+        "debug": false
+      }
     },
     "layout": {
-      "game": {
+      "timezones": {
         "x": 0,
         "y": 0,
-        "width": 320,
-        "height": 381
+        "width": 439,
+        "height": 248
+      },
+      "route_signal": {
+        "x": 648,
+        "y": 24,
+        "width": 304,
+        "height": 40
       },
       "gauges": {
-        "x": 0,
+        "x": 960,
+        "y": 88,
+        "width": 304,
+        "height": 56
+      },
+      "weather": {
+        "x": 960,
+        "y": 24,
+        "width": 232,
+        "height": 56
+      },
+      "pc_stats": {
+        "x": 648,
+        "y": 88,
+        "width": 280,
+        "height": 176
+      },
+      "activity": {
+        "x": 16,
+        "y": 272,
+        "width": 896,
+        "height": 40
+      },
+      "game": {
+        "x": 1272,
         "y": 0,
-        "width": 190,
-        "height": 37,
-        "kind": "gauges"
+        "width": 648,
+        "height": 344
+      },
+      "text_box": {
+        "x": 1352,
+        "y": 344,
+        "width": 448,
+        "height": 104
       }
     },
     "orientations": {
@@ -42,7 +97,7 @@
       }
     },
     "backend": "usb_bulk_rev_a",
-    "fps": 12,
+    "fps": 2,
     "preview_output": "pixel_ops/output/preview.png",
     "gif_output": "pixel_ops/output/preview.gif",
     "scanlines": false,

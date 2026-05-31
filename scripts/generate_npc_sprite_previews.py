@@ -10,7 +10,17 @@ if str(ROOT) not in sys.path:
 
 from PIL import Image
 
-from pixel_ops.plugins.pokemon.render.sprites import NpcSpriteSet
+from pixel_ops.plugins.pokemon.render.sprites import NEW_NPC_SPRITES_DIR, NPC_SHEET, NpcSpriteSet
+
+PREVIEW_FORMAT_VERSION = 2
+
+
+def source_mtime_ms() -> int:
+    paths = [ROOT / "pixel_ops/plugins/pokemon/assets/sprites/ash" / NPC_SHEET.name]
+    if NEW_NPC_SPRITES_DIR.exists():
+        paths.extend(sorted(NEW_NPC_SPRITES_DIR.glob("*.png")))
+    mtimes = [path.stat().st_mtime for path in paths if path.exists()]
+    return int(max(mtimes, default=0) * 1000)
 
 
 def main() -> int:
@@ -22,8 +32,8 @@ def main() -> int:
         frames = []
         for direction in directions:
             frame = sprites.frame(variant, direction, 0)
-            canvas = Image.new("RGBA", (40, 48), (0, 0, 0, 0))
-            canvas.alpha_composite(frame, ((canvas.width - frame.width) // 2, 3))
+            canvas = Image.new("RGBA", (max(40, frame.width), max(56, frame.height)), (0, 0, 0, 0))
+            canvas.alpha_composite(frame, ((canvas.width - frame.width) // 2, (canvas.height - frame.height) // 2))
             frames.append(canvas)
         frames[0].save(
             output_dir / f"{variant}.gif",
@@ -35,7 +45,16 @@ def main() -> int:
             transparency=0,
         )
     (output_dir / "manifest.json").write_text(
-        json.dumps({"count": sprites.count, "variants": list(range(sprites.count))}, indent=2) + "\n",
+        json.dumps(
+            {
+                "count": sprites.count,
+                "variants": list(range(sprites.count)),
+                "format_version": PREVIEW_FORMAT_VERSION,
+                "source_mtime_ms": source_mtime_ms(),
+            },
+            indent=2,
+        )
+        + "\n",
         encoding="utf-8",
     )
     return 0

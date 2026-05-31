@@ -4,7 +4,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
-from pixel_ops.render.fonts import font
+from pixel_ops.render.fonts import font, scaled_px
 from pixel_ops.render.renderer import PixelRenderer
 
 ASSET_DIR = Path(__file__).resolve().parents[1] / "assets/sprites/ash"
@@ -36,17 +36,17 @@ def draw_text_box(image: Image.Image, box: tuple[int, int, int, int], text: str,
         image.paste(asset, (x0, y0))
         text_fill = (248, 248, 248)
         cursor_fill = (248, 248, 248)
-        text_x = x0 + 12
-        text_y = y0 + TEXT_BOX_TEXT_TOP_PADDING
+        text_x = x0 + scaled_px(12)
+        text_y = y0 + text_box_top_padding()
     else:
         PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
         text_fill = pal.ink
         cursor_fill = pal.red
-        text_x = x0 + 12
-        text_y = y0 + TEXT_BOX_TEXT_TOP_PADDING
+        text_x = x0 + scaled_px(12)
+        text_y = y0 + text_box_top_padding()
 
     text_font = font(14)
-    max_text_width = x1 - text_x - 26
+    max_text_width = x1 - text_x - scaled_px(26)
     lines = wrap_text_lines(draw, text, text_font, max_text_width)
 
     y = text_y
@@ -54,11 +54,19 @@ def draw_text_box(image: Image.Image, box: tuple[int, int, int, int], text: str,
     visible_lines = _scroll_lines(lines, max_lines, frame)
     for line in visible_lines:
         draw.text((text_x, y), line, font=text_font, fill=text_fill)
-        y += TEXT_BOX_LINE_HEIGHT
+        y += text_box_line_height()
     if frame % 20 < 10:
-        cursor_y = min(y1 - TEXT_BOX_CURSOR_HEIGHT - 4, y + 1)
-        cursor_y = max(y0 + TEXT_BOX_TEXT_TOP_PADDING, cursor_y)
-        draw.polygon([(x1 - 24, cursor_y), (x1 - 14, cursor_y + 7), (x1 - 24, cursor_y + 14)], fill=cursor_fill)
+        cursor_h = text_box_cursor_height()
+        cursor_y = min(y1 - cursor_h - scaled_px(4), y + scaled_px(1))
+        cursor_y = max(y0 + text_box_top_padding(), cursor_y)
+        draw.polygon(
+            [
+                (x1 - scaled_px(24), cursor_y),
+                (x1 - scaled_px(14), cursor_y + cursor_h // 2),
+                (x1 - scaled_px(24), cursor_y + cursor_h),
+            ],
+            fill=cursor_fill,
+        )
 
 
 def _scroll_lines(lines: list[str], max_lines: int, frame: int) -> list[str]:
@@ -98,6 +106,22 @@ def wrap_text_lines(draw: ImageDraw.ImageDraw, text: str, text_font, max_text_wi
 
 def text_box_visible_lines(box: tuple[int, int, int, int], text: str, text_y: int | None = None) -> int:
     _, y0, _, y1 = box
-    first_line_y = text_y if text_y is not None else y0 + TEXT_BOX_TEXT_TOP_PADDING
-    available_height = max(0, y1 - first_line_y - TEXT_BOX_BOTTOM_PADDING)
-    return max(1, available_height // TEXT_BOX_LINE_HEIGHT)
+    first_line_y = text_y if text_y is not None else y0 + text_box_top_padding()
+    available_height = max(0, y1 - first_line_y - text_box_bottom_padding())
+    return max(1, available_height // text_box_line_height())
+
+
+def text_box_top_padding() -> int:
+    return scaled_px(TEXT_BOX_TEXT_TOP_PADDING)
+
+
+def text_box_line_height() -> int:
+    return scaled_px(TEXT_BOX_LINE_HEIGHT)
+
+
+def text_box_bottom_padding() -> int:
+    return scaled_px(TEXT_BOX_BOTTOM_PADDING)
+
+
+def text_box_cursor_height() -> int:
+    return scaled_px(TEXT_BOX_CURSOR_HEIGHT)

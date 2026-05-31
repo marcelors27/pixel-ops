@@ -14,6 +14,8 @@ class PersonTime:
     timezone: str
     local_time: datetime
     status: str
+    work_start: str = "09:00"
+    work_end: str = "18:00"
     country: str = ""
     timezone_label: str = ""
     display_key: str = ""
@@ -34,6 +36,8 @@ def build_people_times(people: list[dict], now: datetime | None = None) -> list[
                 timezone=person["timezone"],
                 local_time=local,
                 status=status_for(local, person.get("work_start", "09:00"), person.get("work_end", "18:00")),
+                work_start=person.get("work_start", "09:00"),
+                work_end=person.get("work_end", "18:00"),
                 country=person.get("country", ""),
                 timezone_label=person.get("timezone_label", person["timezone"].split("/")[-1].replace("_", " ")),
                 display_key=display_key,
