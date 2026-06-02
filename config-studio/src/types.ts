@@ -56,6 +56,40 @@ export type GitHubDevicePollResponse = {
   message?: string;
 };
 
+export type DiscordGuildOption = {
+  id: string;
+  name: string;
+  owner: boolean;
+  permissions: string;
+};
+
+export type DiscordOAuthStartResponse = {
+  state: string;
+  authorize_url: string;
+  redirect_uri: string;
+};
+
+export type DiscordOAuthStatusResponse = {
+  status: "pending" | "authorized" | "error";
+  message?: string;
+  token_env?: string;
+  user?: {
+    id: string;
+    username: string;
+    global_name?: string;
+  };
+  guilds?: DiscordGuildOption[];
+};
+
+export type DiscordProfileResponse = {
+  user: {
+    id: string;
+    username: string;
+    global_name?: string;
+  };
+  guilds: DiscordGuildOption[];
+};
+
 export type NpcSpriteManifest = {
   count: number;
   variants: number[];
@@ -154,6 +188,9 @@ export type RuntimeConfig = {
       };
       discord: IntegrationToggle & {
         bot_token_env: string;
+        client_id: string;
+        client_secret_env: string;
+        user_token_env: string;
         guild_id: string;
         focus_user_id: string;
         max_companions: number;

@@ -5,7 +5,8 @@ from pixel_ops.integration_plugins.base import IntegrationContext, IntegrationCo
 from pixel_ops.integrations.discord.client import DiscordGatewayClient
 from pixel_ops.integrations.discord.companions import DiscordCompanionStore
 from pixel_ops.integrations.discord.gateway import DiscordBusEventSource
-from pixel_ops.integrations.discord.voice_state import DiscordVoiceStateTracker
+from pixel_ops.integrations.discord.voice_state import DiscordCompanionSource, DiscordVoiceStateTracker
+from pixel_ops.state import PixelOpsStateStore
 
 
 class DiscordIntegrationPlugin:
@@ -19,7 +20,11 @@ class DiscordIntegrationPlugin:
         bus = EventBus(maxlen=int(ctx.config.get("integrations", {}).get("social_bus_limit", ctx.env_int("PIXEL_OPS_SOCIAL_BUS_LIMIT", 128))))
         bot_token_env = str(cfg.get("bot_token_env", "PIXEL_OPS_DISCORD_BOT_TOKEN"))
         guild_id = str(cfg.get("guild_id") or ctx.env_value("PIXEL_OPS_DISCORD_GUILD_ID", "") or "")
-        companion_store = DiscordCompanionStore(ctx.root_dir / "pixel_ops/config/discord_people.json")
+        state_store = PixelOpsStateStore(ctx.root_dir / "pixel_ops/state/pixel_ops.sqlite")
+        companion_store = DiscordCompanionStore(
+            ctx.root_dir / "pixel_ops/config/discord_people.json",
+            state_store=state_store,
+        )
         tracker = DiscordVoiceStateTracker(
             guild_id=guild_id,
             focus_user_id=str(cfg.get("focus_user_id") or ctx.env_value("PIXEL_OPS_DISCORD_FOCUS_USER_ID", "") or ""),
@@ -37,6 +42,7 @@ class DiscordIntegrationPlugin:
         )
         return IntegrationContribution(
             event_sources=[DiscordBusEventSource(bus, enabled=True, tracker=tracker)],
+            companion_source=DiscordCompanionSource(tracker),
             starters=[client.start],
             closers=[client.stop],
         )

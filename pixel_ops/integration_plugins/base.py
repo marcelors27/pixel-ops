@@ -48,6 +48,7 @@ class IntegrationContribution:
     pc_stats_source: Any | None = None
     task_source: Any | None = None
     media_source: Any | None = None
+    companion_source: Any | None = None
     closers: list[Callable[[], None]] = field(default_factory=list)
 
 
@@ -93,5 +94,10 @@ class NullTaskSource:
 
 
 class NullMediaSource:
+    def current(self, now: datetime | None = None):
+        return None
+
+
+class NullCompanionSource:
     def current(self, now: datetime | None = None):
         return None

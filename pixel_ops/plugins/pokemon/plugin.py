@@ -5,12 +5,13 @@ from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
 
-from pixel_ops.core import AIUsageSource, MediaSource, PCStatsSource, PixelOpsApp, PullRequestSource, TaskSource, WeatherSource
+from pixel_ops.core import AIUsageSource, CompanionSource, MediaSource, PCStatsSource, PixelOpsApp, PullRequestSource, TaskSource, WeatherSource
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.events.base import EventSource
 from pixel_ops.plugins.ai.plugin import AiDecisionPlugin
 from pixel_ops.plugins.pokemon.pokemon_api import PokeApiClient
 from pixel_ops.plugins.pokemon.scenes.overworld_scene import OverworldScene
+from pixel_ops.state import PixelOpsStateStore
 
 
 class PokemonPlugin:
@@ -55,17 +56,20 @@ class PokemonPlugin:
         fps: int,
         people_config: list[dict],
         next_event: Callable[[datetime], CalendarEvent | None],
+        today_events: Callable[[datetime], list[CalendarEvent]] | None,
         pull_request_source: PullRequestSource,
         weather_source: WeatherSource | None,
         ai_usage_source: AIUsageSource | None,
         pc_stats_source: PCStatsSource | None,
         task_source: TaskSource | None,
         media_source: MediaSource | None,
+        companion_source: CompanionSource | None,
         ai_plugin: AiDecisionPlugin | None,
         event_sources: list[EventSource],
     ) -> PixelOpsApp:
         pokemon_cfg = config["pokemon"]
         pokemon_api = self._pokemon_api(args, root_dir, pokemon_cfg)
+        state_store = PixelOpsStateStore(root_dir / "pixel_ops/state/pixel_ops.sqlite")
         scene = OverworldScene(
             width,
             height,
@@ -75,21 +79,24 @@ class PokemonPlugin:
             lazy_download=bool(pokemon_cfg.get("lazy_download", True)) and not self._offline(args, pokemon_cfg),
             scene_fps=fps,
             game_config=config["game"],
-            companion_config=config.get("companions", {}),
+            companion_config=_flatten_companion_config(config.get("companions", {})),
             display_layout=display_cfg.get("layout", {}),
             event_sources=event_sources,
             ai_plugin=ai_plugin,
+            capture_store=state_store,
         )
         return PixelOpsApp(
             scene=scene,
             people_config=people_config,
             next_event=next_event,
+            today_events=today_events,
             pull_request_source=pull_request_source,
             weather_source=weather_source,
             ai_usage_source=ai_usage_source,
             pc_stats_source=pc_stats_source,
             task_source=task_source,
             media_source=media_source,
+            companion_source=companion_source,
         )
 
     def _pokemon_api(self, args: argparse.Namespace, root_dir: Path, pokemon_cfg: dict) -> PokeApiClient:
@@ -105,3 +112,22 @@ class PokemonPlugin:
     @staticmethod
     def _offline(args: argparse.Namespace, pokemon_cfg: dict) -> bool:
         return bool(args.offline or pokemon_cfg.get("offline", False))
+
+
+def _flatten_companion_config(raw: dict | None) -> dict:
+    if not isinstance(raw, dict):
+        return {}
+    if all(isinstance(value, dict) and ("sprite_variant" in value or "label" in value) for value in raw.values()):
+        return raw
+    flattened: dict = {}
+    for provider_values in raw.values():
+        if not isinstance(provider_values, dict):
+            continue
+        for user_id, visual in provider_values.items():
+            if isinstance(visual, dict):
+                flattened[str(user_id)] = visual
+    return flattened
+
+
+def plugin() -> PokemonPlugin:
+    return PokemonPlugin()

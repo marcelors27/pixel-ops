@@ -87,6 +87,7 @@ class IntegrationPluginTests(unittest.TestCase):
             self.assertIsNotNone(runtime.pc_stats_source)
             self.assertIsNotNone(runtime.task_source)
             self.assertIsNotNone(runtime.media_source)
+            self.assertIsNotNone(runtime.companion_source)
             self.assertGreaterEqual(len(runtime.starters), 2)
             self.assertGreaterEqual(len(runtime.closers), 2)
 

@@ -25,8 +25,41 @@ import mascotAlertImg from "./assets/pixelops-mascot-angry.png";
 import mascotImg from "./assets/pixelops-mascot.png";
 import mascotSleepyImg from "./assets/pixelops-mascot-sleepy.png";
 import { PixelMascot } from "./components/PixelMascot";
-import { cloneConfig, loadConfig, loadConfigManifest, loadGithubRepos, loadNpcSpriteManifest, loadRuntimeStatus, pollGithubDeviceLogin, runRuntimeAction, saveConfig, saveGithubToken, startGithubDeviceLogin } from "./lib/configApi";
-import type { ConfigManifest, DetectedPlugin, DiscordPersonConfig, GitHubDeviceStartResponse, GitHubRepoOption, IntegrationToggle, LayoutBox, LayoutKey, LayoutWindowOption, MovementConfig, MovementRect, PersonConfig, RuntimeConfig, RuntimeStatus } from "./types";
+import {
+  cloneConfig,
+  loadConfig,
+  loadConfigManifest,
+  loadDiscordProfile,
+  loadGithubRepos,
+  loadNpcSpriteManifest,
+  loadRuntimeStatus,
+  pollDiscordOAuthStatus,
+  pollGithubDeviceLogin,
+  runRuntimeAction,
+  saveConfig,
+  saveDiscordBotToken,
+  saveGithubToken,
+  startDiscordOAuth,
+  startGithubDeviceLogin,
+} from "./lib/configApi";
+import type {
+  ConfigManifest,
+  DetectedPlugin,
+  DiscordGuildOption,
+  DiscordOAuthStartResponse,
+  DiscordPersonConfig,
+  GitHubDeviceStartResponse,
+  GitHubRepoOption,
+  IntegrationToggle,
+  LayoutBox,
+  LayoutKey,
+  LayoutWindowOption,
+  MovementConfig,
+  MovementRect,
+  PersonConfig,
+  RuntimeConfig,
+  RuntimeStatus,
+} from "./types";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 type MovementLayer = "walkable" | "blocked";
@@ -1315,63 +1348,12 @@ function IntegrationPanel({
 
   if (activeKey === "discord") {
     return (
-      <Panel title="Discord" icon={Bot} subtitle="Local Gateway voice companions and channel access events">
-        <Field label="Bot token env">
-          <TextInput
-            value={config.integrations.integrations.discord.bot_token_env}
-            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.bot_token_env = value))}
-          />
-        </Field>
-        <Field label="Server ID">
-          <TextInput
-            value={config.integrations.integrations.discord.guild_id}
-            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.guild_id = digits(value)))}
-          />
-        </Field>
-        <Field label="My user ID">
-          <TextInput
-            value={config.integrations.integrations.discord.focus_user_id}
-            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.focus_user_id = digits(value)))}
-          />
-        </Field>
-        <Field label="Companions">
-          <NumberInput
-            value={config.integrations.integrations.discord.max_companions}
-            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.max_companions = clampNumber(value, 0, 30)))}
-          />
-        </Field>
-        <Field label="Reconnect seconds">
-          <NumberInput
-            value={config.integrations.integrations.discord.gateway_reconnect_seconds}
-            onChange={(value) =>
-              onMutate((draft) => void (draft.integrations.integrations.discord.gateway_reconnect_seconds = clampNumber(value, 1, 120)))
-            }
-          />
-        </Field>
-        <Field label="Remember nicks">
-          <NumberInput
-            value={discordPeopleConfig.max_recent}
-            onChange={(value) =>
-              onMutate((draft) => {
-                draft.discord_people = draft.discord_people ?? { discord_people: { max_recent: 50, people: {} } };
-                draft.discord_people.discord_people.max_recent = clampNumber(value, 1, 200);
-              })
-            }
-          />
-        </Field>
-        <div className="field field-wide">
-          <span>Recent Discord people</span>
-          <div className="companion-list">
-            {discordPeople.length ? (
-              discordPeople.map(([userId, person]) => (
-                <DiscordPersonRow key={userId} userId={userId} person={person} />
-              ))
-            ) : (
-              <span className="empty-note">No Discord voice people seen yet.</span>
-            )}
-          </div>
-        </div>
-      </Panel>
+      <DiscordIntegrationPanel
+        config={config}
+        discordPeople={discordPeople}
+        discordPeopleConfig={discordPeopleConfig}
+        onMutate={onMutate}
+      />
     );
   }
 
@@ -1465,6 +1447,245 @@ function IntegrationPanel({
       <Code2 size={18} />
       <span>No editable runtime settings are registered for this integration yet.</span>
     </div>
+  );
+}
+
+function DiscordIntegrationPanel({
+  config,
+  discordPeople,
+  discordPeopleConfig,
+  onMutate,
+}: {
+  config: RuntimeConfig;
+  discordPeople: Array<[string, DiscordPersonConfig]>;
+  discordPeopleConfig: { max_recent: number; people: Record<string, DiscordPersonConfig> };
+  onMutate: (mutator: (draft: RuntimeConfig) => void) => void;
+}) {
+  const discord = config.integrations.integrations.discord;
+  const [botTokenDraft, setBotTokenDraft] = useState("");
+  const [oauthLogin, setOauthLogin] = useState<DiscordOAuthStartResponse | null>(null);
+  const [guilds, setGuilds] = useState<DiscordGuildOption[]>([]);
+  const [viewer, setViewer] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [polling, setPolling] = useState(false);
+  const [message, setMessage] = useState("");
+
+  async function refreshProfile(nextMessage?: string) {
+    const result = await loadDiscordProfile(discord.user_token_env);
+    setViewer(result.user.global_name || result.user.username || result.user.id);
+    setGuilds(result.guilds);
+    onMutate((draft) => void (draft.integrations.integrations.discord.focus_user_id = result.user.id));
+    setMessage(nextMessage ?? `${result.guilds.length} servers available for ${result.user.username}.`);
+  }
+
+  async function loadServers() {
+    setBusy(true);
+    setMessage("");
+    try {
+      await refreshProfile();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function connectWithBotToken() {
+    setBusy(true);
+    setMessage("");
+    try {
+      if (botTokenDraft.trim()) {
+        await saveDiscordBotToken(discord.bot_token_env, botTokenDraft.trim());
+        setBotTokenDraft("");
+      }
+      setMessage(`Bot token saved to ${discord.bot_token_env}.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function startLogin() {
+    setBusy(true);
+    setMessage("");
+    try {
+      const result = await startDiscordOAuth(discord.client_id, discord.client_secret_env, discord.user_token_env);
+      setOauthLogin(result);
+      window.open(result.authorize_url, "pixelops-discord-oauth", "width=720,height=820");
+      setMessage("Waiting for Discord authorization.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!oauthLogin) return;
+    const login = oauthLogin;
+    let stopped = false;
+    let timeoutId: number | undefined;
+
+    async function poll() {
+      setPolling(true);
+      try {
+        const result = await pollDiscordOAuthStatus(login.state);
+        if (stopped) return;
+        if (result.status === "authorized") {
+          setOauthLogin(null);
+          const user = result.user;
+          setViewer(user?.global_name || user?.username || user?.id || "");
+          setGuilds(result.guilds ?? []);
+          if (user?.id) {
+            onMutate((draft) => void (draft.integrations.integrations.discord.focus_user_id = user.id));
+          }
+          setMessage(`Discord authorized${user?.username ? ` as ${user.username}` : ""}.`);
+          return;
+        }
+        if (result.status === "error") {
+          setOauthLogin(null);
+          setMessage(result.message ?? "Discord authorization failed.");
+          return;
+        }
+        timeoutId = window.setTimeout(() => void poll(), 1500);
+      } catch (error) {
+        if (!stopped) setMessage(error instanceof Error ? error.message : String(error));
+      } finally {
+        if (!stopped) setPolling(false);
+      }
+    }
+
+    timeoutId = window.setTimeout(() => void poll(), 1500);
+    return () => {
+      stopped = true;
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
+  }, [oauthLogin, onMutate]);
+
+  function selectGuild(guildId: string) {
+    onMutate((draft) => void (draft.integrations.integrations.discord.guild_id = guildId));
+  }
+
+  return (
+    <Panel title="Discord" icon={Bot} subtitle="Gateway voice companions and local account link">
+      <Field label="Client ID">
+        <TextInput
+          value={discord.client_id}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.client_id = digits(value)))}
+        />
+      </Field>
+      <Field label="Client secret env">
+        <TextInput
+          value={discord.client_secret_env}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.client_secret_env = value || "PIXEL_OPS_DISCORD_CLIENT_SECRET"))}
+        />
+      </Field>
+      <Field label="User token env">
+        <TextInput
+          value={discord.user_token_env}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.user_token_env = value || "PIXEL_OPS_DISCORD_USER_TOKEN"))}
+        />
+      </Field>
+      <div className="field field-wide github-connect-row">
+        <span>Discord login</span>
+        <button className="primary-button" type="button" disabled={busy || polling || !discord.client_id} onClick={() => void startLogin()}>
+          <Bot size={15} />
+          {busy ? "Starting" : "Login by Discord"}
+        </button>
+        {oauthLogin ? (
+          <div className="github-device-card">
+            <a className="secondary-button" href={oauthLogin.authorize_url} target="_blank" rel="noreferrer">
+              Open Discord
+            </a>
+            <span className="empty-note">{polling ? "Waiting for authorization..." : "Authorization started."}</span>
+          </div>
+        ) : null}
+        {viewer ? <span className="empty-note">Signed in as {viewer}</span> : null}
+        {message ? <span className="empty-note">{message}</span> : null}
+      </div>
+      <Field label="Bot token env">
+        <TextInput
+          value={discord.bot_token_env}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.bot_token_env = value || "PIXEL_OPS_DISCORD_BOT_TOKEN"))}
+        />
+      </Field>
+      <Field label="Bot token">
+        <PasswordInput value={botTokenDraft} onChange={setBotTokenDraft} />
+      </Field>
+      <div className="field field-wide github-connect-row">
+        <span>Manual fallback</span>
+        <button className="secondary-button" type="button" disabled={busy || polling} onClick={() => void connectWithBotToken()}>
+          <Bot size={15} />
+          Save bot token
+        </button>
+        <button className="secondary-button" type="button" disabled={busy || polling} onClick={() => void loadServers()}>
+          <RefreshCw size={15} />
+          Load servers
+        </button>
+      </div>
+      {guilds.length ? (
+        <div className="field field-wide github-repo-list">
+          <span>Available servers</span>
+          <div>
+            {guilds.map((guild) => (
+              <label key={guild.id} className="github-repo-option">
+                <input type="radio" checked={discord.guild_id === guild.id} onChange={() => selectGuild(guild.id)} />
+                <span>{guild.name}</span>
+                {guild.owner ? <small>owner</small> : null}
+              </label>
+            ))}
+          </div>
+        </div>
+      ) : null}
+      <Field label="Server ID">
+        <TextInput
+          value={discord.guild_id}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.guild_id = digits(value)))}
+        />
+      </Field>
+      <Field label="My user ID">
+        <TextInput
+          value={discord.focus_user_id}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.focus_user_id = digits(value)))}
+        />
+      </Field>
+      <Field label="Companions">
+        <NumberInput
+          value={discord.max_companions}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.max_companions = clampNumber(value, 0, 30)))}
+        />
+      </Field>
+      <Field label="Reconnect seconds">
+        <NumberInput
+          value={discord.gateway_reconnect_seconds}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.discord.gateway_reconnect_seconds = clampNumber(value, 1, 120)))}
+        />
+      </Field>
+      <Field label="Remember nicks">
+        <NumberInput
+          value={discordPeopleConfig.max_recent}
+          onChange={(value) =>
+            onMutate((draft) => {
+              draft.discord_people = draft.discord_people ?? { discord_people: { max_recent: 50, people: {} } };
+              draft.discord_people.discord_people.max_recent = clampNumber(value, 1, 200);
+            })
+          }
+        />
+      </Field>
+      <div className="field field-wide">
+        <span>Recent Discord people</span>
+        <div className="companion-list">
+          {discordPeople.length ? (
+            discordPeople.map(([userId, person]) => (
+              <DiscordPersonRow key={userId} userId={userId} person={person} />
+            ))
+          ) : (
+            <span className="empty-note">No Discord voice people seen yet.</span>
+          )}
+        </div>
+      </div>
+    </Panel>
   );
 }
 
@@ -2568,7 +2789,21 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
   next.integrations.integrations.media.providers = next.integrations.integrations.media.providers ?? ["spotify"];
   next.integrations.integrations.media.poll_seconds = next.integrations.integrations.media.poll_seconds ?? 10;
   next.integrations.integrations.media.timeout_seconds = next.integrations.integrations.media.timeout_seconds ?? 2;
+  next.integrations.integrations.discord = next.integrations.integrations.discord ?? {
+    enabled: false,
+    bot_token_env: "PIXEL_OPS_DISCORD_BOT_TOKEN",
+    client_id: "",
+    client_secret_env: "PIXEL_OPS_DISCORD_CLIENT_SECRET",
+    user_token_env: "PIXEL_OPS_DISCORD_USER_TOKEN",
+    guild_id: "",
+    focus_user_id: "",
+    max_companions: 5,
+    gateway_reconnect_seconds: 10,
+  };
   next.integrations.integrations.discord.bot_token_env = next.integrations.integrations.discord.bot_token_env ?? "PIXEL_OPS_DISCORD_BOT_TOKEN";
+  next.integrations.integrations.discord.client_id = next.integrations.integrations.discord.client_id ?? "";
+  next.integrations.integrations.discord.client_secret_env = next.integrations.integrations.discord.client_secret_env ?? "PIXEL_OPS_DISCORD_CLIENT_SECRET";
+  next.integrations.integrations.discord.user_token_env = next.integrations.integrations.discord.user_token_env ?? "PIXEL_OPS_DISCORD_USER_TOKEN";
   next.integrations.integrations.discord.guild_id = next.integrations.integrations.discord.guild_id ?? "";
   next.integrations.integrations.discord.focus_user_id = next.integrations.integrations.discord.focus_user_id ?? "";
   next.integrations.integrations.discord.max_companions = next.integrations.integrations.discord.max_companions ?? 5;
@@ -2722,6 +2957,8 @@ function defaultWideLayoutFor(width: number, height: number): Record<LayoutKey, 
   const middleWidth = Math.max(1, width - sideWidth * 2 - margin * 4);
   return {
     timezones: { x: margin, y: 16, width: Math.round(width * 0.32), height: topHeight - 20 },
+    meetings_day: { x: margin, y: gameY, width: sideWidth, height: Math.min(170, gameHeight), kind: "meetings_day" },
+    pokemon_captures: { x: Math.max(margin, width - Math.round(width * 0.32) - margin), y: gameY, width: Math.round(width * 0.18), height: Math.min(144, gameHeight), kind: "pokemon_captures" },
     route_signal: { x: Math.round(width * 0.35), y: 16, width: Math.round(width * 0.16), height: topHeight - 20 },
     gauges: { x: Math.round(width * 0.53), y: 16, width: Math.round(width * 0.16), height: topHeight - 20 },
     weather: { x: Math.round(width * 0.71), y: 16, width: Math.round(width * 0.12), height: topHeight - 20 },

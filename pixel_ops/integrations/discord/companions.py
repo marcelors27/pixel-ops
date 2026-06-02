@@ -7,6 +7,8 @@ from pathlib import Path
 from threading import Lock
 from typing import Any
 
+from pixel_ops.state import PixelOpsStateStore
+
 
 @dataclass(frozen=True)
 class DiscordCompanionProfile:
@@ -20,6 +22,7 @@ class DiscordCompanionProfile:
 class DiscordCompanionStore:
     path: Path
     max_recent: int = 50
+    state_store: PixelOpsStateStore | None = None
     _profiles: dict[str, DiscordCompanionProfile] = field(default_factory=dict, init=False, repr=False)
     _loaded: bool = field(default=False, init=False, repr=False)
     _loaded_mtime: float | None = field(default=None, init=False, repr=False)
@@ -53,6 +56,9 @@ class DiscordCompanionStore:
             return profile
 
     def _load_unlocked(self) -> None:
+        if self.state_store is not None:
+            self._load_from_state_unlocked()
+            return
         try:
             mtime = self.path.stat().st_mtime
         except OSError:
@@ -87,6 +93,16 @@ class DiscordCompanionStore:
             self._profiles[profile.user_id] = profile
 
     def _save_unlocked(self) -> None:
+        if self.state_store is not None:
+            for profile in self._profiles.values():
+                self.state_store.upsert_discord_person(
+                    profile.user_id,
+                    profile.display_name,
+                    profile.nicknames,
+                    last_seen_at=profile.last_seen_at,
+                )
+            self.state_store.trim_discord_people(self.max_recent)
+            return
         self.path.parent.mkdir(parents=True, exist_ok=True)
         payload = {
             "discord_people": {
@@ -114,6 +130,44 @@ class DiscordCompanionStore:
     def _trim_unlocked(self) -> None:
         ordered = sorted(self._profiles.items(), key=lambda item: item[1].last_seen_at, reverse=True)
         self._profiles = dict(ordered[: self.max_recent])
+
+    def _load_from_state_unlocked(self) -> None:
+        if not self._loaded:
+            self._import_legacy_json_unlocked()
+        self._loaded = True
+        self._profiles = {
+            record.user_id: DiscordCompanionProfile(
+                user_id=record.user_id,
+                display_name=record.display_name,
+                nicknames=record.nicknames,
+                last_seen_at=record.last_seen_at,
+            )
+            for record in self.state_store.recent_discord_people(self.max_recent)
+        }
+
+    def _import_legacy_json_unlocked(self) -> None:
+        if not self.path.exists() or self.state_store.recent_discord_people(1):
+            return
+        try:
+            raw = json.loads(self.path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return
+        root = raw.get("discord_people") if isinstance(raw, dict) else {}
+        if not isinstance(root, dict):
+            return
+        self.max_recent = _int(root.get("max_recent"), self.max_recent)
+        people = root.get("people")
+        if not isinstance(people, dict):
+            return
+        for user_id, value in people.items():
+            if not isinstance(value, dict):
+                continue
+            self.state_store.upsert_discord_person(
+                str(user_id),
+                str(value.get("display_name") or user_id),
+                tuple(str(item) for item in value.get("nicknames", []) if item),
+                last_seen_at=str(value.get("last_seen_at") or ""),
+            )
 
 
 def _int(value: Any, default: int) -> int:

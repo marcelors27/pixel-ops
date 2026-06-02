@@ -1,5 +1,6 @@
 import react from "@vitejs/plugin-react";
 import { execFile, execFileSync, spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
+import { randomBytes } from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
@@ -51,6 +52,40 @@ type GitHubDeviceTokenResponse = {
   interval?: number;
 };
 
+type DiscordOAuthSession = {
+  status: "pending" | "authorized" | "error";
+  client_id: string;
+  client_secret_env: string;
+  token_env: string;
+  redirect_uri: string;
+  message?: string;
+  user?: DiscordUserDescriptor;
+  guilds?: DiscordGuildDescriptor[];
+};
+
+type DiscordTokenResponse = {
+  access_token?: string;
+  token_type?: string;
+  scope?: string;
+  error?: string;
+  error_description?: string;
+};
+
+type DiscordUserDescriptor = {
+  id: string;
+  username: string;
+  global_name?: string;
+};
+
+type DiscordGuildDescriptor = {
+  id: string;
+  name: string;
+  owner: boolean;
+  permissions: string;
+};
+
+const discordOAuthSessions = new Map<string, DiscordOAuthSession>();
+
 const coreConfigFiles: ConfigDescriptor[] = [
   { key: "display", label: "Display", relativePath: "pixel_ops/config/display.json", scope: "core" },
   { key: "integrations", label: "Integrations", relativePath: "pixel_ops/config/integrations.json", scope: "core" },
@@ -73,6 +108,8 @@ const integrationLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
   ai_usage: [{ kind: "gauges", label: "AI Gauges", tone: "#7ee0bd" }],
   pc_stats: [{ kind: "pc_stats", label: "PC Stats", tone: "#9bd0ff" }],
   weather: [{ kind: "weather", label: "Weather", tone: "#e8c766" }],
+  google_calendar: [{ kind: "meetings_day", label: "Meetings Day", tone: "#9aa7ff" }],
+  ics: [{ kind: "meetings_day", label: "Meetings Day", tone: "#9aa7ff" }],
   clickup: [
     { kind: "tasks", label: "Tasks", tone: "#b58cff" },
     { kind: "tasks_board", label: "Tasks Board", tone: "#f0a35d" },
@@ -87,6 +124,7 @@ const integrationLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
 const visualPluginLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
   pokemon: [
     { kind: "route_signal", label: "Route", tone: "#f0a35d" },
+    { kind: "pokemon_captures", label: "Pokemon Captures", tone: "#ef6461" },
     { kind: "game", label: "Game", tone: "#8fbf7a" },
     { kind: "text_box", label: "Text box", tone: "#d8d0ff" },
   ],
@@ -102,6 +140,26 @@ function sendJson(res: ServerResponse, status: number, body: unknown) {
   res.statusCode = status;
   res.setHeader("content-type", "application/json; charset=utf-8");
   res.end(JSON.stringify(body, null, 2));
+}
+
+function sendOAuthCallbackHtml(res: ServerResponse, message: string) {
+  res.statusCode = 200;
+  res.setHeader("content-type", "text/html; charset=utf-8");
+  res.end(`<!doctype html>
+<html>
+  <head><meta charset="utf-8"><title>Pixel OPs Discord</title></head>
+  <body style="font-family: system-ui, sans-serif; background: #10131a; color: #f4f7fb; padding: 24px;">
+    <strong>${escapeHtml(message)}</strong>
+    <script>
+      if (window.opener) window.opener.postMessage({ type: "pixel-ops-discord-oauth" }, window.location.origin);
+      window.setTimeout(() => window.close(), 1200);
+    </script>
+  </body>
+</html>`);
+}
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char] || char));
 }
 
 function resolvePythonCommand() {
@@ -441,6 +499,126 @@ async function listGithubRepos(tokenEnv: string) {
   };
 }
 
+async function envValue(name: string): Promise<string> {
+  return process.env[name] || (await readDotEnv())[name] || "";
+}
+
+function configStudioOrigin(): string {
+  return process.env.PIXEL_OPS_CONFIG_STUDIO_ORIGIN || "http://localhost:5174";
+}
+
+function discordRedirectUri(): string {
+  return `${configStudioOrigin()}/api/discord/oauth/callback`;
+}
+
+async function discordToken(tokenEnv: string): Promise<string> {
+  const name = tokenEnv || "PIXEL_OPS_DISCORD_USER_TOKEN";
+  return envValue(name);
+}
+
+async function discordJson<T>(url: string, token: string): Promise<T> {
+  const response = await fetch(url, {
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+      "User-Agent": "pixel-ops-config-studio",
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`Discord returned ${response.status}: ${await response.text()}`);
+  }
+  return response.json() as Promise<T>;
+}
+
+async function discordForm<T>(url: string, fields: Record<string, string>): Promise<T> {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "content-type": "application/x-www-form-urlencoded",
+      "User-Agent": "pixel-ops-config-studio",
+    },
+    body: new URLSearchParams(fields),
+  });
+  if (!response.ok) {
+    throw new Error(`Discord returned ${response.status}: ${await response.text()}`);
+  }
+  return response.json() as Promise<T>;
+}
+
+function startDiscordOAuth(clientId: string, clientSecretEnv: string, tokenEnv: string) {
+  if (!clientId.trim()) {
+    throw new Error("Discord client_id is required.");
+  }
+  const state = randomBytes(18).toString("hex");
+  const redirect_uri = discordRedirectUri();
+  const session: DiscordOAuthSession = {
+    status: "pending",
+    client_id: clientId.trim(),
+    client_secret_env: clientSecretEnv || "PIXEL_OPS_DISCORD_CLIENT_SECRET",
+    token_env: tokenEnv || "PIXEL_OPS_DISCORD_USER_TOKEN",
+    redirect_uri,
+  };
+  discordOAuthSessions.set(state, session);
+  const params = new URLSearchParams({
+    client_id: session.client_id,
+    redirect_uri,
+    response_type: "code",
+    scope: "identify guilds",
+    state,
+  });
+  return {
+    state,
+    redirect_uri,
+    authorize_url: `https://discord.com/oauth2/authorize?${params.toString()}`,
+  };
+}
+
+async function completeDiscordOAuth(code: string, state: string) {
+  const session = discordOAuthSessions.get(state);
+  if (!session) {
+    throw new Error("Unknown Discord OAuth state.");
+  }
+  const clientSecret = await envValue(session.client_secret_env);
+  if (!clientSecret) {
+    throw new Error(`${session.client_secret_env} is not set in .env.`);
+  }
+  const token = await discordForm<DiscordTokenResponse>("https://discord.com/api/oauth2/token", {
+    client_id: session.client_id,
+    client_secret: clientSecret,
+    grant_type: "authorization_code",
+    code,
+    redirect_uri: session.redirect_uri,
+  });
+  if (!token.access_token) {
+    throw new Error(token.error_description || token.error || "Discord authorization failed.");
+  }
+  await writeDotEnvValue(session.token_env, token.access_token);
+  const profile = await discordProfileFromToken(token.access_token);
+  session.status = "authorized";
+  session.user = profile.user;
+  session.guilds = profile.guilds;
+  session.message = "Discord authorized.";
+  return session;
+}
+
+async function discordProfileFromToken(token: string) {
+  const user = await discordJson<DiscordUserDescriptor>("https://discord.com/api/users/@me", token);
+  const guilds = await discordJson<DiscordGuildDescriptor[]>("https://discord.com/api/users/@me/guilds", token);
+  return {
+    user,
+    guilds: guilds.sort((first, second) => first.name.localeCompare(second.name)),
+  };
+}
+
+async function loadDiscordProfile(tokenEnv: string) {
+  const token = await discordToken(tokenEnv);
+  if (!token) {
+    throw new Error(`${tokenEnv || "PIXEL_OPS_DISCORD_USER_TOKEN"} is not set in .env.`);
+  }
+  return discordProfileFromToken(token);
+}
+
 function pushRuntimeLog(value: string) {
   const clean = value.replace(/\r\n/g, "\n").trimEnd();
   if (!clean) return;
@@ -633,6 +811,85 @@ function runtimeConfigApi(): Plugin {
       server.middlewares.use("/api/config-manifest", async (_req, res) => {
         try {
           sendJson(res, 200, await buildConfigManifest());
+        } catch (error) {
+          sendJson(res, 500, { error: error instanceof Error ? error.message : String(error) });
+        }
+      });
+      server.middlewares.use("/api/discord", async (req, res) => {
+        try {
+          const url = new URL(req.url || "/", "http://localhost");
+          if (req.method === "POST" && url.pathname === "/oauth/start") {
+            const body = JSON.parse(await readBody(req)) as { client_id?: string; client_secret_env?: string; token_env?: string };
+            sendJson(res, 200, startDiscordOAuth(body.client_id || "", body.client_secret_env || "PIXEL_OPS_DISCORD_CLIENT_SECRET", body.token_env || "PIXEL_OPS_DISCORD_USER_TOKEN"));
+            return;
+          }
+          if (req.method === "GET" && url.pathname === "/oauth/status") {
+            const state = url.searchParams.get("state") || "";
+            const session = discordOAuthSessions.get(state);
+            if (!session) {
+              sendJson(res, 404, { status: "error", message: "Discord OAuth session not found." });
+              return;
+            }
+            sendJson(res, 200, {
+              status: session.status,
+              message: session.message,
+              token_env: session.token_env,
+              user: session.user,
+              guilds: session.guilds ?? [],
+            });
+            return;
+          }
+          if (req.method === "GET" && url.pathname === "/oauth/callback") {
+            const state = url.searchParams.get("state") || "";
+            const code = url.searchParams.get("code") || "";
+            const error = url.searchParams.get("error") || "";
+            const session = discordOAuthSessions.get(state);
+            if (error) {
+              if (session) {
+                session.status = "error";
+                session.message = error;
+              }
+              sendOAuthCallbackHtml(res, "Discord authorization failed.");
+              return;
+            }
+            if (!code || !state) {
+              if (session) {
+                session.status = "error";
+                session.message = "Missing Discord OAuth code or state.";
+              }
+              sendOAuthCallbackHtml(res, "Missing Discord OAuth code or state.");
+              return;
+            }
+            try {
+              await completeDiscordOAuth(code, state);
+              sendOAuthCallbackHtml(res, "Discord authorized. You can close this window.");
+            } catch (callbackError) {
+              if (session) {
+                session.status = "error";
+                session.message = callbackError instanceof Error ? callbackError.message : String(callbackError);
+              }
+              sendOAuthCallbackHtml(res, callbackError instanceof Error ? callbackError.message : String(callbackError));
+            }
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/token") {
+            const body = JSON.parse(await readBody(req)) as { token_env?: string; token?: string };
+            const tokenEnv = body.token_env || "PIXEL_OPS_DISCORD_BOT_TOKEN";
+            const token = (body.token || "").trim();
+            if (!token) {
+              sendJson(res, 400, { error: "Token is required." });
+              return;
+            }
+            await writeDotEnvValue(tokenEnv, token);
+            sendJson(res, 200, { ok: true, token_env: tokenEnv });
+            return;
+          }
+          if (req.method === "GET" && url.pathname === "/profile") {
+            const tokenEnv = url.searchParams.get("token_env") || "PIXEL_OPS_DISCORD_USER_TOKEN";
+            sendJson(res, 200, await loadDiscordProfile(tokenEnv));
+            return;
+          }
+          sendJson(res, 404, { error: "Discord endpoint not found." });
         } catch (error) {
           sendJson(res, 500, { error: error instanceof Error ? error.message : String(error) });
         }

@@ -31,6 +31,37 @@ class DiscordAndSocialTests(unittest.TestCase):
             self.assertEqual(raw["discord_people"]["people"]["u1"]["display_name"], "Ana")
             self.assertNotIn("discord_companions", raw)
 
+    def test_discord_companion_store_imports_legacy_json_into_sqlite(self):
+        from pixel_ops.state import PixelOpsStateStore
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = root / "discord_people.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "discord_people": {
+                            "max_recent": 50,
+                            "people": {
+                                "u1": {
+                                    "display_name": "Ana",
+                                    "nicknames": ["Ana"],
+                                    "last_seen_at": "2026-01-01T12:00:00+00:00",
+                                }
+                            },
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            state = PixelOpsStateStore(root / "pixel_ops.sqlite")
+            store = DiscordCompanionStore(path, state_store=state)
+
+            self.assertEqual(store.profile("u1").display_name, "Ana")
+            store.record_member("u2", "Bia")
+
+            self.assertEqual(state.discord_person("u2").display_name, "Bia")
+
     def test_voice_tracker_selects_focus_channel_and_preserves_muted_state(self):
         tracker = DiscordVoiceStateTracker(guild_id="g", focus_user_id="me", max_companions=5)
         tracker.observe_guild(

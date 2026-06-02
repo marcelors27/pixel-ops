@@ -103,7 +103,12 @@ def _draw_timezone_card(
     if person.show_flag and person.country:
         _draw_flag(draw, x, y + 1, person.country, pal.ink)
         text_x += 20
-    draw.text((text_x, y - 2), f"{person.display_key or person.key} {person.local_time:%H:%M}", font=row_font, fill=pal.ink)
+    current = person.local_time.strftime("%H:%M")
+    key_label = person.display_key or person.key
+    time_box = draw.textbbox((0, 0), current, font=row_font)
+    time_w = time_box[2] - time_box[0]
+    draw.text((text_x, y - 3), current, font=row_font, fill=pal.ink)
+    draw.text((text_x + time_w + 5, y + 1), _fit_text(draw, key_label, max(1, width - time_w - 24), zone_font), font=zone_font, fill=pal.blue)
     draw.rectangle((x + width - 9, y + 3, x + width - 2, y + 10), fill=status_color, outline=pal.ink)
     draw.text((x, y + 14), _fit_text(draw, person.timezone_label, width, zone_font), font=zone_font, fill=pal.ink)
     if person.name:
@@ -157,10 +162,11 @@ def draw_hud(
     pc_stats: PCStatsSnapshot | None = None,
     task_snapshot: TaskSnapshot | None = None,
     media: MediaNowPlaying | None = None,
+    today_events: list[CalendarEvent] | None = None,
     layout: dict | None = None,
 ) -> None:
     if layout:
-        _draw_configured_hud(draw, people, event, now, pal, pull_requests or [], ai_usage, weather, work_events or [], pc_stats, task_snapshot, media, layout)
+        _draw_configured_hud(draw, people, event, now, pal, pull_requests or [], ai_usage, weather, work_events or [], pc_stats, task_snapshot, media, today_events or [], layout)
         return
 
     PixelRenderer.draw_panel(draw, (8, 8, 312, 212), pal.panel, pal.panel_shadow, pal.ink)
@@ -208,6 +214,7 @@ def _draw_configured_hud(
     pc_stats: PCStatsSnapshot | None,
     task_snapshot: TaskSnapshot | None,
     media: MediaNowPlaying | None,
+    today_events: list[CalendarEvent],
     layout: dict,
 ) -> None:
     small_font = font(11)
@@ -216,14 +223,19 @@ def _draw_configured_hud(
     name_font = font(7)
     for timezones_box in _layout_boxes(layout, "timezones"):
         PixelRenderer.draw_panel(draw, timezones_box, pal.panel, pal.panel_shadow, pal.ink)
-        _draw_timezone_flex_grid(draw, people, timezones_box, chip_font, zone_font, name_font, pal)
+        inner_box = _draw_panel_title(draw, timezones_box, "TIMEZONES", pal)
+        _draw_timezone_flex_grid(draw, people, inner_box, chip_font, zone_font, name_font, pal)
 
     for timezones_box in _layout_boxes(layout, "timezones_clock"):
         PixelRenderer.draw_panel(draw, timezones_box, pal.panel, pal.panel_shadow, pal.ink)
-        _draw_timezone_clock_grid(draw, people, timezones_box, chip_font, zone_font, name_font, pal)
+        inner_box = _draw_panel_title(draw, timezones_box, "TIMEZONES", pal)
+        _draw_timezone_clock_grid(draw, people, inner_box, chip_font, zone_font, name_font, pal)
 
     for activity_box in _layout_boxes(layout, "activity"):
         _draw_activity_panel(draw, event, pull_requests, now, activity_box, pal)
+
+    for meetings_box in [*_layout_boxes(layout, "meetings_day"), *_layout_boxes(layout, "calendar_day")]:
+        _draw_meetings_day_panel(draw, today_events, now, meetings_box, pal)
 
     for route_box in _layout_boxes(layout, "route_signal"):
         _draw_route_signal_panel(draw, event, pull_requests, ai_usage, work_events, now, route_box, pal)
@@ -279,6 +291,20 @@ def _layout_raw_box(raw: dict, fallback: tuple[int, int, int, int]) -> tuple[int
     except (TypeError, ValueError):
         return fallback
     return x, y, x + max(1, width), y + max(1, height)
+
+
+def _draw_panel_title(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], title: str, pal) -> tuple[int, int, int, int]:
+    title_font = font(7)
+    x0, y0, x1, y1 = box
+    label = _fit_text(draw, title, max(1, x1 - x0 - 18), title_font)
+    bounds = draw.textbbox((0, 0), label, font=title_font)
+    label_w = bounds[2] - bounds[0] + 8
+    label_h = bounds[3] - bounds[1] + 5
+    label_x = x0 + 5
+    label_y = y0
+    draw.rectangle((label_x, label_y, min(x1 - 5, label_x + label_w), label_y + label_h), fill=(255, 255, 255), outline=pal.ink)
+    draw.text((label_x + 4, label_y + 2 - bounds[1]), label, font=title_font, fill=pal.blue)
+    return x0, min(y1 - 1, y0 + 13), x1, y1
 
 
 def _draw_timezone_flex_grid(
@@ -371,19 +397,32 @@ def _draw_timezone_timeline_row(
     key_label = person.display_key or person.key
     current = person.local_time.strftime("%H:%M")
     if width >= 220:
+        flag_w = 19
         if person.show_flag and person.country:
             _draw_flag(draw, x, y + 2, person.country, pal.ink)
-            text_x = x + 19
-            label_width = max(1, label_w - 21)
-        else:
-            text_x = x
-            label_width = max(1, label_w - 2)
-        draw.text((text_x, y), _fit_text(draw, label, label_width, label_font), font=label_font, fill=pal.ink)
-        draw.text((text_x, y + 11), _fit_text(draw, f"{key_label} {current}", label_width, time_font), font=time_font, fill=pal.blue)
+        text_x = x + flag_w
+        label_width = max(1, label_w - flag_w - 2)
+        clock_w = min(label_width, scaled_px(66))
+        clock_h = min(height - 3, scaled_px(19))
+        clock_y = y + max(0, (height - clock_h) // 2)
+        status_color = {
+            "working": pal.green,
+            "ending": pal.yellow,
+            "off": pal.red,
+        }.get(person.status, pal.panel_shadow)
+        draw.rectangle((text_x, clock_y, text_x + clock_w, clock_y + clock_h), fill=pal.panel, outline=pal.ink)
+        draw.rectangle((text_x + 1, clock_y + 1, text_x + 5, clock_y + clock_h - 1), fill=status_color)
+        _draw_segment_clock(draw, current, text_x + 8, clock_y + 2, clock_w - 10, clock_h - 4, pal)
+        meta_x = text_x + clock_w + 5
+        meta_w = max(1, label_width - clock_w - 5)
+        if meta_w >= 24:
+            draw.text((meta_x, y), _fit_text(draw, label, meta_w, label_font), font=label_font, fill=pal.ink)
+            draw.text((meta_x, y + 11), _fit_text(draw, key_label, meta_w, time_font), font=time_font, fill=pal.blue)
     else:
         if person.name and width >= 180:
             label = person.name.split()[0]
-        draw.text((x, y + 2), _fit_text(draw, label, label_w - 2, label_font), font=label_font, fill=pal.ink)
+        compact = f"{person.local_time:%H:%M} {label}"
+        draw.text((x, y + 2), _fit_text(draw, compact, label_w - 2, label_font), font=label_font, fill=pal.ink)
     block_x = x + label_w + 4
     for index in range(block_count):
         offset = index
@@ -413,10 +452,86 @@ def _draw_timezone_timeline_row(
 
 def _timezone_label_width(width: int) -> int:
     if width >= 360:
-        return min(width // 2, scaled_px(92))
+        return min(width // 2, scaled_px(211))
     if width >= 220:
-        return min(width // 2, scaled_px(78))
+        return min(width // 2, scaled_px(156))
     return min(48, max(26, width // 4))
+
+
+def _draw_segment_clock(
+    draw: ImageDraw.ImageDraw,
+    value: str,
+    x: int,
+    y: int,
+    width: int,
+    height: int,
+    pal,
+) -> None:
+    digits = [char for char in value if char.isdigit()]
+    if len(digits) != 4 or width < 38 or height < 11:
+        text_font = font(8)
+        draw.text((x, y), _fit_text(draw, value, width, text_font), font=text_font, fill=pal.ink)
+        return
+
+    digit_w = max(6, min(10, (width - 7) // 4))
+    digit_h = max(9, height)
+    stroke = max(1, min(2, digit_w // 4))
+    gap = max(1, (width - digit_w * 4 - 3) // 4)
+    colon_w = 3
+    total_w = digit_w * 4 + gap * 3 + colon_w
+    start_x = x + max(0, (width - total_w) // 2)
+    digit_y = y + max(0, (height - digit_h) // 2)
+    active = pal.ink
+    offsets = (
+        start_x,
+        start_x + digit_w + gap,
+        start_x + digit_w * 2 + gap * 2 + colon_w,
+        start_x + digit_w * 3 + gap * 3 + colon_w,
+    )
+    for char, digit_x in zip(digits, offsets):
+        _draw_segment_digit(draw, int(char), digit_x, digit_y, digit_w, digit_h, stroke, active)
+    colon_x = start_x + digit_w * 2 + gap
+    dot = max(1, stroke)
+    draw.rectangle((colon_x + 1, digit_y + digit_h // 3 - dot, colon_x + 1 + dot, digit_y + digit_h // 3), fill=active)
+    draw.rectangle((colon_x + 1, digit_y + digit_h * 2 // 3, colon_x + 1 + dot, digit_y + digit_h * 2 // 3 + dot), fill=active)
+
+
+def _draw_segment_digit(
+    draw: ImageDraw.ImageDraw,
+    digit: int,
+    x: int,
+    y: int,
+    width: int,
+    height: int,
+    stroke: int,
+    active,
+) -> None:
+    segments = {
+        0: "abcedf",
+        1: "bc",
+        2: "abged",
+        3: "abgcd",
+        4: "fgbc",
+        5: "afgcd",
+        6: "afgecd",
+        7: "abc",
+        8: "abcdefg",
+        9: "abfgcd",
+    }
+    active_segments = set(segments.get(digit, ""))
+    mid = y + height // 2
+    segment_boxes = {
+        "a": (x + stroke, y, x + width - stroke, y + stroke - 1),
+        "b": (x + width - stroke, y + stroke, x + width - 1, mid - 1),
+        "c": (x + width - stroke, mid + 1, x + width - 1, y + height - stroke - 1),
+        "d": (x + stroke, y + height - stroke, x + width - stroke, y + height - 1),
+        "e": (x, mid + 1, x + stroke - 1, y + height - stroke - 1),
+        "f": (x, y + stroke, x + stroke - 1, mid - 1),
+        "g": (x + stroke, mid, x + width - stroke, mid + stroke - 1),
+    }
+    for name, box in segment_boxes.items():
+        if name in active_segments:
+            draw.rectangle(box, fill=active)
 
 
 def _timezone_block_count(timeline_width: int) -> int:
@@ -482,21 +597,32 @@ def _mix_color(first, second, second_weight: float):
 
 def _draw_weather_compact(draw: ImageDraw.ImageDraw, weather: WeatherState | None, box: tuple[int, int, int, int], pal) -> None:
     PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    content_box = _draw_panel_title(draw, box, "WEATHER", pal)
     label_font = font(10)
     range_font = font(7)
-    icon_x = box[0] + 7
-    icon_y = box[1] + max(4, (box[3] - box[1] - 22) // 2)
-    text_x = box[0] + 34
-    text_width = max(1, box[2] - text_x - 8)
+    x0, y0, x1, y1 = content_box
+    content_w = max(1, x1 - x0 - 12)
+    content_h = max(1, y1 - y0 - 8)
+    icon_w = 24
+    gap = 7
+    text_w = min(max(1, content_w - icon_w - gap), 70)
+    group_w = icon_w + gap + text_w
+    group_x = x0 + max(6, (x1 - x0 - group_w) // 2)
+    group_y = y0 + max(4, (content_h - 31) // 2 + 4)
+    icon_x = group_x
+    icon_y = group_y + max(0, (31 - 23) // 2)
+    text_x = group_x + icon_w + gap
+    text_width = max(1, min(text_w, x1 - text_x - 6))
     if weather is None:
         _draw_weather_icon(draw, "unknown", icon_x, icon_y, pal)
-        draw.text((text_x, box[1] + 9), "-", font=label_font, fill=pal.ink)
+        dash_w = draw.textbbox((0, 0), "-", font=label_font)[2]
+        draw.text((text_x + max(0, (text_width - dash_w) // 2), group_y + 7), "-", font=label_font, fill=pal.ink)
         return
     condition = _weather_condition(weather)
     _draw_weather_icon(draw, condition, icon_x, icon_y, pal)
     label = f"{round(weather.temperature_c):d}° {_weather_condition_label(condition)}"
-    draw.text((text_x, box[1] + 7), _fit_text(draw, label, text_width, label_font), font=label_font, fill=pal.ink)
-    _draw_temperature_range(draw, weather, text_x, box[1] + 24, text_width, range_font, pal)
+    draw.text((text_x, group_y + 4), _fit_text(draw, label, text_width, label_font), font=label_font, fill=pal.ink)
+    _draw_temperature_range(draw, weather, text_x, group_y + 21, text_width, range_font, pal)
 
 
 def _draw_temperature_range(
@@ -608,10 +734,151 @@ def _draw_activity_panel(
     pal,
 ) -> None:
     PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    content_box = _draw_panel_title(draw, box, "ACTIVITY", pal)
     text_font = font(10)
-    content_width = max(1, box[2] - box[0] - 16)
+    content_width = max(1, content_box[2] - content_box[0] - 16)
     label = _activity_label(draw, event, pull_requests, now, content_width, text_font)
-    draw.text((box[0] + 8, box[1] + 13), label, font=text_font, fill=pal.ink)
+    draw.text((content_box[0] + 8, content_box[1] + 3), label, font=text_font, fill=pal.ink)
+
+
+def _draw_meetings_day_panel(
+    draw: ImageDraw.ImageDraw,
+    events: list[CalendarEvent],
+    now: datetime,
+    box: tuple[int, int, int, int],
+    pal,
+) -> None:
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    title_font = font(7)
+    time_font = font(8)
+    meeting_font = font(8)
+    meta_font = font(6)
+    x0, y0, x1, y1 = _draw_panel_title(draw, box, "MEETINGS TODAY", pal)
+    content_x = x0 + 7
+    content_w = max(1, x1 - x0 - 14)
+    if not events:
+        draw.text((content_x, y0 + 7), "No meetings today", font=meeting_font, fill=pal.ink)
+        return
+
+    visible_events = sorted(events, key=lambda item: item.starts_at)
+    card_gap = 4
+    min_card_h = 28
+    max_cards = max(1, min(len(visible_events), (y1 - y0 - 10) // (min_card_h + card_gap)))
+    card_h = max(min_card_h, min(58, (y1 - y0 - 8 - card_gap * (max_cards - 1)) // max_cards))
+    for index, event in enumerate(visible_events[:max_cards]):
+        card_y = y0 + 6 + index * (card_h + card_gap)
+        card_box = (content_x, card_y, x1 - 7, min(y1 - 5, card_y + card_h))
+        _draw_meeting_card(draw, event, now, card_box, pal, title_font, time_font, meeting_font, meta_font)
+
+    remaining = len(visible_events) - max_cards
+    if remaining > 0 and y1 - y0 >= 42:
+        label = f"+{remaining} later"
+        draw.text((x1 - 7 - draw.textbbox((0, 0), label, font=meta_font)[2], y1 - 12), label, font=meta_font, fill=pal.blue)
+
+
+def _draw_meeting_card(
+    draw: ImageDraw.ImageDraw,
+    event: CalendarEvent,
+    now: datetime,
+    box: tuple[int, int, int, int],
+    pal,
+    title_font,
+    time_font,
+    meeting_font,
+    meta_font,
+) -> None:
+    x0, y0, x1, y1 = box
+    status, status_color = _meeting_status(event, now, pal)
+    draw.rectangle(box, fill=pal.panel_shadow, outline=status_color)
+    content_w = max(1, x1 - x0 - 10)
+    time_label = _meeting_time_label(event)
+    status_label = _fit_text(draw, status, max(28, min(54, content_w // 3)), title_font)
+    draw.text((x0 + 5, y0 + 2), _fit_text(draw, time_label, max(1, content_w - 56), time_font), font=time_font, fill=status_color)
+    draw.text((x1 - 5 - draw.textbbox((0, 0), status_label, font=title_font)[2], y0 + 3), status_label, font=title_font, fill=status_color)
+
+    title_y = y0 + 12
+    title_lines = _wrap_text(draw, event.title, content_w, meeting_font, 2 if y1 - y0 >= 48 else 1)
+    for line_index, line in enumerate(title_lines):
+        draw.text((x0 + 5, title_y + line_index * 10), line, font=meeting_font, fill=pal.ink)
+
+    meta_y = title_y + max(1, len(title_lines)) * 10 + 1
+    if meta_y + 7 > y1 - 2:
+        return
+    meta_lines = _meeting_meta_lines(event, now)
+    for line in meta_lines:
+        if meta_y + 7 > y1 - 2:
+            break
+        draw.text((x0 + 5, meta_y), _fit_text(draw, line, content_w, meta_font), font=meta_font, fill=pal.blue)
+        meta_y += 8
+
+
+def _meeting_status(event: CalendarEvent, now: datetime, pal) -> tuple[str, tuple[int, int, int]]:
+    ends_at = event.ends_at or event.starts_at + timedelta(minutes=30)
+    if event.starts_at <= now < ends_at:
+        return "LIVE", pal.green
+    if event.starts_at < now:
+        return "DONE", pal.panel_shadow
+    minutes = int((event.starts_at - now).total_seconds() // 60)
+    if minutes <= 15:
+        return f"{minutes}M", pal.yellow
+    return "UPCOMING", pal.blue
+
+
+def _meeting_time_label(event: CalendarEvent) -> str:
+    if event.all_day:
+        return "ALL DAY"
+    start = event.starts_at.strftime("%H:%M")
+    if event.ends_at:
+        return f"{start}-{event.ends_at.strftime('%H:%M')} ({_meeting_duration_label(event)})"
+    return start
+
+
+def _meeting_duration_label(event: CalendarEvent) -> str:
+    if not event.ends_at:
+        return ""
+    minutes = max(1, int((event.ends_at - event.starts_at).total_seconds() // 60))
+    if minutes < 60:
+        return f"{minutes}m"
+    return f"{minutes // 60}h{minutes % 60:02d}"
+
+
+def _meeting_meta_lines(event: CalendarEvent, now: datetime) -> list[str]:
+    lines: list[str] = []
+    location = _meeting_location_label(event)
+    if location:
+        lines.append(location)
+    people = _meeting_people_label(event)
+    if people:
+        lines.append(people)
+    if event.description:
+        lines.append(event.description)
+    if event.starts_at > now:
+        lines.append(f"starts in {event.countdown_label(now)}")
+    return lines
+
+
+def _meeting_location_label(event: CalendarEvent) -> str:
+    if event.location:
+        return event.location
+    if event.meeting_url:
+        return _meeting_url_label(event.meeting_url)
+    return ""
+
+
+def _meeting_people_label(event: CalendarEvent) -> str:
+    bits = []
+    if event.organizer:
+        bits.append(f"org {event.organizer}")
+    if event.attendees:
+        names = ", ".join(event.attendees[:3])
+        suffix = f" +{len(event.attendees) - 3}" if len(event.attendees) > 3 else ""
+        bits.append(f"{len(event.attendees)}p {names}{suffix}")
+    return " / ".join(bits)
+
+
+def _meeting_url_label(url: str) -> str:
+    text = url.removeprefix("https://").removeprefix("http://")
+    return text.split("/", 1)[0]
 
 
 def _draw_route_signal_panel(
@@ -625,16 +892,16 @@ def _draw_route_signal_panel(
     pal,
 ) -> None:
     PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    content_box = _draw_panel_title(draw, box, "ROUTE", pal)
     signal = _route_signal(event, pull_requests, ai_usage, work_events, now)
     glyph, color = _route_signal_icon(signal)
     glyph_font = icon_font(14)
     label_font = font(10)
-    icon_x = box[0] + 8
-    icon_y = box[1] + max(4, (box[3] - box[1] - 16) // 2)
+    icon_x = content_box[0] + 8
+    icon_y = content_box[1] + max(2, (content_box[3] - content_box[1] - 16) // 2)
     bounds = draw.textbbox((0, 0), glyph, font=glyph_font)
     draw.text((icon_x + (18 - (bounds[2] - bounds[0])) // 2, icon_y - bounds[1]), glyph, font=glyph_font, fill=color)
-    label = f"ROUTE {signal}"
-    draw.text((box[0] + 34, box[1] + 13), _fit_text(draw, label, box[2] - box[0] - 42, label_font), font=label_font, fill=pal.ink)
+    draw.text((content_box[0] + 34, content_box[1] + 6), _fit_text(draw, signal, content_box[2] - content_box[0] - 42, label_font), font=label_font, fill=pal.ink)
 
 
 def _route_signal(
@@ -673,27 +940,29 @@ def _route_signal_icon(signal: str) -> tuple[str, tuple[int, int, int]]:
 
 def _draw_ai_usage_panel(draw: ImageDraw.ImageDraw, ai_usage: AIUsageSnapshot | None, now: datetime, box: tuple[int, int, int, int], pal) -> None:
     PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    content_box = _draw_panel_title(draw, box, "AI GAUGES", pal)
     value_font = font(10)
     if not ai_usage or not ai_usage.gauges:
-        draw.text((box[0] + 8, box[1] + 13), "-", font=value_font, fill=pal.ink)
+        draw.text((content_box[0] + 8, content_box[1] + 3), "-", font=value_font, fill=pal.ink)
         return
-    _draw_ai_usage_window(draw, ai_usage, now, box, pal)
+    _draw_ai_usage_window(draw, ai_usage, now, content_box, pal)
 
 
 def _draw_pc_stats_panel(draw: ImageDraw.ImageDraw, pc_stats: PCStatsSnapshot | None, box: tuple[int, int, int, int], pal) -> None:
     PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    content_box = _draw_panel_title(draw, box, "PC STATS", pal)
     label_font = font(7)
     value_font = font(9)
     if not pc_stats or not pc_stats.metrics:
-        draw.text((box[0] + 8, box[1] + 13), "PC -", font=value_font, fill=pal.ink)
+        draw.text((content_box[0] + 8, content_box[1] + 3), "-", font=value_font, fill=pal.ink)
         return
-    x0, y0, x1, y1 = box
+    x0, y0, x1, y1 = content_box
     content_w = max(1, x1 - x0 - 12)
     row_h = 12
     max_rows = max(1, (y1 - y0 - 8) // row_h)
     metrics = pc_stats.metrics[:max_rows]
     for index, metric in enumerate(metrics):
-        y = y0 + 6 + index * row_h
+        y = y0 + 4 + index * row_h
         color = _pc_metric_color(metric.status, pal)
         draw.rectangle((x0 + 6, y + 2, x0 + 10, y + 6), fill=color, outline=pal.ink)
         label = _fit_text(draw, metric.label, 26, label_font)
@@ -710,21 +979,19 @@ def _draw_tasks_panel(
     pal,
 ) -> None:
     PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
-    title_font = font(8)
     task_font = font(8)
     due_font = font(7)
-    x0, y0, x1, y1 = box
+    label = (snapshot.provider if snapshot and snapshot.provider else "tasks").upper()
+    x0, y0, x1, y1 = _draw_panel_title(draw, box, label, pal)
     content_x = x0 + 8
     content_w = max(1, x1 - x0 - 16)
-    label = (snapshot.provider if snapshot and snapshot.provider else "tasks").upper()
-    draw.text((content_x, y0 + 5), _fit_text(draw, label, content_w, title_font), font=title_font, fill=pal.blue)
     if not snapshot or not snapshot.tasks:
-        draw.text((content_x, y0 + 20), "No dated tasks", font=task_font, fill=pal.ink)
+        draw.text((content_x, y0 + 7), "No dated tasks", font=task_font, fill=pal.ink)
         return
     row_h = 23 if content_w >= 150 else 18
     max_rows = max(1, (y1 - y0 - 22) // row_h)
     for index, task in enumerate(snapshot.tasks[:max_rows]):
-        y = y0 + 19 + index * row_h
+        y = y0 + 6 + index * row_h
         color = _task_color(task, now, pal)
         is_subtask = bool(getattr(task, "parent_id", ""))
         marker_x = content_x + (5 if is_subtask else 0)
@@ -751,24 +1018,22 @@ def _draw_tasks_board_panel(
     pal,
 ) -> None:
     PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
-    title_font = font(8)
     column_font = font(7)
     card_font = font(7)
     meta_font = font(6)
-    x0, y0, x1, y1 = box
+    provider = (snapshot.provider if snapshot and snapshot.provider else "tasks").upper()
+    x0, y0, x1, y1 = _draw_panel_title(draw, box, f"{provider} BOARD", pal)
     content_x = x0 + 7
     content_w = max(1, x1 - x0 - 14)
-    provider = (snapshot.provider if snapshot and snapshot.provider else "tasks").upper()
-    draw.text((content_x, y0 + 5), _fit_text(draw, f"{provider} BOARD", content_w, title_font), font=title_font, fill=pal.blue)
     if not snapshot or not snapshot.tasks:
-        draw.text((content_x, y0 + 20), "No task cards", font=card_font, fill=pal.ink)
+        draw.text((content_x, y0 + 7), "No task cards", font=card_font, fill=pal.ink)
         return
 
     columns = _task_board_columns(snapshot.tasks)
     visible_columns = columns[: max(1, min(4, content_w // 54))]
     column_gap = 4
     column_w = max(1, (content_w - column_gap * (len(visible_columns) - 1)) // len(visible_columns))
-    board_y = y0 + 19
+    board_y = y0 + 6
     card_h = 24 if column_w >= 70 else 19
     max_cards = max(1, (y1 - board_y - 6) // card_h)
     for column_index, (column_name, tasks) in enumerate(visible_columns):
@@ -828,27 +1093,26 @@ def _draw_media_panel(draw: ImageDraw.ImageDraw, media: MediaNowPlaying | None, 
     title_font = font(8)
     track_font = font(10)
     artist_font = font(8)
-    x0, y0, x1, y1 = box
+    x0, y0, x1, y1 = _draw_panel_title(draw, box, "NOW PLAYING", pal)
     content_x = x0 + 8
     vinyl_radius = min(15, max(9, (y1 - y0 - 20) // 2))
     show_media_icon = bool(media and x1 - x0 >= 120 and y1 - y0 >= 46)
     thumbnail = _load_media_thumbnail(media)
     icon_space = vinyl_radius * 2 + 10 if show_media_icon else 0
     content_w = max(1, x1 - x0 - 16 - icon_space)
-    draw.text((content_x, y0 + 5), "NOW PLAYING", font=title_font, fill=pal.blue)
     if media is None:
-        draw.text((content_x, y0 + 21), "Quiet", font=track_font, fill=pal.ink)
+        draw.text((content_x, y0 + 7), "Quiet", font=track_font, fill=pal.ink)
         return
     provider = media.provider.upper()
-    draw.text((x1 - 8 - draw.textbbox((0, 0), provider, font=title_font)[2], y0 + 5), provider, font=title_font, fill=pal.green)
+    draw.text((x1 - 8 - draw.textbbox((0, 0), provider, font=title_font)[2], y0 + 2), provider, font=title_font, fill=pal.green)
     if show_media_icon:
         icon_cx = x1 - 8 - vinyl_radius
-        icon_cy = y0 + 35
+        icon_cy = y0 + 22
         if media.is_music:
             _draw_vinyl(draw, icon_cx, icon_cy, vinyl_radius, now, pal)
         else:
             _draw_video_icon(draw, icon_cx, icon_cy, vinyl_radius, pal)
-    track_y = y0 + 21
+    track_y = y0 + 7
     title_lines = _wrap_text(draw, media.title, content_w, track_font, 2)
     for index, line in enumerate(title_lines):
         draw.text((content_x, track_y + index * 12), line, font=track_font, fill=pal.ink)

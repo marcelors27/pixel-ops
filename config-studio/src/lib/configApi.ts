@@ -1,4 +1,15 @@
-import type { ConfigManifest, GitHubDevicePollResponse, GitHubDeviceStartResponse, GitHubReposResponse, NpcSpriteManifest, RuntimeConfig, RuntimeStatus } from "../types";
+import type {
+  ConfigManifest,
+  DiscordOAuthStartResponse,
+  DiscordOAuthStatusResponse,
+  DiscordProfileResponse,
+  GitHubDevicePollResponse,
+  GitHubDeviceStartResponse,
+  GitHubReposResponse,
+  NpcSpriteManifest,
+  RuntimeConfig,
+  RuntimeStatus,
+} from "../types";
 
 export async function loadConfig(plugins: string[] = []): Promise<RuntimeConfig> {
   const params = new URLSearchParams();
@@ -102,4 +113,45 @@ export async function pollGithubDeviceLogin(clientId: string, deviceCode: string
     throw new Error(await response.text());
   }
   return response.json() as Promise<GitHubDevicePollResponse>;
+}
+
+export async function saveDiscordBotToken(tokenEnv: string, token: string): Promise<void> {
+  const response = await fetch("/api/discord/token", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ token_env: tokenEnv, token }),
+  });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+}
+
+export async function loadDiscordProfile(tokenEnv: string): Promise<DiscordProfileResponse> {
+  const params = new URLSearchParams({ token_env: tokenEnv });
+  const response = await fetch(`/api/discord/profile?${params.toString()}`);
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.json() as Promise<DiscordProfileResponse>;
+}
+
+export async function startDiscordOAuth(clientId: string, clientSecretEnv: string, tokenEnv: string): Promise<DiscordOAuthStartResponse> {
+  const response = await fetch("/api/discord/oauth/start", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ client_id: clientId, client_secret_env: clientSecretEnv, token_env: tokenEnv }),
+  });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.json() as Promise<DiscordOAuthStartResponse>;
+}
+
+export async function pollDiscordOAuthStatus(state: string): Promise<DiscordOAuthStatusResponse> {
+  const params = new URLSearchParams({ state });
+  const response = await fetch(`/api/discord/oauth/status?${params.toString()}`);
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.json() as Promise<DiscordOAuthStatusResponse>;
 }

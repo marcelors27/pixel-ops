@@ -31,3 +31,4 @@ Current ADRs:
 - [0018 - ClickUp Tasks Are Planning Snapshots](0018-clickup-tasks-are-planning-snapshots.md)
 - [0019 - Media Now Playing Is Local Presence](0019-media-now-playing-is-local-presence.md)
 - [0020 - Tasks HUDs Share Provider-Neutral Board State](0020-tasks-huds-share-provider-neutral-board-state.md)
+- [0021 - Local Runtime State Uses SQLite](0021-local-runtime-state-uses-sqlite.md)

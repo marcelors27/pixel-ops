@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from threading import Lock
 from typing import Any
 
+from pixel_ops.data_sources.companions import CompanionMember, CompanionSnapshot
 from pixel_ops.integrations.discord.companions import DiscordCompanionStore
 
 
@@ -191,6 +192,32 @@ class DiscordVoiceStateTracker:
         for record in records:
             counts[record.channel_id] = counts.get(record.channel_id, 0) + 1
         return max(counts, key=counts.get) if counts else ""
+
+
+class DiscordCompanionSource:
+    def __init__(self, tracker: DiscordVoiceStateTracker):
+        self.tracker = tracker
+
+    def current(self, now=None) -> CompanionSnapshot:
+        snapshot = self.tracker.snapshot()
+        return CompanionSnapshot(
+            members=tuple(
+                CompanionMember(
+                    user_id=member.user_id,
+                    name=member.name,
+                    muted=member.muted,
+                    streaming=member.streaming,
+                )
+                for member in snapshot.members
+            ),
+            active_stream_user_ids=snapshot.active_stream_user_ids,
+            focus_user_id=snapshot.focus_user_id,
+            focus_name=snapshot.focus_name,
+            focus_muted=snapshot.focus_muted,
+            focus_streaming=snapshot.focus_streaming,
+            group_id=snapshot.channel_id,
+            group_name=snapshot.channel_name,
+        )
 
 
 def _display_name(user: dict[str, Any]) -> str:

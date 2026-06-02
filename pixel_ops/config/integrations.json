@@ -47,6 +47,9 @@
     "discord": {
       "enabled": true,
       "bot_token_env": "PIXEL_OPS_DISCORD_BOT_TOKEN",
+      "client_id": "",
+      "client_secret_env": "PIXEL_OPS_DISCORD_CLIENT_SECRET",
+      "user_token_env": "PIXEL_OPS_DISCORD_USER_TOKEN",
       "guild_id": "1133891225209024633",
       "focus_user_id": "242829666488942593",
       "max_companions": 20,

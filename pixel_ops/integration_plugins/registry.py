@@ -9,6 +9,7 @@ from pixel_ops.integration_plugins.base import (
     IntegrationContext,
     IntegrationContribution,
     NullAIUsageSource,
+    NullCompanionSource,
     NullMediaSource,
     NullPCStatsSource,
     NullPullRequestSource,
@@ -59,6 +60,7 @@ class IntegrationRuntime:
     pc_stats_source: object = field(default_factory=NullPCStatsSource)
     task_source: object = field(default_factory=NullTaskSource)
     media_source: object = field(default_factory=NullMediaSource)
+    companion_source: object = field(default_factory=NullCompanionSource)
     loaded_plugins: list[str] = field(default_factory=list)
 
     def start(self) -> None:
@@ -125,3 +127,5 @@ def _merge(runtime: IntegrationRuntime, contribution: IntegrationContribution) -
             runtime.task_source = MergedTaskSource([runtime.task_source, contribution.task_source])
     if contribution.media_source is not None:
         runtime.media_source = contribution.media_source
+    if contribution.companion_source is not None:
+        runtime.companion_source = contribution.companion_source

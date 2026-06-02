@@ -63,6 +63,13 @@
         "width": 200,
         "height": 128
       },
+      "pokemon_captures": {
+        "x": 920,
+        "y": 8,
+        "width": 344,
+        "height": 128,
+        "kind": "pokemon_captures"
+      },
       "now_playing": {
         "x": 0,
         "y": 342,
@@ -77,9 +84,9 @@
         "height": 40
       },
       "game": {
-        "x": 1272,
+        "x": 1264,
         "y": 0,
-        "width": 648,
+        "width": 656,
         "height": 344
       },
       "text_box": {
@@ -88,17 +95,10 @@
         "width": 448,
         "height": 104
       },
-      "tasks": {
+      "tasks_board": {
         "x": 720,
         "y": 142,
-        "width": 344,
-        "height": 320,
-        "kind": "tasks"
-      },
-      "tasks_board": {
-        "x": 1064,
-        "y": 142,
-        "width": 448,
+        "width": 544,
         "height": 320,
         "kind": "tasks_board"
       }

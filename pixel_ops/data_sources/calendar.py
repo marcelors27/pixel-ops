@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import html
+import re
 from dataclasses import dataclass
 from datetime import datetime, time, timedelta, timezone
 from pathlib import Path
@@ -12,6 +14,13 @@ import requests
 class CalendarEvent:
     title: str
     starts_at: datetime
+    ends_at: datetime | None = None
+    location: str = ""
+    description: str = ""
+    organizer: str = ""
+    attendees: tuple[str, ...] = ()
+    meeting_url: str = ""
+    all_day: bool = False
 
     def countdown_label(self, now: datetime) -> str:
         remaining = self.starts_at - now
@@ -27,37 +36,92 @@ def next_mock_event(now: datetime) -> CalendarEvent:
     minute_bucket = 15 - (now.minute % 15)
     if minute_bucket < 3:
         minute_bucket += 15
-    return CalendarEvent("Product Review", now + timedelta(minutes=minute_bucket))
+    starts_at = now + timedelta(minutes=minute_bucket)
+    return CalendarEvent("Product Review", starts_at, ends_at=starts_at + timedelta(minutes=30), location="Demo room")
 
 
 def next_ics_event(path: str | Path, now: datetime) -> CalendarEvent | None:
+    events = ics_events_between(path, now, now + timedelta(days=370))
+    return min(events, key=lambda event: event.starts_at) if events else None
+
+
+def today_ics_events(path: str | Path, now: datetime) -> list[CalendarEvent]:
+    start = datetime.combine(now.date(), time.min, tzinfo=now.tzinfo)
+    end = start + timedelta(days=1)
+    return ics_events_between(path, start, end)
+
+
+def ics_events_between(path: str | Path, start: datetime, end: datetime) -> list[CalendarEvent]:
     ics_path = Path(path)
     if not ics_path.exists():
-        return None
+        return []
     events: list[CalendarEvent] = []
     title = None
     starts_at = None
+    ends_at = None
     rrule = None
     exdates: set[datetime] = set()
+    location = ""
+    description = ""
+    organizer = ""
+    attendees: list[str] = []
+    meeting_url = ""
+    all_day = False
     for raw_line in _unfold_ics_lines(ics_path.read_text(encoding="utf-8", errors="ignore")):
         line = raw_line.strip()
-        if line.startswith("SUMMARY:"):
-            title = _unescape_ics_text(line.split(":", 1)[1])[:28]
+        name = _ics_property_name(line)
+        if name == "SUMMARY":
+            title = _clean_ics_text(line.split(":", 1)[1])[:80]
         elif line.startswith("DTSTART"):
-            starts_at = _parse_ics_datetime(line, now)
+            starts_at = _parse_ics_datetime(line, start)
+            all_day = "VALUE=DATE" in line.split(":", 1)[0]
+        elif line.startswith("DTEND"):
+            ends_at = _parse_ics_datetime(line, start)
+        elif name == "LOCATION":
+            location = _clean_ics_text(line.split(":", 1)[1])[:120]
+        elif name == "DESCRIPTION":
+            description = _clean_ics_text(line.split(":", 1)[1])[:240]
+            meeting_url = meeting_url or _first_url(description)
+        elif name == "ORGANIZER":
+            organizer = _ics_person_label(line)
+        elif name == "ATTENDEE":
+            attendee = _ics_person_label(line)
+            if attendee and attendee not in attendees:
+                attendees.append(attendee)
         elif line.startswith("RRULE:"):
             rrule = line.split(":", 1)[1]
         elif line.startswith("EXDATE"):
-            exdates.update(_parse_ics_datetime_values(line, now))
+            exdates.update(_parse_ics_datetime_values(line, start))
         elif line == "END:VEVENT" and title and starts_at:
-            next_start = starts_at if starts_at > now else _next_recurrence(starts_at, rrule, exdates, now)
-            if next_start and next_start > now:
-                events.append(CalendarEvent(title, next_start))
+            meeting_url = meeting_url or _first_url(location)
+            duration = (ends_at - starts_at) if ends_at else None
+            for occurrence_start in _event_occurrences_between(starts_at, rrule, exdates, start, end):
+                occurrence_end = occurrence_start + duration if duration else None
+                events.append(
+                    CalendarEvent(
+                        title,
+                        occurrence_start,
+                        ends_at=occurrence_end,
+                        location=location,
+                        description=description,
+                        organizer=organizer,
+                        attendees=tuple(attendees[:12]),
+                        meeting_url=meeting_url,
+                        all_day=all_day,
+                    )
+                )
             title = None
             starts_at = None
+            ends_at = None
             rrule = None
             exdates = set()
-    return min(events, key=lambda event: event.starts_at) if events else None
+            location = ""
+            description = ""
+            organizer = ""
+            attendees = []
+            meeting_url = ""
+            all_day = False
+    return sorted(events, key=lambda event: (event.starts_at, event.title.lower()))
 
 
 def download_ics(url: str, cache_path: str | Path, timeout_seconds: int = 8) -> Path | None:
@@ -111,6 +175,28 @@ def _parse_ics_datetime_values(line: str, now: datetime) -> list[datetime]:
     return parsed
 
 
+def _event_occurrences_between(
+    starts_at: datetime,
+    rrule: str | None,
+    exdates: set[datetime],
+    start: datetime,
+    end: datetime,
+) -> list[datetime]:
+    if not rrule:
+        return [starts_at] if start <= starts_at < end else []
+    occurrences: list[datetime] = []
+    horizon_days = max(1, min(370, (end.date() - start.date()).days + 8))
+    checked_now = start - timedelta(days=1)
+    for _ in range(horizon_days + 1):
+        next_start = _next_recurrence(starts_at, rrule, exdates, checked_now, horizon_days=horizon_days)
+        if not next_start or next_start >= end:
+            break
+        if next_start >= start:
+            occurrences.append(next_start)
+        checked_now = next_start
+    return occurrences
+
+
 def _next_recurrence(
     starts_at: datetime,
     rrule: str | None,
@@ -147,6 +233,41 @@ def _next_recurrence(
         checked += 1
         return candidate
     return None
+
+
+def _ics_property_name(line: str) -> str:
+    head = line.split(":", 1)[0]
+    return head.split(";", 1)[0].upper()
+
+
+def _ics_person_label(line: str) -> str:
+    head, value = line.split(":", 1)
+    params = _ics_params(head)
+    label = params.get("CN") or value.removeprefix("mailto:").split("@", 1)[0]
+    return _clean_ics_text(label)[:48]
+
+
+def _ics_params(head: str) -> dict[str, str]:
+    params: dict[str, str] = {}
+    for part in head.split(";")[1:]:
+        if "=" not in part:
+            continue
+        key, value = part.split("=", 1)
+        params[key.upper()] = value.strip('"')
+    return params
+
+
+def _clean_ics_text(value: str) -> str:
+    text = _unescape_ics_text(value)
+    text = re.sub(r"<br\s*/?>", " ", text, flags=re.IGNORECASE)
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = html.unescape(text)
+    return " ".join(text.replace("\\n", " ").split())
+
+
+def _first_url(value: str) -> str:
+    match = re.search(r"https?://[^\s<>\"]+", value)
+    return match.group(0).rstrip(".,)") if match else ""
 
 
 def _parse_rrule(rrule: str) -> dict[str, str]:

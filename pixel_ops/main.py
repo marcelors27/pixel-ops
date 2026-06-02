@@ -13,7 +13,7 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from pixel_ops.data_sources.calendar import next_ics_event, next_mock_event
+from pixel_ops.data_sources.calendar import CalendarEvent, next_ics_event, next_mock_event, today_ics_events
 from pixel_ops.config_loader import ConfigWatcher, load_config_prefer_json
 from pixel_ops.events.mock_events import MockEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext
@@ -109,6 +109,23 @@ def next_event(now: datetime, calendar_paths: list[Path], calendar_enabled: bool
     if calendar_enabled:
         return None
     return next_mock_event(now)
+
+
+def today_events(now: datetime, calendar_paths: list[Path], calendar_enabled: bool) -> list[CalendarEvent]:
+    events: list[CalendarEvent] = []
+    seen: set[tuple[str, datetime]] = set()
+    for path in calendar_paths:
+        for event in today_ics_events(path, now):
+            key = (event.title, event.starts_at.replace(microsecond=0))
+            if key in seen:
+                continue
+            seen.add(key)
+            events.append(event)
+    if events:
+        return sorted(events, key=lambda item: item.starts_at)
+    if calendar_enabled:
+        return []
+    return [next_mock_event(now)]
 
 
 def selected_output(args: argparse.Namespace) -> str:
@@ -301,12 +318,14 @@ def main() -> int:
             fps=fps,
             people_config=current_people_cfg,
             next_event=lambda now: next_event(now, integration_runtime.calendar_paths, current_calendar_enabled),
+            today_events=lambda now: today_events(now, integration_runtime.calendar_paths, current_calendar_enabled),
             pull_request_source=integration_runtime.pull_request_source,
             weather_source=integration_runtime.weather_source,
             ai_usage_source=integration_runtime.ai_usage_source,
             pc_stats_source=integration_runtime.pc_stats_source,
             task_source=integration_runtime.task_source,
             media_source=integration_runtime.media_source,
+            companion_source=integration_runtime.companion_source,
             ai_plugin=build_ai_plugin(current_display_cfg.get("ai", {})),
             event_sources=current_event_sources,
         )

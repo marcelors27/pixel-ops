@@ -12,6 +12,8 @@ from zoneinfo import ZoneInfo
 from PIL import Image, ImageDraw
 
 from pixel_ops.data_sources.ai_usage import AIUsageGauge, AIUsageSnapshot
+from pixel_ops.data_sources.calendar import CalendarEvent
+from pixel_ops.data_sources.companions import CompanionMember, CompanionSnapshot
 from pixel_ops.data_sources.timezones import build_people_times
 from pixel_ops.data_sources.weather import (
     OpenMeteoWeatherSource,
@@ -20,14 +22,14 @@ from pixel_ops.data_sources.weather import (
     WttrInWeatherSource,
     build_weather_source,
 )
-from pixel_ops.integrations.discord.voice_state import DiscordVoiceMember, DiscordVoiceSnapshot
+from pixel_ops.events.base import EventCategory, WorkEvent
 from pixel_ops.plugins.ai.plugin import OpenAiChatGptPlugin, build_ai_plugin
 from pixel_ops.plugins.pokemon.game.day_night import day_night_palette
 from pixel_ops.plugins.pokemon.game.map_routes import MapArea, MapRouteManager
 from pixel_ops.plugins.pokemon.game.state_machine import GamePhase
 from pixel_ops.plugins.pokemon.plugin import PokemonPlugin
 from pixel_ops.plugins.pokemon.render.sprites import NpcSpriteSet
-from pixel_ops.plugins.pokemon.scenes.overworld_scene import OverworldScene, VoiceCompanionState
+from pixel_ops.plugins.pokemon.scenes.overworld_scene import CapturedPokemonRecord, OverworldScene, VoiceCompanionState, _capture_cause_label, _capture_timestamp_label
 from pixel_ops.plugins.registry import available_plugins, get_plugin
 from pixel_ops.render.fonts import font
 from pixel_ops.render.hud import (
@@ -95,16 +97,15 @@ class VisualAndAiPluginTests(unittest.TestCase):
         frame = sprites.frame(len(NpcSpriteSet.ROWS), "idle_down", 0)
         self.assertIsNotNone(frame.getbbox())
 
-    def test_pokemon_scene_renders_live_screen_beside_discord_streamer(self):
-        snapshot = DiscordVoiceSnapshot(
-            channel_id="c1",
+    def test_pokemon_scene_renders_live_screen_beside_streamer(self):
+        snapshot = CompanionSnapshot(
+            group_id="c1",
             members=(
-                DiscordVoiceMember("u1", "Ana", "c1"),
-                DiscordVoiceMember("u2", "Bia", "c1"),
+                CompanionMember("u1", "Ana", streaming=True),
+                CompanionMember("u2", "Bia"),
             ),
             active_stream_user_ids=("u1",),
         )
-        source = type("DiscordSource", (), {"discord_voice_snapshot": lambda self: snapshot})()
         scene = OverworldScene(
             320,
             240,
@@ -113,10 +114,9 @@ class VisualAndAiPluginTests(unittest.TestCase):
             pokemon_api=None,
             lazy_download=False,
             game_config={"hud_height": 72, "text_box_height": 76},
-            event_sources=[source],
         )
 
-        img = scene.render_full([], None, datetime.now(ZoneInfo("America/Sao_Paulo")))
+        img = scene.render_full([], None, datetime.now(ZoneInfo("America/Sao_Paulo")), companion_snapshot=snapshot)
 
         self.assertEqual(img.size, (320, 240))
         self.assertEqual(len(scene._voice_companions), 2)
@@ -133,6 +133,66 @@ class VisualAndAiPluginTests(unittest.TestCase):
         self.assertEqual(len(live_layers), 1)
         scene.frame += max(1, scene.scene_fps // 4)
         self.assertNotEqual(scene._live_screen_sprite().tobytes(), live_screen.tobytes())
+
+    def test_pokemon_capture_hud_renders_recent_captures(self):
+        now = datetime(2026, 5, 26, 12, 0, tzinfo=ZoneInfo("UTC"))
+        scene = OverworldScene(
+            220,
+            96,
+            "America/Sao_Paulo",
+            scanlines=False,
+            pokemon_api=None,
+            lazy_download=False,
+            game_config={"hud_height": 0, "text_box_height": 0},
+            display_layout={"pokemon_captures": {"x": 0, "y": 0, "width": 220, "height": 96, "kind": "pokemon_captures"}},
+        )
+        scene.captured_pokemon.append(CapturedPokemonRecord(25, "Pikachu", "REVIEW pixel-ops", now))
+
+        img = scene.render_base([], None, now)
+
+        panel = img.getpixel((210, 90))
+        row_pixels = [img.getpixel((x, y)) for x in range(6, 150) for y in range(20, 34)]
+        self.assertGreater(sum(1 for pixel in row_pixels if pixel != panel), 40)
+
+    def test_meetings_day_hud_renders_daily_meeting_cards(self):
+        now = datetime(2026, 6, 2, 8, 0, tzinfo=ZoneInfo("America/Sao_Paulo"))
+        scene = OverworldScene(
+            260,
+            120,
+            "America/Sao_Paulo",
+            scanlines=False,
+            pokemon_api=None,
+            lazy_download=False,
+            game_config={"hud_height": 0, "text_box_height": 0},
+            display_layout={"meetings_day": {"x": 0, "y": 0, "width": 260, "height": 120, "kind": "meetings_day"}},
+        )
+        meetings = [
+            CalendarEvent(
+                "Planning Sync",
+                now.replace(hour=9),
+                ends_at=now.replace(hour=10),
+                location="Zoom Room",
+                organizer="Marcelo",
+                attendees=("Ana", "Bia"),
+                description="Roadmap and launches",
+            )
+        ]
+
+        img = scene.render_base([], None, now, today_events=meetings)
+
+        panel = img.getpixel((250, 110))
+        card_pixels = [img.getpixel((x, y)) for x in range(8, 220) for y in range(20, 80)]
+        self.assertGreater(sum(1 for pixel in card_pixels if pixel != panel), 80)
+
+    def test_pokemon_capture_cause_does_not_render_message_body(self):
+        event = WorkEvent(category=EventCategory.MESSAGE_IMPORTANT, title="private raw message body", source="slack")
+
+        self.assertEqual(_capture_cause_label(event), "MESSAGE")
+
+    def test_pokemon_capture_timestamp_uses_scene_timezone(self):
+        captured_at = datetime(2026, 5, 26, 12, 0, tzinfo=ZoneInfo("UTC"))
+
+        self.assertEqual(_capture_timestamp_label(captured_at, "America/Sao_Paulo"), "26/05 09:00")
 
     def test_pokemon_scene_uses_source_map_movement_rects_for_companions(self):
         scene = OverworldScene(
@@ -274,11 +334,10 @@ class VisualAndAiPluginTests(unittest.TestCase):
             self.assertLessEqual(y + sprite.height, y1)
 
     def test_pokemon_scene_keeps_rendered_companions_out_of_blocked_areas(self):
-        snapshot = DiscordVoiceSnapshot(
-            channel_id="c1",
-            members=(DiscordVoiceMember("u1", "Ana", "c1"),),
+        snapshot = CompanionSnapshot(
+            group_id="c1",
+            members=(CompanionMember("u1", "Ana"),),
         )
-        source = type("DiscordSource", (), {"discord_voice_snapshot": lambda self: snapshot})()
         scene = OverworldScene(
             320,
             240,
@@ -298,7 +357,6 @@ class VisualAndAiPluginTests(unittest.TestCase):
                     },
                 },
             },
-            event_sources=[source],
         )
         scene.current_map_area = MapArea(
             area_id="town:0",
@@ -321,6 +379,7 @@ class VisualAndAiPluginTests(unittest.TestCase):
             variant=0,
         )
 
+        scene.companion_snapshot = snapshot
         companion_layers = [layer for layer in scene._sprite_layers(scene.state.phase) if layer[3] == "Ana"]
 
         self.assertEqual(len(companion_layers), 1)
@@ -429,7 +488,7 @@ class VisualAndAiPluginTests(unittest.TestCase):
 
         _draw_ai_usage_panel(ImageDraw.Draw(img), snapshot, now, (0, 0, 180, 36), pal)
 
-        self.assertEqual(img.getpixel((171, 20)), pal.red)
+        self.assertEqual(img.getpixel((171, 28)), pal.red)
         self.assertIn("250k 100% used | 2h 0m reset", _ai_usage_gauge_value(gauge, 100, now))
 
     def test_ai_usage_percent_does_not_infer_codex_from_tokens(self):
@@ -459,6 +518,30 @@ class VisualAndAiPluginTests(unittest.TestCase):
 
         self.assertEqual(_future_local_time(person, 4).strftime("%H:%M"), "13:00")
         self.assertEqual(img.getpixel((54, 17)), _timezone_timeline_fill("working", pal))
+
+    def test_timezone_timeline_row_emphasizes_current_local_time(self):
+        now = datetime(2026, 5, 26, 12, 0, tzinfo=ZoneInfo("UTC"))
+        person = build_people_times(
+            [
+                {
+                    "key": "BRT",
+                    "name": "Marcelo",
+                    "timezone": "America/Sao_Paulo",
+                    "timezone_label": "Brazil",
+                    "work_start": "09:00",
+                    "work_end": "18:00",
+                }
+            ],
+            now,
+        )[0]
+        pal = day_night_palette(12)
+        img = Image.new("RGB", (280, 28), pal.panel)
+
+        _draw_timezone_timeline_row(ImageDraw.Draw(img), person, 0, 2, 260, 24, font(9), font(8), pal)
+
+        stripe_pixels = {img.getpixel((x, y)) for x in range(20, 24) for y in range(6, 21)}
+        self.assertIn(pal.green, stripe_pixels)
+        self.assertNotEqual(img.getpixel((30, 12)), pal.panel)
 
     def test_pokemon_scene_repositions_actors_when_map_changes(self):
         scene = OverworldScene(

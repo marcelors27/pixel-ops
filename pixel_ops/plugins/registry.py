@@ -1,10 +1,15 @@
 from __future__ import annotations
 
-from pixel_ops.plugins.pokemon.plugin import PokemonPlugin
+import importlib
+
+
+PLUGIN_MODULES = {
+    "pokemon": "pixel_ops.plugins.pokemon.plugin",
+}
 
 
 def available_plugins():
-    plugins = [PokemonPlugin()]
+    plugins = [_load_plugin(name) for name in PLUGIN_MODULES]
     return {plugin.name: plugin for plugin in plugins}
 
 
@@ -15,3 +20,8 @@ def get_plugin(name: str):
     except KeyError as error:
         supported = ", ".join(sorted(plugins))
         raise ValueError(f"Unknown plugin '{name}'. Supported plugins: {supported}") from error
+
+
+def _load_plugin(name: str):
+    module = importlib.import_module(PLUGIN_MODULES[name])
+    return module.plugin()

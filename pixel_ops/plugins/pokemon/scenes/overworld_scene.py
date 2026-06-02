@@ -2,15 +2,18 @@ from __future__ import annotations
 
 import hashlib
 import random
+from collections import deque
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 from zoneinfo import ZoneInfo
 
 from PIL import Image, ImageDraw
 
 from pixel_ops.data_sources.ai_usage import AIUsageSnapshot
 from pixel_ops.data_sources.calendar import CalendarEvent
+from pixel_ops.data_sources.companions import CompanionSnapshot
 from pixel_ops.data_sources.media import MediaNowPlaying
 from pixel_ops.data_sources.pc_stats import PCStatsSnapshot
 from pixel_ops.data_sources.tasks import TaskSnapshot
@@ -18,7 +21,7 @@ from pixel_ops.data_sources.weather import WeatherState
 from pixel_ops.plugins.pokemon.pokemon_api import PokeApiClient
 from pixel_ops.data_sources.timezones import PersonTime
 from pixel_ops.plugins.pokemon.game.day_night import day_night_palette
-from pixel_ops.events.base import WorkEvent
+from pixel_ops.events.base import EventCategory, WorkEvent
 from pixel_ops.events.github_events import PullRequestSummary
 from pixel_ops.plugins.ai.plugin import AiDecisionPlugin
 from pixel_ops.plugins.pokemon.game.encounter_system import EncounterSystem
@@ -68,6 +71,14 @@ class VoiceCompanionState:
     variant: int
 
 
+@dataclass(frozen=True)
+class CapturedPokemonRecord:
+    number: int
+    name: str
+    cause: str
+    captured_at: datetime
+
+
 class OverworldScene:
     def __init__(
         self,
@@ -84,6 +95,7 @@ class OverworldScene:
         ash_assets_dir: Path | None = None,
         event_sources: list | None = None,
         ai_plugin: AiDecisionPlugin | None = None,
+        capture_store: Any | None = None,
     ):
         cfg = game_config or {}
         self.companion_config = companion_config or {}
@@ -125,6 +137,7 @@ class OverworldScene:
         self.mood_engine = MoodEngine()
         self.current_mood = self.mood_engine.state(datetime.now(ZoneInfo(self.primary_timezone)))
         self.event_sources = event_sources or []
+        self.companion_snapshot: CompanionSnapshot | None = None
         self._voice_companions: dict[str, VoiceCompanionState] = {}
         self.encounter_system = EncounterSystem(
             PokemonSelector(
@@ -138,6 +151,9 @@ class OverworldScene:
             on_event=self.mood_engine.observe,
         )
         self.encounter = self.encounter_system.idle_context()
+        self.capture_store = capture_store
+        self.captured_pokemon: deque[CapturedPokemonRecord] = deque(maxlen=10)
+        self._load_captured_pokemon()
         self.pokemon_sprites = PokemonSpriteStore()
         self._previous_sprite_box: tuple[int, int, int, int] | None = None
         self._previous_battle_sprite_box: tuple[int, int, int, int] | None = None
@@ -246,6 +262,8 @@ class OverworldScene:
                 GamePhase.POKEMON_APPEARS,
                 self._message_scroll_seconds(encounter.message_for(GamePhase.POKEMON_APPEARS)),
             )
+        elif changed and phase == GamePhase.CAUGHT:
+            self._record_capture(base_now)
         moving = phase in (GamePhase.WALKING, GamePhase.RESUME_WALKING)
         if moving:
             self.overworld_walk_frame += 1
@@ -264,12 +282,15 @@ class OverworldScene:
         pc_stats: PCStatsSnapshot | None = None,
         task_snapshot: TaskSnapshot | None = None,
         media: MediaNowPlaying | None = None,
+        companion_snapshot: CompanionSnapshot | None = None,
+        today_events: list[CalendarEvent] | None = None,
         work_events: list[WorkEvent] | None = None,
     ):
         with font_scale_for_canvas(self.renderer.width, self.renderer.height):
             base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
             phase = self.advance(base_now, weather=weather)
             recent_events = work_events if work_events is not None else self.encounter_system.recent(base_now)
+            self.companion_snapshot = companion_snapshot
             return self.render_full(
                 people,
                 event,
@@ -281,6 +302,8 @@ class OverworldScene:
                 pc_stats=pc_stats,
                 task_snapshot=task_snapshot,
                 media=media,
+                companion_snapshot=companion_snapshot,
+                today_events=today_events,
                 work_events=recent_events,
             )
 
@@ -296,11 +319,15 @@ class OverworldScene:
         pc_stats: PCStatsSnapshot | None = None,
         task_snapshot: TaskSnapshot | None = None,
         media: MediaNowPlaying | None = None,
+        companion_snapshot: CompanionSnapshot | None = None,
+        today_events: list[CalendarEvent] | None = None,
         work_events: list[WorkEvent] | None = None,
     ) -> Image.Image:
         with font_scale_for_canvas(self.renderer.width, self.renderer.height):
             phase = phase or self.state.phase
             base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
+            if companion_snapshot is not None:
+                self.companion_snapshot = companion_snapshot
             pal = day_night_palette(base_now.hour)
             img = self.render_base(
                 people,
@@ -312,6 +339,7 @@ class OverworldScene:
                 pc_stats=pc_stats,
                 task_snapshot=task_snapshot,
                 media=media,
+                today_events=today_events,
                 work_events=work_events,
             )
             if self._is_battle_phase(phase):
@@ -335,6 +363,7 @@ class OverworldScene:
         pc_stats: PCStatsSnapshot | None = None,
         task_snapshot: TaskSnapshot | None = None,
         media: MediaNowPlaying | None = None,
+        today_events: list[CalendarEvent] | None = None,
         work_events: list[WorkEvent] | None = None,
     ) -> Image.Image:
         with font_scale_for_canvas(self.renderer.width, self.renderer.height):
@@ -361,9 +390,111 @@ class OverworldScene:
                 pc_stats=pc_stats,
                 task_snapshot=task_snapshot,
                 media=media,
+                today_events=today_events,
                 layout=self.display_layout,
             )
+            self._draw_pokemon_capture_huds(draw, pal)
             return img
+
+    def _record_capture(self, now: datetime) -> None:
+        pokemon = self.encounter.pokemon
+        record = CapturedPokemonRecord(
+            number=pokemon.number,
+            name=pokemon.name,
+            cause=_capture_cause_label(self.encounter.event),
+            captured_at=now,
+        )
+        if self.captured_pokemon and self.captured_pokemon[0].number == record.number and self.captured_pokemon[0].cause == record.cause:
+            return
+        self.captured_pokemon.appendleft(record)
+        if self.capture_store is not None:
+            event = self.encounter.event
+            self.capture_store.record_pokemon_capture(
+                pokemon.number,
+                pokemon.name,
+                record.cause,
+                captured_at=now,
+                source_provider=event.source if event else "ambient",
+                source_category=event.category.value if event else EventCategory.AMBIENT.value,
+                types=getattr(pokemon, "types", ()),
+            )
+
+    def _load_captured_pokemon(self) -> None:
+        if self.capture_store is None:
+            return
+        try:
+            records = self.capture_store.recent_pokemon_captures(10)
+        except Exception:
+            return
+        for record in reversed(records):
+            captured_at = _parse_capture_datetime(record.last_seen_at or record.captured_at, self.primary_timezone)
+            self.captured_pokemon.appendleft(
+                CapturedPokemonRecord(
+                    number=record.pokemon_number,
+                    name=record.pokemon_name,
+                    cause=record.cause,
+                    captured_at=captured_at,
+                )
+            )
+
+    def _draw_pokemon_capture_huds(self, draw: ImageDraw.ImageDraw, pal) -> None:
+        for box in self._layout_boxes("pokemon_captures"):
+            self._draw_pokemon_capture_hud(draw, box, pal)
+
+    def _draw_pokemon_capture_hud(self, draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], pal) -> None:
+        PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+        row_font = font(8)
+        cause_font = font(7)
+        x0, y0, x1, y1 = _draw_panel_title(draw, box, "POKEMON CAUGHT", pal)
+        content_x = x0 + 7
+        content_w = max(1, x1 - x0 - 14)
+        if not self.captured_pokemon:
+            draw.text((content_x, y0 + 7), "No captures yet", font=row_font, fill=pal.ink)
+            return
+
+        available_h = max(1, y1 - y0 - 22)
+        columns = 2 if content_w >= 260 else 1
+        rows_per_column = 5 if columns == 2 else 10
+        column_gap = 8 if columns == 2 else 0
+        column_w = max(1, (content_w - column_gap * (columns - 1)) // columns)
+        row_h = max(12, min(21, available_h // rows_per_column))
+        max_rows = min(10, max(1, rows_per_column * columns))
+        for index, record in enumerate(list(self.captured_pokemon)[:max_rows]):
+            column = index // rows_per_column
+            row = index % rows_per_column
+            item_x = content_x + column * (column_w + column_gap)
+            y = y0 + 7 + row * row_h
+            if y + row_h > y1 - 2:
+                break
+            ball_size = 8 if row_h <= 10 else 10
+            ball_y = y + max(0, (row_h - ball_size) // 2)
+            _draw_tiny_pokeball(draw, item_x, ball_y, ball_size, pal)
+            text_x = item_x + ball_size + 5
+            text_w = max(1, column_w - ball_size - 5)
+            if row_h >= 18:
+                name = _fit_text(draw, f"#{record.number:03d} {record.name.upper()}", text_w, row_font)
+                cause = _fit_text(draw, f"{_capture_timestamp_label(record.captured_at, self.primary_timezone)} - {record.cause}", text_w, cause_font)
+                draw.text((text_x, y - 1), name, font=row_font, fill=pal.ink)
+                draw.text((text_x, y + 9), cause, font=cause_font, fill=pal.blue)
+            else:
+                label = _fit_text(
+                    draw,
+                    f"#{record.number:03d} {record.name.upper()} {_capture_timestamp_label(record.captured_at, self.primary_timezone)}",
+                    text_w,
+                    row_font,
+                )
+                draw.text((text_x, y - 1), label, font=row_font, fill=pal.ink)
+
+    def _layout_boxes(self, kind: str) -> list[tuple[int, int, int, int]]:
+        if not isinstance(self.display_layout, dict):
+            return []
+        boxes: list[tuple[int, int, int, int]] = []
+        for item_key, raw in self.display_layout.items():
+            if not isinstance(raw, dict):
+                continue
+            if str(raw.get("kind") or item_key) == kind:
+                boxes.append(self._layout_box(item_key, (0, 0, 1, 1)))
+        return boxes
 
     def render_dirty_regions(self, base: Image.Image, now: datetime | None = None) -> list[tuple[int, int, Image.Image]]:
         base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
@@ -985,7 +1116,7 @@ class OverworldScene:
 
     def _sprite_layers(self, phase: GamePhase) -> list[tuple[Image.Image, int, int, str]]:
         layers: list[tuple[Image.Image, int, int, str]] = []
-        snapshot = self._discord_voice_snapshot()
+        snapshot = self._companion_snapshot()
         ash_streaming = bool(getattr(snapshot, "focus_streaming", False)) if snapshot is not None else False
         ash_x, route_y, direction = self._ash_pose_for_phase(phase)
         if direction:
@@ -1084,7 +1215,7 @@ class OverworldScene:
         streamer_ids = set(getattr(snapshot, "active_stream_user_ids", ()))
         for member in snapshot.members:
             seed = int(hashlib.sha1(member.user_id.encode("utf-8")).hexdigest()[:8], 16)
-            visual = self._discord_companion_visual(member.user_id)
+            visual = self._companion_visual(member.user_id)
             state = self._voice_companion_state(member.user_id, seed, ash_x, ash_y, visual.get("sprite_variant"))
             muted = bool(getattr(member, "muted", False))
             streaming = stream_active and member.user_id in streamer_ids
@@ -1174,8 +1305,8 @@ class OverworldScene:
         muted.putalpha(alpha)
         return muted
 
-    def _discord_companion_visual(self, user_id: str) -> dict:
-        raw = self.companion_config.get("discord", {}) if isinstance(self.companion_config, dict) else {}
+    def _companion_visual(self, user_id: str) -> dict:
+        raw = self.companion_config if isinstance(self.companion_config, dict) else {}
         value = raw.get(user_id, {}) if isinstance(raw, dict) else {}
         return value if isinstance(value, dict) else {}
 
@@ -1333,12 +1464,8 @@ class OverworldScene:
             state.target_x = state.x
             state.direction = "down" if dy > 0 else "up"
 
-    def _discord_voice_snapshot(self):
-        for source in self.event_sources:
-            snapshot_fn = getattr(source, "discord_voice_snapshot", None)
-            if callable(snapshot_fn):
-                return snapshot_fn()
-        return None
+    def _companion_snapshot(self) -> CompanionSnapshot | None:
+        return self.companion_snapshot
 
     def _clamp_sprite_x(self, x: int, width: int) -> int:
         x0, _, x1, _ = self.map_box
@@ -1703,3 +1830,89 @@ class OverworldScene:
         if abs(target - current) <= step:
             return target
         return current + step if target > current else current - step
+
+
+def _capture_cause_label(event: WorkEvent | None) -> str:
+    if event is None or event.category == EventCategory.AMBIENT:
+        return "AMBIENT ROUTE"
+    labels = {
+        EventCategory.PULL_REQUEST: "PR",
+        EventCategory.REVIEW_REQUESTED: "REVIEW",
+        EventCategory.PR_APPROVED: "APPROVAL",
+        EventCategory.PR_CLOSED: "PR CLOSED",
+        EventCategory.MERGE: "MERGE",
+        EventCategory.MEETING: "MEETING",
+        EventCategory.BUILD_BROKEN: "CI ALERT",
+        EventCategory.DEPLOY_STARTED: "DEPLOY START",
+        EventCategory.DEPLOY_COMPLETED: "DEPLOY DONE",
+        EventCategory.INCIDENT: "INCIDENT",
+        EventCategory.MESSAGE_IMPORTANT: "MESSAGE",
+        EventCategory.SOCIAL_ACTIVITY: "SOCIAL WEATHER",
+        EventCategory.SOCIAL_PRESENCE: "PRESENCE",
+        EventCategory.SOCIAL_QUIET: "QUIET",
+        EventCategory.AI_USAGE: "AI USAGE",
+    }
+    base = labels.get(event.category, event.category.value.replace("_", " ").upper())
+    if event.category in (EventCategory.MESSAGE_IMPORTANT, EventCategory.SOCIAL_ACTIVITY, EventCategory.SOCIAL_PRESENCE, EventCategory.SOCIAL_QUIET):
+        return base
+    context = event.repo or event.metadata.get("repo") or event.title
+    if not context:
+        return base
+    return f"{base} {_compact_capture_context(context)}"
+
+
+def _parse_capture_datetime(value: str, timezone_name: str) -> datetime:
+    try:
+        return datetime.fromisoformat(value)
+    except (TypeError, ValueError):
+        return datetime.now(ZoneInfo(timezone_name))
+
+
+def _capture_timestamp_label(value: datetime, timezone_name: str) -> str:
+    if value.tzinfo is not None:
+        value = value.astimezone(ZoneInfo(timezone_name))
+    return value.strftime("%d/%m %H:%M")
+
+
+def _compact_capture_context(value: str) -> str:
+    compact = " ".join(str(value).replace("\n", " ").split())
+    if "/" in compact and len(compact) > 24:
+        compact = compact.split("/")[-1]
+    return compact[:42]
+
+
+def _draw_tiny_pokeball(draw: ImageDraw.ImageDraw, x: int, y: int, size: int, pal) -> None:
+    size = max(7, size)
+    box = (x, y, x + size - 1, y + size - 1)
+    mid = y + size // 2
+    draw.ellipse(box, fill=(248, 248, 248), outline=pal.ink)
+    draw.pieslice(box, 180, 360, fill=(224, 48, 48))
+    draw.arc(box, 180, 360, fill=pal.ink)
+    draw.line((x + 1, mid, x + size - 2, mid), fill=pal.ink)
+    button = max(2, size // 3)
+    bx = x + size // 2 - button // 2
+    by = mid - button // 2
+    draw.ellipse((bx, by, bx + button, by + button), fill=pal.panel, outline=pal.ink)
+
+
+def _draw_panel_title(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], title: str, pal) -> tuple[int, int, int, int]:
+    title_font = font(7)
+    x0, y0, x1, y1 = box
+    label = _fit_text(draw, title, max(1, x1 - x0 - 18), title_font)
+    bounds = draw.textbbox((0, 0), label, font=title_font)
+    label_w = bounds[2] - bounds[0] + 8
+    label_h = bounds[3] - bounds[1] + 5
+    label_x = x0 + 5
+    label_y = y0
+    draw.rectangle((label_x, label_y, min(x1 - 5, label_x + label_w), label_y + label_h), fill=(255, 255, 255), outline=pal.ink)
+    draw.text((label_x + 4, label_y + 2 - bounds[1]), label, font=title_font, fill=pal.blue)
+    return x0, min(y1 - 1, y0 + 13), x1, y1
+
+
+def _fit_text(draw: ImageDraw.ImageDraw, text: str, max_width: int, text_font) -> str:
+    if draw.textbbox((0, 0), text, font=text_font)[2] <= max_width:
+        return text
+    clipped = text
+    while clipped and draw.textbbox((0, 0), f"{clipped}...", font=text_font)[2] > max_width:
+        clipped = clipped[:-1]
+    return f"{clipped}..." if clipped else ""

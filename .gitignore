@@ -16,4 +16,6 @@ env/
 pixel_ops/output/*.png
 pixel_ops/output/*.gif
 pixel_ops/cache/
+pixel_ops/state/*.sqlite
+pixel_ops/state/*.sqlite-*
 pixel_ops/plugins/*/assets/cache/
