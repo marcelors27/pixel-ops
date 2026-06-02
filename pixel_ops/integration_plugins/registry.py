@@ -4,10 +4,12 @@ import importlib
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from pixel_ops.data_sources.tasks import MergedTaskSource
 from pixel_ops.integration_plugins.base import (
     IntegrationContext,
     IntegrationContribution,
     NullAIUsageSource,
+    NullMediaSource,
     NullPCStatsSource,
     NullPullRequestSource,
     NullTaskSource,
@@ -25,6 +27,8 @@ PLUGIN_MODULES = {
     "ai_usage": "pixel_ops.integrations.ai_usage.plugin",
     "pc_stats": "pixel_ops.integrations.pc_stats.plugin",
     "clickup": "pixel_ops.integrations.clickup.plugin",
+    "todoist": "pixel_ops.integrations.todoist.plugin",
+    "media": "pixel_ops.integrations.media.plugin",
 }
 
 PLUGIN_ENABLES = {
@@ -37,6 +41,8 @@ PLUGIN_ENABLES = {
     "ai_usage": "PIXEL_OPS_AI_USAGE_ENABLED",
     "pc_stats": "PIXEL_OPS_PC_STATS_ENABLED",
     "clickup": "PIXEL_OPS_CLICKUP_ENABLED",
+    "todoist": "PIXEL_OPS_TODOIST_ENABLED",
+    "media": "PIXEL_OPS_MEDIA_ENABLED",
 }
 
 
@@ -52,6 +58,7 @@ class IntegrationRuntime:
     ai_usage_source: object = field(default_factory=NullAIUsageSource)
     pc_stats_source: object = field(default_factory=NullPCStatsSource)
     task_source: object = field(default_factory=NullTaskSource)
+    media_source: object = field(default_factory=NullMediaSource)
     loaded_plugins: list[str] = field(default_factory=list)
 
     def start(self) -> None:
@@ -110,4 +117,11 @@ def _merge(runtime: IntegrationRuntime, contribution: IntegrationContribution) -
     if contribution.pc_stats_source is not None:
         runtime.pc_stats_source = contribution.pc_stats_source
     if contribution.task_source is not None:
-        runtime.task_source = contribution.task_source
+        if isinstance(runtime.task_source, NullTaskSource):
+            runtime.task_source = contribution.task_source
+        elif isinstance(runtime.task_source, MergedTaskSource):
+            runtime.task_source.add(contribution.task_source)
+        else:
+            runtime.task_source = MergedTaskSource([runtime.task_source, contribution.task_source])
+    if contribution.media_source is not None:
+        runtime.media_source = contribution.media_source

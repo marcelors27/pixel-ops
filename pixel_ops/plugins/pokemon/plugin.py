@@ -5,7 +5,7 @@ from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
 
-from pixel_ops.core import AIUsageSource, PCStatsSource, PixelOpsApp, PullRequestSource, TaskSource, WeatherSource
+from pixel_ops.core import AIUsageSource, MediaSource, PCStatsSource, PixelOpsApp, PullRequestSource, TaskSource, WeatherSource
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.events.base import EventSource
 from pixel_ops.plugins.ai.plugin import AiDecisionPlugin
@@ -60,6 +60,7 @@ class PokemonPlugin:
         ai_usage_source: AIUsageSource | None,
         pc_stats_source: PCStatsSource | None,
         task_source: TaskSource | None,
+        media_source: MediaSource | None,
         ai_plugin: AiDecisionPlugin | None,
         event_sources: list[EventSource],
     ) -> PixelOpsApp:
@@ -88,6 +89,7 @@ class PokemonPlugin:
             ai_usage_source=ai_usage_source,
             pc_stats_source=pc_stats_source,
             task_source=task_source,
+            media_source=media_source,
         )
 
     def _pokemon_api(self, args: argparse.Namespace, root_dir: Path, pokemon_cfg: dict) -> PokeApiClient:

@@ -31,8 +31,24 @@ class PCStatsSource(Protocol):
         ...
 
 
+class MediaSource(Protocol):
+    def current(self, now: datetime | None = None):
+        ...
+
+
 class PixelOpsScene(Protocol):
-    def render(self, people_times, next_event, now: datetime, pull_requests, weather, ai_usage, pc_stats=None, task_snapshot=None) -> Image.Image:
+    def render(
+        self,
+        people_times,
+        next_event,
+        now: datetime,
+        pull_requests,
+        weather,
+        ai_usage,
+        pc_stats=None,
+        task_snapshot=None,
+        media=None,
+    ) -> Image.Image:
         ...
 
 
@@ -49,6 +65,7 @@ class PixelOpsApp:
         ai_usage_source: AIUsageSource | None = None,
         pc_stats_source: PCStatsSource | None = None,
         task_source: TaskSource | None = None,
+        media_source: MediaSource | None = None,
     ):
         self.scene = scene
         self.people_config = people_config
@@ -58,6 +75,7 @@ class PixelOpsApp:
         self.ai_usage_source = ai_usage_source
         self.pc_stats_source = pc_stats_source
         self.task_source = task_source
+        self.media_source = media_source
 
     def render_frame(self, now: datetime) -> Image.Image:
         return self.scene.render(
@@ -69,4 +87,5 @@ class PixelOpsApp:
             self.ai_usage_source.current(now) if self.ai_usage_source else None,
             self.pc_stats_source.current(now) if self.pc_stats_source else None,
             self.task_source.current(now) if self.task_source else None,
+            self.media_source.current(now) if self.media_source else None,
         )

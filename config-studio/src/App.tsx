@@ -10,6 +10,7 @@ import {
   GripVertical,
   Monitor,
   MoveDiagonal2,
+  Music2,
   FileImage,
   Play,
   RefreshCw,
@@ -24,8 +25,8 @@ import mascotAlertImg from "./assets/pixelops-mascot-angry.png";
 import mascotImg from "./assets/pixelops-mascot.png";
 import mascotSleepyImg from "./assets/pixelops-mascot-sleepy.png";
 import { PixelMascot } from "./components/PixelMascot";
-import { cloneConfig, loadConfig, loadConfigManifest, loadNpcSpriteManifest, loadRuntimeStatus, runRuntimeAction, saveConfig } from "./lib/configApi";
-import type { ConfigManifest, DetectedPlugin, DiscordPersonConfig, IntegrationToggle, LayoutBox, LayoutKey, LayoutWindowOption, MovementConfig, MovementRect, PersonConfig, RuntimeConfig, RuntimeStatus } from "./types";
+import { cloneConfig, loadConfig, loadConfigManifest, loadGithubRepos, loadNpcSpriteManifest, loadRuntimeStatus, pollGithubDeviceLogin, runRuntimeAction, saveConfig, saveGithubToken, startGithubDeviceLogin } from "./lib/configApi";
+import type { ConfigManifest, DetectedPlugin, DiscordPersonConfig, GitHubDeviceStartResponse, GitHubRepoOption, IntegrationToggle, LayoutBox, LayoutKey, LayoutWindowOption, MovementConfig, MovementRect, PersonConfig, RuntimeConfig, RuntimeStatus } from "./types";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 type MovementLayer = "walkable" | "blocked";
@@ -49,6 +50,8 @@ const integrationIcons: Record<string, IconComponent> = {
   ai_usage: Activity,
   pc_stats: Cpu,
   clickup: Check,
+  todoist: Check,
+  media: Music2,
   slack: Bot,
   discord: Bot,
 };
@@ -1032,38 +1035,7 @@ function IntegrationPanel({
 }) {
   if (activeKey === "github") {
     return (
-      <Panel title="GitHub" icon={Github} subtitle="Pull requests in the compact HUD">
-        <Field label="Repos">
-          <TextArea
-            value={config.integrations.integrations.github.repos.join("\n")}
-            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.repos = lines(value)))}
-          />
-        </Field>
-        <Field label="Poll seconds">
-          <NumberInput
-            value={config.integrations.integrations.github.poll_seconds}
-            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.poll_seconds = value))}
-          />
-        </Field>
-        <Field label="Max pull requests">
-          <NumberInput
-            value={config.integrations.integrations.github.max_pull_requests}
-            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.max_pull_requests = value))}
-          />
-        </Field>
-        <Field label="Deploy signals">
-          <Switch
-            checked={config.integrations.integrations.github.fetch_deployments}
-            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.fetch_deployments = value))}
-          />
-        </Field>
-        <Field label="Deploy workflows">
-          <TextArea
-            value={config.integrations.integrations.github.deployment_workflows.join("\n")}
-            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.deployment_workflows = lines(value)))}
-          />
-        </Field>
-      </Panel>
+      <GithubIntegrationPanel config={config} onMutate={onMutate} />
     );
   }
 
@@ -1161,10 +1133,22 @@ function IntegrationPanel({
             onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.team_id = digits(value)))}
           />
         </Field>
+        <Field label="Workspace IDs">
+          <TextInput
+            value={(config.integrations.integrations.clickup.team_ids ?? []).join(", ")}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.team_ids = commaList(value).map(digits)))}
+          />
+        </Field>
         <Field label="Assignee ID">
           <TextInput
             value={config.integrations.integrations.clickup.assignee_id}
             onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.assignee_id = digits(value)))}
+          />
+        </Field>
+        <Field label="Assignee IDs">
+          <TextInput
+            value={(config.integrations.integrations.clickup.assignee_ids ?? []).join(", ")}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.assignee_ids = commaList(value).map(digits)))}
           />
         </Field>
         <Field label="Poll seconds">
@@ -1191,6 +1175,12 @@ function IntegrationPanel({
             onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.include_overdue = value))}
           />
         </Field>
+        <Field label="No due date">
+          <Switch
+            checked={config.integrations.integrations.clickup.include_undated}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.include_undated = value))}
+          />
+        </Field>
         <Field label="Subtasks">
           <Switch
             checked={config.integrations.integrations.clickup.include_subtasks}
@@ -1203,6 +1193,96 @@ function IntegrationPanel({
             onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.clickup.include_closed = value))}
           />
         </Field>
+      </Panel>
+    );
+  }
+
+  if (activeKey === "todoist") {
+    return (
+      <Panel title="Todoist" icon={Check} subtitle="Active personal tasks for the shared task HUDs">
+        <Field label="Token env">
+          <TextInput
+            value={config.integrations.integrations.todoist.token_env}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.todoist.token_env = value))}
+          />
+        </Field>
+        <Field label="Project IDs">
+          <TextInput
+            value={config.integrations.integrations.todoist.project_ids.join(", ")}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.todoist.project_ids = commaList(value).map(digits)))}
+          />
+        </Field>
+        <Field label="Section IDs">
+          <TextInput
+            value={config.integrations.integrations.todoist.section_ids.join(", ")}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.todoist.section_ids = commaList(value).map(digits)))}
+          />
+        </Field>
+        <Field label="Filter">
+          <TextInput
+            value={config.integrations.integrations.todoist.filter}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.todoist.filter = value))}
+          />
+        </Field>
+        <Field label="Poll seconds">
+          <NumberInput
+            value={config.integrations.integrations.todoist.poll_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.todoist.poll_seconds = clampNumber(value, 30, 3600)))}
+          />
+        </Field>
+        <Field label="Max tasks">
+          <NumberInput
+            value={config.integrations.integrations.todoist.max_tasks}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.todoist.max_tasks = clampNumber(value, 1, 24)))}
+          />
+        </Field>
+        <Field label="Due within days">
+          <NumberInput
+            value={config.integrations.integrations.todoist.due_within_days}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.todoist.due_within_days = clampNumber(value, 1, 90)))}
+          />
+        </Field>
+        <Field label="Overdue">
+          <Switch
+            checked={config.integrations.integrations.todoist.include_overdue}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.todoist.include_overdue = value))}
+          />
+        </Field>
+        <Field label="No due date">
+          <Switch
+            checked={config.integrations.integrations.todoist.include_undated}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.todoist.include_undated = value))}
+          />
+        </Field>
+      </Panel>
+    );
+  }
+
+  if (activeKey === "media") {
+    return (
+      <Panel title="Media" icon={Music2} subtitle="Local now-playing state for Spotify and YouTube">
+        <Field label="Providers">
+          <TextInput
+            value={config.integrations.integrations.media.providers.join(", ")}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.media.providers = commaList(value)))}
+          />
+        </Field>
+        <Field label="Poll seconds">
+          <NumberInput
+            value={config.integrations.integrations.media.poll_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.media.poll_seconds = clampNumber(value, 2, 300)))}
+          />
+        </Field>
+        <Field label="Timeout seconds">
+          <NumberInput
+            value={config.integrations.integrations.media.timeout_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.media.timeout_seconds = clampNumber(value, 1, 10)))}
+          />
+        </Field>
+        <div className="field field-wide">
+          <span>Available providers</span>
+          <span className="empty-note">spotify, youtube_browser</span>
+        </div>
       </Panel>
     );
   }
@@ -1385,6 +1465,190 @@ function IntegrationPanel({
       <Code2 size={18} />
       <span>No editable runtime settings are registered for this integration yet.</span>
     </div>
+  );
+}
+
+function GithubIntegrationPanel({ config, onMutate }: { config: RuntimeConfig; onMutate: (mutator: (draft: RuntimeConfig) => void) => void }) {
+  const github = config.integrations.integrations.github;
+  const [tokenDraft, setTokenDraft] = useState("");
+  const [deviceLogin, setDeviceLogin] = useState<GitHubDeviceStartResponse | null>(null);
+  const [repos, setRepos] = useState<GitHubRepoOption[]>([]);
+  const [viewer, setViewer] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [polling, setPolling] = useState(false);
+  const [message, setMessage] = useState("");
+
+  async function refreshRepos(nextMessage?: string) {
+    const result = await loadGithubRepos(github.token_env);
+    setViewer(result.viewer);
+    setRepos(result.repos);
+    setMessage(nextMessage ?? `${result.repos.length} repositories available for ${result.viewer}.`);
+  }
+
+  async function connectWithToken() {
+    setBusy(true);
+    setMessage("");
+    try {
+      if (tokenDraft.trim()) {
+        await saveGithubToken(github.token_env, tokenDraft.trim());
+        setTokenDraft("");
+      }
+      await refreshRepos();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function startDeviceLogin() {
+    setBusy(true);
+    setMessage("");
+    try {
+      const result = await startGithubDeviceLogin(github.client_id);
+      setDeviceLogin(result);
+      setMessage(`Enter ${result.user_code} on GitHub to authorize Pixel OPs.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : String(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!deviceLogin) return;
+    const login = deviceLogin;
+    let stopped = false;
+    let timeoutId: number | undefined;
+
+    async function poll() {
+      setPolling(true);
+      try {
+        const result = await pollGithubDeviceLogin(github.client_id, login.device_code, github.token_env);
+        if (stopped) return;
+        if (result.status === "authorized") {
+          setDeviceLogin(null);
+          await refreshRepos("GitHub authorized. Repository list refreshed.");
+          return;
+        }
+        const interval = Math.max(result.interval ?? login.interval, login.interval, 5);
+        setMessage(result.message ?? "Waiting for GitHub authorization.");
+        timeoutId = window.setTimeout(() => void poll(), interval * 1000);
+      } catch (error) {
+        if (!stopped) setMessage(error instanceof Error ? error.message : String(error));
+      } finally {
+        if (!stopped) setPolling(false);
+      }
+    }
+
+    timeoutId = window.setTimeout(() => void poll(), login.interval * 1000);
+    return () => {
+      stopped = true;
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
+  }, [deviceLogin, github.client_id, github.token_env]);
+
+  function toggleRepo(repo: string, checked: boolean) {
+    onMutate((draft) => {
+      const current = new Set(draft.integrations.integrations.github.repos);
+      if (checked) {
+        current.add(repo);
+      } else {
+        current.delete(repo);
+      }
+      draft.integrations.integrations.github.repos = [...current].sort();
+    });
+  }
+
+  const selected = new Set(github.repos);
+
+  return (
+    <Panel title="GitHub" icon={Github} subtitle="Pull requests in the compact HUD">
+      <Field label="Client ID">
+        <TextInput
+          value={github.client_id}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.client_id = value))}
+        />
+      </Field>
+      <Field label="Token env">
+        <TextInput
+          value={github.token_env}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.token_env = value || "PIXEL_OPS_GITHUB_TOKEN"))}
+        />
+      </Field>
+      <div className="field field-wide github-connect-row">
+        <span>GitHub login</span>
+        <button className="primary-button" type="button" disabled={busy || polling || !github.client_id} onClick={() => void startDeviceLogin()}>
+          <Github size={15} />
+          {busy ? "Starting" : "Login by GitHub"}
+        </button>
+        {deviceLogin ? (
+          <div className="github-device-card">
+            <strong>{deviceLogin.user_code}</strong>
+            <a className="secondary-button" href={deviceLogin.verification_uri} target="_blank" rel="noreferrer">
+              Open GitHub
+            </a>
+            <span className="empty-note">{polling ? "Waiting for authorization..." : "Authorization started."}</span>
+          </div>
+        ) : null}
+        {viewer ? <span className="empty-note">Signed in as {viewer}</span> : null}
+        {message ? <span className="empty-note">{message}</span> : null}
+      </div>
+      <Field label="Manual token">
+        <PasswordInput value={tokenDraft} onChange={setTokenDraft} />
+      </Field>
+      <div className="field field-wide github-connect-row">
+        <span>Manual fallback</span>
+        <button className="secondary-button" type="button" disabled={busy || polling} onClick={() => void connectWithToken()}>
+          <Github size={15} />
+          Load repos
+        </button>
+      </div>
+      {repos.length ? (
+        <div className="field field-wide github-repo-list">
+          <span>Available repos</span>
+          <div>
+            {repos.map((repo) => (
+              <label key={repo.full_name} className="github-repo-option">
+                <input type="checkbox" checked={selected.has(repo.full_name)} onChange={(event) => toggleRepo(repo.full_name, event.target.checked)} />
+                <span>{repo.full_name}</span>
+                {repo.private ? <small>private</small> : null}
+              </label>
+            ))}
+          </div>
+        </div>
+      ) : null}
+      <Field label="Repos">
+        <TextArea
+          value={github.repos.join("\n")}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.repos = lines(value)))}
+        />
+      </Field>
+      <Field label="Poll seconds">
+        <NumberInput
+          value={github.poll_seconds}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.poll_seconds = value))}
+        />
+      </Field>
+      <Field label="Max pull requests">
+        <NumberInput
+          value={github.max_pull_requests}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.max_pull_requests = value))}
+        />
+      </Field>
+      <Field label="Deploy signals">
+        <Switch
+          checked={github.fetch_deployments}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.fetch_deployments = value))}
+        />
+      </Field>
+      <Field label="Deploy workflows">
+        <TextArea
+          value={github.deployment_workflows.join("\n")}
+          onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.github.deployment_workflows = lines(value)))}
+        />
+      </Field>
+    </Panel>
   );
 }
 
@@ -1588,6 +1852,10 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 
 function TextInput({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   return <input value={value} onChange={(event) => onChange(event.target.value)} />;
+}
+
+function PasswordInput({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  return <input type="password" value={value} autoComplete="off" onChange={(event) => onChange(event.target.value)} />;
 }
 
 function NumberInput({ value, onChange }: { value: number; onChange: (value: number) => void }) {
@@ -2206,8 +2474,16 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
   if (!display.layout || typeof display.layout !== "object") {
     display.layout = defaultLayoutFor(display.width, display.height);
   }
+  next.integrations.integrations.github.client_id = next.integrations.integrations.github.client_id ?? "Iv23litC8XR0gzcGAiaG";
+  next.integrations.integrations.github.token_env = next.integrations.integrations.github.token_env ?? "PIXEL_OPS_GITHUB_TOKEN";
+  next.integrations.integrations.github.repos = next.integrations.integrations.github.repos ?? [];
+  next.integrations.integrations.github.poll_seconds = next.integrations.integrations.github.poll_seconds ?? 300;
+  next.integrations.integrations.github.max_pull_requests = next.integrations.integrations.github.max_pull_requests ?? 4;
+  next.integrations.integrations.github.fetch_pull_requests = next.integrations.integrations.github.fetch_pull_requests ?? 20;
   next.integrations.integrations.github.fetch_deployments = next.integrations.integrations.github.fetch_deployments ?? true;
   next.integrations.integrations.github.deployment_workflows = next.integrations.integrations.github.deployment_workflows ?? [];
+  next.integrations.integrations.github.startup_lookback_seconds = next.integrations.integrations.github.startup_lookback_seconds ?? 3600;
+  next.integrations.integrations.github.timeout_seconds = next.integrations.integrations.github.timeout_seconds ?? 20;
   next.integrations.integrations.slack.app_token_env = next.integrations.integrations.slack.app_token_env ?? "PIXEL_OPS_SLACK_APP_TOKEN";
   next.integrations.integrations.slack.bot_token_env = next.integrations.integrations.slack.bot_token_env ?? "PIXEL_OPS_SLACK_BOT_TOKEN";
   next.integrations.integrations.slack.bot_user_id = next.integrations.integrations.slack.bot_user_id ?? "";
@@ -2235,25 +2511,63 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
     enabled: false,
     token_env: "PIXEL_OPS_CLICKUP_TOKEN",
     team_id: "",
+    team_ids: [],
     assignee_id: "",
+    assignee_ids: [],
     poll_seconds: 120,
     max_tasks: 5,
     due_within_days: 14,
     include_overdue: true,
+    include_undated: true,
     include_subtasks: true,
     include_closed: false,
     timeout_seconds: 10,
   };
   next.integrations.integrations.clickup.token_env = next.integrations.integrations.clickup.token_env ?? "PIXEL_OPS_CLICKUP_TOKEN";
   next.integrations.integrations.clickup.team_id = next.integrations.integrations.clickup.team_id ?? "";
+  next.integrations.integrations.clickup.team_ids = next.integrations.integrations.clickup.team_ids ?? [];
   next.integrations.integrations.clickup.assignee_id = next.integrations.integrations.clickup.assignee_id ?? "";
+  next.integrations.integrations.clickup.assignee_ids = next.integrations.integrations.clickup.assignee_ids ?? [];
   next.integrations.integrations.clickup.poll_seconds = next.integrations.integrations.clickup.poll_seconds ?? 120;
   next.integrations.integrations.clickup.max_tasks = next.integrations.integrations.clickup.max_tasks ?? 5;
   next.integrations.integrations.clickup.due_within_days = next.integrations.integrations.clickup.due_within_days ?? 14;
   next.integrations.integrations.clickup.include_overdue = next.integrations.integrations.clickup.include_overdue ?? true;
+  next.integrations.integrations.clickup.include_undated = next.integrations.integrations.clickup.include_undated ?? true;
   next.integrations.integrations.clickup.include_subtasks = next.integrations.integrations.clickup.include_subtasks ?? true;
   next.integrations.integrations.clickup.include_closed = next.integrations.integrations.clickup.include_closed ?? false;
   next.integrations.integrations.clickup.timeout_seconds = next.integrations.integrations.clickup.timeout_seconds ?? 10;
+  next.integrations.integrations.todoist = next.integrations.integrations.todoist ?? {
+    enabled: false,
+    token_env: "PIXEL_OPS_TODOIST_TOKEN",
+    project_ids: [],
+    section_ids: [],
+    filter: "",
+    poll_seconds: 120,
+    max_tasks: 12,
+    due_within_days: 14,
+    include_overdue: true,
+    include_undated: true,
+    timeout_seconds: 10,
+  };
+  next.integrations.integrations.todoist.token_env = next.integrations.integrations.todoist.token_env ?? "PIXEL_OPS_TODOIST_TOKEN";
+  next.integrations.integrations.todoist.project_ids = next.integrations.integrations.todoist.project_ids ?? [];
+  next.integrations.integrations.todoist.section_ids = next.integrations.integrations.todoist.section_ids ?? [];
+  next.integrations.integrations.todoist.filter = next.integrations.integrations.todoist.filter ?? "";
+  next.integrations.integrations.todoist.poll_seconds = next.integrations.integrations.todoist.poll_seconds ?? 120;
+  next.integrations.integrations.todoist.max_tasks = next.integrations.integrations.todoist.max_tasks ?? 12;
+  next.integrations.integrations.todoist.due_within_days = next.integrations.integrations.todoist.due_within_days ?? 14;
+  next.integrations.integrations.todoist.include_overdue = next.integrations.integrations.todoist.include_overdue ?? true;
+  next.integrations.integrations.todoist.include_undated = next.integrations.integrations.todoist.include_undated ?? true;
+  next.integrations.integrations.todoist.timeout_seconds = next.integrations.integrations.todoist.timeout_seconds ?? 10;
+  next.integrations.integrations.media = next.integrations.integrations.media ?? {
+    enabled: false,
+    providers: ["spotify"],
+    poll_seconds: 10,
+    timeout_seconds: 2,
+  };
+  next.integrations.integrations.media.providers = next.integrations.integrations.media.providers ?? ["spotify"];
+  next.integrations.integrations.media.poll_seconds = next.integrations.integrations.media.poll_seconds ?? 10;
+  next.integrations.integrations.media.timeout_seconds = next.integrations.integrations.media.timeout_seconds ?? 2;
   next.integrations.integrations.discord.bot_token_env = next.integrations.integrations.discord.bot_token_env ?? "PIXEL_OPS_DISCORD_BOT_TOKEN";
   next.integrations.integrations.discord.guild_id = next.integrations.integrations.discord.guild_id ?? "";
   next.integrations.integrations.discord.focus_user_id = next.integrations.integrations.discord.focus_user_id ?? "";
@@ -2311,6 +2625,13 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
 
 function digits(value: string): string {
   return value.replace(/\D/g, "");
+}
+
+function commaList(value: string): string[] {
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
 function titleize(value: string): string {

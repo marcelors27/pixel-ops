@@ -186,15 +186,17 @@ class AIUsageSource(EventSource):
             status.secondary_reset_at if status else None,
             until,
         )
+        primary_rows = _rows_since(rows, until - timedelta(hours=5))
+        secondary_rows = _rows_since(rows, until - timedelta(days=7))
         return [
             _tokens_gauge(
                 "codex",
                 "Codex 5H",
-                _rows_since(rows, until - timedelta(hours=5)),
+                primary_rows,
                 used_percent=(
                     primary_percent
                     if primary_percent is not None
-                    else _inferred_codex_pressure(rows, until, window=timedelta(hours=5))
+                    else 0.0 if primary_rows else None
                 ),
                 reset_at=status.primary_reset_at if primary_percent is not None and status else None,
                 detail_suffix="last 5h",
@@ -202,11 +204,11 @@ class AIUsageSource(EventSource):
             _tokens_gauge(
                 "codex",
                 "Codex W",
-                _rows_since(rows, until - timedelta(days=7)),
+                secondary_rows,
                 used_percent=(
                     secondary_percent
                     if secondary_percent is not None
-                    else _inferred_codex_pressure(rows, until, window=timedelta(days=7))
+                    else 0.0 if secondary_rows else None
                 ),
                 reset_at=status.secondary_reset_at if secondary_percent is not None and status else None,
                 detail_suffix="last 7d",

@@ -11,6 +11,7 @@ from PIL import Image, ImageDraw
 
 from pixel_ops.data_sources.ai_usage import AIUsageSnapshot
 from pixel_ops.data_sources.calendar import CalendarEvent
+from pixel_ops.data_sources.media import MediaNowPlaying
 from pixel_ops.data_sources.pc_stats import PCStatsSnapshot
 from pixel_ops.data_sources.tasks import TaskSnapshot
 from pixel_ops.data_sources.weather import WeatherState
@@ -262,6 +263,7 @@ class OverworldScene:
         ai_usage: AIUsageSnapshot | None = None,
         pc_stats: PCStatsSnapshot | None = None,
         task_snapshot: TaskSnapshot | None = None,
+        media: MediaNowPlaying | None = None,
         work_events: list[WorkEvent] | None = None,
     ):
         with font_scale_for_canvas(self.renderer.width, self.renderer.height):
@@ -278,6 +280,7 @@ class OverworldScene:
                 ai_usage=ai_usage,
                 pc_stats=pc_stats,
                 task_snapshot=task_snapshot,
+                media=media,
                 work_events=recent_events,
             )
 
@@ -292,6 +295,7 @@ class OverworldScene:
         ai_usage: AIUsageSnapshot | None = None,
         pc_stats: PCStatsSnapshot | None = None,
         task_snapshot: TaskSnapshot | None = None,
+        media: MediaNowPlaying | None = None,
         work_events: list[WorkEvent] | None = None,
     ) -> Image.Image:
         with font_scale_for_canvas(self.renderer.width, self.renderer.height):
@@ -307,6 +311,7 @@ class OverworldScene:
                 ai_usage=ai_usage,
                 pc_stats=pc_stats,
                 task_snapshot=task_snapshot,
+                media=media,
                 work_events=work_events,
             )
             if self._is_battle_phase(phase):
@@ -329,6 +334,7 @@ class OverworldScene:
         ai_usage: AIUsageSnapshot | None = None,
         pc_stats: PCStatsSnapshot | None = None,
         task_snapshot: TaskSnapshot | None = None,
+        media: MediaNowPlaying | None = None,
         work_events: list[WorkEvent] | None = None,
     ) -> Image.Image:
         with font_scale_for_canvas(self.renderer.width, self.renderer.height):
@@ -354,6 +360,7 @@ class OverworldScene:
                 work_events=work_events,
                 pc_stats=pc_stats,
                 task_snapshot=task_snapshot,
+                media=media,
                 layout=self.display_layout,
             )
             return img

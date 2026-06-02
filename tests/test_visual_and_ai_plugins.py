@@ -32,6 +32,7 @@ from pixel_ops.plugins.registry import available_plugins, get_plugin
 from pixel_ops.render.fonts import font
 from pixel_ops.render.hud import (
     _ai_usage_gauge_value,
+    _ai_usage_percent,
     _draw_ai_usage_panel,
     _draw_timezone_timeline_row,
     _future_local_time,
@@ -430,6 +431,11 @@ class VisualAndAiPluginTests(unittest.TestCase):
 
         self.assertEqual(img.getpixel((171, 20)), pal.red)
         self.assertIn("250k 100% used | 2h 0m reset", _ai_usage_gauge_value(gauge, 100, now))
+
+    def test_ai_usage_percent_does_not_infer_codex_from_tokens(self):
+        gauge = AIUsageGauge(provider="codex", label="Codex 5H", total_tokens=500_000)
+
+        self.assertIsNone(_ai_usage_percent(gauge))
 
     def test_timezone_timeline_row_shows_future_local_hours_in_blocks(self):
         now = datetime(2026, 5, 26, 12, 0, tzinfo=ZoneInfo("UTC"))

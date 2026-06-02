@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import http.client
 import json
 import os
 import sys
@@ -11,6 +12,10 @@ from datetime import datetime, timedelta, timezone
 from threading import Lock, Thread
 
 from pixel_ops.events.base import EventCategory, EventPriority, WorkEvent
+
+_GITHUB_REQUEST_ERRORS = (urllib.error.URLError, OSError, http.client.HTTPException)
+_GITHUB_PAYLOAD_ERRORS = _GITHUB_REQUEST_ERRORS + (KeyError, ValueError, TypeError)
+_GITHUB_WORKFLOW_ERRORS = _GITHUB_PAYLOAD_ERRORS + (AttributeError,)
 
 
 @dataclass(frozen=True)
@@ -115,6 +120,8 @@ class GitHubEventSource:
         def worker() -> None:
             try:
                 self._refresh_sync(now, since, include_closed)
+            except _GITHUB_WORKFLOW_ERRORS as error:
+                self._debug(f"refresh error: {type(error).__name__}: {error}")
             finally:
                 with self._lock:
                     self._refresh_running = False
@@ -167,7 +174,7 @@ class GitHubEventSource:
                             review_state="review",
                         )
                     )
-            except (urllib.error.URLError, KeyError, ValueError, TypeError) as error:
+            except _GITHUB_PAYLOAD_ERRORS as error:
                 self._debug(f"open_prs error repo={repo}: {type(error).__name__}: {error}")
                 continue
         return pull_requests
@@ -248,7 +255,7 @@ class GitHubEventSource:
                             metadata={"state": state},
                         )
                     )
-            except (urllib.error.URLError, KeyError, ValueError, TypeError) as error:
+            except _GITHUB_PAYLOAD_ERRORS as error:
                 self._debug(f"closed_prs error repo={repo}: {type(error).__name__}: {error}")
                 continue
         summaries.sort(key=lambda item: item.updated_at or datetime.min.replace(tzinfo=timezone.utc), reverse=True)
@@ -296,7 +303,7 @@ class GitHubEventSource:
                         )
                     )
                     self._debug(f"queued workflow category={category.value} key={key}")
-            except (urllib.error.URLError, KeyError, ValueError, TypeError, AttributeError) as error:
+            except _GITHUB_WORKFLOW_ERRORS as error:
                 self._debug(f"workflow_runs error repo={repo}: {type(error).__name__}: {error}")
                 continue
         return events

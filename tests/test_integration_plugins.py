@@ -13,8 +13,10 @@ from pixel_ops.integrations.discord.plugin import plugin as discord_plugin
 from pixel_ops.integrations.github.plugin import plugin as github_plugin
 from pixel_ops.integrations.google_calendar.plugin import plugin as google_calendar_plugin
 from pixel_ops.integrations.ics.plugin import plugin as ics_plugin
+from pixel_ops.integrations.media.plugin import plugin as media_plugin
 from pixel_ops.integrations.pc_stats.plugin import plugin as pc_stats_plugin
 from pixel_ops.integrations.slack.plugin import plugin as slack_plugin
+from pixel_ops.integrations.todoist.plugin import plugin as todoist_plugin
 from pixel_ops.integrations.weather.plugin import plugin as weather_plugin
 
 
@@ -39,8 +41,10 @@ class IntegrationPluginTests(unittest.TestCase):
             "github": github_plugin,
             "google_calendar": google_calendar_plugin,
             "ics": ics_plugin,
+            "media": media_plugin,
             "pc_stats": pc_stats_plugin,
             "slack": slack_plugin,
+            "todoist": todoist_plugin,
             "weather": weather_plugin,
         }
         for expected_name, factory in factories.items():
@@ -64,6 +68,8 @@ class IntegrationPluginTests(unittest.TestCase):
                     "ai_usage": {"enabled": True, "providers": ["codex"], "thresholds": [80]},
                     "pc_stats": {"enabled": True, "fields": ["cpu", "ram"], "poll_seconds": 5},
                     "clickup": {"enabled": True, "team_id": "123", "assignee_id": "456"},
+                    "todoist": {"enabled": True, "project_ids": ["789"]},
+                    "media": {"enabled": True, "providers": ["spotify"]},
                 }
             }
 
@@ -71,7 +77,7 @@ class IntegrationPluginTests(unittest.TestCase):
 
             self.assertEqual(
                 runtime.loaded_plugins,
-                ["slack", "discord", "github", "google_calendar", "ics", "weather", "ai_usage", "pc_stats", "clickup"],
+                ["slack", "discord", "github", "google_calendar", "ics", "weather", "ai_usage", "pc_stats", "clickup", "todoist", "media"],
             )
             self.assertGreaterEqual(len(runtime.event_sources), 5)
             self.assertIn(ics_path, runtime.calendar_paths)
@@ -80,6 +86,7 @@ class IntegrationPluginTests(unittest.TestCase):
             self.assertIsNotNone(runtime.ai_usage_source)
             self.assertIsNotNone(runtime.pc_stats_source)
             self.assertIsNotNone(runtime.task_source)
+            self.assertIsNotNone(runtime.media_source)
             self.assertGreaterEqual(len(runtime.starters), 2)
             self.assertGreaterEqual(len(runtime.closers), 2)
 

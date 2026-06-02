@@ -306,6 +306,7 @@ def main() -> int:
             ai_usage_source=integration_runtime.ai_usage_source,
             pc_stats_source=integration_runtime.pc_stats_source,
             task_source=integration_runtime.task_source,
+            media_source=integration_runtime.media_source,
             ai_plugin=build_ai_plugin(current_display_cfg.get("ai", {})),
             event_sources=current_event_sources,
         )

@@ -1,13 +1,15 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+import math
+from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
-from PIL import ImageDraw
+from PIL import Image, ImageDraw
 
 from pixel_ops.data_sources.ai_usage import AIUsageSnapshot
 from pixel_ops.data_sources.availability import status_for
 from pixel_ops.data_sources.calendar import CalendarEvent
+from pixel_ops.data_sources.media import MediaNowPlaying
 from pixel_ops.data_sources.pc_stats import PCStatsSnapshot
 from pixel_ops.data_sources.tasks import TaskItem, TaskSnapshot
 from pixel_ops.data_sources.timezones import PersonTime
@@ -25,6 +27,30 @@ def _fit_text(draw: ImageDraw.ImageDraw, text: str, max_width: int, text_font) -
     while clipped and draw.textbbox((0, 0), f"{clipped}...", font=text_font)[2] > max_width:
         clipped = clipped[:-1]
     return f"{clipped}..." if clipped else ""
+
+
+def _wrap_text(draw: ImageDraw.ImageDraw, text: str, max_width: int, text_font, max_lines: int) -> list[str]:
+    words = text.split()
+    if not words:
+        return []
+    lines: list[str] = []
+    current = ""
+    for word in words:
+        candidate = f"{current} {word}".strip()
+        if not current or draw.textbbox((0, 0), candidate, font=text_font)[2] <= max_width:
+            current = candidate
+            continue
+        lines.append(current)
+        current = word
+        if len(lines) == max_lines:
+            break
+    if current and len(lines) < max_lines:
+        lines.append(current)
+    if len(lines) == max_lines:
+        used_words = " ".join(lines).split()
+        if len(used_words) < len(words) or draw.textbbox((0, 0), lines[-1], font=text_font)[2] > max_width:
+            lines[-1] = _fit_text(draw, lines[-1], max_width, text_font)
+    return lines
 
 
 def _draw_flag(draw: ImageDraw.ImageDraw, x: int, y: int, code: str, outline) -> None:
@@ -130,10 +156,11 @@ def draw_hud(
     work_events: list[WorkEvent] | None = None,
     pc_stats: PCStatsSnapshot | None = None,
     task_snapshot: TaskSnapshot | None = None,
+    media: MediaNowPlaying | None = None,
     layout: dict | None = None,
 ) -> None:
     if layout:
-        _draw_configured_hud(draw, people, event, now, pal, pull_requests or [], ai_usage, weather, work_events or [], pc_stats, task_snapshot, layout)
+        _draw_configured_hud(draw, people, event, now, pal, pull_requests or [], ai_usage, weather, work_events or [], pc_stats, task_snapshot, media, layout)
         return
 
     PixelRenderer.draw_panel(draw, (8, 8, 312, 212), pal.panel, pal.panel_shadow, pal.ink)
@@ -180,6 +207,7 @@ def _draw_configured_hud(
     work_events: list[WorkEvent],
     pc_stats: PCStatsSnapshot | None,
     task_snapshot: TaskSnapshot | None,
+    media: MediaNowPlaying | None,
     layout: dict,
 ) -> None:
     small_font = font(11)
@@ -211,6 +239,12 @@ def _draw_configured_hud(
 
     for task_box in [*_layout_boxes(layout, "tasks"), *_layout_boxes(layout, "clickup_tasks")]:
         _draw_tasks_panel(draw, task_snapshot, now, task_box, pal)
+
+    for task_board_box in _layout_boxes(layout, "tasks_board"):
+        _draw_tasks_board_panel(draw, task_snapshot, now, task_board_box, pal)
+
+    for media_box in [*_layout_boxes(layout, "media"), *_layout_boxes(layout, "now_playing")]:
+        _draw_media_panel(draw, media, now, media_box, pal)
 
 
 def _layout_boxes(layout: dict, key: str) -> list[tuple[int, int, int, int]]:
@@ -692,15 +726,192 @@ def _draw_tasks_panel(
     for index, task in enumerate(snapshot.tasks[:max_rows]):
         y = y0 + 19 + index * row_h
         color = _task_color(task, now, pal)
-        draw.rectangle((content_x, y + 2, content_x + 5, y + 7), fill=color, outline=pal.ink)
-        label_x = content_x + 9
+        is_subtask = bool(getattr(task, "parent_id", ""))
+        marker_x = content_x + (5 if is_subtask else 0)
+        draw.rectangle((marker_x, y + 2, marker_x + 5, y + 7), fill=color, outline=pal.ink)
+        label_x = marker_x + 9
+        label_w = max(1, content_w - (label_x - content_x))
         due_label = _task_due_label(task, now)
+        meta_label = _task_meta_label(task, due_label)
         if row_h >= 23:
-            draw.text((label_x, y - 2), _fit_text(draw, task.title, content_w - 9, task_font), font=task_font, fill=pal.ink)
-            draw.text((label_x, y + 10), _fit_text(draw, due_label, content_w - 9, due_font), font=due_font, fill=pal.blue)
+            title = f"> {task.title}" if is_subtask else task.title
+            draw.text((label_x, y - 2), _fit_text(draw, title, label_w, task_font), font=task_font, fill=pal.ink)
+            draw.text((label_x, y + 10), _fit_text(draw, meta_label, label_w, due_font), font=due_font, fill=pal.blue)
         else:
-            label = f"{task.title} {due_label}"
-            draw.text((label_x, y - 1), _fit_text(draw, label, content_w - 9, task_font), font=task_font, fill=pal.ink)
+            prefix = "> " if is_subtask else ""
+            label = f"{prefix}{task.title} {meta_label}"
+            draw.text((label_x, y - 1), _fit_text(draw, label, label_w, task_font), font=task_font, fill=pal.ink)
+
+
+def _draw_tasks_board_panel(
+    draw: ImageDraw.ImageDraw,
+    snapshot: TaskSnapshot | None,
+    now: datetime,
+    box: tuple[int, int, int, int],
+    pal,
+) -> None:
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    title_font = font(8)
+    column_font = font(7)
+    card_font = font(7)
+    meta_font = font(6)
+    x0, y0, x1, y1 = box
+    content_x = x0 + 7
+    content_w = max(1, x1 - x0 - 14)
+    provider = (snapshot.provider if snapshot and snapshot.provider else "tasks").upper()
+    draw.text((content_x, y0 + 5), _fit_text(draw, f"{provider} BOARD", content_w, title_font), font=title_font, fill=pal.blue)
+    if not snapshot or not snapshot.tasks:
+        draw.text((content_x, y0 + 20), "No task cards", font=card_font, fill=pal.ink)
+        return
+
+    columns = _task_board_columns(snapshot.tasks)
+    visible_columns = columns[: max(1, min(4, content_w // 54))]
+    column_gap = 4
+    column_w = max(1, (content_w - column_gap * (len(visible_columns) - 1)) // len(visible_columns))
+    board_y = y0 + 19
+    card_h = 24 if column_w >= 70 else 19
+    max_cards = max(1, (y1 - board_y - 6) // card_h)
+    for column_index, (column_name, tasks) in enumerate(visible_columns):
+        cx = content_x + column_index * (column_w + column_gap)
+        draw.rectangle((cx, board_y, cx + column_w - 1, y1 - 7), fill=pal.panel_shadow, outline=pal.ink)
+        header = f"{column_name[:10]} {len(tasks)}"
+        draw.text((cx + 3, board_y + 2), _fit_text(draw, header.upper(), column_w - 6, column_font), font=column_font, fill=pal.yellow)
+        for card_index, task in enumerate(tasks[:max_cards]):
+            cy = board_y + 13 + card_index * card_h
+            if cy + card_h - 2 > y1 - 8:
+                break
+            color = _task_color(task, now, pal)
+            draw.rectangle((cx + 3, cy, cx + column_w - 4, cy + card_h - 3), fill=pal.panel, outline=color)
+            title = f"> {task.title}" if task.parent_id else task.title
+            draw.text((cx + 6, cy + 2), _fit_text(draw, title, column_w - 12, card_font), font=card_font, fill=pal.ink)
+            if card_h >= 24:
+                meta = _task_board_meta(task, now)
+                draw.text((cx + 6, cy + 12), _fit_text(draw, meta, column_w - 12, meta_font), font=meta_font, fill=pal.blue)
+
+
+def _task_board_columns(tasks: tuple[TaskItem, ...]) -> list[tuple[str, list[TaskItem]]]:
+    grouped: dict[str, list[TaskItem]] = {}
+    for task in tasks:
+        column = (task.column or task.status or "Open").strip() or "Open"
+        grouped.setdefault(column, []).append(task)
+    ordered_names = sorted(grouped, key=lambda name: (_task_column_rank(name), name.lower()))
+    no_due = datetime.max.replace(tzinfo=timezone.utc)
+    return [(name, sorted(grouped[name], key=lambda task: (task.order, task.due_at or no_due, task.title.lower()))) for name in ordered_names]
+
+
+def _task_column_rank(name: str) -> int:
+    normalized = name.lower().replace("_", " ").replace("-", " ")
+    ranks = (
+        ("backlog", "todo", "to do", "open", "inbox"),
+        ("progress", "doing", "active"),
+        ("review", "blocked", "waiting"),
+        ("done", "closed", "complete"),
+    )
+    for index, aliases in enumerate(ranks):
+        if any(alias in normalized for alias in aliases):
+            return index
+    return 2
+
+
+def _task_board_meta(task: TaskItem, now: datetime) -> str:
+    bits = []
+    if task.group:
+        bits.append(task.group)
+    if task.assignee:
+        bits.append(task.assignee)
+    bits.append(_task_due_label(task, now))
+    return " / ".join(bits)
+
+
+def _draw_media_panel(draw: ImageDraw.ImageDraw, media: MediaNowPlaying | None, now: datetime, box: tuple[int, int, int, int], pal) -> None:
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    title_font = font(8)
+    track_font = font(10)
+    artist_font = font(8)
+    x0, y0, x1, y1 = box
+    content_x = x0 + 8
+    vinyl_radius = min(15, max(9, (y1 - y0 - 20) // 2))
+    show_media_icon = bool(media and x1 - x0 >= 120 and y1 - y0 >= 46)
+    thumbnail = _load_media_thumbnail(media)
+    icon_space = vinyl_radius * 2 + 10 if show_media_icon else 0
+    content_w = max(1, x1 - x0 - 16 - icon_space)
+    draw.text((content_x, y0 + 5), "NOW PLAYING", font=title_font, fill=pal.blue)
+    if media is None:
+        draw.text((content_x, y0 + 21), "Quiet", font=track_font, fill=pal.ink)
+        return
+    provider = media.provider.upper()
+    draw.text((x1 - 8 - draw.textbbox((0, 0), provider, font=title_font)[2], y0 + 5), provider, font=title_font, fill=pal.green)
+    if show_media_icon:
+        icon_cx = x1 - 8 - vinyl_radius
+        icon_cy = y0 + 35
+        if media.is_music:
+            _draw_vinyl(draw, icon_cx, icon_cy, vinyl_radius, now, pal)
+        else:
+            _draw_video_icon(draw, icon_cx, icon_cy, vinyl_radius, pal)
+    track_y = y0 + 21
+    title_lines = _wrap_text(draw, media.title, content_w, track_font, 2)
+    for index, line in enumerate(title_lines):
+        draw.text((content_x, track_y + index * 12), line, font=track_font, fill=pal.ink)
+    artist_y = track_y + max(1, len(title_lines)) * 12 + 1
+    artist_drawn = bool(media.artist and artist_y + 8 <= y1 - 32)
+    if artist_drawn:
+        draw.text((content_x, artist_y), _fit_text(draw, media.artist, content_w, artist_font), font=artist_font, fill=pal.blue)
+    if thumbnail:
+        thumb_y = max(track_y + max(1, len(title_lines)) * 12 + (12 if artist_drawn else 3), y0 + 50)
+        if thumb_y + 18 <= y1 - 8:
+            _draw_media_thumbnail(draw, thumbnail, (content_x, thumb_y, x1 - 8, y1 - 8), pal)
+
+
+def _load_media_thumbnail(media: MediaNowPlaying | None) -> Image.Image | None:
+    if not media or not media.thumbnail_path:
+        return None
+    try:
+        return Image.open(media.thumbnail_path).convert("RGB")
+    except OSError:
+        return None
+
+
+def _draw_media_thumbnail(draw: ImageDraw.ImageDraw, image: Image.Image, box: tuple[int, int, int, int], pal) -> None:
+    x0, y0, x1, y1 = box
+    width = max(1, x1 - x0)
+    height = max(1, y1 - y0)
+    scale = min(width / image.width, height / image.height)
+    resized = image.resize((max(1, int(image.width * scale)), max(1, int(image.height * scale))), Image.Resampling.LANCZOS)
+    thumb_x = x0
+    thumb_y = y0 + (height - resized.height) // 2
+    draw._image.paste(resized, (thumb_x, thumb_y))
+
+
+def _draw_vinyl(draw: ImageDraw.ImageDraw, cx: int, cy: int, radius: int, now: datetime, pal) -> None:
+    outer = (cx - radius, cy - radius, cx + radius, cy + radius)
+    draw.ellipse(outer, fill=(18, 18, 22), outline=pal.ink)
+    for inset in (4, 8):
+        if radius - inset > 2:
+            draw.ellipse((cx - radius + inset, cy - radius + inset, cx + radius - inset, cy + radius - inset), outline=pal.panel_shadow)
+    angle = ((now.second + now.microsecond / 1_000_000) * 220) % 360
+    radians = math.radians(angle)
+    x = int(cx + math.cos(radians) * (radius - 3))
+    y = int(cy + math.sin(radians) * (radius - 3))
+    draw.line((cx, cy, x, y), fill=pal.blue, width=1)
+    draw.ellipse((cx - 4, cy - 4, cx + 4, cy + 4), fill=pal.red, outline=pal.ink)
+    draw.ellipse((cx - 1, cy - 1, cx + 1, cy + 1), fill=pal.yellow)
+
+
+def _draw_video_icon(draw: ImageDraw.ImageDraw, cx: int, cy: int, radius: int, pal) -> None:
+    width = radius * 2
+    height = max(12, int(radius * 1.35))
+    x0 = cx - width // 2
+    y0 = cy - height // 2
+    x1 = cx + width // 2
+    y1 = cy + height // 2
+    draw.rectangle((x0, y0, x1, y1), fill=pal.panel_shadow, outline=pal.ink)
+    draw.rectangle((x0 + 3, y0 + 3, x1 - 3, y1 - 3), outline=pal.blue)
+    play = (
+        (cx - 3, cy - 5),
+        (cx - 3, cy + 5),
+        (cx + 6, cy),
+    )
+    draw.polygon(play, fill=pal.green, outline=pal.ink)
 
 
 def _task_color(task: TaskItem, now: datetime, pal):
@@ -724,6 +935,12 @@ def _task_due_label(task: TaskItem, now: datetime) -> str:
     if seconds < 0:
         return f"{prefix} OVERDUE {_duration_short(abs(seconds))}"
     return f"{prefix} {_duration_short(seconds)} left"
+
+
+def _task_meta_label(task: TaskItem, due_label: str) -> str:
+    if task.group:
+        return f"{task.group} / {due_label}"
+    return due_label
 
 
 def _duration_short(seconds: int) -> str:
@@ -859,7 +1076,7 @@ def _ai_usage_gauge_short_label(gauge) -> str:
 
 def _ai_usage_percent(gauge) -> float | None:
     pct = gauge.used_percent
-    if pct is None and gauge.provider != "openai_api" and gauge.total_tokens:
+    if pct is None and gauge.provider not in ("openai_api", "codex") and gauge.total_tokens:
         pct = min(100.0, gauge.total_tokens / 250_000 * 100.0)
     return pct
 

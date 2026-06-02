@@ -29,6 +29,33 @@ export type RuntimeStatus = {
   stderr?: string;
 };
 
+export type GitHubRepoOption = {
+  full_name: string;
+  private: boolean;
+  permissions: Record<string, boolean>;
+};
+
+export type GitHubReposResponse = {
+  viewer: string;
+  repos: GitHubRepoOption[];
+};
+
+export type GitHubDeviceStartResponse = {
+  device_code: string;
+  user_code: string;
+  verification_uri: string;
+  expires_in: number;
+  interval: number;
+};
+
+export type GitHubDevicePollResponse = {
+  status: "authorized" | "authorization_pending" | "slow_down";
+  token_env?: string;
+  scope?: string;
+  interval?: number;
+  message?: string;
+};
+
 export type NpcSpriteManifest = {
   count: number;
   variants: number[];
@@ -133,6 +160,7 @@ export type RuntimeConfig = {
         gateway_reconnect_seconds: number;
       };
       github: IntegrationToggle & {
+        client_id: string;
         token_env: string;
         repos: string[];
         poll_seconds: number;
@@ -181,13 +209,33 @@ export type RuntimeConfig = {
       clickup: IntegrationToggle & {
         token_env: string;
         team_id: string;
+        team_ids: string[];
         assignee_id: string;
+        assignee_ids: string[];
         poll_seconds: number;
         max_tasks: number;
         due_within_days: number;
         include_overdue: boolean;
+        include_undated: boolean;
         include_subtasks: boolean;
         include_closed: boolean;
+        timeout_seconds: number;
+      };
+      todoist: IntegrationToggle & {
+        token_env: string;
+        project_ids: string[];
+        section_ids: string[];
+        filter: string;
+        poll_seconds: number;
+        max_tasks: number;
+        due_within_days: number;
+        include_overdue: boolean;
+        include_undated: boolean;
+        timeout_seconds: number;
+      };
+      media: IntegrationToggle & {
+        providers: string[];
+        poll_seconds: number;
         timeout_seconds: number;
       };
     };

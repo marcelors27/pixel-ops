@@ -36,37 +36,44 @@
       "timezones": {
         "x": 0,
         "y": 0,
-        "width": 439,
-        "height": 248
+        "width": 720,
+        "height": 304
       },
       "route_signal": {
-        "x": 648,
-        "y": 24,
-        "width": 304,
+        "x": 480,
+        "y": 400,
+        "width": 232,
         "height": 40
       },
       "gauges": {
-        "x": 960,
-        "y": 88,
-        "width": 304,
+        "x": 272,
+        "y": 344,
+        "width": 448,
         "height": 56
       },
       "weather": {
-        "x": 960,
-        "y": 24,
-        "width": 232,
+        "x": 272,
+        "y": 400,
+        "width": 208,
         "height": 56
       },
       "pc_stats": {
-        "x": 648,
-        "y": 88,
-        "width": 280,
-        "height": 176
+        "x": 720,
+        "y": 8,
+        "width": 200,
+        "height": 128
+      },
+      "now_playing": {
+        "x": 0,
+        "y": 342,
+        "width": 272,
+        "height": 120,
+        "kind": "media"
       },
       "activity": {
-        "x": 16,
-        "y": 272,
-        "width": 896,
+        "x": 0,
+        "y": 304,
+        "width": 720,
         "height": 40
       },
       "game": {
@@ -80,6 +87,20 @@
         "y": 344,
         "width": 448,
         "height": 104
+      },
+      "tasks": {
+        "x": 720,
+        "y": 142,
+        "width": 344,
+        "height": 320,
+        "kind": "tasks"
+      },
+      "tasks_board": {
+        "x": 1064,
+        "y": 142,
+        "width": 448,
+        "height": 320,
+        "kind": "tasks_board"
       }
     },
     "orientations": {

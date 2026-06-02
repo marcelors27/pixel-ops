@@ -19,7 +19,7 @@ class DummyScene:
     def __init__(self):
         self.last = None
 
-    def render(self, people_times, next_event, now, pull_requests, weather, ai_usage, pc_stats=None, task_snapshot=None):
+    def render(self, people_times, next_event, now, pull_requests, weather, ai_usage, pc_stats=None, task_snapshot=None, media=None):
         self.last = {
             "people_times": people_times,
             "next_event": next_event,
@@ -29,6 +29,7 @@ class DummyScene:
             "ai_usage": ai_usage,
             "pc_stats": pc_stats,
             "task_snapshot": task_snapshot,
+            "media": media,
         }
         return Image.new("RGB", (2, 2), "black")
 
@@ -56,6 +57,11 @@ class DummyPCStats:
 class DummyTaskSource:
     def current(self, now=None):
         return {"tasks": 2}
+
+
+class DummyMediaSource:
+    def current(self, now=None):
+        return {"title": "Track"}
 
 
 class CoreTests(unittest.TestCase):
@@ -92,6 +98,7 @@ class CoreTests(unittest.TestCase):
             ai_usage_source=DummyAiUsage(),
             pc_stats_source=DummyPCStats(),
             task_source=DummyTaskSource(),
+            media_source=DummyMediaSource(),
         )
 
         frame = app.render_frame(now)
@@ -103,6 +110,7 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(scene.last["ai_usage"], {"usage": "low"})
         self.assertEqual(scene.last["pc_stats"], {"cpu": "10%"})
         self.assertEqual(scene.last["task_snapshot"], {"tasks": 2})
+        self.assertEqual(scene.last["media"], {"title": "Track"})
         self.assertEqual(scene.last["people_times"][0].timezone, "America/Sao_Paulo")
 
     def test_config_loader_prefers_json_over_yaml(self):

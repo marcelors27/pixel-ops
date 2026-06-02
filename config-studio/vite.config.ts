@@ -27,6 +27,30 @@ type LayoutWindowDescriptor = {
   tone: string;
 };
 
+type GitHubRepoDescriptor = {
+  full_name: string;
+  private: boolean;
+  archived: boolean;
+  permissions?: Record<string, boolean>;
+};
+
+type GitHubDeviceCodeResponse = {
+  device_code: string;
+  user_code: string;
+  verification_uri: string;
+  expires_in: number;
+  interval: number;
+};
+
+type GitHubDeviceTokenResponse = {
+  access_token?: string;
+  token_type?: string;
+  scope?: string;
+  error?: string;
+  error_description?: string;
+  interval?: number;
+};
+
 const coreConfigFiles: ConfigDescriptor[] = [
   { key: "display", label: "Display", relativePath: "pixel_ops/config/display.json", scope: "core" },
   { key: "integrations", label: "Integrations", relativePath: "pixel_ops/config/integrations.json", scope: "core" },
@@ -49,7 +73,15 @@ const integrationLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
   ai_usage: [{ kind: "gauges", label: "AI Gauges", tone: "#7ee0bd" }],
   pc_stats: [{ kind: "pc_stats", label: "PC Stats", tone: "#9bd0ff" }],
   weather: [{ kind: "weather", label: "Weather", tone: "#e8c766" }],
-  clickup: [{ kind: "tasks", label: "Tasks", tone: "#b58cff" }],
+  clickup: [
+    { kind: "tasks", label: "Tasks", tone: "#b58cff" },
+    { kind: "tasks_board", label: "Tasks Board", tone: "#f0a35d" },
+  ],
+  todoist: [
+    { kind: "tasks", label: "Tasks", tone: "#b58cff" },
+    { kind: "tasks_board", label: "Tasks Board", tone: "#f0a35d" },
+  ],
+  media: [{ kind: "media", label: "Now Playing", tone: "#6ee7b7" }],
 };
 
 const visualPluginLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
@@ -251,6 +283,164 @@ async function saveRuntimeConfig(payload: unknown) {
   );
 }
 
+async function readDotEnv(): Promise<Record<string, string>> {
+  const envPath = path.join(repoRoot, ".env");
+  try {
+    const raw = await fs.readFile(envPath, "utf8");
+    const values: Record<string, string> = {};
+    for (const line of raw.split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const match = trimmed.match(/^(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
+      if (!match) continue;
+      values[match[1]] = unquoteEnvValue(match[2]);
+    }
+    return values;
+  } catch {
+    return {};
+  }
+}
+
+function unquoteEnvValue(value: string): string {
+  const trimmed = value.trim();
+  if ((trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+    return trimmed.slice(1, -1);
+  }
+  return trimmed;
+}
+
+function quoteEnvValue(value: string): string {
+  if (/^[A-Za-z0-9_./:@-]+$/.test(value)) {
+    return value;
+  }
+  return JSON.stringify(value);
+}
+
+async function writeDotEnvValue(name: string, value: string): Promise<void> {
+  if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(name)) {
+    throw new Error("Invalid env var name.");
+  }
+  const envPath = path.join(repoRoot, ".env");
+  let raw = "";
+  try {
+    raw = await fs.readFile(envPath, "utf8");
+  } catch {
+    raw = "";
+  }
+  const nextLine = `${name}=${quoteEnvValue(value)}`;
+  const lines = raw ? raw.split(/\r?\n/) : [];
+  let replaced = false;
+  const next = lines.map((line) => {
+    if (line.match(new RegExp(`^(?:export\\s+)?${name}=`))) {
+      replaced = true;
+      return nextLine;
+    }
+    return line;
+  });
+  if (!replaced) {
+    if (next.length && next[next.length - 1] !== "") next.push("");
+    next.push(nextLine);
+  }
+  await fs.writeFile(envPath, `${next.join("\n").replace(/\n+$/, "")}\n`, "utf8");
+}
+
+async function githubToken(tokenEnv: string): Promise<string> {
+  const name = tokenEnv || "PIXEL_OPS_GITHUB_TOKEN";
+  return process.env[name] || (await readDotEnv())[name] || "";
+}
+
+async function githubJson<T>(url: string, token: string): Promise<T> {
+  const response = await fetch(url, {
+    headers: {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${token}`,
+      "User-Agent": "pixel-ops-config-studio",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`GitHub returned ${response.status}: ${await response.text()}`);
+  }
+  return response.json() as Promise<T>;
+}
+
+async function githubForm<T>(url: string, fields: Record<string, string>): Promise<T> {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "content-type": "application/x-www-form-urlencoded",
+      "User-Agent": "pixel-ops-config-studio",
+    },
+    body: new URLSearchParams(fields),
+  });
+  if (!response.ok) {
+    throw new Error(`GitHub returned ${response.status}: ${await response.text()}`);
+  }
+  return response.json() as Promise<T>;
+}
+
+async function startGithubDeviceLogin(clientId: string): Promise<GitHubDeviceCodeResponse> {
+  if (!clientId.trim()) {
+    throw new Error("GitHub client_id is required.");
+  }
+  return githubForm<GitHubDeviceCodeResponse>("https://github.com/login/device/code", {
+    client_id: clientId.trim(),
+  });
+}
+
+async function pollGithubDeviceLogin(clientId: string, deviceCode: string, tokenEnv: string) {
+  if (!clientId.trim() || !deviceCode.trim()) {
+    throw new Error("GitHub client_id and device_code are required.");
+  }
+  const result = await githubForm<GitHubDeviceTokenResponse>("https://github.com/login/oauth/access_token", {
+    client_id: clientId.trim(),
+    device_code: deviceCode.trim(),
+    grant_type: "urn:ietf:params:oauth:grant-type:device_code",
+  });
+  if (result.access_token) {
+    const name = tokenEnv || "PIXEL_OPS_GITHUB_TOKEN";
+    await writeDotEnvValue(name, result.access_token);
+    return { status: "authorized", token_env: name, scope: result.scope ?? "" };
+  }
+  if (result.error === "authorization_pending" || result.error === "slow_down") {
+    return {
+      status: result.error,
+      interval: result.interval,
+      message: result.error_description ?? result.error,
+    };
+  }
+  throw new Error(result.error_description || result.error || "GitHub device authorization failed.");
+}
+
+async function listGithubRepos(tokenEnv: string) {
+  const token = await githubToken(tokenEnv);
+  if (!token) {
+    throw new Error(`${tokenEnv || "PIXEL_OPS_GITHUB_TOKEN"} is not set in .env.`);
+  }
+  const viewer = await githubJson<{ login: string }>("https://api.github.com/user", token);
+  const repos: GitHubRepoDescriptor[] = [];
+  for (let page = 1; page <= 10; page += 1) {
+    const items = await githubJson<GitHubRepoDescriptor[]>(
+      `https://api.github.com/user/repos?per_page=100&page=${page}&sort=updated&affiliation=owner,collaborator,organization_member`,
+      token,
+    );
+    repos.push(...items);
+    if (items.length < 100) break;
+  }
+  return {
+    viewer: viewer.login,
+    repos: repos
+      .filter((repo) => !repo.archived)
+      .map((repo) => ({
+        full_name: repo.full_name,
+        private: repo.private,
+        permissions: repo.permissions ?? {},
+      }))
+      .sort((first, second) => first.full_name.localeCompare(second.full_name)),
+  };
+}
+
 function pushRuntimeLog(value: string) {
   const clean = value.replace(/\r\n/g, "\n").trimEnd();
   if (!clean) return;
@@ -443,6 +633,41 @@ function runtimeConfigApi(): Plugin {
       server.middlewares.use("/api/config-manifest", async (_req, res) => {
         try {
           sendJson(res, 200, await buildConfigManifest());
+        } catch (error) {
+          sendJson(res, 500, { error: error instanceof Error ? error.message : String(error) });
+        }
+      });
+      server.middlewares.use("/api/github", async (req, res) => {
+        try {
+          const url = new URL(req.url || "/", "http://localhost");
+          if (req.method === "POST" && url.pathname === "/device/start") {
+            const body = JSON.parse(await readBody(req)) as { client_id?: string };
+            sendJson(res, 200, await startGithubDeviceLogin(body.client_id || ""));
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/device/poll") {
+            const body = JSON.parse(await readBody(req)) as { client_id?: string; device_code?: string; token_env?: string };
+            sendJson(res, 200, await pollGithubDeviceLogin(body.client_id || "", body.device_code || "", body.token_env || "PIXEL_OPS_GITHUB_TOKEN"));
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/token") {
+            const body = JSON.parse(await readBody(req)) as { token_env?: string; token?: string };
+            const tokenEnv = body.token_env || "PIXEL_OPS_GITHUB_TOKEN";
+            const token = (body.token || "").trim();
+            if (!token) {
+              sendJson(res, 400, { error: "Token is required." });
+              return;
+            }
+            await writeDotEnvValue(tokenEnv, token);
+            sendJson(res, 200, { ok: true, token_env: tokenEnv });
+            return;
+          }
+          if (req.method === "GET" && url.pathname === "/repos") {
+            const tokenEnv = url.searchParams.get("token_env") || "PIXEL_OPS_GITHUB_TOKEN";
+            sendJson(res, 200, await listGithubRepos(tokenEnv));
+            return;
+          }
+          sendJson(res, 404, { error: "GitHub endpoint not found." });
         } catch (error) {
           sendJson(res, 500, { error: error instanceof Error ? error.message : String(error) });
         }

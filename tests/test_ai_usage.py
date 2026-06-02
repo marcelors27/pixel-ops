@@ -51,7 +51,42 @@ class AIUsageSourceTests(unittest.TestCase):
         gauge = next(item for item in snapshot.gauges if item.label == "Codex 5H")
         self.assertIsNone(gauge.reset_at)
         self.assertNotEqual(gauge.used_percent, 99.0)
-        self.assertLess(gauge.used_percent or 0, 1.0)
+        self.assertEqual(gauge.used_percent, 0.0)
+
+    def test_codex_token_fallback_zeros_percent_without_rate_limit_status(self):
+        now = datetime(2026, 5, 25, 15, 0, tzinfo=timezone.utc)
+        with tempfile.TemporaryDirectory() as tmp:
+            codex_home = Path(tmp)
+            session_dir = codex_home / "sessions" / "2026" / "05" / "25"
+            session_dir.mkdir(parents=True)
+            session_path = session_dir / "rollout.jsonl"
+            session_path.write_text(
+                json.dumps(
+                    {
+                        "timestamp": (now - timedelta(minutes=1)).isoformat().replace("+00:00", "Z"),
+                        "type": "event_msg",
+                        "payload": {
+                            "type": "token_count",
+                            "info": {
+                                "last_token_usage": {
+                                    "input_tokens": 800_000,
+                                    "cached_input_tokens": 0,
+                                    "output_tokens": 50_000,
+                                }
+                            },
+                        },
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            source = AIUsageSource(enabled=True, providers=["codex"], codex_home=codex_home)
+
+            snapshot = source.current(now)
+
+        gauge = next(item for item in snapshot.gauges if item.label == "Codex 5H")
+        self.assertEqual(gauge.total_tokens, 850_000)
+        self.assertEqual(gauge.used_percent, 0.0)
 
 
 if __name__ == "__main__":

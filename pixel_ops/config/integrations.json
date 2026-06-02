@@ -56,7 +56,8 @@
       "enabled": true,
       "token_env": "PIXEL_OPS_GITHUB_TOKEN",
       "repos": [
-        "The-Fitness-Doctor/tfd-monorepo"
+        "The-Fitness-Doctor/tfd-monorepo",
+        "marcelors27/pixel-ops"
       ],
       "poll_seconds": 60,
       "max_pull_requests": 4,
@@ -64,7 +65,8 @@
       "fetch_deployments": true,
       "deployment_workflows": [],
       "startup_lookback_seconds": 3600,
-      "timeout_seconds": 20
+      "timeout_seconds": 20,
+      "client_id": "Iv23litC8XR0gzcGAiaG"
     },
     "google_calendar": {
       "enabled": true,
@@ -117,24 +119,55 @@
         "temperature",
         "gpu",
         "disk",
-        "uptime"
+        "uptime",
+        "battery",
+        "load"
       ],
       "poll_seconds": 5,
       "top_process_count": 1,
       "disk_path": "/"
     },
     "clickup": {
-      "enabled": false,
+      "enabled": true,
       "token_env": "PIXEL_OPS_CLICKUP_TOKEN",
-      "team_id": "",
-      "assignee_id": "",
+      "team_id": "90161473166",
+      "team_ids": [
+        "90161473166"
+      ],
+      "assignee_id": "290570115",
+      "assignee_ids": [
+        "290570115"
+      ],
       "poll_seconds": 120,
-      "max_tasks": 5,
+      "max_tasks": 12,
       "due_within_days": 14,
-      "include_overdue": true,
+      "include_overdue": false,
       "include_subtasks": true,
       "include_closed": false,
+      "timeout_seconds": 10,
+      "include_undated": true
+    },
+    "todoist": {
+      "enabled": false,
+      "token_env": "PIXEL_OPS_TODOIST_TOKEN",
+      "project_ids": [],
+      "section_ids": [],
+      "filter": "",
+      "poll_seconds": 120,
+      "max_tasks": 12,
+      "due_within_days": 14,
+      "include_overdue": true,
+      "include_undated": true,
       "timeout_seconds": 10
+    },
+    "media": {
+      "enabled": true,
+      "providers": [
+        "spotify",
+        "youtube_browser"
+      ],
+      "poll_seconds": 10,
+      "timeout_seconds": 2
     }
   }
 }

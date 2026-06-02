@@ -47,6 +47,7 @@ class IntegrationContribution:
     ai_usage_source: Any | None = None
     pc_stats_source: Any | None = None
     task_source: Any | None = None
+    media_source: Any | None = None
     closers: list[Callable[[], None]] = field(default_factory=list)
 
 
@@ -87,5 +88,10 @@ class NullPCStatsSource:
 
 
 class NullTaskSource:
+    def current(self, now: datetime | None = None):
+        return None
+
+
+class NullMediaSource:
     def current(self, now: datetime | None = None):
         return None

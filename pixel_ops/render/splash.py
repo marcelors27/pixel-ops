@@ -20,10 +20,12 @@ def render_splash(root_dir: Path, display_cfg: dict, width: int, height: int) ->
     _draw_pixel_grid(draw, width, height, background)
 
     with Image.open(logo_path) as source:
-        logo = source.convert("RGB")
+        logo = source.convert("RGBA")
 
-    logo = _cover_resize(logo, width, height)
-    frame.paste(logo, (0, 0))
+    logo = _contain_resize(logo, width, height)
+    x = (width - logo.width) // 2
+    y = (height - logo.height) // 2
+    frame.paste(logo.convert("RGB"), (x, y), logo)
     return frame
 
 
@@ -64,12 +66,9 @@ def _draw_pixel_grid(draw: ImageDraw.ImageDraw, width: int, height: int, backgro
         draw.line((0, y, width, y), fill=grid)
 
 
-def _cover_resize(image: Image.Image, width: int, height: int) -> Image.Image:
-    scale = max(width / image.width, height / image.height)
-    resized = image.resize(
+def _contain_resize(image: Image.Image, width: int, height: int) -> Image.Image:
+    scale = min(width / image.width, height / image.height)
+    return image.resize(
         (max(1, int(image.width * scale)), max(1, int(image.height * scale))),
         Image.Resampling.LANCZOS,
     )
-    left = max(0, (resized.width - width) // 2)
-    top = max(0, (resized.height - height) // 2)
-    return resized.crop((left, top, left + width, top + height))
