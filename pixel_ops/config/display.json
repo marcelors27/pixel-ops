@@ -18,8 +18,8 @@
         "jpeg_quality": 85,
         "image_width": 1920,
         "image_height": 462,
-        "min_frame_interval_ms": 0,
-        "packet_delay_ms": 0,
+        "min_frame_interval_ms": 500,
+        "packet_delay_ms": 2,
         "packet_size": 4096,
         "hard_reset_on_start": true,
         "hard_reset_wait_ms": 1500,
@@ -29,21 +29,57 @@
         "read_start_ack": true,
         "read_frame_ack": true,
         "start_retries": 0,
+        "frame_retries": 1,
         "debug": false
-      }
+      },
+      "displays": [
+        {
+          "id": "display-1",
+          "label": "Display 1",
+          "enabled": true,
+          "target": "thermalright",
+          "output": "thermalright",
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 462,
+          "identify_number": 1,
+          "thermalright": {
+            "vid": "0x0416",
+            "pid": "0x5408",
+            "timeout_ms": 5000,
+            "jpeg_quality": 85,
+            "image_width": 1920,
+            "image_height": 462,
+            "min_frame_interval_ms": 500,
+            "packet_delay_ms": 2,
+            "packet_size": 4096,
+            "hard_reset_on_start": true,
+            "hard_reset_wait_ms": 1500,
+            "handshake_on_first_frame": false,
+            "require_handshake": true,
+            "send_start_init": true,
+            "read_start_ack": true,
+            "read_frame_ack": true,
+            "start_retries": 0,
+            "frame_retries": 1,
+            "debug": false
+          }
+        }
+      ]
     },
     "layout": {
       "timezones": {
         "x": 0,
-        "y": 0,
+        "y": 8,
         "width": 720,
-        "height": 304
+        "height": 296
       },
       "route_signal": {
         "x": 480,
         "y": 400,
         "width": 232,
-        "height": 40
+        "height": 56
       },
       "gauges": {
         "x": 272,
@@ -95,12 +131,12 @@
         "width": 448,
         "height": 104
       },
-      "tasks_board": {
+      "meetings_day": {
         "x": 720,
-        "y": 142,
-        "width": 544,
-        "height": 320,
-        "kind": "tasks_board"
+        "y": 144,
+        "width": 376,
+        "height": 312,
+        "kind": "meetings_day"
       }
     },
     "orientations": {
@@ -142,6 +178,7 @@
         10,
         18
       ]
-    }
+    },
+    "layout_theme": "default"
   }
 }

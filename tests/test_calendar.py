@@ -73,6 +73,68 @@ class CalendarDataTests(unittest.TestCase):
 
             self.assertEqual(event.title, "Later")
 
+    def test_cancelled_ics_event_is_not_returned(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "calendar.ics"
+            path.write_text(
+                "\n".join(
+                    [
+                        "BEGIN:VCALENDAR",
+                        "BEGIN:VEVENT",
+                        "UID:removed@example.com",
+                        "SUMMARY:Removed Meeting",
+                        "STATUS:CANCELLED",
+                        "DTSTART;TZID=America/Sao_Paulo:20260602T090000",
+                        "DTEND;TZID=America/Sao_Paulo:20260602T100000",
+                        "END:VEVENT",
+                        "BEGIN:VEVENT",
+                        "UID:kept@example.com",
+                        "SUMMARY:Kept Meeting",
+                        "DTSTART;TZID=America/Sao_Paulo:20260602T110000",
+                        "DTEND;TZID=America/Sao_Paulo:20260602T120000",
+                        "END:VEVENT",
+                        "END:VCALENDAR",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            now = datetime(2026, 6, 2, 8, 0, tzinfo=ZoneInfo("America/Sao_Paulo"))
+
+            events = today_ics_events(path, now)
+
+            self.assertEqual([event.title for event in events], ["Kept Meeting"])
+
+    def test_cancelled_recurring_occurrence_is_not_returned(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "calendar.ics"
+            path.write_text(
+                "\n".join(
+                    [
+                        "BEGIN:VCALENDAR",
+                        "BEGIN:VEVENT",
+                        "UID:daily@example.com",
+                        "SUMMARY:Daily Sync",
+                        "DTSTART;TZID=America/Sao_Paulo:20260601T090000",
+                        "DTEND;TZID=America/Sao_Paulo:20260601T093000",
+                        "RRULE:FREQ=DAILY;COUNT=3",
+                        "END:VEVENT",
+                        "BEGIN:VEVENT",
+                        "UID:daily@example.com",
+                        "SUMMARY:Daily Sync",
+                        "STATUS:CANCELLED",
+                        "RECURRENCE-ID;TZID=America/Sao_Paulo:20260602T090000",
+                        "DTSTART;TZID=America/Sao_Paulo:20260602T090000",
+                        "DTEND;TZID=America/Sao_Paulo:20260602T093000",
+                        "END:VEVENT",
+                        "END:VCALENDAR",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            now = datetime(2026, 6, 2, 8, 0, tzinfo=ZoneInfo("America/Sao_Paulo"))
+
+            self.assertEqual(today_ics_events(path, now), [])
+
 
 if __name__ == "__main__":
     unittest.main()

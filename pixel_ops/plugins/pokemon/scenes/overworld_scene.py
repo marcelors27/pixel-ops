@@ -31,7 +31,7 @@ from pixel_ops.plugins.pokemon.game.pokemon_selector import PokemonSelector
 from pixel_ops.plugins.pokemon.game.state_machine import GamePhase, GameStateMachine
 from pixel_ops.plugins.pokemon.game.world import World
 from pixel_ops.render.fonts import font, font_scale_for_canvas, scaled_px
-from pixel_ops.render.hud import draw_hud
+from pixel_ops.render.hud import draw_hud, hud_palette_for_kind
 from pixel_ops.render.renderer import PixelRenderer
 from pixel_ops.plugins.pokemon.render.sprites import (
     AshSpriteSet,
@@ -92,6 +92,7 @@ class OverworldScene:
         game_config: dict | None = None,
         companion_config: dict | None = None,
         display_layout: dict | None = None,
+        layout_theme: str | None = None,
         ash_assets_dir: Path | None = None,
         event_sources: list | None = None,
         ai_plugin: AiDecisionPlugin | None = None,
@@ -100,6 +101,7 @@ class OverworldScene:
         cfg = game_config or {}
         self.companion_config = companion_config or {}
         self.display_layout = display_layout or {}
+        self.layout_theme = layout_theme or "default"
         self.movement_config = cfg.get("movement", {}) if isinstance(cfg.get("movement", {}), dict) else {}
         encounter_cfg = cfg.get("encounter", {})
         self.renderer = PixelRenderer(width, height)
@@ -392,8 +394,9 @@ class OverworldScene:
                 media=media,
                 today_events=today_events,
                 layout=self.display_layout,
+                layout_theme=self.layout_theme,
             )
-            self._draw_pokemon_capture_huds(draw, pal)
+            self._draw_pokemon_capture_huds(draw, hud_palette_for_kind(pal, self.layout_theme, "pokemon_captures"))
             return img
 
     def _record_capture(self, now: datetime) -> None:

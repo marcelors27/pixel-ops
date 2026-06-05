@@ -81,6 +81,7 @@ class PokemonPlugin:
             game_config=config["game"],
             companion_config=_flatten_companion_config(config.get("companions", {})),
             display_layout=display_cfg.get("layout", {}),
+            layout_theme=display_cfg.get("layout_theme", "default"),
             event_sources=event_sources,
             ai_plugin=ai_plugin,
             capture_store=state_store,

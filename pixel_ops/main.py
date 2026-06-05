@@ -237,6 +237,7 @@ def build_output(
             read_start_ack=bool(thermalright_cfg.get("read_start_ack", True)),
             read_frame_ack=bool(thermalright_cfg.get("read_frame_ack", True)),
             start_retries=int(thermalright_cfg.get("start_retries", 0)),
+            frame_retries=int(thermalright_cfg.get("frame_retries", 0)),
             debug=bool(thermalright_cfg.get("debug", False)),
         )
     if output_name == "window":

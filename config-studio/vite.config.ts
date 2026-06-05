@@ -8,6 +8,7 @@ import { promisify } from "node:util";
 import { defineConfig, type Plugin } from "vite";
 
 const repoRoot = path.resolve(__dirname, "..");
+const pixelOpsKiteRoot = path.join(repoRoot, "infra/cloudflare/pixelops-kite");
 const execFileAsync = promisify(execFile);
 const pythonCmd = resolvePythonCommand();
 let runtimeProcess: ChildProcessWithoutNullStreams | null = null;
@@ -84,6 +85,15 @@ type DiscordGuildDescriptor = {
   permissions: string;
 };
 
+type KiteCommandResult = {
+  ok: boolean;
+  message: string;
+  stdout?: string;
+  stderr?: string;
+  worker_url?: string;
+  ws_url?: string;
+};
+
 const discordOAuthSessions = new Map<string, DiscordOAuthSession>();
 
 const coreConfigFiles: ConfigDescriptor[] = [
@@ -110,6 +120,7 @@ const integrationLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
   weather: [{ kind: "weather", label: "Weather", tone: "#e8c766" }],
   google_calendar: [{ kind: "meetings_day", label: "Meetings Day", tone: "#9aa7ff" }],
   ics: [{ kind: "meetings_day", label: "Meetings Day", tone: "#9aa7ff" }],
+  zoom: [{ kind: "activity", label: "Meeting Activity", tone: "#9aa7ff" }],
   clickup: [
     { kind: "tasks", label: "Tasks", tone: "#b58cff" },
     { kind: "tasks_board", label: "Tasks Board", tone: "#f0a35d" },
@@ -653,6 +664,248 @@ async function runRuntimeCommand(args: string[]) {
   }
 }
 
+async function runKiteCommand(command: string, args: string[] = [], input = ""): Promise<KiteCommandResult> {
+  return new Promise((resolve) => {
+    const child = spawn(command, args, {
+      cwd: pixelOpsKiteRoot,
+      env: { ...process.env },
+      shell: process.platform === "win32",
+    });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk) => {
+      stdout += String(chunk);
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += String(chunk);
+    });
+    child.on("error", (error) => {
+      resolve({ ok: false, message: error.message, stdout, stderr });
+    });
+    child.on("close", (code) => {
+      const ok = code === 0;
+      resolve({
+        ok,
+        message: ok ? "Command completed." : `Command failed with exit code ${code ?? "unknown"}.`,
+        stdout,
+        stderr,
+        ...kiteUrlsFromOutput(`${stdout}\n${stderr}`),
+      });
+    });
+    if (input) {
+      child.stdin.write(input.endsWith("\n") ? input : `${input}\n`);
+    }
+    child.stdin.end();
+  });
+}
+
+async function kiteStatus(): Promise<KiteCommandResult & { files: Record<string, boolean>; local_token_set: boolean }> {
+  const env = await readDotEnv();
+  const files = {
+    package_json: await fileExists(path.join(pixelOpsKiteRoot, "package.json")),
+    wrangler_toml: await fileExists(path.join(pixelOpsKiteRoot, "wrangler.toml")),
+    worker: await fileExists(path.join(pixelOpsKiteRoot, "src/worker.js")),
+    node_modules: await fileExists(path.join(pixelOpsKiteRoot, "node_modules")),
+  };
+  return {
+    ok: files.package_json && files.wrangler_toml && files.worker,
+    message: files.node_modules ? "PixelOpsKite IaC is ready." : "PixelOpsKite IaC exists; install dependencies before deploy.",
+    files,
+    local_token_set: Boolean(process.env.PIXEL_OPS_KITE_TOKEN || env.PIXEL_OPS_KITE_TOKEN),
+  };
+}
+
+async function kiteInstall(): Promise<KiteCommandResult> {
+  return runKiteCommand(npmCommand(), ["install"]);
+}
+
+async function kiteDeploy(): Promise<KiteCommandResult> {
+  const result = await runKiteCommand(npxCommand(), ["wrangler", "deploy"]);
+  if (result.worker_url && !result.ws_url) {
+    result.ws_url = workerWsUrl(result.worker_url);
+  }
+  return result;
+}
+
+async function kitePutSecret(name: string, value: string): Promise<KiteCommandResult> {
+  if (!/^[A-Z_][A-Z0-9_]*$/.test(name)) {
+    throw new Error("Invalid Kite secret name.");
+  }
+  if (!value.trim()) {
+    throw new Error(`${name} is required.`);
+  }
+  return runKiteCommand(npxCommand(), ["wrangler", "secret", "put", name], value);
+}
+
+async function configureKiteSecrets(body: { kite_token?: string; zoom_webhook_secret_token?: string }): Promise<KiteCommandResult> {
+  const results: KiteCommandResult[] = [];
+  const kiteToken = (body.kite_token || "").trim();
+  const zoomToken = (body.zoom_webhook_secret_token || "").trim();
+  if (kiteToken) {
+    await writeDotEnvValue("PIXEL_OPS_KITE_TOKEN", kiteToken);
+    results.push(await kitePutSecret("PIXEL_OPS_KITE_TOKEN", kiteToken));
+  }
+  if (zoomToken) {
+    results.push(await kitePutSecret("ZOOM_WEBHOOK_SECRET_TOKEN", zoomToken));
+  }
+  if (!results.length) {
+    return { ok: false, message: "Provide at least one secret value." };
+  }
+  return {
+    ok: results.every((result) => result.ok),
+    message: results.every((result) => result.ok) ? "Kite secrets configured." : "One or more Kite secrets failed.",
+    stdout: results.map((result) => result.stdout || "").join("\n"),
+    stderr: results.map((result) => result.stderr || result.message).join("\n"),
+  };
+}
+
+async function fileExists(fullPath: string): Promise<boolean> {
+  try {
+    await fs.access(fullPath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function npmCommand(): string {
+  return process.platform === "win32" ? "npm.cmd" : "npm";
+}
+
+function npxCommand(): string {
+  return process.platform === "win32" ? "npx.cmd" : "npx";
+}
+
+function kiteUrlsFromOutput(output: string): { worker_url?: string; ws_url?: string } {
+  const match = output.match(/https:\/\/[^\s'"<>]+\.workers\.dev/);
+  if (!match) return {};
+  return { worker_url: match[0], ws_url: workerWsUrl(match[0]) };
+}
+
+function workerWsUrl(workerUrl: string): string {
+  return workerUrl.replace(/^https:/, "wss:").replace(/\/$/, "") + "/connect";
+}
+
+async function scanThermalrightUsbDisplays() {
+  const script = `
+import json
+from pixel_ops.hardware.thermalright_usb import scan_thermalright_devices
+
+devices = scan_thermalright_devices(log=lambda *_args, **_kwargs: None)
+print(json.dumps({
+    "ok": True,
+    "message": f"{len(devices)} Thermalright candidate(s) found.",
+    "devices": [
+        {
+            "vid": f"0x{device.vid:04x}",
+            "pid": f"0x{device.pid:04x}",
+            "manufacturer": device.manufacturer,
+            "product": device.product,
+            "serial_number": device.serial_number,
+            "bus": device.bus,
+            "address": device.address,
+            "has_default_endpoints": device.has_default_endpoints,
+        }
+        for device in devices
+    ],
+}))
+`;
+  try {
+    const { stdout, stderr } = await execFileAsync(pythonCmd, ["-c", script], { cwd: repoRoot, maxBuffer: 1024 * 1024 });
+    return JSON.parse(stdout || "{}");
+  } catch (error) {
+    const err = error as Error & { stdout?: string; stderr?: string };
+    return { ok: false, message: err.stderr || err.stdout || err.message, stdout: err.stdout || "", stderr: err.stderr || "" };
+  }
+}
+
+async function identifyThermalrightDisplay(display: Record<string, unknown>) {
+  if (runtimeProcess) {
+    return {
+      ok: false,
+      message: "Stop the running window/runtime before identifying USB displays. Thermalright USB can only be claimed by one process at a time.",
+    };
+  }
+  const script = `
+import json
+import sys
+from PIL import Image, ImageDraw
+from pixel_ops.outputs.thermalright import ThermalrightOutput
+
+display = json.loads(sys.argv[1])
+thermalright = display.get("thermalright") or {}
+number = int(display.get("identify_number") or 1)
+width = int(display.get("width") or thermalright.get("image_width") or 1920)
+height = int(display.get("height") or thermalright.get("image_height") or 462)
+image = Image.new("RGB", (width, height), (10, 14, 24))
+draw = ImageDraw.Draw(image)
+draw.rectangle((0, 0, width - 1, height - 1), outline=(255, 255, 255), width=max(4, width // 180))
+label = str(number)
+subtitle = str(display.get("label") or f"Display {number}")
+font_size = max(24, min(height - 24, width // 5))
+try:
+    from PIL import ImageFont
+    number_font = ImageFont.truetype("Arial.ttf", font_size)
+    subtitle_font = ImageFont.truetype("Arial.ttf", max(16, font_size // 5))
+except Exception:
+    number_font = None
+    subtitle_font = None
+bbox = draw.textbbox((0, 0), label, font=number_font)
+draw.text(((width - (bbox[2] - bbox[0])) // 2, max(8, (height - (bbox[3] - bbox[1])) // 2 - height // 12)), label, font=number_font, fill=(255, 230, 90))
+subbox = draw.textbbox((0, 0), subtitle, font=subtitle_font)
+draw.text(((width - (subbox[2] - subbox[0])) // 2, min(height - 40, height // 2 + font_size // 3)), subtitle, font=subtitle_font, fill=(180, 220, 255))
+output = ThermalrightOutput(
+    vid=int(str(thermalright.get("vid", "0x0416")), 0),
+    pid=int(str(thermalright.get("pid", "0x5408")), 0),
+    timeout_ms=int(thermalright.get("timeout_ms", 5000)),
+    jpeg_quality=int(thermalright.get("jpeg_quality", 85)),
+    image_width=int(thermalright.get("image_width", width)),
+    image_height=int(thermalright.get("image_height", height)),
+    min_frame_interval_ms=int(thermalright.get("min_frame_interval_ms", 500)),
+    packet_delay_ms=int(thermalright.get("packet_delay_ms", 2)),
+    packet_size=int(thermalright.get("packet_size", 4096)),
+    hard_reset_on_start=bool(thermalright.get("hard_reset_on_start", True)),
+    hard_reset_wait_ms=int(thermalright.get("hard_reset_wait_ms", 1500)),
+    handshake_on_first_frame=bool(thermalright.get("handshake_on_first_frame", False)),
+    require_handshake=bool(thermalright.get("require_handshake", True)),
+    send_start_init=bool(thermalright.get("send_start_init", True)),
+    read_start_ack=bool(thermalright.get("read_start_ack", True)),
+    read_frame_ack=bool(thermalright.get("read_frame_ack", True)),
+    start_retries=int(thermalright.get("start_retries", 0)),
+    frame_retries=int(thermalright.get("frame_retries", 1)),
+    debug=bool(thermalright.get("debug", False)),
+)
+try:
+    output.start()
+    output.send(image)
+finally:
+    output.stop()
+print(json.dumps({"ok": True, "message": f"Sent identifier {number} to {subtitle}."}))
+`;
+  try {
+    const { stdout, stderr } = await execFileAsync(pythonCmd, ["-c", script, JSON.stringify(display)], {
+      cwd: repoRoot,
+      maxBuffer: 1024 * 1024 * 4,
+    });
+    return { ...JSON.parse(stdout || "{}"), stdout, stderr };
+  } catch (error) {
+    const err = error as Error & { stdout?: string; stderr?: string };
+    const rawMessage = err.stderr || err.stdout || err.message;
+    const friendly = friendlyUsbError(rawMessage);
+    return { ok: false, message: friendly, stdout: err.stdout || "", stderr: err.stderr || "" };
+  }
+}
+
+function friendlyUsbError(value: string) {
+  if (value.includes("Access denied") || value.includes("insufficient permissions")) {
+    return "Could not claim the USB display. Stop any running Pixel OPs/Thermalright process, then try Identify again. USB bulk devices can only be owned by one process at a time.";
+  }
+  if (value.includes("USB device") && value.includes("not found")) {
+    return "USB display not found. Check the VID/PID, cable, power, and whether the display is visible to the OS.";
+  }
+  return value.split("\n").filter(Boolean).slice(-1)[0] || value;
+}
+
 function startRuntimeWindow() {
   if (runtimeProcess) {
     return runtimeStatus();
@@ -929,6 +1182,31 @@ function runtimeConfigApi(): Plugin {
           sendJson(res, 500, { error: error instanceof Error ? error.message : String(error) });
         }
       });
+      server.middlewares.use("/api/kite", async (req, res) => {
+        try {
+          const url = new URL(req.url || "/", "http://localhost");
+          if (req.method === "GET" && url.pathname === "/status") {
+            sendJson(res, 200, await kiteStatus());
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/install") {
+            sendJson(res, 200, await kiteInstall());
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/secrets") {
+            const body = JSON.parse(await readBody(req)) as { kite_token?: string; zoom_webhook_secret_token?: string };
+            sendJson(res, 200, await configureKiteSecrets(body));
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/deploy") {
+            sendJson(res, 200, await kiteDeploy());
+            return;
+          }
+          sendJson(res, 404, { error: "PixelOpsKite endpoint not found." });
+        } catch (error) {
+          sendJson(res, 500, { error: error instanceof Error ? error.message : String(error) });
+        }
+      });
       server.middlewares.use("/api/runtime", async (req, res) => {
         try {
           const url = new URL(req.url || "/", "http://localhost");
@@ -956,6 +1234,23 @@ function runtimeConfigApi(): Plugin {
           sendJson(res, 404, { error: "Runtime endpoint not found." });
         } catch (error) {
           sendJson(res, 500, { error: error instanceof Error ? error.message : String(error), ...runtimeStatus() });
+        }
+      });
+      server.middlewares.use("/api/usb", async (req, res) => {
+        try {
+          const url = new URL(req.url || "/", "http://localhost");
+          if (req.method === "POST" && url.pathname === "/thermalright/scan") {
+            sendJson(res, 200, await scanThermalrightUsbDisplays());
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/thermalright/identify") {
+            const body = JSON.parse(await readBody(req)) as Record<string, unknown>;
+            sendJson(res, 200, await identifyThermalrightDisplay(body));
+            return;
+          }
+          sendJson(res, 404, { error: "USB endpoint not found." });
+        } catch (error) {
+          sendJson(res, 500, { error: error instanceof Error ? error.message : String(error) });
         }
       });
       server.middlewares.use("/api/npc-sprites", async (req, res) => {

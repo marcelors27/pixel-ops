@@ -32,3 +32,5 @@ Current ADRs:
 - [0019 - Media Now Playing Is Local Presence](0019-media-now-playing-is-local-presence.md)
 - [0020 - Tasks HUDs Share Provider-Neutral Board State](0020-tasks-huds-share-provider-neutral-board-state.md)
 - [0021 - Local Runtime State Uses SQLite](0021-local-runtime-state-uses-sqlite.md)
+- [0022 - Zoom Meeting Companions Use Provider Neutral Snapshots](0022-zoom-meeting-companions-use-provider-neutral-snapshots.md)
+- [0023 - PixelOpsKite Relays Webhooks Over WebSocket](0023-pixelops-kite-relays-webhooks-over-websocket.md)

@@ -1,0 +1,14 @@
+name = "pixelops-kite"
+main = "src/worker.js"
+compatibility_date = "2026-06-01"
+
+[observability]
+enabled = true
+
+[[durable_objects.bindings]]
+name = "KITE_HUB"
+class_name = "PixelOpsKiteHub"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["PixelOpsKiteHub"]

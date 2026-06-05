@@ -1,6 +1,17 @@
 {
   "integrations": {
     "social_bus_limit": 128,
+    "kite": {
+      "enabled": false,
+      "ws_url": "",
+      "token_env": "PIXEL_OPS_KITE_TOKEN",
+      "reconnect_seconds": 10,
+      "max_companions": 8,
+      "zoom": {
+        "focus_user_id": "",
+        "max_companions": 8
+      }
+    },
     "slack": {
       "enabled": false,
       "app_token_env": "PIXEL_OPS_SLACK_APP_TOKEN",
@@ -54,6 +65,17 @@
       "focus_user_id": "242829666488942593",
       "max_companions": 20,
       "gateway_reconnect_seconds": 10
+    },
+    "zoom": {
+      "enabled": false,
+      "account_id_env": "PIXEL_OPS_ZOOM_ACCOUNT_ID",
+      "client_id_env": "PIXEL_OPS_ZOOM_CLIENT_ID",
+      "client_secret_env": "PIXEL_OPS_ZOOM_CLIENT_SECRET",
+      "focus_user_id": "",
+      "max_companions": 8,
+      "poll_seconds": 30,
+      "page_size": 30,
+      "timeout_seconds": 8
     },
     "github": {
       "enabled": true,

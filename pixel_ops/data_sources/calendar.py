@@ -32,6 +32,24 @@ class CalendarEvent:
         return f"{minutes // 60}h{minutes % 60:02d}"
 
 
+@dataclass(frozen=True)
+class _IcsEventComponent:
+    uid: str
+    title: str
+    starts_at: datetime
+    ends_at: datetime | None
+    rrule: str | None
+    exdates: frozenset[datetime]
+    recurrence_id: datetime | None
+    status: str
+    location: str
+    description: str
+    organizer: str
+    attendees: tuple[str, ...]
+    meeting_url: str
+    all_day: bool
+
+
 def next_mock_event(now: datetime) -> CalendarEvent:
     minute_bucket = 15 - (now.minute % 15)
     if minute_bucket < 3:
@@ -56,27 +74,90 @@ def ics_events_between(path: str | Path, start: datetime, end: datetime) -> list
     if not ics_path.exists():
         return []
     events: list[CalendarEvent] = []
+    components = _parse_ics_components(ics_path.read_text(encoding="utf-8", errors="ignore"), start)
+    recurrence_exclusions: dict[str, set[datetime]] = {}
+    for component in components:
+        if component.uid and component.recurrence_id:
+            recurrence_exclusions.setdefault(component.uid, set()).add(component.recurrence_id)
+
+    for component in components:
+        if component.status == "CANCELLED":
+            continue
+        exdates = set(component.exdates)
+        if component.uid:
+            exdates.update(recurrence_exclusions.get(component.uid, set()))
+        duration = (component.ends_at - component.starts_at) if component.ends_at else None
+        rrule = None if component.recurrence_id else component.rrule
+        for occurrence_start in _event_occurrences_between(component.starts_at, rrule, exdates, start, end):
+            occurrence_end = occurrence_start + duration if duration else None
+            events.append(
+                CalendarEvent(
+                    component.title,
+                    occurrence_start,
+                    ends_at=occurrence_end,
+                    location=component.location,
+                    description=component.description,
+                    organizer=component.organizer,
+                    attendees=component.attendees,
+                    meeting_url=component.meeting_url,
+                    all_day=component.all_day,
+                )
+            )
+    return sorted(events, key=lambda event: (event.starts_at, event.title.lower()))
+
+
+def _parse_ics_components(text: str, now: datetime) -> list[_IcsEventComponent]:
+    components: list[_IcsEventComponent] = []
     title = None
     starts_at = None
     ends_at = None
+    uid = ""
+    status = ""
     rrule = None
     exdates: set[datetime] = set()
+    recurrence_id = None
     location = ""
     description = ""
     organizer = ""
     attendees: list[str] = []
     meeting_url = ""
     all_day = False
-    for raw_line in _unfold_ics_lines(ics_path.read_text(encoding="utf-8", errors="ignore")):
+    in_event = False
+    for raw_line in _unfold_ics_lines(text):
         line = raw_line.strip()
+        if line == "BEGIN:VEVENT":
+            in_event = True
+            title = None
+            starts_at = None
+            ends_at = None
+            uid = ""
+            status = ""
+            rrule = None
+            exdates = set()
+            recurrence_id = None
+            location = ""
+            description = ""
+            organizer = ""
+            attendees = []
+            meeting_url = ""
+            all_day = False
+            continue
+        if not in_event:
+            continue
         name = _ics_property_name(line)
         if name == "SUMMARY":
             title = _clean_ics_text(line.split(":", 1)[1])[:80]
+        elif name == "UID":
+            uid = line.split(":", 1)[1]
+        elif name == "STATUS":
+            status = line.split(":", 1)[1].strip().upper()
         elif line.startswith("DTSTART"):
-            starts_at = _parse_ics_datetime(line, start)
+            starts_at = _parse_ics_datetime(line, now)
             all_day = "VALUE=DATE" in line.split(":", 1)[0]
         elif line.startswith("DTEND"):
-            ends_at = _parse_ics_datetime(line, start)
+            ends_at = _parse_ics_datetime(line, now)
+        elif line.startswith("RECURRENCE-ID"):
+            recurrence_id = _parse_ics_datetime(line, now)
         elif name == "LOCATION":
             location = _clean_ics_text(line.split(":", 1)[1])[:120]
         elif name == "DESCRIPTION":
@@ -91,17 +172,20 @@ def ics_events_between(path: str | Path, start: datetime, end: datetime) -> list
         elif line.startswith("RRULE:"):
             rrule = line.split(":", 1)[1]
         elif line.startswith("EXDATE"):
-            exdates.update(_parse_ics_datetime_values(line, start))
-        elif line == "END:VEVENT" and title and starts_at:
+            exdates.update(_parse_ics_datetime_values(line, now))
+        elif line == "END:VEVENT":
             meeting_url = meeting_url or _first_url(location)
-            duration = (ends_at - starts_at) if ends_at else None
-            for occurrence_start in _event_occurrences_between(starts_at, rrule, exdates, start, end):
-                occurrence_end = occurrence_start + duration if duration else None
-                events.append(
-                    CalendarEvent(
-                        title,
-                        occurrence_start,
-                        ends_at=occurrence_end,
+            if title and starts_at:
+                components.append(
+                    _IcsEventComponent(
+                        uid=uid,
+                        title=title,
+                        starts_at=starts_at,
+                        ends_at=ends_at,
+                        rrule=rrule,
+                        exdates=frozenset(exdates),
+                        recurrence_id=recurrence_id,
+                        status=status,
                         location=location,
                         description=description,
                         organizer=organizer,
@@ -110,18 +194,8 @@ def ics_events_between(path: str | Path, start: datetime, end: datetime) -> list
                         all_day=all_day,
                     )
                 )
-            title = None
-            starts_at = None
-            ends_at = None
-            rrule = None
-            exdates = set()
-            location = ""
-            description = ""
-            organizer = ""
-            attendees = []
-            meeting_url = ""
-            all_day = False
-    return sorted(events, key=lambda event: (event.starts_at, event.title.lower()))
+            in_event = False
+    return components
 
 
 def download_ics(url: str, cache_path: str | Path, timeout_seconds: int = 8) -> Path | None:

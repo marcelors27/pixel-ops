@@ -4,6 +4,7 @@ import importlib
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from pixel_ops.data_sources.companions import MergedCompanionSource
 from pixel_ops.data_sources.tasks import MergedTaskSource
 from pixel_ops.integration_plugins.base import (
     IntegrationContext,
@@ -19,8 +20,10 @@ from pixel_ops.integration_plugins.base import (
 
 
 PLUGIN_MODULES = {
+    "kite": "pixel_ops.integrations.kite.plugin",
     "slack": "pixel_ops.integrations.slack.plugin",
     "discord": "pixel_ops.integrations.discord.plugin",
+    "zoom": "pixel_ops.integrations.zoom.plugin",
     "github": "pixel_ops.integrations.github.plugin",
     "google_calendar": "pixel_ops.integrations.google_calendar.plugin",
     "ics": "pixel_ops.integrations.ics.plugin",
@@ -33,8 +36,10 @@ PLUGIN_MODULES = {
 }
 
 PLUGIN_ENABLES = {
+    "kite": "PIXEL_OPS_KITE_ENABLED",
     "slack": "PIXEL_OPS_SLACK_ENABLED",
     "discord": "PIXEL_OPS_DISCORD_ENABLED",
+    "zoom": "PIXEL_OPS_ZOOM_ENABLED",
     "github": "PIXEL_OPS_GITHUB_ENABLED",
     "google_calendar": "PIXEL_OPS_GOOGLE_CALENDAR_ENABLED",
     "ics": "PIXEL_OPS_ICS_ENABLED",
@@ -128,4 +133,9 @@ def _merge(runtime: IntegrationRuntime, contribution: IntegrationContribution) -
     if contribution.media_source is not None:
         runtime.media_source = contribution.media_source
     if contribution.companion_source is not None:
-        runtime.companion_source = contribution.companion_source
+        if isinstance(runtime.companion_source, NullCompanionSource):
+            runtime.companion_source = contribution.companion_source
+        elif isinstance(runtime.companion_source, MergedCompanionSource):
+            runtime.companion_source.add(contribution.companion_source)
+        else:
+            runtime.companion_source = MergedCompanionSource([runtime.companion_source, contribution.companion_source])

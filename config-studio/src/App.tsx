@@ -2,21 +2,26 @@ import {
   Activity,
   Bot,
   CalendarDays,
+  Cable,
   Check,
   CloudSun,
   Code2,
   Cpu,
   Github,
   GripVertical,
+  Maximize2,
+  Minimize2,
   Monitor,
   MoveDiagonal2,
   Music2,
   FileImage,
   Play,
+  Plus,
   RefreshCw,
   Save,
   Square,
   Terminal,
+  Trash2,
   Users,
 } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
@@ -27,18 +32,23 @@ import mascotSleepyImg from "./assets/pixelops-mascot-sleepy.png";
 import { PixelMascot } from "./components/PixelMascot";
 import {
   cloneConfig,
+  configureKiteSecrets,
   loadConfig,
   loadConfigManifest,
   loadDiscordProfile,
   loadGithubRepos,
+  loadKiteStatus,
   loadNpcSpriteManifest,
   loadRuntimeStatus,
   pollDiscordOAuthStatus,
   pollGithubDeviceLogin,
+  runKiteAction,
   runRuntimeAction,
   saveConfig,
   saveDiscordBotToken,
   saveGithubToken,
+  scanUsbDisplays,
+  identifyUsbDisplay,
   startDiscordOAuth,
   startGithubDeviceLogin,
 } from "./lib/configApi";
@@ -48,17 +58,21 @@ import type {
   DiscordGuildOption,
   DiscordOAuthStartResponse,
   DiscordPersonConfig,
+  DisplayOutputConfig,
   GitHubDeviceStartResponse,
   GitHubRepoOption,
   IntegrationToggle,
+  KiteActionResult,
   LayoutBox,
   LayoutKey,
+  LayoutProfileConfig,
   LayoutWindowOption,
   MovementConfig,
   MovementRect,
   PersonConfig,
   RuntimeConfig,
   RuntimeStatus,
+  UsbValidationResult,
 } from "./types";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
@@ -74,6 +88,11 @@ type SettingsTabItem = {
   icon: IconComponent;
   tone?: "plugin" | "integration";
 };
+type LayoutThemeDefinition = {
+  label: string;
+  palette: string[];
+  tones: Record<string, string>;
+};
 
 const integrationIcons: Record<string, IconComponent> = {
   github: Github,
@@ -85,8 +104,10 @@ const integrationIcons: Record<string, IconComponent> = {
   clickup: Check,
   todoist: Check,
   media: Music2,
+  kite: Cable,
   slack: Bot,
   discord: Bot,
+  zoom: Users,
 };
 
 const visualPluginIcons: Record<string, IconComponent> = {
@@ -97,10 +118,67 @@ const layoutWindowCatalog: LayoutWindowOption[] = [
   { kind: "timezones", label: "Timezones timeline", tone: "#7fb2e6" },
   { kind: "timezones_clock", label: "Timezones clock", tone: "#9ad18b" },
   { kind: "activity", label: "Activity", tone: "#ef846d" },
+  { kind: "meetings_day", label: "Meetings Day", tone: "#9aa7ff" },
 ];
+
+const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
+  default: {
+    label: "Default",
+    palette: ["#7fb2e6", "#9ad18b", "#ef846d", "#9aa7ff", "#f0a35d", "#7ee0bd", "#e8c766", "#d8d0ff"],
+    tones: {},
+  },
+  pokemon: {
+    label: "Pokemon",
+    palette: ["#ef6461", "#f7c948", "#5fbf7a", "#5da9e9", "#b58cff", "#f0a35d", "#7ee0bd", "#f07f95"],
+    tones: {
+      game: "#5fbf7a",
+      text_box: "#d8d0ff",
+      pokemon_captures: "#ef6461",
+      route_signal: "#f0a35d",
+      weather: "#e8c766",
+      meetings_day: "#9aa7ff",
+    },
+  },
+  terminal: {
+    label: "Terminal",
+    palette: ["#65f0a1", "#4fd1c5", "#a7f3d0", "#facc15", "#f472b6", "#93c5fd", "#c4b5fd", "#fb7185"],
+    tones: {
+      activity: "#65f0a1",
+      gauges: "#4fd1c5",
+      pc_stats: "#a7f3d0",
+      tasks: "#facc15",
+      tasks_board: "#f472b6",
+    },
+  },
+  ocean: {
+    label: "Ocean",
+    palette: ["#67e8f9", "#38bdf8", "#818cf8", "#2dd4bf", "#a7f3d0", "#f0abfc", "#f9a8d4", "#fde68a"],
+    tones: {
+      timezones: "#67e8f9",
+      timezones_clock: "#38bdf8",
+      weather: "#2dd4bf",
+      meetings_day: "#818cf8",
+    },
+  },
+  ember: {
+    label: "Ember",
+    palette: ["#fb7185", "#f97316", "#facc15", "#fdba74", "#fda4af", "#c084fc", "#60a5fa", "#34d399"],
+    tones: {
+      activity: "#fb7185",
+      route_signal: "#f97316",
+      weather: "#facc15",
+      media: "#fdba74",
+    },
+  },
+};
+const layoutThemeKeys = Object.keys(layoutThemeCatalog);
 
 const resizeDirections = ["n", "s", "e", "w", "nw", "ne", "sw", "se"] as const;
 type ResizeDirection = (typeof resizeDirections)[number];
+const displayArrangementWidth = 760;
+const displayArrangementHeight = 260;
+const displayArrangementPadding = 24;
+const displayArrangementScale = 0.16;
 
 const equipmentOptions = [
   { target: "window", label: "Window", width: 320, height: 480, output: "window" },
@@ -139,6 +217,8 @@ export function App() {
   const [pathName, setPathName] = useState(() => window.location.pathname);
   const [runtimeStatus, setRuntimeStatus] = useState<RuntimeStatus | null>(null);
   const [runtimeBusy, setRuntimeBusy] = useState<string | null>(null);
+  const [usbBusy, setUsbBusy] = useState<string | null>(null);
+  const [usbValidation, setUsbValidation] = useState<UsbValidationResult | null>(null);
   const [activeSettingsTab, setActiveSettingsTab] = useState<string>("");
   const timezoneOptions = useMemo(() => buildTimezoneOptions(), []);
 
@@ -231,6 +311,30 @@ export function App() {
       setError(caught instanceof Error ? caught.message : String(caught));
     } finally {
       setRuntimeBusy(null);
+    }
+  }
+
+  async function triggerUsbScan() {
+    setUsbBusy("scan");
+    setError(null);
+    try {
+      setUsbValidation(await scanUsbDisplays());
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : String(caught));
+    } finally {
+      setUsbBusy(null);
+    }
+  }
+
+  async function triggerDisplayIdentify(display: DisplayOutputConfig) {
+    setUsbBusy(display.id);
+    setError(null);
+    try {
+      setUsbValidation(await identifyUsbDisplay(display));
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : String(caught));
+    } finally {
+      setUsbBusy(null);
     }
   }
 
@@ -516,6 +620,75 @@ export function App() {
             })
           }
           onEquipment={(target) => mutate((draft) => applyEquipment(draft, target))}
+          onThemeChange={(theme) => mutate((draft) => void (draft.display.display.layout_theme = theme))}
+          onSaveLayoutProfile={(label) =>
+            mutate((draft) => {
+              const display = draft.display.display;
+              ensureDisplayOutputs(display);
+              display.layout_profiles = display.layout_profiles ?? {};
+              const key = layoutProfileKey(label);
+              display.layout_profiles[key] = snapshotLayoutProfile(display, label);
+            })
+          }
+          onRestoreLayoutProfile={(key) =>
+            mutate((draft) => {
+              const display = draft.display.display;
+              const profile = display.layout_profiles?.[key];
+              if (!profile) return;
+              restoreLayoutProfile(display, profile);
+              setSelectedLayout(firstLayoutWindowKey(display.layout) ?? "game");
+            })
+          }
+          onDeleteLayoutProfile={(key) =>
+            mutate((draft) => {
+              delete draft.display.display.layout_profiles?.[key];
+            })
+          }
+          usbBusy={usbBusy}
+          usbValidation={usbValidation}
+          onUsbScan={() => void triggerUsbScan()}
+          onIdentifyDisplay={(display) => void triggerDisplayIdentify(display)}
+          onDisplayChange={(displayId, next) =>
+            mutate((draft) => {
+              const displays = ensureDisplayOutputs(draft.display.display);
+              const index = displays.findIndex((display) => display.id === displayId);
+              if (index >= 0) {
+                const current = displays[index];
+                const candidate = displayGeometryChanged(current, next) ? attachDisplayToNearest(next, displays, displayId) : next;
+                if (displayGeometryChanged(current, candidate) && displayOverlapsAny(candidate, displays, displayId)) {
+                  return;
+                }
+                displays[index] = candidate;
+              }
+              applyMultiDisplayBounds(draft.display.display);
+              applyPrimaryDisplay(draft.display.display, displays[0]);
+            })
+          }
+          onAddDisplay={() =>
+            mutate((draft) => {
+              const display = draft.display.display;
+              const displays = ensureDisplayOutputs(display);
+              const next = newDisplayOutput(displays.length + 1, displays);
+              displays.push(next);
+              applyMultiDisplayBounds(display);
+            })
+          }
+          onRemoveDisplay={(displayId) =>
+            mutate((draft) => {
+              const display = draft.display.display;
+              const displays = ensureDisplayOutputs(display);
+              if (displays.length <= 1) return;
+              const index = displays.findIndex((item) => item.id === displayId);
+              if (index >= 0) {
+                displays.splice(index, 1);
+              }
+              displays.forEach((item, itemIndex) => {
+                item.identify_number = itemIndex + 1;
+                item.label = item.label || `Display ${itemIndex + 1}`;
+              });
+              applyMultiDisplayBounds(display);
+            })
+          }
         />
 
         <section id="display" className="panel-grid">
@@ -686,6 +859,17 @@ function LayoutPreview({
   onRemove,
   onFactoryDefault,
   onEquipment,
+  onThemeChange,
+  onSaveLayoutProfile,
+  onRestoreLayoutProfile,
+  onDeleteLayoutProfile,
+  usbBusy,
+  usbValidation,
+  onUsbScan,
+  onIdentifyDisplay,
+  onDisplayChange,
+  onAddDisplay,
+  onRemoveDisplay,
 }: {
   config: RuntimeConfig;
   options: LayoutWindowOption[];
@@ -696,19 +880,39 @@ function LayoutPreview({
   onRemove: (key: LayoutKey) => void;
   onFactoryDefault: () => void;
   onEquipment: (target: string) => void;
+  onThemeChange: (theme: string) => void;
+  onSaveLayoutProfile: (label: string) => void;
+  onRestoreLayoutProfile: (key: string) => void;
+  onDeleteLayoutProfile: (key: string) => void;
+  usbBusy: string | null;
+  usbValidation: UsbValidationResult | null;
+  onUsbScan: () => void;
+  onIdentifyDisplay: (display: DisplayOutputConfig) => void;
+  onDisplayChange: (displayId: string, next: DisplayOutputConfig) => void;
+  onAddDisplay: () => void;
+  onRemoveDisplay: (displayId: string) => void;
 }) {
   const display = config.display.display;
-  const frameWidth = display.width;
-  const frameHeight = display.height;
+  const displays = display.device.displays?.length ? display.device.displays : [displayOutputFromConfig(display, 1)];
+  const bounds = displayBounds(displays);
+  const frameWidth = bounds.width;
+  const frameHeight = bounds.height;
   const scale = 1;
-  const [gridEnabled, setGridEnabled] = useState(false);
+  const [gridEnabled, setGridEnabled] = useState(true);
   const [gridSize, setGridSize] = useState(8);
+  const [layoutExpanded, setLayoutExpanded] = useState(false);
   const [addKind, setAddKind] = useState(options[0]?.kind ?? "activity");
+  const [profileName, setProfileName] = useState("My layout");
+  const [selectedProfileKey, setSelectedProfileKey] = useState("");
+  const activeLayoutTheme = layoutThemeCatalog[display.layout_theme ?? "default"] ? (display.layout_theme ?? "default") : "default";
   const optionByKind = new Map(options.map((option) => [option.kind, option]));
+  const layoutProfiles = display.layout_profiles ?? {};
+  const profileKeys = Object.keys(layoutProfiles);
   const layoutItems = Object.entries(display.layout)
     .map(([key, box]) => {
       const kind = layoutWindowKind(key, box);
-      const option = optionByKind.get(kind) ?? { kind, label: titleize(kind), tone: "#aeb7c8" };
+      const baseOption = optionByKind.get(kind) ?? { kind, label: titleize(kind), tone: "#aeb7c8" };
+      const option = { ...baseOption, tone: layoutThemeTone(activeLayoutTheme, kind, key, baseOption.tone) };
       return { key, kind, box, option };
     });
   const activeKey = display.layout[selected] ? selected : layoutItems[0]?.key;
@@ -725,6 +929,14 @@ function LayoutPreview({
       onSelect(activeKey);
     }
   }, [activeKey, onSelect, selected]);
+
+  useEffect(() => {
+    if (selectedProfileKey && !layoutProfiles[selectedProfileKey]) {
+      setSelectedProfileKey(profileKeys[0] ?? "");
+    } else if (!selectedProfileKey && profileKeys.length) {
+      setSelectedProfileKey(profileKeys[0]);
+    }
+  }, [layoutProfiles, profileKeys, selectedProfileKey]);
 
   function snap(value: number): number {
     if (!gridEnabled) return Math.round(value);
@@ -837,19 +1049,118 @@ function LayoutPreview({
         ))}
       </div>
 
-      <div className="layout-toolbar">
-        <button className={`switch ${gridEnabled ? "is-on" : ""}`} type="button" onClick={() => setGridEnabled((value) => !value)} aria-pressed={gridEnabled}>
-          <span />
-          Grid snap
-        </button>
-        <Field label="Grid px">
-          <NumberInput value={gridSize} onChange={(value) => setGridSize(clampNumber(value, 2, 64))} />
+      <div className="layout-profile-tools">
+        <Field label="Layout profile">
+          <TextInput value={profileName} onChange={setProfileName} />
         </Field>
+        <button className="secondary-button" type="button" onClick={() => onSaveLayoutProfile(profileName.trim() || "Layout")}>
+          <Save size={16} />
+          Save profile
+        </button>
+        <Field label="Restore">
+          <Select value={selectedProfileKey} options={profileKeys} onChange={setSelectedProfileKey} />
+        </Field>
+        <button className="secondary-button" type="button" disabled={!selectedProfileKey} onClick={() => selectedProfileKey && onRestoreLayoutProfile(selectedProfileKey)}>
+          <RefreshCw size={16} />
+          Restore
+        </button>
+        <button className="danger-button" type="button" disabled={!selectedProfileKey} onClick={() => selectedProfileKey && onDeleteLayoutProfile(selectedProfileKey)}>
+          <Trash2 size={16} />
+        </button>
       </div>
 
-      <div className="layout-workbench">
-        <div className="screen-preview-shell">
-          <div className="screen-preview" style={{ width: frameWidth * scale, height: frameHeight * scale }}>
+      <div className="display-array">
+        <div className="display-array-heading">
+          <div>
+            <strong>Displays</strong>
+            <span>{displays.length} configured output{displays.length === 1 ? "" : "s"}</span>
+          </div>
+          <div className="display-array-actions">
+            <button className="secondary-button" type="button" onClick={onUsbScan} disabled={usbBusy === "scan"}>
+              <Cable size={16} />
+              {usbBusy === "scan" ? "Scanning" : "Validate USB"}
+            </button>
+            <button className="secondary-button" type="button" onClick={onAddDisplay}>
+              <Plus size={16} />
+              Add display
+            </button>
+          </div>
+        </div>
+        {usbValidation ? (
+          <div className={`usb-validation ${usbValidation.ok ? "is-ok" : "is-error"}`}>
+            <span>{usbValidation.message}</span>
+            {usbValidation.devices?.length ? <span>{usbValidation.devices.map((device) => `${device.vid}:${device.pid}${device.product ? ` ${device.product}` : ""}`).join(" | ")}</span> : null}
+          </div>
+        ) : null}
+        <DisplayArrangement
+          displays={displays}
+          gridEnabled={gridEnabled}
+          gridSize={gridSize}
+          onDisplayChange={onDisplayChange}
+        />
+        <div className="display-list">
+          {displays.map((item, index) => (
+            <DisplayOutputRow
+              key={item.id}
+              display={item}
+              index={index}
+              canRemove={displays.length > 1}
+              busy={usbBusy === item.id}
+              onChange={(next) => onDisplayChange(item.id, next)}
+              onIdentify={() => onIdentifyDisplay(item)}
+              onRemove={() => onRemoveDisplay(item.id)}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className={`layout-window-editor ${layoutExpanded ? "is-expanded" : ""}`}>
+        <div className="layout-toolbar">
+          <button className={`switch ${gridEnabled ? "is-on" : ""}`} type="button" onClick={() => setGridEnabled((value) => !value)} aria-pressed={gridEnabled}>
+            <span />
+            Grid snap
+          </button>
+          <Field label="Grid px">
+            <NumberInput value={gridSize} onChange={(value) => setGridSize(clampNumber(value, 2, 64))} />
+          </Field>
+          <Field label="HUD">
+            <Select value={addKind} options={options.map((item) => item.kind)} onChange={setAddKind} />
+          </Field>
+          <Field label="Theme">
+            <Select value={activeLayoutTheme} options={layoutThemeKeys} onChange={onThemeChange} />
+          </Field>
+          <div className="layout-theme-swatches" aria-hidden="true">
+            {layoutThemeCatalog[activeLayoutTheme].palette.slice(0, 6).map((color) => (
+              <span key={color} style={{ backgroundColor: color }} />
+            ))}
+          </div>
+          <button className="secondary-button" type="button" onClick={() => onAdd(addKind)}>
+            <Plus size={16} />
+            Add HUD
+          </button>
+          <button className="secondary-button" type="button" onClick={() => setLayoutExpanded((value) => !value)}>
+            {layoutExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+            {layoutExpanded ? "Collapse" : "Expand"}
+          </button>
+        </div>
+
+        <div className="layout-workbench">
+          <div className="screen-preview-shell">
+            <div className="screen-preview" style={{ width: frameWidth * scale, height: frameHeight * scale }}>
+            {displays.map((item) => (
+              <div
+                key={item.id}
+                className={`display-frame ${item.enabled ? "" : "is-disabled"}`}
+                style={{
+                  left: (item.x - bounds.x) * scale,
+                  top: (item.y - bounds.y) * scale,
+                  width: item.width * scale,
+                  height: item.height * scale,
+                }}
+              >
+                <span>{item.identify_number}</span>
+              </div>
+            ))}
             {gridEnabled ? (
               <div
                 className="layout-grid"
@@ -899,43 +1210,174 @@ function LayoutPreview({
                 </div>
               );
             })}
+            </div>
           </div>
-        </div>
 
-        <div className="layout-controls">
-          <div className="layout-add-row">
-            <Select value={addKind} options={options.map((item) => item.kind)} onChange={setAddKind} />
-            <button className="secondary-button" type="button" onClick={() => onAdd(addKind)}>
-              Add
+          <div className="layout-controls">
+            <Field label="Selected">
+              <Select value={activeKey ?? ""} options={layoutItems.map((item) => item.key)} onChange={(value) => onSelect(value as LayoutKey)} />
+            </Field>
+            <Field label="X">
+              <NumberInput value={box.x} onChange={(value) => activeKey && commitBox(activeKey, { ...box, x: value })} />
+            </Field>
+            <Field label="Y">
+              <NumberInput value={box.y} onChange={(value) => activeKey && commitBox(activeKey, { ...box, y: value })} />
+            </Field>
+            <Field label="Width">
+              <NumberInput value={box.width} onChange={(value) => activeKey && commitBox(activeKey, { ...box, width: value })} />
+            </Field>
+            <Field label="Height">
+              <NumberInput value={box.height} onChange={(value) => activeKey && commitBox(activeKey, { ...box, height: value })} />
+            </Field>
+            <button className="secondary-button" type="button" disabled={!activeKey} onClick={() => activeKey && onChange(activeKey, layoutBoxForNewWindow(layoutWindowKind(activeKey, box), frameWidth, frameHeight, display.layout))}>
+              Reset selected
+            </button>
+            <button className="danger-button" type="button" disabled={!activeKey} onClick={() => activeKey && onRemove(activeKey)}>
+              Remove selected
+            </button>
+            <button className="danger-button" type="button" onClick={onFactoryDefault}>
+              Factory default
             </button>
           </div>
-          <Field label="Selected">
-            <Select value={activeKey ?? ""} options={layoutItems.map((item) => item.key)} onChange={(value) => onSelect(value as LayoutKey)} />
-          </Field>
-          <Field label="X">
-            <NumberInput value={box.x} onChange={(value) => activeKey && commitBox(activeKey, { ...box, x: value })} />
-          </Field>
-          <Field label="Y">
-            <NumberInput value={box.y} onChange={(value) => activeKey && commitBox(activeKey, { ...box, y: value })} />
-          </Field>
-          <Field label="Width">
-            <NumberInput value={box.width} onChange={(value) => activeKey && commitBox(activeKey, { ...box, width: value })} />
-          </Field>
-          <Field label="Height">
-            <NumberInput value={box.height} onChange={(value) => activeKey && commitBox(activeKey, { ...box, height: value })} />
-          </Field>
-          <button className="secondary-button" type="button" disabled={!activeKey} onClick={() => activeKey && onChange(activeKey, layoutBoxForNewWindow(layoutWindowKind(activeKey, box), frameWidth, frameHeight, display.layout))}>
-            Reset selected
-          </button>
-          <button className="danger-button" type="button" disabled={!activeKey} onClick={() => activeKey && onRemove(activeKey)}>
-            Remove selected
-          </button>
-          <button className="danger-button" type="button" onClick={onFactoryDefault}>
-            Factory default
-          </button>
         </div>
       </div>
     </section>
+  );
+}
+
+function DisplayArrangement({
+  displays,
+  gridEnabled,
+  gridSize,
+  onDisplayChange,
+}: {
+  displays: DisplayOutputConfig[];
+  gridEnabled: boolean;
+  gridSize: number;
+  onDisplayChange: (displayId: string, next: DisplayOutputConfig) => void;
+}) {
+  const bounds = displayBounds(displays);
+  const scale = displayArrangementScale;
+
+  function snapDisplay(value: number): number {
+    if (!gridEnabled) return Math.round(value);
+    const size = Math.max(1, gridSize);
+    return Math.round(value / size) * size;
+  }
+
+  function dragDisplayStart(event: MouseEvent<HTMLDivElement>, display: DisplayOutputConfig) {
+    event.preventDefault();
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const startDisplay = { ...display };
+
+    const move = (moveEvent: globalThis.MouseEvent) => {
+      onDisplayChange(display.id, {
+        ...startDisplay,
+        x: snapDisplay(startDisplay.x + (moveEvent.clientX - startX) / scale),
+        y: snapDisplay(startDisplay.y + (moveEvent.clientY - startY) / scale),
+      });
+    };
+
+    const up = () => {
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseup", up);
+    };
+
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", up);
+  }
+
+  return (
+    <div className="display-arrangement">
+      <div className="display-arrangement-heading">
+        <strong>Display arrangement</strong>
+        <span>Drag displays to set their relative position</span>
+      </div>
+      <div className="display-arrangement-shell">
+        <div className="display-arrangement-canvas">
+          {displays.map((display) => (
+            <div
+              key={display.id}
+              className={`display-arrangement-item ${display.enabled ? "" : "is-disabled"}`}
+              style={{
+                left: Math.round((display.x - bounds.x) * scale + displayArrangementPadding),
+                top: Math.round((display.y - bounds.y) * scale + displayArrangementPadding),
+                width: Math.max(40, Math.round(display.width * scale)),
+                height: Math.max(28, Math.round(display.height * scale)),
+              }}
+              onMouseDown={(event) => dragDisplayStart(event, display)}
+              role="button"
+              tabIndex={0}
+              title={`${display.label}: ${display.x}, ${display.y}`}
+            >
+              <strong>{display.identify_number}</strong>
+              <span>{display.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DisplayOutputRow({
+  display,
+  index,
+  canRemove,
+  busy,
+  onChange,
+  onIdentify,
+  onRemove,
+}: {
+  display: DisplayOutputConfig;
+  index: number;
+  canRemove: boolean;
+  busy: boolean;
+  onChange: (next: DisplayOutputConfig) => void;
+  onIdentify: () => void;
+  onRemove: () => void;
+}) {
+  return (
+    <div className="display-output-row">
+      <div className="display-badge">{display.identify_number || index + 1}</div>
+      <Field label="Label">
+        <TextInput value={display.label} onChange={(value) => onChange({ ...display, label: value })} />
+      </Field>
+      <Field label="Output">
+        <Select value={display.output} options={["thermalright", "turzx", "window", "preview", "gif"]} onChange={(value) => onChange({ ...display, output: value, target: value })} />
+      </Field>
+      <Field label="X">
+        <NumberInput value={display.x} onChange={(value) => onChange({ ...display, x: value })} />
+      </Field>
+      <Field label="Y">
+        <NumberInput value={display.y} onChange={(value) => onChange({ ...display, y: value })} />
+      </Field>
+      <Field label="Width">
+        <NumberInput value={display.width} onChange={(value) => onChange({ ...display, width: Math.max(1, value), thermalright: syncThermalrightSize(display.thermalright, Math.max(1, value), display.height) })} />
+      </Field>
+      <Field label="Height">
+        <NumberInput value={display.height} onChange={(value) => onChange({ ...display, height: Math.max(1, value), thermalright: syncThermalrightSize(display.thermalright, display.width, Math.max(1, value)) })} />
+      </Field>
+      <Field label="USB VID">
+        <TextInput value={display.thermalright?.vid ?? "0x0416"} onChange={(value) => onChange({ ...display, thermalright: { ...(display.thermalright ?? defaultThermalrightDeviceConfig()), vid: value } })} />
+      </Field>
+      <Field label="USB PID">
+        <TextInput value={display.thermalright?.pid ?? "0x5408"} onChange={(value) => onChange({ ...display, thermalright: { ...(display.thermalright ?? defaultThermalrightDeviceConfig()), pid: value } })} />
+      </Field>
+      <Field label="Enabled">
+        <Switch checked={display.enabled} onChange={(value) => onChange({ ...display, enabled: value })} />
+      </Field>
+      <div className="display-row-actions">
+        <button className="secondary-button" type="button" onClick={onIdentify} disabled={busy}>
+          <Monitor size={16} />
+          {busy ? "Sending" : "Identify"}
+        </button>
+        <button className="danger-button" type="button" disabled={!canRemove} onClick={onRemove}>
+          <Trash2 size={16} />
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -1066,6 +1508,38 @@ function IntegrationPanel({
   discordPeopleConfig: { max_recent: number; people: Record<string, DiscordPersonConfig> };
   onMutate: (mutator: (draft: RuntimeConfig) => void) => void;
 }) {
+  const [kiteBusy, setKiteBusy] = useState<string | null>(null);
+  const [kiteResult, setKiteResult] = useState<KiteActionResult | null>(null);
+  const [kiteTokenDraft, setKiteTokenDraft] = useState("");
+  const [kiteZoomSecretDraft, setKiteZoomSecretDraft] = useState("");
+
+  async function triggerKiteAction(action: "status" | "install" | "secrets" | "deploy") {
+    setKiteBusy(action);
+    try {
+      const result =
+        action === "status"
+          ? await loadKiteStatus()
+          : action === "secrets"
+            ? await configureKiteSecrets(kiteTokenDraft, kiteZoomSecretDraft)
+            : await runKiteAction(action);
+      setKiteResult(result);
+      if (action === "secrets" && result.ok) {
+        setKiteTokenDraft("");
+        setKiteZoomSecretDraft("");
+      }
+      if (action === "deploy" && result.ws_url) {
+        onMutate((draft) => void (draft.integrations.integrations.kite.ws_url = result.ws_url || ""));
+      }
+    } catch (error) {
+      setKiteResult({
+        ok: false,
+        message: error instanceof Error ? error.message : String(error),
+      });
+    } finally {
+      setKiteBusy(null);
+    }
+  }
+
   if (activeKey === "github") {
     return (
       <GithubIntegrationPanel config={config} onMutate={onMutate} />
@@ -1354,6 +1828,154 @@ function IntegrationPanel({
         discordPeopleConfig={discordPeopleConfig}
         onMutate={onMutate}
       />
+    );
+  }
+
+  if (activeKey === "kite") {
+    return (
+      <Panel title="PixelOpsKite" icon={Cable} subtitle="Webhook relay stream for local Pixel Ops">
+        <Field label="WebSocket URL">
+          <TextInput
+            value={config.integrations.integrations.kite.ws_url}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.kite.ws_url = value))}
+          />
+        </Field>
+        <Field label="Token env">
+          <TextInput
+            value={config.integrations.integrations.kite.token_env}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.kite.token_env = value))}
+          />
+        </Field>
+        <Field label="Reconnect seconds">
+          <NumberInput
+            value={config.integrations.integrations.kite.reconnect_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.kite.reconnect_seconds = clampNumber(value, 1, 120)))}
+          />
+        </Field>
+        <Field label="Max companions">
+          <NumberInput
+            value={config.integrations.integrations.kite.max_companions}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.kite.max_companions = clampNumber(value, 0, 30)))}
+          />
+        </Field>
+        <Field label="Zoom focus user">
+          <TextInput
+            value={config.integrations.integrations.kite.zoom.focus_user_id}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.kite.zoom.focus_user_id = value))}
+          />
+        </Field>
+        <Field label="Zoom companions">
+          <NumberInput
+            value={config.integrations.integrations.kite.zoom.max_companions}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.kite.zoom.max_companions = clampNumber(value, 0, 30)))}
+          />
+        </Field>
+        <Field label="Kite token">
+          <PasswordInput value={kiteTokenDraft} onChange={setKiteTokenDraft} />
+        </Field>
+        <Field label="Zoom webhook token">
+          <PasswordInput value={kiteZoomSecretDraft} onChange={setKiteZoomSecretDraft} />
+        </Field>
+        <div className="field field-wide">
+          <span>IaC actions</span>
+          <div className="runtime-actions">
+            <button className="secondary-button" type="button" disabled={kiteBusy !== null} onClick={() => void triggerKiteAction("status")}>
+              <Terminal size={15} />
+              Check
+            </button>
+            <button className="secondary-button" type="button" disabled={kiteBusy !== null} onClick={() => void triggerKiteAction("install")}>
+              <RefreshCw size={15} />
+              Install deps
+            </button>
+            <button
+              className="secondary-button"
+              type="button"
+              disabled={kiteBusy !== null || (!kiteTokenDraft.trim() && !kiteZoomSecretDraft.trim())}
+              onClick={() => void triggerKiteAction("secrets")}
+            >
+              <Save size={15} />
+              Push secrets
+            </button>
+            <button className="primary-button" type="button" disabled={kiteBusy !== null} onClick={() => void triggerKiteAction("deploy")}>
+              <Play size={15} />
+              Deploy Kite
+            </button>
+          </div>
+        </div>
+        {kiteResult ? (
+          <div className="field field-wide">
+            <span>{kiteResult.ok ? "Kite ready" : "Kite issue"}</span>
+            <pre className="runtime-log">
+              {[
+                kiteResult.message,
+                kiteResult.worker_url ? `Worker URL: ${kiteResult.worker_url}` : "",
+                kiteResult.ws_url ? `WebSocket URL: ${kiteResult.ws_url}` : "",
+                kiteResult.files ? `Files: ${JSON.stringify(kiteResult.files, null, 2)}` : "",
+                kiteResult.local_token_set !== undefined ? `Local token: ${kiteResult.local_token_set ? "set" : "missing"}` : "",
+                kiteResult.stdout || "",
+                kiteResult.stderr || "",
+              ]
+                .filter(Boolean)
+                .join("\n")}
+            </pre>
+          </div>
+        ) : null}
+      </Panel>
+    );
+  }
+
+  if (activeKey === "zoom") {
+    return (
+      <Panel title="Zoom" icon={Users} subtitle="Poll live meeting participants as ambient companions">
+        <Field label="Account ID env">
+          <TextInput
+            value={config.integrations.integrations.zoom.account_id_env}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.zoom.account_id_env = value))}
+          />
+        </Field>
+        <Field label="Client ID env">
+          <TextInput
+            value={config.integrations.integrations.zoom.client_id_env}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.zoom.client_id_env = value))}
+          />
+        </Field>
+        <Field label="Client secret env">
+          <TextInput
+            value={config.integrations.integrations.zoom.client_secret_env}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.zoom.client_secret_env = value))}
+          />
+        </Field>
+        <Field label="Focus user ID">
+          <TextInput
+            value={config.integrations.integrations.zoom.focus_user_id}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.zoom.focus_user_id = value))}
+          />
+        </Field>
+        <Field label="Max companions">
+          <NumberInput
+            value={config.integrations.integrations.zoom.max_companions}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.zoom.max_companions = clampNumber(value, 0, 30)))}
+          />
+        </Field>
+        <Field label="Poll seconds">
+          <NumberInput
+            value={config.integrations.integrations.zoom.poll_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.zoom.poll_seconds = clampNumber(value, 10, 300)))}
+          />
+        </Field>
+        <Field label="Page size">
+          <NumberInput
+            value={config.integrations.integrations.zoom.page_size}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.zoom.page_size = clampNumber(value, 1, 300)))}
+          />
+        </Field>
+        <Field label="Timeout seconds">
+          <NumberInput
+            value={config.integrations.integrations.zoom.timeout_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.zoom.timeout_seconds = clampNumber(value, 1, 30)))}
+          />
+        </Field>
+      </Panel>
     );
   }
 
@@ -2692,6 +3314,8 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
     full_frame: false,
   };
   display.device.thermalright = display.device.thermalright ?? defaultThermalrightDeviceConfig();
+  ensureDisplayOutputs(display);
+  display.layout_theme = layoutThemeCatalog[display.layout_theme ?? "default"] ? (display.layout_theme ?? "default") : "default";
   if (!display.layout || typeof display.layout !== "object") {
     display.layout = defaultLayoutFor(display.width, display.height);
   }
@@ -2705,6 +3329,24 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
   next.integrations.integrations.github.deployment_workflows = next.integrations.integrations.github.deployment_workflows ?? [];
   next.integrations.integrations.github.startup_lookback_seconds = next.integrations.integrations.github.startup_lookback_seconds ?? 3600;
   next.integrations.integrations.github.timeout_seconds = next.integrations.integrations.github.timeout_seconds ?? 20;
+  next.integrations.integrations.kite = next.integrations.integrations.kite ?? {
+    enabled: false,
+    ws_url: "",
+    token_env: "PIXEL_OPS_KITE_TOKEN",
+    reconnect_seconds: 10,
+    max_companions: 8,
+    zoom: {
+      focus_user_id: "",
+      max_companions: 8,
+    },
+  };
+  next.integrations.integrations.kite.ws_url = next.integrations.integrations.kite.ws_url ?? "";
+  next.integrations.integrations.kite.token_env = next.integrations.integrations.kite.token_env ?? "PIXEL_OPS_KITE_TOKEN";
+  next.integrations.integrations.kite.reconnect_seconds = next.integrations.integrations.kite.reconnect_seconds ?? 10;
+  next.integrations.integrations.kite.max_companions = next.integrations.integrations.kite.max_companions ?? 8;
+  next.integrations.integrations.kite.zoom = next.integrations.integrations.kite.zoom ?? { focus_user_id: "", max_companions: 8 };
+  next.integrations.integrations.kite.zoom.focus_user_id = next.integrations.integrations.kite.zoom.focus_user_id ?? "";
+  next.integrations.integrations.kite.zoom.max_companions = next.integrations.integrations.kite.zoom.max_companions ?? 8;
   next.integrations.integrations.slack.app_token_env = next.integrations.integrations.slack.app_token_env ?? "PIXEL_OPS_SLACK_APP_TOKEN";
   next.integrations.integrations.slack.bot_token_env = next.integrations.integrations.slack.bot_token_env ?? "PIXEL_OPS_SLACK_BOT_TOKEN";
   next.integrations.integrations.slack.bot_user_id = next.integrations.integrations.slack.bot_user_id ?? "";
@@ -2909,8 +3551,8 @@ function defaultThermalrightDeviceConfig() {
     jpeg_quality: 85,
     image_width: 1920,
     image_height: 462,
-    min_frame_interval_ms: 0,
-    packet_delay_ms: 0,
+    min_frame_interval_ms: 500,
+    packet_delay_ms: 2,
     packet_size: 4096,
     hard_reset_on_start: true,
     hard_reset_wait_ms: 1500,
@@ -2920,8 +3562,210 @@ function defaultThermalrightDeviceConfig() {
     read_start_ack: true,
     read_frame_ack: true,
     start_retries: 0,
+    frame_retries: 1,
     debug: false,
   };
+}
+
+function displayOutputFromConfig(display: RuntimeConfig["display"]["display"], index = 1): DisplayOutputConfig {
+  return {
+    id: `display-${index}`,
+    label: `Display ${index}`,
+    enabled: true,
+    target: display.device.target || "window",
+    output: display.device.output || "window",
+    x: 0,
+    y: 0,
+    width: display.width,
+    height: display.height,
+    identify_number: index,
+    thermalright: {
+      ...defaultThermalrightDeviceConfig(),
+      ...(display.device.thermalright ?? {}),
+      image_width: display.width,
+      image_height: display.height,
+    },
+  };
+}
+
+function ensureDisplayOutputs(display: RuntimeConfig["display"]["display"]): DisplayOutputConfig[] {
+  const existing = Array.isArray(display.device.displays) ? display.device.displays : [];
+  const normalized = existing.length ? existing : [displayOutputFromConfig(display, 1)];
+  display.device.displays = normalized.map((item, index) => normalizeDisplayOutput(item, index + 1));
+  applyMultiDisplayBounds(display);
+  return display.device.displays;
+}
+
+function normalizeDisplayOutput(raw: Partial<DisplayOutputConfig>, index: number): DisplayOutputConfig {
+  const width = Math.max(1, Number(raw.width ?? 320));
+  const height = Math.max(1, Number(raw.height ?? 480));
+  return {
+    id: raw.id || `display-${index}`,
+    label: raw.label || `Display ${index}`,
+    enabled: raw.enabled ?? true,
+    target: raw.target || raw.output || "window",
+    output: raw.output || raw.target || "window",
+    x: Number(raw.x ?? 0),
+    y: Number(raw.y ?? 0),
+    width,
+    height,
+    identify_number: Number(raw.identify_number ?? index),
+    thermalright: syncThermalrightSize({ ...defaultThermalrightDeviceConfig(), ...(raw.thermalright ?? {}) }, width, height),
+  };
+}
+
+function newDisplayOutput(index: number, displays: DisplayOutputConfig[]): DisplayOutputConfig {
+  const previous = displays[displays.length - 1];
+  const width = previous?.width ?? 320;
+  const height = previous?.height ?? 480;
+  return {
+    id: `display-${Date.now().toString(36)}-${index}`,
+    label: `Display ${index}`,
+    enabled: true,
+    target: previous?.target ?? "thermalright",
+    output: previous?.output ?? "thermalright",
+    x: previous ? previous.x + previous.width : 0,
+    y: previous?.y ?? 0,
+    width,
+    height,
+    identify_number: index,
+    thermalright: syncThermalrightSize(previous?.thermalright ?? defaultThermalrightDeviceConfig(), width, height),
+  };
+}
+
+function syncThermalrightSize(thermalright: DisplayOutputConfig["thermalright"] | undefined, width: number, height: number) {
+  return {
+    ...defaultThermalrightDeviceConfig(),
+    ...(thermalright ?? {}),
+    image_width: width,
+    image_height: height,
+  };
+}
+
+function displayBounds(displays: DisplayOutputConfig[]) {
+  if (!displays.length) return { x: 0, y: 0, width: 320, height: 480 };
+  const enabled = displays;
+  const minX = Math.min(...enabled.map((item) => item.x));
+  const minY = Math.min(...enabled.map((item) => item.y));
+  const maxX = Math.max(...enabled.map((item) => item.x + item.width));
+  const maxY = Math.max(...enabled.map((item) => item.y + item.height));
+  return { x: minX, y: minY, width: Math.max(1, maxX - minX), height: Math.max(1, maxY - minY) };
+}
+
+function layoutThemeTone(themeKey: string, kind: string, key: string, fallback: string) {
+  const theme = layoutThemeCatalog[themeKey] ?? layoutThemeCatalog.default;
+  if (themeKey === "default") return fallback;
+  return theme.tones[kind] ?? theme.palette[stableIndex(`${kind}:${key}`, theme.palette.length)] ?? fallback;
+}
+
+function stableIndex(value: string, modulo: number) {
+  if (modulo <= 1) return 0;
+  let hash = 0;
+  for (const char of value) {
+    hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  }
+  return hash % modulo;
+}
+
+function layoutProfileKey(label: string) {
+  return slugify(label) || "layout";
+}
+
+function snapshotLayoutProfile(display: RuntimeConfig["display"]["display"], label: string): LayoutProfileConfig {
+  const displays = ensureDisplayOutputs(display);
+  return {
+    label,
+    saved_at: new Date().toISOString(),
+    width: display.width,
+    height: display.height,
+    layout_theme: display.layout_theme ?? "default",
+    device: {
+      target: display.device.target,
+      output: display.device.output,
+      displays: cloneJson(displays),
+    },
+    layout: cloneJson(display.layout),
+  };
+}
+
+function restoreLayoutProfile(display: RuntimeConfig["display"]["display"], profile: LayoutProfileConfig) {
+  display.layout = cloneJson(profile.layout);
+  display.device.displays = cloneJson(profile.device.displays).map((item, index) => normalizeDisplayOutput(item, index + 1));
+  display.device.target = profile.device.target;
+  display.device.output = profile.device.output;
+  display.layout_theme = layoutThemeCatalog[profile.layout_theme ?? "default"] ? (profile.layout_theme ?? "default") : "default";
+  applyMultiDisplayBounds(display);
+  display.width = profile.width;
+  display.height = profile.height;
+}
+
+function cloneJson<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
+function slugify(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function displayGeometryChanged(current: DisplayOutputConfig, next: DisplayOutputConfig) {
+  return current.x !== next.x || current.y !== next.y || current.width !== next.width || current.height !== next.height;
+}
+
+function attachDisplayToNearest(candidate: DisplayOutputConfig, displays: DisplayOutputConfig[], candidateId: string): DisplayOutputConfig {
+  const anchors = displays.filter((display) => display.id !== candidateId);
+  if (!anchors.length) return candidate;
+
+  const placements = anchors.flatMap((anchor) => {
+    const right = { ...candidate, x: anchor.x + anchor.width, y: clampOverlapAxis(candidate.y, candidate.height, anchor.y, anchor.height) };
+    const left = { ...candidate, x: anchor.x - candidate.width, y: clampOverlapAxis(candidate.y, candidate.height, anchor.y, anchor.height) };
+    const below = { ...candidate, x: clampOverlapAxis(candidate.x, candidate.width, anchor.x, anchor.width), y: anchor.y + anchor.height };
+    const above = { ...candidate, x: clampOverlapAxis(candidate.x, candidate.width, anchor.x, anchor.width), y: anchor.y - candidate.height };
+    return [right, left, below, above];
+  });
+
+  return placements
+    .filter((placement) => !displayOverlapsAny(placement, displays, candidateId))
+    .sort((first, second) => displayDistance(first, candidate) - displayDistance(second, candidate))[0] ?? candidate;
+}
+
+function clampOverlapAxis(value: number, size: number, anchorStart: number, anchorSize: number) {
+  const min = anchorStart - size + 1;
+  const max = anchorStart + anchorSize - 1;
+  return Math.round(Math.max(min, Math.min(max, value)));
+}
+
+function displayDistance(first: DisplayOutputConfig, second: DisplayOutputConfig) {
+  const dx = first.x - second.x;
+  const dy = first.y - second.y;
+  return dx * dx + dy * dy;
+}
+
+function displayOverlapsAny(candidate: DisplayOutputConfig, displays: DisplayOutputConfig[], candidateId: string) {
+  return displays.some((display) => display.id !== candidateId && rectanglesOverlap(candidate, display));
+}
+
+function rectanglesOverlap(first: DisplayOutputConfig, second: DisplayOutputConfig) {
+  return first.x < second.x + second.width && first.x + first.width > second.x && first.y < second.y + second.height && first.y + first.height > second.y;
+}
+
+function applyMultiDisplayBounds(display: RuntimeConfig["display"]["display"]) {
+  const displays = display.device.displays ?? [];
+  if (!displays.length) return;
+  const bounds = displayBounds(displays);
+  display.width = bounds.width;
+  display.height = bounds.height;
+  applyPrimaryDisplay(display, displays[0]);
+}
+
+function applyPrimaryDisplay(display: RuntimeConfig["display"]["display"], primary: DisplayOutputConfig | undefined) {
+  if (!primary) return;
+  display.device.target = primary.target;
+  display.device.output = primary.output;
+  display.device.thermalright = primary.thermalright ?? display.device.thermalright ?? defaultThermalrightDeviceConfig();
 }
 
 function defaultLayoutFor(width: number, height: number): Record<LayoutKey, LayoutBox> {

@@ -29,6 +29,82 @@ export type RuntimeStatus = {
   stderr?: string;
 };
 
+export type KiteActionResult = {
+  ok: boolean;
+  message: string;
+  stdout?: string;
+  stderr?: string;
+  worker_url?: string;
+  ws_url?: string;
+  files?: Record<string, boolean>;
+  local_token_set?: boolean;
+};
+
+export type UsbValidationResult = {
+  ok: boolean;
+  message: string;
+  devices?: Array<{
+    vid: string;
+    pid: string;
+    manufacturer: string;
+    product: string;
+    serial_number: string;
+    bus: number | null;
+    address: number | null;
+    has_default_endpoints: boolean;
+  }>;
+  stdout?: string;
+  stderr?: string;
+};
+
+export type DisplayOutputConfig = {
+  id: string;
+  label: string;
+  enabled: boolean;
+  target: string;
+  output: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  identify_number: number;
+  thermalright?: {
+    vid: string;
+    pid: string;
+    timeout_ms: number;
+    jpeg_quality: number;
+    image_width: number;
+    image_height: number;
+    min_frame_interval_ms?: number;
+    packet_delay_ms?: number;
+    packet_size?: number;
+    hard_reset_on_start?: boolean;
+    hard_reset_wait_ms?: number;
+    handshake_on_first_frame?: boolean;
+    require_handshake?: boolean;
+    send_start_init?: boolean;
+    read_start_ack?: boolean;
+    read_frame_ack?: boolean;
+    start_retries?: number;
+    frame_retries?: number;
+    debug: boolean;
+  };
+};
+
+export type LayoutProfileConfig = {
+  label: string;
+  saved_at: string;
+  width: number;
+  height: number;
+  layout_theme?: string;
+  device: {
+    target: string;
+    output: string;
+    displays: DisplayOutputConfig[];
+  };
+  layout: Record<LayoutKey, LayoutBox>;
+};
+
 export type GitHubRepoOption = {
   full_name: string;
   private: boolean;
@@ -135,10 +211,14 @@ export type RuntimeConfig = {
           read_start_ack?: boolean;
           read_frame_ack?: boolean;
           start_retries?: number;
+          frame_retries?: number;
           debug: boolean;
         };
+        displays?: DisplayOutputConfig[];
       };
       layout: Record<LayoutKey, LayoutBox>;
+      layout_theme?: string;
+      layout_profiles?: Record<string, LayoutProfileConfig>;
       backend: string;
       fps: number;
       preview_output: string;
@@ -166,6 +246,16 @@ export type RuntimeConfig = {
   integrations: {
     integrations: Record<string, unknown> & {
       social_bus_limit: number;
+      kite: IntegrationToggle & {
+        ws_url: string;
+        token_env: string;
+        reconnect_seconds: number;
+        max_companions: number;
+        zoom: {
+          focus_user_id: string;
+          max_companions: number;
+        };
+      };
       slack: IntegrationToggle & {
         app_token_env: string;
         bot_token_env: string;
@@ -195,6 +285,16 @@ export type RuntimeConfig = {
         focus_user_id: string;
         max_companions: number;
         gateway_reconnect_seconds: number;
+      };
+      zoom: IntegrationToggle & {
+        account_id_env: string;
+        client_id_env: string;
+        client_secret_env: string;
+        focus_user_id: string;
+        max_companions: number;
+        poll_seconds: number;
+        page_size: number;
+        timeout_seconds: number;
       };
       github: IntegrationToggle & {
         client_id: string;

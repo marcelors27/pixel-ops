@@ -79,7 +79,7 @@ The runtime can send rendered frames directly to a Thermalright LY LCD:
 python pixel_ops/main.py --plugin pokemon --output thermalright --forever --fps 2 --offline
 ```
 
-The output opens `0416:5408` by default, performs the LY handshake at startup, JPEG-encodes each rendered frame, sends chunks on endpoint `0x09`, and reads the frame ACK on `0x81`.
+The output opens `0416:5408` by default, primes the panel with the LY init command, waits for ACK on endpoint `0x81`, JPEG-encodes each rendered frame, and sends chunks on endpoint `0x09`.
 
 Optional JSON config under `display.device.thermalright`:
 
@@ -102,6 +102,7 @@ Optional JSON config under `display.device.thermalright`:
   "read_start_ack": true,
   "read_frame_ack": true,
   "start_retries": 0,
+  "frame_retries": 1,
   "debug": false
 }
 ```

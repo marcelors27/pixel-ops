@@ -141,6 +141,20 @@ class ThermalrightUsbTests(unittest.TestCase):
         protocol.send_raw.assert_called_once()
         protocol.read_status.assert_called_once_with(512)
 
+    def test_thermalright_output_can_start_without_init_ack(self):
+        protocol = mock.Mock()
+        transport = mock.Mock()
+
+        with mock.patch("pixel_ops.outputs.thermalright.ThermalrightUsbTransport", return_value=transport), mock.patch(
+            "pixel_ops.outputs.thermalright.ThermalrightProtocol", return_value=protocol
+        ):
+            output = ThermalrightOutput(send_start_init=False, read_start_ack=False, hard_reset_on_start=False)
+            output.start()
+
+        protocol.send_raw.assert_not_called()
+        protocol.read_status.assert_not_called()
+        transport.open.assert_called_once()
+
     def test_thermalright_output_can_continue_when_optional_handshake_times_out(self):
         protocol = mock.Mock()
         protocol.send_raw.side_effect = OSError("Operation timed out")
@@ -224,6 +238,23 @@ class ThermalrightUsbTests(unittest.TestCase):
         self.assertEqual(protocol.read_status.call_count, 1)
         transport.open.assert_called_once()
         transport.reset.assert_not_called()
+
+    def test_thermalright_output_can_reconnect_and_retry_frame_send(self):
+        protocol = mock.Mock()
+        protocol.read_status.return_value = bytes.fromhex("03ff00000000000001") + bytes(503)
+        protocol.send_jpeg.side_effect = [OSError("Operation timed out"), None]
+        transport = mock.Mock()
+
+        with mock.patch("pixel_ops.outputs.thermalright.ThermalrightUsbTransport", return_value=transport), mock.patch(
+            "pixel_ops.outputs.thermalright.ThermalrightProtocol", return_value=protocol
+        ), mock.patch("pixel_ops.outputs.thermalright.time.sleep"):
+            output = ThermalrightOutput(hard_reset_on_start=False, frame_retries=1)
+            output.start()
+            output.send(Image.new("RGB", (8, 8), (255, 0, 0)))
+
+        self.assertEqual(protocol.send_jpeg.call_count, 2)
+        self.assertEqual(transport.open.call_count, 2)
+        transport.reset.assert_called_once()
 
     def test_thermalright_output_can_disable_hard_reset_on_start(self):
         protocol = mock.Mock()

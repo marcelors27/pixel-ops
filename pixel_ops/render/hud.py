@@ -20,6 +20,99 @@ from pixel_ops.render.fonts import font, icon_font, scaled_px
 from pixel_ops.render.renderer import PixelRenderer
 
 
+HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
+    "pokemon": {
+        "timezones": (93, 169, 233),
+        "timezones_clock": (93, 169, 233),
+        "activity": (239, 100, 97),
+        "meetings_day": (247, 201, 72),
+        "calendar_day": (247, 201, 72),
+        "route_signal": (95, 191, 122),
+        "gauges": (190, 119, 246),
+        "weather": (79, 192, 218),
+        "pc_stats": (240, 163, 93),
+        "tasks": (126, 196, 122),
+        "clickup_tasks": (126, 196, 122),
+        "tasks_board": (223, 122, 122),
+        "media": (247, 169, 64),
+        "now_playing": (247, 169, 64),
+        "pokemon_captures": (235, 86, 96),
+    },
+    "terminal": {
+        "timezones": (98, 220, 142),
+        "timezones_clock": (98, 220, 142),
+        "activity": (96, 204, 255),
+        "meetings_day": (232, 219, 116),
+        "calendar_day": (232, 219, 116),
+        "route_signal": (142, 255, 188),
+        "gauges": (150, 225, 255),
+        "weather": (90, 195, 255),
+        "pc_stats": (188, 255, 128),
+        "tasks": (122, 240, 164),
+        "clickup_tasks": (122, 240, 164),
+        "tasks_board": (255, 160, 128),
+        "media": (188, 255, 128),
+        "now_playing": (188, 255, 128),
+        "pokemon_captures": (122, 240, 164),
+    },
+    "ocean": {
+        "timezones": (75, 175, 225),
+        "timezones_clock": (75, 175, 225),
+        "activity": (91, 204, 189),
+        "meetings_day": (165, 216, 255),
+        "calendar_day": (165, 216, 255),
+        "route_signal": (86, 214, 165),
+        "gauges": (120, 190, 255),
+        "weather": (66, 197, 218),
+        "pc_stats": (88, 183, 210),
+        "tasks": (123, 225, 188),
+        "clickup_tasks": (123, 225, 188),
+        "tasks_board": (102, 190, 235),
+        "media": (140, 210, 255),
+        "now_playing": (140, 210, 255),
+        "pokemon_captures": (98, 184, 222),
+    },
+    "ember": {
+        "timezones": (255, 177, 93),
+        "timezones_clock": (255, 177, 93),
+        "activity": (255, 111, 91),
+        "meetings_day": (255, 207, 102),
+        "calendar_day": (255, 207, 102),
+        "route_signal": (255, 142, 83),
+        "gauges": (234, 118, 165),
+        "weather": (255, 154, 89),
+        "pc_stats": (255, 190, 98),
+        "tasks": (255, 161, 96),
+        "clickup_tasks": (255, 161, 96),
+        "tasks_board": (255, 112, 112),
+        "media": (255, 196, 92),
+        "now_playing": (255, 196, 92),
+        "pokemon_captures": (255, 96, 96),
+    },
+}
+
+
+class _ThemePalette:
+    def __init__(self, base, **overrides):
+        self._base = base
+        self.__dict__.update(overrides)
+
+    def __getattr__(self, name: str):
+        return getattr(self._base, name)
+
+
+def hud_palette_for_kind(pal, layout_theme: str | None, kind: str):
+    theme_tones = HUD_THEME_TONES.get(str(layout_theme or "default"))
+    if not theme_tones:
+        return pal
+    accent = theme_tones.get(kind) or next(iter(theme_tones.values()))
+    return _ThemePalette(
+        pal,
+        blue=accent,
+        panel_shadow=_mix_color(accent, pal.panel_shadow, 0.38),
+    )
+
+
 def _fit_text(draw: ImageDraw.ImageDraw, text: str, max_width: int, text_font) -> str:
     if draw.textbbox((0, 0), text, font=text_font)[2] <= max_width:
         return text
@@ -164,9 +257,26 @@ def draw_hud(
     media: MediaNowPlaying | None = None,
     today_events: list[CalendarEvent] | None = None,
     layout: dict | None = None,
+    layout_theme: str | None = None,
 ) -> None:
     if layout:
-        _draw_configured_hud(draw, people, event, now, pal, pull_requests or [], ai_usage, weather, work_events or [], pc_stats, task_snapshot, media, today_events or [], layout)
+        _draw_configured_hud(
+            draw,
+            people,
+            event,
+            now,
+            pal,
+            pull_requests or [],
+            ai_usage,
+            weather,
+            work_events or [],
+            pc_stats,
+            task_snapshot,
+            media,
+            today_events or [],
+            layout,
+            layout_theme,
+        )
         return
 
     PixelRenderer.draw_panel(draw, (8, 8, 312, 212), pal.panel, pal.panel_shadow, pal.ink)
@@ -216,47 +326,50 @@ def _draw_configured_hud(
     media: MediaNowPlaying | None,
     today_events: list[CalendarEvent],
     layout: dict,
+    layout_theme: str | None,
 ) -> None:
     small_font = font(11)
     chip_font = font(9)
     zone_font = font(8)
     name_font = font(7)
     for timezones_box in _layout_boxes(layout, "timezones"):
-        PixelRenderer.draw_panel(draw, timezones_box, pal.panel, pal.panel_shadow, pal.ink)
-        inner_box = _draw_panel_title(draw, timezones_box, "TIMEZONES", pal)
-        _draw_timezone_flex_grid(draw, people, inner_box, chip_font, zone_font, name_font, pal)
+        hud_pal = hud_palette_for_kind(pal, layout_theme, "timezones")
+        PixelRenderer.draw_panel(draw, timezones_box, hud_pal.panel, hud_pal.panel_shadow, hud_pal.ink)
+        inner_box = _draw_panel_title(draw, timezones_box, "TIMEZONES", hud_pal)
+        _draw_timezone_flex_grid(draw, people, inner_box, chip_font, zone_font, name_font, hud_pal)
 
     for timezones_box in _layout_boxes(layout, "timezones_clock"):
-        PixelRenderer.draw_panel(draw, timezones_box, pal.panel, pal.panel_shadow, pal.ink)
-        inner_box = _draw_panel_title(draw, timezones_box, "TIMEZONES", pal)
-        _draw_timezone_clock_grid(draw, people, inner_box, chip_font, zone_font, name_font, pal)
+        hud_pal = hud_palette_for_kind(pal, layout_theme, "timezones_clock")
+        PixelRenderer.draw_panel(draw, timezones_box, hud_pal.panel, hud_pal.panel_shadow, hud_pal.ink)
+        inner_box = _draw_panel_title(draw, timezones_box, "TIMEZONES", hud_pal)
+        _draw_timezone_clock_grid(draw, people, inner_box, chip_font, zone_font, name_font, hud_pal)
 
     for activity_box in _layout_boxes(layout, "activity"):
-        _draw_activity_panel(draw, event, pull_requests, now, activity_box, pal)
+        _draw_activity_panel(draw, event, pull_requests, now, activity_box, hud_palette_for_kind(pal, layout_theme, "activity"))
 
     for meetings_box in [*_layout_boxes(layout, "meetings_day"), *_layout_boxes(layout, "calendar_day")]:
-        _draw_meetings_day_panel(draw, today_events, now, meetings_box, pal)
+        _draw_meetings_day_panel(draw, today_events, now, meetings_box, hud_palette_for_kind(pal, layout_theme, "meetings_day"))
 
     for route_box in _layout_boxes(layout, "route_signal"):
-        _draw_route_signal_panel(draw, event, pull_requests, ai_usage, work_events, now, route_box, pal)
+        _draw_route_signal_panel(draw, event, pull_requests, ai_usage, work_events, now, route_box, hud_palette_for_kind(pal, layout_theme, "route_signal"))
 
     for gauges_box in _layout_boxes(layout, "gauges"):
-        _draw_ai_usage_panel(draw, ai_usage, now, gauges_box, pal)
+        _draw_ai_usage_panel(draw, ai_usage, now, gauges_box, hud_palette_for_kind(pal, layout_theme, "gauges"))
 
     for weather_box in _layout_boxes(layout, "weather"):
-        _draw_weather_compact(draw, weather, weather_box, pal)
+        _draw_weather_compact(draw, weather, weather_box, hud_palette_for_kind(pal, layout_theme, "weather"))
 
     for pc_box in _layout_boxes(layout, "pc_stats"):
-        _draw_pc_stats_panel(draw, pc_stats, pc_box, pal)
+        _draw_pc_stats_panel(draw, pc_stats, pc_box, hud_palette_for_kind(pal, layout_theme, "pc_stats"))
 
     for task_box in [*_layout_boxes(layout, "tasks"), *_layout_boxes(layout, "clickup_tasks")]:
-        _draw_tasks_panel(draw, task_snapshot, now, task_box, pal)
+        _draw_tasks_panel(draw, task_snapshot, now, task_box, hud_palette_for_kind(pal, layout_theme, "tasks"))
 
     for task_board_box in _layout_boxes(layout, "tasks_board"):
-        _draw_tasks_board_panel(draw, task_snapshot, now, task_board_box, pal)
+        _draw_tasks_board_panel(draw, task_snapshot, now, task_board_box, hud_palette_for_kind(pal, layout_theme, "tasks_board"))
 
     for media_box in [*_layout_boxes(layout, "media"), *_layout_boxes(layout, "now_playing")]:
-        _draw_media_panel(draw, media, now, media_box, pal)
+        _draw_media_panel(draw, media, now, media_box, hud_palette_for_kind(pal, layout_theme, "media"))
 
 
 def _layout_boxes(layout: dict, key: str) -> list[tuple[int, int, int, int]]:
@@ -789,17 +902,23 @@ def _draw_meeting_card(
 ) -> None:
     x0, y0, x1, y1 = box
     status, status_color = _meeting_status(event, now, pal)
-    draw.rectangle(box, fill=pal.panel_shadow, outline=status_color)
+    card_fill = (246, 248, 252)
+    card_shadow = (198, 206, 218)
+    card_ink = (16, 24, 38)
+    card_meta = (58, 78, 112)
+    draw.rectangle((x0 + 1, y0 + 1, x1 + 1, y1 + 1), fill=card_shadow)
+    draw.rectangle(box, fill=card_fill, outline=status_color)
+    draw.rectangle((x0, y0, x0 + 3, y1), fill=status_color)
     content_w = max(1, x1 - x0 - 10)
     time_label = _meeting_time_label(event)
     status_label = _fit_text(draw, status, max(28, min(54, content_w // 3)), title_font)
-    draw.text((x0 + 5, y0 + 2), _fit_text(draw, time_label, max(1, content_w - 56), time_font), font=time_font, fill=status_color)
+    draw.text((x0 + 7, y0 + 2), _fit_text(draw, time_label, max(1, content_w - 58), time_font), font=time_font, fill=status_color)
     draw.text((x1 - 5 - draw.textbbox((0, 0), status_label, font=title_font)[2], y0 + 3), status_label, font=title_font, fill=status_color)
 
     title_y = y0 + 12
     title_lines = _wrap_text(draw, event.title, content_w, meeting_font, 2 if y1 - y0 >= 48 else 1)
     for line_index, line in enumerate(title_lines):
-        draw.text((x0 + 5, title_y + line_index * 10), line, font=meeting_font, fill=pal.ink)
+        draw.text((x0 + 7, title_y + line_index * 10), line, font=meeting_font, fill=card_ink)
 
     meta_y = title_y + max(1, len(title_lines)) * 10 + 1
     if meta_y + 7 > y1 - 2:
@@ -808,7 +927,7 @@ def _draw_meeting_card(
     for line in meta_lines:
         if meta_y + 7 > y1 - 2:
             break
-        draw.text((x0 + 5, meta_y), _fit_text(draw, line, content_w, meta_font), font=meta_font, fill=pal.blue)
+        draw.text((x0 + 7, meta_y), _fit_text(draw, line, content_w - 2, meta_font), font=meta_font, fill=card_meta)
         meta_y += 8
 
 

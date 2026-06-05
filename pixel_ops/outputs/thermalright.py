@@ -39,6 +39,7 @@ class ThermalrightOutput(DisplayOutput):
         read_start_ack: bool = True,
         read_frame_ack: bool = True,
         start_retries: int = 0,
+        frame_retries: int = 0,
         debug: bool = False,
     ):
         self.vid = vid
@@ -55,6 +56,7 @@ class ThermalrightOutput(DisplayOutput):
         self.read_start_ack = read_start_ack
         self.read_frame_ack = read_frame_ack
         self.start_retries = max(0, start_retries)
+        self.frame_retries = max(0, frame_retries)
         self.jpeg_options = ThermalrightJpegOptions(
             width=image_width,
             height=image_height,
@@ -121,6 +123,20 @@ class ThermalrightOutput(DisplayOutput):
     def send(self, frame: Image.Image) -> None:
         if self._protocol is None:
             raise RuntimeError("ThermalrightOutput.start() must be called before send().")
+        last_error: Exception | None = None
+        for attempt in range(self.frame_retries + 1):
+            try:
+                self._send_once(frame)
+                return
+            except Exception as error:
+                last_error = error
+                if attempt >= self.frame_retries:
+                    break
+                print(f"Thermalright frame send failed; reconnecting and retrying: {error}", file=sys.stderr)
+                self._recover_after_send_failure()
+        raise RuntimeError(f"Thermalright frame send failed: {last_error}") from last_error
+
+    def _send_once(self, frame: Image.Image) -> None:
         try:
             self._pace_frame()
             self._ensure_handshake()
@@ -128,7 +144,17 @@ class ThermalrightOutput(DisplayOutput):
             self._protocol.send_jpeg(jpeg_bytes, self.jpeg_options)
             self._last_send_at = time.perf_counter()
         except Exception as error:
-            raise RuntimeError(f"Thermalright frame send failed: {error}") from error
+            raise RuntimeError(str(error)) from error
+
+    def _recover_after_send_failure(self) -> None:
+        if self._transport is not None:
+            try:
+                self._transport.reset()
+            except Exception as error:
+                if self.debug:
+                    print(f"Thermalright reset after send failure ignored: {error}", file=sys.stderr)
+        self.stop()
+        self.start()
 
     def _ensure_handshake(self) -> None:
         if not self.handshake_on_first_frame or self._handshake_done:

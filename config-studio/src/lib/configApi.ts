@@ -6,9 +6,11 @@ import type {
   GitHubDevicePollResponse,
   GitHubDeviceStartResponse,
   GitHubReposResponse,
+  KiteActionResult,
   NpcSpriteManifest,
   RuntimeConfig,
   RuntimeStatus,
+  UsbValidationResult,
 } from "../types";
 
 export async function loadConfig(plugins: string[] = []): Promise<RuntimeConfig> {
@@ -69,6 +71,54 @@ export async function runRuntimeAction(action: "check" | "preview" | "window/sta
     throw new Error(await response.text());
   }
   return response.json() as Promise<RuntimeStatus>;
+}
+
+export async function loadKiteStatus(): Promise<KiteActionResult> {
+  const response = await fetch("/api/kite/status");
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.json() as Promise<KiteActionResult>;
+}
+
+export async function runKiteAction(action: "install" | "deploy"): Promise<KiteActionResult> {
+  const response = await fetch(`/api/kite/${action}`, { method: "POST" });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.json() as Promise<KiteActionResult>;
+}
+
+export async function configureKiteSecrets(kiteToken: string, zoomWebhookSecretToken: string): Promise<KiteActionResult> {
+  const response = await fetch("/api/kite/secrets", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ kite_token: kiteToken, zoom_webhook_secret_token: zoomWebhookSecretToken }),
+  });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.json() as Promise<KiteActionResult>;
+}
+
+export async function scanUsbDisplays(): Promise<UsbValidationResult> {
+  const response = await fetch("/api/usb/thermalright/scan", { method: "POST" });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.json() as Promise<UsbValidationResult>;
+}
+
+export async function identifyUsbDisplay(display: unknown): Promise<UsbValidationResult> {
+  const response = await fetch("/api/usb/thermalright/identify", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(display),
+  });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.json() as Promise<UsbValidationResult>;
 }
 
 export async function saveGithubToken(tokenEnv: string, token: string): Promise<void> {

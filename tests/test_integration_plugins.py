@@ -5,6 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from pixel_ops.data_sources.companions import CompanionMember, CompanionSnapshot, MergedCompanionSource
 from pixel_ops.integration_plugins.base import IntegrationContext
 from pixel_ops.integration_plugins.registry import build_integration_runtime
 from pixel_ops.integrations.ai_usage.plugin import plugin as ai_usage_plugin
@@ -13,11 +14,21 @@ from pixel_ops.integrations.discord.plugin import plugin as discord_plugin
 from pixel_ops.integrations.github.plugin import plugin as github_plugin
 from pixel_ops.integrations.google_calendar.plugin import plugin as google_calendar_plugin
 from pixel_ops.integrations.ics.plugin import plugin as ics_plugin
+from pixel_ops.integrations.kite.plugin import plugin as kite_plugin
 from pixel_ops.integrations.media.plugin import plugin as media_plugin
 from pixel_ops.integrations.pc_stats.plugin import plugin as pc_stats_plugin
 from pixel_ops.integrations.slack.plugin import plugin as slack_plugin
 from pixel_ops.integrations.todoist.plugin import plugin as todoist_plugin
 from pixel_ops.integrations.weather.plugin import plugin as weather_plugin
+from pixel_ops.integrations.zoom.plugin import plugin as zoom_plugin
+
+
+class StaticCompanionSource:
+    def __init__(self, snapshot: CompanionSnapshot | None):
+        self.snapshot = snapshot
+
+    def current(self, now=None):
+        return self.snapshot
 
 
 def context(config: dict, root_dir: Path | None = None, args: object | None = None) -> IntegrationContext:
@@ -41,11 +52,13 @@ class IntegrationPluginTests(unittest.TestCase):
             "github": github_plugin,
             "google_calendar": google_calendar_plugin,
             "ics": ics_plugin,
+            "kite": kite_plugin,
             "media": media_plugin,
             "pc_stats": pc_stats_plugin,
             "slack": slack_plugin,
             "todoist": todoist_plugin,
             "weather": weather_plugin,
+            "zoom": zoom_plugin,
         }
         for expected_name, factory in factories.items():
             with self.subTest(plugin=expected_name):
@@ -59,8 +72,10 @@ class IntegrationPluginTests(unittest.TestCase):
             cfg = {
                 "integrations": {
                     "social_bus_limit": 8,
+                    "kite": {"enabled": True, "ws_url": "wss://kite.example/connect", "token_env": "PIXEL_OPS_KITE_TOKEN"},
                     "slack": {"enabled": True},
                     "discord": {"enabled": True, "guild_id": "guild", "focus_user_id": "me", "max_companions": 3},
+                    "zoom": {"enabled": True, "focus_user_id": "me@example.com", "max_companions": 3},
                     "github": {"enabled": True, "repos": ["owner/repo"]},
                     "google_calendar": {"enabled": True, "ics_urls": ["https://example.test/basic.ics"]},
                     "ics": {"enabled": True, "paths": [str(ics_path)]},
@@ -77,7 +92,7 @@ class IntegrationPluginTests(unittest.TestCase):
 
             self.assertEqual(
                 runtime.loaded_plugins,
-                ["slack", "discord", "github", "google_calendar", "ics", "weather", "ai_usage", "pc_stats", "clickup", "todoist", "media"],
+                ["kite", "slack", "discord", "zoom", "github", "google_calendar", "ics", "weather", "ai_usage", "pc_stats", "clickup", "todoist", "media"],
             )
             self.assertGreaterEqual(len(runtime.event_sources), 5)
             self.assertIn(ics_path, runtime.calendar_paths)
@@ -88,8 +103,37 @@ class IntegrationPluginTests(unittest.TestCase):
             self.assertIsNotNone(runtime.task_source)
             self.assertIsNotNone(runtime.media_source)
             self.assertIsNotNone(runtime.companion_source)
-            self.assertGreaterEqual(len(runtime.starters), 2)
+            self.assertIsInstance(runtime.companion_source, MergedCompanionSource)
+            self.assertGreaterEqual(len(runtime.starters), 3)
             self.assertGreaterEqual(len(runtime.closers), 2)
+
+    def test_merged_companion_source_combines_members_from_multiple_integrations(self):
+        source = MergedCompanionSource(
+            [
+                StaticCompanionSource(
+                    CompanionSnapshot(
+                        members=(CompanionMember(user_id="discord:u1", name="Ana"),),
+                        group_id="discord:c1",
+                        group_name="Voice",
+                    )
+                ),
+                StaticCompanionSource(
+                    CompanionSnapshot(
+                        members=(CompanionMember(user_id="zoom:u2", name="Bia"),),
+                        focus_user_id="zoom:me@example.com",
+                        focus_name="Me",
+                        group_id="zoom:m1",
+                        group_name="Planning",
+                    )
+                ),
+            ]
+        )
+
+        snapshot = source.current()
+
+        self.assertEqual([member.name for member in snapshot.members], ["Ana", "Bia"])
+        self.assertEqual(snapshot.focus_user_id, "zoom:me@example.com")
+        self.assertEqual(snapshot.group_id, "discord:c1,zoom:m1")
 
     def test_ics_cli_argument_enables_plugin_even_when_json_disabled(self):
         with tempfile.TemporaryDirectory() as tmp:

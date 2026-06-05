@@ -12,9 +12,26 @@ from pixel_ops.integrations.discord.client import DiscordGatewayClient
 from pixel_ops.integrations.discord.companions import DiscordCompanionStore
 from pixel_ops.integrations.discord.gateway import DiscordBusEventSource
 from pixel_ops.integrations.discord.voice_state import DiscordVoiceStateTracker
+from pixel_ops.integrations.kite.source import PixelOpsKiteClient
 from pixel_ops.integrations.slack.activity import SlackAmbientAggregator
 from pixel_ops.integrations.slack.classifier import classify_slack_event
 from pixel_ops.integrations.slack.source import SlackBusEventSource
+from pixel_ops.integrations.zoom.client import ZoomLiveMeeting, ZoomParticipant, ZoomPollingRunner
+from pixel_ops.integrations.zoom.gateway import ZoomBusEventSource
+from pixel_ops.integrations.zoom.participants import ZoomCompanionSource, ZoomParticipantTracker
+
+
+class FakeZoomClient:
+    configured = True
+
+    def __init__(self, snapshots):
+        self.snapshots = list(snapshots)
+        self.calls = 0
+
+    def live_meetings(self):
+        index = min(self.calls, len(self.snapshots) - 1)
+        self.calls += 1
+        return self.snapshots[index]
 
 
 class DiscordAndSocialTests(unittest.TestCase):
@@ -134,6 +151,51 @@ class DiscordAndSocialTests(unittest.TestCase):
         bus.publish("discord")
         self.assertEqual(DiscordBusEventSource(bus, enabled=True).poll(now), ["discord"])
 
+    def test_zoom_polling_runner_updates_live_meeting_companions(self):
+        bus = EventBus(maxlen=8)
+        tracker = ZoomParticipantTracker(focus_user_id="me@example.com", max_companions=5)
+        me = ZoomParticipant(participant_id="me@example.com", name="Me", email="me@example.com")
+        ana = ZoomParticipant(participant_id="ana@example.com", name="Ana", email="ana@example.com")
+        client = FakeZoomClient(
+            [
+                [ZoomLiveMeeting(meeting_id="m1", topic="Planning", participants=(me, ana))],
+                [ZoomLiveMeeting(meeting_id="m1", topic="Planning", participants=(me,))],
+            ]
+        )
+        runner = ZoomPollingRunner(client, tracker, bus, poll_seconds=10)
+
+        runner.poll_once(datetime(2026, 6, 4, 12, 0, tzinfo=timezone.utc))
+
+        snapshot = ZoomCompanionSource(tracker).current()
+        events = ZoomBusEventSource(bus, enabled=True).poll(datetime.now(timezone.utc))
+
+        self.assertEqual(snapshot.focus_user_id, "zoom:me@example.com")
+        self.assertEqual(snapshot.members[0].user_id, "zoom:ana@example.com")
+        self.assertEqual(snapshot.group_name, "Planning")
+        self.assertEqual(events[0].category, EventCategory.MEETING)
+
+        runner.poll_once(datetime(2026, 6, 4, 12, 1, tzinfo=timezone.utc))
+
+        snapshot = ZoomCompanionSource(tracker).current()
+        events = ZoomBusEventSource(bus, enabled=True).poll(datetime.now(timezone.utc))
+        self.assertEqual(snapshot.members, ())
+        self.assertEqual(events[0].metadata["ambient_kind"], "participant_left")
+
+    def test_pixelops_kite_envelope_updates_zoom_companions(self):
+        bus = EventBus(maxlen=8)
+        tracker = ZoomParticipantTracker(focus_user_id="me@example.com", max_companions=5)
+        client = PixelOpsKiteClient(bus, ws_url="wss://kite.example/connect", token="secret", enabled=False, zoom_tracker=tracker)
+
+        client.handle_envelope(_kite_zoom_envelope("meeting.participant_joined", "m1", "Planning", "Me", "me@example.com"))
+        client.handle_envelope(_kite_zoom_envelope("meeting.participant_joined", "m1", "Planning", "Ana", "ana@example.com"))
+
+        snapshot = ZoomCompanionSource(tracker).current()
+        events = bus.drain()
+
+        self.assertEqual(snapshot.focus_user_id, "zoom:me@example.com")
+        self.assertEqual(snapshot.members[0].name, "Ana")
+        self.assertEqual(events[-1].metadata["ambient_provider"], "zoom")
+
     def test_slack_classifier_maps_mentions_to_high_priority_work_events(self):
         signal = classify_slack_event(
             {"event_id": "E1", "event": {"type": "message", "channel_type": "channel", "text": "hey <@BOT>", "user": "U1", "channel": "C1"}},
@@ -208,6 +270,28 @@ class DiscordAndSocialTests(unittest.TestCase):
         self.assertEqual(summary.metadata["mentions"], "1")
         self.assertNotIn("sensitive", str(summary.metadata))
         self.assertNotIn("private details", str(summary.metadata))
+
+def _kite_zoom_envelope(event: str, meeting_id: str, topic: str, name: str, email: str) -> dict:
+    return {
+        "type": "webhook",
+        "provider": "zoom",
+        "event": event,
+        "payload": {
+            "event": event,
+            "event_ts": 1_780_000_000_001,
+            "payload": {
+                "object": {
+                    "uuid": meeting_id,
+                    "topic": topic,
+                    "participant": {
+                        "id": email,
+                        "user_name": name,
+                        "email": email,
+                    },
+                }
+            },
+        },
+    }
 
 
 if __name__ == "__main__":

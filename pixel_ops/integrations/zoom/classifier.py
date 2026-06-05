@@ -12,7 +12,12 @@ def classify_zoom_event(payload: dict[str, Any]) -> AmbientSignal | None:
     obj = body.get("object") if isinstance(body.get("object"), dict) else body
     topic = str(obj.get("topic") or obj.get("subject") or "")
     occurred_at = _parse_datetime(payload.get("event_ts") or obj.get("start_time") or obj.get("end_time"))
-    external_id = str(obj.get("uuid") or obj.get("id") or payload.get("event_ts") or "") or None
+    meeting_id = str(obj.get("uuid") or obj.get("id") or "") or None
+    participant = obj.get("participant") if isinstance(obj.get("participant"), dict) else {}
+    participant_id = str(participant.get("id") or participant.get("user_id") or participant.get("email") or "") or None
+    event_ts = str(payload.get("event_ts") or "")
+    external_id = _external_id(meeting_id, participant_id, event_ts, event_type)
+    metadata = _metadata(meeting_id, topic, participant)
 
     lowered = event_type.lower()
     if "participant_joined" in lowered:
@@ -24,6 +29,7 @@ def classify_zoom_event(payload: dict[str, Any]) -> AmbientSignal | None:
             intensity=0.6,
             occurred_at=occurred_at,
             external_id=external_id,
+            metadata=metadata,
         )
     if "participant_left" in lowered:
         return AmbientSignal(
@@ -34,6 +40,7 @@ def classify_zoom_event(payload: dict[str, Any]) -> AmbientSignal | None:
             intensity=0.35,
             occurred_at=occurred_at,
             external_id=external_id,
+            metadata=metadata,
         )
     if "meeting.started" in lowered:
         return AmbientSignal(
@@ -42,7 +49,8 @@ def classify_zoom_event(payload: dict[str, Any]) -> AmbientSignal | None:
             title=topic,
             intensity=0.9,
             occurred_at=occurred_at,
-            external_id=external_id,
+            external_id=meeting_id or external_id,
+            metadata=metadata,
         )
     if "meeting.ended" in lowered:
         return AmbientSignal(
@@ -51,7 +59,8 @@ def classify_zoom_event(payload: dict[str, Any]) -> AmbientSignal | None:
             title=topic,
             intensity=0.3,
             occurred_at=occurred_at,
-            external_id=external_id,
+            external_id=meeting_id or external_id,
+            metadata=metadata,
         )
     return None
 
@@ -60,6 +69,29 @@ def _participant(obj: dict[str, Any]) -> str | None:
     participant = obj.get("participant") if isinstance(obj.get("participant"), dict) else {}
     value = participant.get("user_name") or participant.get("email") or participant.get("id")
     return str(value) if value else None
+
+
+def _metadata(meeting_id: str | None, topic: str, participant: dict[str, Any]) -> dict[str, str]:
+    metadata: dict[str, str] = {}
+    if meeting_id:
+        metadata["meeting_id"] = meeting_id
+    if topic:
+        metadata["meeting_topic"] = topic
+    participant_name = str(participant.get("user_name") or "")
+    participant_email = str(participant.get("email") or "")
+    participant_id = str(participant.get("id") or participant.get("user_id") or "")
+    if participant_name:
+        metadata["participant_name"] = participant_name
+    if participant_email:
+        metadata["participant_email"] = participant_email
+    if participant_id:
+        metadata["participant_id"] = participant_id
+    return metadata
+
+
+def _external_id(meeting_id: str | None, participant_id: str | None, event_ts: str, event_type: str) -> str | None:
+    bits = [bit for bit in (meeting_id, participant_id, event_ts, event_type) if bit]
+    return ":".join(bits) if bits else None
 
 
 def _parse_datetime(value: object) -> datetime | None:

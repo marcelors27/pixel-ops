@@ -85,7 +85,11 @@ YAML is only a fallback when the matching JSON file does not exist.
 
 - `PIXEL_OPS_SLACK_APP_TOKEN`
 - `PIXEL_OPS_SLACK_BOT_TOKEN`
+- `PIXEL_OPS_KITE_TOKEN`
 - `PIXEL_OPS_DISCORD_BOT_TOKEN`
+- `PIXEL_OPS_ZOOM_ACCOUNT_ID`
+- `PIXEL_OPS_ZOOM_CLIENT_ID`
+- `PIXEL_OPS_ZOOM_CLIENT_SECRET`
 - `PIXEL_OPS_GITHUB_TOKEN`
 - `PIXEL_OPS_CLICKUP_TOKEN`
 - `OPENWEATHERMAP_API_KEY`
@@ -103,8 +107,10 @@ Each integration is loaded only when enabled by config:
 ```json
 {
   "integrations": {
+    "kite": { "enabled": false },
     "slack": { "enabled": false },
     "discord": { "enabled": false },
+    "zoom": { "enabled": false },
     "github": { "enabled": true },
     "google_calendar": { "enabled": true },
     "ics": { "enabled": true },
@@ -119,7 +125,9 @@ Each integration is loaded only when enabled by config:
 Current plugin module map:
 
 - `slack` -> `pixel_ops.integrations.slack.plugin`
+- `kite` -> `pixel_ops.integrations.kite.plugin`
 - `discord` -> `pixel_ops.integrations.discord.plugin`
+- `zoom` -> `pixel_ops.integrations.zoom.plugin`
 - `github` -> `pixel_ops.integrations.github.plugin`
 - `google_calendar` -> `pixel_ops.integrations.google_calendar.plugin`
 - `ics` -> `pixel_ops.integrations.ics.plugin`
@@ -128,11 +136,13 @@ Current plugin module map:
 - `pc_stats` -> `pixel_ops.integrations.pc_stats.plugin`
 - `clickup` -> `pixel_ops.integrations.clickup.plugin`
 
+PixelOpsKite is the Cloudflare Worker relay for providers that require public webhooks. Local Pixel OPs connects to Kite over outbound WebSocket. Keep webhook receivers in Kite and keep provider state normalized before it reaches visual plugins.
+
 Slack uses Socket Mode only. Do not re-add webhook fallback unless an ADR changes that decision.
 
 Discord currently exposes a Gateway client, dispatch adapter, voice state tracker, event source boundary, and companion people store. Voice/presence state may become companion movement or ambience, but provider state should still normalize through the integration boundary before the visual plugin interprets it.
 
-Teams and Zoom have placeholder classifiers/client boundaries. They should also normalize into `AmbientSignal`, not into provider-specific renderer state.
+Teams has placeholder classifier/client boundaries. Zoom polls live meeting participants through its integration boundary. Both should normalize into `AmbientSignal` or provider-neutral snapshots, not into provider-specific renderer state.
 
 AI usage follows the same provider boundary. Codex, Claude, and OpenAI API usage are normalized into gauges and `ai_usage` work events. Do not render raw logs, prompts, responses, or billing tables.
 
