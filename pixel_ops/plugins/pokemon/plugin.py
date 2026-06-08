@@ -5,7 +5,7 @@ from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
 
-from pixel_ops.core import AIUsageSource, CompanionSource, MediaSource, PCStatsSource, PixelOpsApp, PullRequestSource, TaskSource, WeatherSource
+from pixel_ops.core import AIUsageSource, CompanionSource, GamificationSource, MediaSource, PCStatsSource, PixelOpsApp, PullRequestSource, TaskSource, WeatherSource
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.events.base import EventSource
 from pixel_ops.plugins.ai.plugin import AiDecisionPlugin
@@ -98,6 +98,7 @@ class PokemonPlugin:
             task_source=task_source,
             media_source=media_source,
             companion_source=companion_source,
+            gamification_source=_gamification_source(display_cfg.get("gamification", {})),
         )
 
     def _pokemon_api(self, args: argparse.Namespace, root_dir: Path, pokemon_cfg: dict) -> PokeApiClient:
@@ -128,6 +129,18 @@ def _flatten_companion_config(raw: dict | None) -> dict:
             if isinstance(visual, dict):
                 flattened[str(user_id)] = visual
     return flattened
+
+
+def _gamification_source(raw: dict | None) -> GamificationSource:
+    cfg = raw if isinstance(raw, dict) else {}
+    return GamificationSource(
+        max_hp=float(cfg.get("max_hp", 100)),
+        meeting_cost=float(cfg.get("meeting_cost", 8)),
+        task_delivered_cost=float(cfg.get("task_delivered_cost", 5)),
+        base_recovery_per_hour=float(cfg.get("base_recovery_per_hour", 0)),
+        companion_recovery_per_hour=float(cfg.get("companion_recovery_per_hour", 4)),
+        max_companion_bonus=int(cfg.get("max_companion_bonus", 5)),
+    )
 
 
 def plugin() -> PokemonPlugin:

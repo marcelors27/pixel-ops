@@ -9,6 +9,7 @@ from PIL import Image, ImageDraw
 from pixel_ops.data_sources.ai_usage import AIUsageSnapshot
 from pixel_ops.data_sources.availability import status_for
 from pixel_ops.data_sources.calendar import CalendarEvent
+from pixel_ops.data_sources.gamification import GamificationSnapshot
 from pixel_ops.data_sources.media import MediaNowPlaying
 from pixel_ops.data_sources.pc_stats import PCStatsSnapshot
 from pixel_ops.data_sources.tasks import TaskItem, TaskSnapshot
@@ -36,6 +37,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "tasks_board": (223, 122, 122),
         "media": (247, 169, 64),
         "now_playing": (247, 169, 64),
+        "gamification": (235, 86, 96),
         "pokemon_captures": (235, 86, 96),
     },
     "terminal": {
@@ -53,6 +55,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "tasks_board": (255, 160, 128),
         "media": (188, 255, 128),
         "now_playing": (188, 255, 128),
+        "gamification": (122, 240, 164),
         "pokemon_captures": (122, 240, 164),
     },
     "ocean": {
@@ -70,6 +73,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "tasks_board": (102, 190, 235),
         "media": (140, 210, 255),
         "now_playing": (140, 210, 255),
+        "gamification": (98, 184, 222),
         "pokemon_captures": (98, 184, 222),
     },
     "ember": {
@@ -87,6 +91,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "tasks_board": (255, 112, 112),
         "media": (255, 196, 92),
         "now_playing": (255, 196, 92),
+        "gamification": (255, 96, 96),
         "pokemon_captures": (255, 96, 96),
     },
 }
@@ -256,6 +261,7 @@ def draw_hud(
     task_snapshot: TaskSnapshot | None = None,
     media: MediaNowPlaying | None = None,
     today_events: list[CalendarEvent] | None = None,
+    gamification: GamificationSnapshot | None = None,
     layout: dict | None = None,
     layout_theme: str | None = None,
 ) -> None:
@@ -274,6 +280,7 @@ def draw_hud(
             task_snapshot,
             media,
             today_events or [],
+            gamification,
             layout,
             layout_theme,
         )
@@ -325,6 +332,7 @@ def _draw_configured_hud(
     task_snapshot: TaskSnapshot | None,
     media: MediaNowPlaying | None,
     today_events: list[CalendarEvent],
+    gamification: GamificationSnapshot | None,
     layout: dict,
     layout_theme: str | None,
 ) -> None:
@@ -370,6 +378,9 @@ def _draw_configured_hud(
 
     for media_box in [*_layout_boxes(layout, "media"), *_layout_boxes(layout, "now_playing")]:
         _draw_media_panel(draw, media, now, media_box, hud_palette_for_kind(pal, layout_theme, "media"))
+
+    for game_box in [*_layout_boxes(layout, "gamification"), *_layout_boxes(layout, "hp")]:
+        _draw_gamification_panel(draw, gamification, game_box, hud_palette_for_kind(pal, layout_theme, "gamification"))
 
 
 def _layout_boxes(layout: dict, key: str) -> list[tuple[int, int, int, int]]:
@@ -1215,22 +1226,15 @@ def _draw_media_panel(draw: ImageDraw.ImageDraw, media: MediaNowPlaying | None, 
     x0, y0, x1, y1 = _draw_panel_title(draw, box, "NOW PLAYING", pal)
     content_x = x0 + 8
     vinyl_radius = min(15, max(9, (y1 - y0 - 20) // 2))
-    show_media_icon = bool(media and x1 - x0 >= 120 and y1 - y0 >= 46)
+    show_media_icon = bool(media and x1 - x0 >= 72 and y1 - y0 >= 46)
     thumbnail = _load_media_thumbnail(media)
-    icon_space = vinyl_radius * 2 + 10 if show_media_icon else 0
-    content_w = max(1, x1 - x0 - 16 - icon_space)
+    icon_space = vinyl_radius * 2 + 10
+    content_w = max(1, x1 - x0 - 16)
     if media is None:
         draw.text((content_x, y0 + 7), "Quiet", font=track_font, fill=pal.ink)
         return
     provider = media.provider.upper()
     draw.text((x1 - 8 - draw.textbbox((0, 0), provider, font=title_font)[2], y0 + 2), provider, font=title_font, fill=pal.green)
-    if show_media_icon:
-        icon_cx = x1 - 8 - vinyl_radius
-        icon_cy = y0 + 22
-        if media.is_music:
-            _draw_vinyl(draw, icon_cx, icon_cy, vinyl_radius, now, pal)
-        else:
-            _draw_video_icon(draw, icon_cx, icon_cy, vinyl_radius, pal)
     track_y = y0 + 7
     title_lines = _wrap_text(draw, media.title, content_w, track_font, 2)
     for index, line in enumerate(title_lines):
@@ -1242,7 +1246,54 @@ def _draw_media_panel(draw: ImageDraw.ImageDraw, media: MediaNowPlaying | None, 
     if thumbnail:
         thumb_y = max(track_y + max(1, len(title_lines)) * 12 + (12 if artist_drawn else 3), y0 + 50)
         if thumb_y + 18 <= y1 - 8:
-            _draw_media_thumbnail(draw, thumbnail, (content_x, thumb_y, x1 - 8, y1 - 8), pal)
+            thumb_right = x1 - 8
+            if show_media_icon and thumb_right - icon_space - content_x >= 24:
+                thumb_right -= icon_space
+            _draw_media_thumbnail(draw, thumbnail, (content_x, thumb_y, thumb_right, y1 - 8), pal)
+    if show_media_icon:
+        icon_cx = x1 - 8 - vinyl_radius
+        icon_cy = y1 - 8 - vinyl_radius
+        if media.is_music:
+            _draw_vinyl(draw, icon_cx, icon_cy, vinyl_radius, now, pal)
+        else:
+            _draw_video_icon(draw, icon_cx, icon_cy, vinyl_radius, pal)
+
+
+def _draw_gamification_panel(draw: ImageDraw.ImageDraw, snapshot: GamificationSnapshot | None, box: tuple[int, int, int, int], pal) -> None:
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    label_font = font(8)
+    value_font = font(10)
+    meta_font = font(7)
+    x0, y0, x1, y1 = _draw_panel_title(draw, box, "PLAYER HP", pal)
+    content_x = x0 + 8
+    content_w = max(1, x1 - x0 - 16)
+    if snapshot is None:
+        draw.text((content_x, y0 + 7), "No party state", font=label_font, fill=pal.ink)
+        return
+
+    hp_label = f"HP {int(round(snapshot.hp))}/{int(round(snapshot.max_hp))}"
+    draw.text((content_x, y0 + 6), _fit_text(draw, hp_label, content_w, value_font), font=value_font, fill=pal.ink)
+    bar_y = y0 + 22
+    bar_h = 12 if y1 - y0 >= 54 else 8
+    draw.rectangle((content_x, bar_y, content_x + content_w, bar_y + bar_h), outline=pal.ink, fill=pal.panel)
+    fill_w = int((content_w - 2) * snapshot.hp_percent / 100.0)
+    fill_color = pal.red if snapshot.status == "critical" else pal.yellow if snapshot.status == "low" else pal.green
+    if fill_w > 0:
+        draw.rectangle((content_x + 1, bar_y + 1, content_x + fill_w, bar_y + bar_h - 1), fill=fill_color)
+    if content_w >= 88:
+        tick_count = 10
+        for index in range(1, tick_count):
+            tick_x = content_x + int(content_w * index / tick_count)
+            draw.line((tick_x, bar_y + 1, tick_x, bar_y + bar_h - 1), fill=pal.panel_shadow)
+
+    meta_y = bar_y + bar_h + 5
+    if meta_y + 8 > y1 - 2:
+        return
+    drain = f"-{snapshot.meetings_finished} mtg -{snapshot.tasks_delivered} task"
+    recovery = f"+{snapshot.recovery_per_hour:.0f}/h party x{snapshot.companion_count}" if snapshot.companion_count else "solo recovery"
+    draw.text((content_x, meta_y), _fit_text(draw, drain, content_w, meta_font), font=meta_font, fill=pal.blue)
+    if meta_y + 18 <= y1 - 2:
+        draw.text((content_x, meta_y + 9), _fit_text(draw, recovery, content_w, meta_font), font=meta_font, fill=pal.green if snapshot.companion_count else pal.panel_shadow)
 
 
 def _load_media_thumbnail(media: MediaNowPlaying | None) -> Image.Image | None:

@@ -8,6 +8,7 @@ import type {
   GitHubReposResponse,
   KiteActionResult,
   NpcSpriteManifest,
+  RuntimeAutostartStatus,
   RuntimeConfig,
   RuntimeStatus,
   UsbValidationResult,
@@ -65,12 +66,28 @@ export async function loadNpcSpriteManifest(): Promise<NpcSpriteManifest> {
   return response.json() as Promise<NpcSpriteManifest>;
 }
 
-export async function runRuntimeAction(action: "check" | "preview" | "window/start" | "window/stop"): Promise<RuntimeStatus> {
+export async function runRuntimeAction(action: "check" | "preview" | "run/start" | "run/stop" | "window/start" | "window/stop"): Promise<RuntimeStatus> {
   const response = await fetch(`/api/runtime/${action}`, { method: "POST" });
   if (!response.ok) {
     throw new Error(await response.text());
   }
   return response.json() as Promise<RuntimeStatus>;
+}
+
+export async function loadRuntimeAutostartStatus(): Promise<RuntimeAutostartStatus> {
+  const response = await fetch("/api/runtime/autostart/status");
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.json() as Promise<RuntimeAutostartStatus>;
+}
+
+export async function runRuntimeAutostartAction(action: "install" | "remove"): Promise<RuntimeAutostartStatus> {
+  const response = await fetch(`/api/runtime/autostart/${action}`, { method: "POST" });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.json() as Promise<RuntimeAutostartStatus>;
 }
 
 export async function loadKiteStatus(): Promise<KiteActionResult> {

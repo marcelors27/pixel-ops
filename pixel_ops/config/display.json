@@ -106,6 +106,13 @@
         "height": 128,
         "kind": "pokemon_captures"
       },
+      "gamification": {
+        "x": 1096,
+        "y": 144,
+        "width": 168,
+        "height": 72,
+        "kind": "gamification"
+      },
       "now_playing": {
         "x": 0,
         "y": 342,
@@ -169,6 +176,14 @@
       "cache_enabled": true,
       "cache_dir": "pixel_ops/cache/ai_decisions"
     },
+    "gamification": {
+      "max_hp": 100,
+      "meeting_cost": 8,
+      "task_delivered_cost": 5,
+      "base_recovery_per_hour": 0,
+      "companion_recovery_per_hour": 4,
+      "max_companion_bonus": 5
+    },
     "splash": {
       "enabled": true,
       "seconds": 2,
@@ -179,6 +194,132 @@
         18
       ]
     },
-    "layout_theme": "default"
+    "layout_theme": "default",
+    "layout_profiles": {
+      "onlythermal": {
+        "label": "OnlyThermal",
+        "saved_at": "2026-06-05T21:53:26.360Z",
+        "width": 1920,
+        "height": 462,
+        "layout_theme": "default",
+        "device": {
+          "target": "thermalright",
+          "output": "thermalright",
+          "displays": [
+            {
+              "id": "display-1",
+              "label": "Display 1",
+              "enabled": true,
+              "target": "thermalright",
+              "output": "thermalright",
+              "x": 0,
+              "y": 0,
+              "width": 1920,
+              "height": 462,
+              "identify_number": 1,
+              "thermalright": {
+                "vid": "0x0416",
+                "pid": "0x5408",
+                "timeout_ms": 5000,
+                "jpeg_quality": 85,
+                "image_width": 1920,
+                "image_height": 462,
+                "min_frame_interval_ms": 500,
+                "packet_delay_ms": 2,
+                "packet_size": 4096,
+                "hard_reset_on_start": true,
+                "hard_reset_wait_ms": 1500,
+                "handshake_on_first_frame": false,
+                "require_handshake": true,
+                "send_start_init": true,
+                "read_start_ack": true,
+                "read_frame_ack": true,
+                "start_retries": 0,
+                "frame_retries": 1,
+                "debug": false
+              }
+            }
+          ]
+        },
+        "layout": {
+          "timezones": {
+            "x": 0,
+            "y": 8,
+            "width": 720,
+            "height": 296
+          },
+          "route_signal": {
+            "x": 480,
+            "y": 400,
+            "width": 232,
+            "height": 56
+          },
+          "gauges": {
+            "x": 272,
+            "y": 344,
+            "width": 448,
+            "height": 56
+          },
+          "weather": {
+            "x": 272,
+            "y": 400,
+            "width": 208,
+            "height": 56
+          },
+          "pc_stats": {
+            "x": 720,
+            "y": 8,
+            "width": 200,
+            "height": 128
+          },
+          "pokemon_captures": {
+            "x": 920,
+            "y": 8,
+            "width": 344,
+            "height": 128,
+            "kind": "pokemon_captures"
+          },
+          "gamification": {
+            "x": 1096,
+            "y": 144,
+            "width": 168,
+            "height": 72,
+            "kind": "gamification"
+          },
+          "now_playing": {
+            "x": 0,
+            "y": 342,
+            "width": 272,
+            "height": 120,
+            "kind": "media"
+          },
+          "activity": {
+            "x": 0,
+            "y": 304,
+            "width": 720,
+            "height": 40
+          },
+          "game": {
+            "x": 1264,
+            "y": 0,
+            "width": 656,
+            "height": 344
+          },
+          "text_box": {
+            "x": 1352,
+            "y": 344,
+            "width": 448,
+            "height": 104
+          },
+          "meetings_day": {
+            "x": 720,
+            "y": 144,
+            "width": 376,
+            "height": 312,
+            "kind": "meetings_day"
+          }
+        }
+      }
+    }
   }
 }

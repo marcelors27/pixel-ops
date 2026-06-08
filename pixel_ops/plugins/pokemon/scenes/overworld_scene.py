@@ -286,6 +286,7 @@ class OverworldScene:
         media: MediaNowPlaying | None = None,
         companion_snapshot: CompanionSnapshot | None = None,
         today_events: list[CalendarEvent] | None = None,
+        gamification=None,
         work_events: list[WorkEvent] | None = None,
     ):
         with font_scale_for_canvas(self.renderer.width, self.renderer.height):
@@ -306,6 +307,7 @@ class OverworldScene:
                 media=media,
                 companion_snapshot=companion_snapshot,
                 today_events=today_events,
+                gamification=gamification,
                 work_events=recent_events,
             )
 
@@ -323,6 +325,7 @@ class OverworldScene:
         media: MediaNowPlaying | None = None,
         companion_snapshot: CompanionSnapshot | None = None,
         today_events: list[CalendarEvent] | None = None,
+        gamification=None,
         work_events: list[WorkEvent] | None = None,
     ) -> Image.Image:
         with font_scale_for_canvas(self.renderer.width, self.renderer.height):
@@ -342,6 +345,7 @@ class OverworldScene:
                 task_snapshot=task_snapshot,
                 media=media,
                 today_events=today_events,
+                gamification=gamification,
                 work_events=work_events,
             )
             if self._is_battle_phase(phase):
@@ -366,6 +370,7 @@ class OverworldScene:
         task_snapshot: TaskSnapshot | None = None,
         media: MediaNowPlaying | None = None,
         today_events: list[CalendarEvent] | None = None,
+        gamification=None,
         work_events: list[WorkEvent] | None = None,
     ) -> Image.Image:
         with font_scale_for_canvas(self.renderer.width, self.renderer.height):
@@ -393,6 +398,7 @@ class OverworldScene:
                 task_snapshot=task_snapshot,
                 media=media,
                 today_events=today_events,
+                gamification=gamification,
                 layout=self.display_layout,
                 layout_theme=self.layout_theme,
             )

@@ -29,6 +29,15 @@ export type RuntimeStatus = {
   stderr?: string;
 };
 
+export type RuntimeAutostartStatus = {
+  platform: string;
+  supported: boolean;
+  installed: boolean;
+  path: string;
+  ok?: boolean;
+  message?: string;
+};
+
 export type KiteActionResult = {
   ok: boolean;
   message: string;
@@ -234,6 +243,14 @@ export type RuntimeConfig = {
         timeout_seconds: number;
         cache_enabled: boolean;
         cache_dir: string;
+      };
+      gamification?: {
+        max_hp: number;
+        meeting_cost: number;
+        task_delivered_cost: number;
+        base_recovery_per_hour: number;
+        companion_recovery_per_hour: number;
+        max_companion_bonus: number;
       };
       splash: {
         enabled: boolean;

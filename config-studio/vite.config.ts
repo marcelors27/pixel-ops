@@ -2,12 +2,13 @@ import react from "@vitejs/plugin-react";
 import { execFile, execFileSync, spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { promises as fs } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { promisify } from "node:util";
 import { defineConfig, type Plugin } from "vite";
 
-const repoRoot = path.resolve(__dirname, "..");
+const repoRoot = path.resolve(process.env.PIXEL_OPS_REPO_ROOT || path.resolve(__dirname, ".."));
 const pixelOpsKiteRoot = path.join(repoRoot, "infra/cloudflare/pixelops-kite");
 const execFileAsync = promisify(execFile);
 const pythonCmd = resolvePythonCommand();
@@ -115,6 +116,7 @@ const integrationSidecars: Record<string, ConfigDescriptor[]> = {
 };
 
 const integrationLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
+  gamification: [{ kind: "gamification", label: "Player HP", tone: "#ef6461" }],
   ai_usage: [{ kind: "gauges", label: "AI Gauges", tone: "#7ee0bd" }],
   pc_stats: [{ kind: "pc_stats", label: "PC Stats", tone: "#9bd0ff" }],
   weather: [{ kind: "weather", label: "Weather", tone: "#e8c766" }],
@@ -647,6 +649,14 @@ function runtimeStatus() {
   };
 }
 
+function runtimeCommandArgs(mode: "configured" | "window" = "configured"): string[] {
+  const args = ["pixel_ops/main.py", "--plugin", "pokemon", "--forever"];
+  if (mode === "window") {
+    args.push("--output", "window", "--offline");
+  }
+  return args;
+}
+
 async function runRuntimeCommand(args: string[]) {
   try {
     const { stdout, stderr } = await execFileAsync(pythonCmd, args, {
@@ -662,6 +672,26 @@ async function runRuntimeCommand(args: string[]) {
     pushRuntimeLog(err.stderr || err.message);
     return { ok: false, stdout: err.stdout || "", stderr: err.stderr || err.message, ...runtimeStatus() };
   }
+}
+
+function startRuntime(mode: "configured" | "window" = "configured") {
+  if (runtimeProcess) {
+    return runtimeStatus();
+  }
+  const args = runtimeCommandArgs(mode);
+  runtimeProcess = spawn(pythonCmd, args, {
+    cwd: repoRoot,
+    env: { ...process.env, PYTHONUNBUFFERED: "1" },
+  });
+  pushRuntimeLog(`Started ${mode === "window" ? "window" : "configured"} runtime pid=${runtimeProcess.pid ?? "unknown"}`);
+  pushRuntimeLog(`${pythonCmd} ${args.join(" ")}`);
+  runtimeProcess.stdout.on("data", (chunk) => pushRuntimeLog(String(chunk)));
+  runtimeProcess.stderr.on("data", (chunk) => pushRuntimeLog(String(chunk)));
+  runtimeProcess.on("exit", (code, signal) => {
+    pushRuntimeLog(`Runtime exited code=${code ?? "-"} signal=${signal ?? "-"}`);
+    runtimeProcess = null;
+  });
+  return runtimeStatus();
 }
 
 async function runKiteCommand(command: string, args: string[] = [], input = ""): Promise<KiteCommandResult> {
@@ -907,25 +937,7 @@ function friendlyUsbError(value: string) {
 }
 
 function startRuntimeWindow() {
-  if (runtimeProcess) {
-    return runtimeStatus();
-  }
-  runtimeProcess = spawn(
-    pythonCmd,
-    ["pixel_ops/main.py", "--plugin", "pokemon", "--output", "window", "--forever", "--offline"],
-    {
-      cwd: repoRoot,
-      env: { ...process.env, PYTHONUNBUFFERED: "1" },
-    },
-  );
-  pushRuntimeLog(`Started window runtime pid=${runtimeProcess.pid ?? "unknown"}`);
-  runtimeProcess.stdout.on("data", (chunk) => pushRuntimeLog(String(chunk)));
-  runtimeProcess.stderr.on("data", (chunk) => pushRuntimeLog(String(chunk)));
-  runtimeProcess.on("exit", (code, signal) => {
-    pushRuntimeLog(`Window runtime exited code=${code ?? "-"} signal=${signal ?? "-"}`);
-    runtimeProcess = null;
-  });
-  return runtimeStatus();
+  return startRuntime("window");
 }
 
 function stopRuntimeWindow() {
@@ -936,6 +948,122 @@ function stopRuntimeWindow() {
   runtimeProcess.kill();
   runtimeProcess = null;
   return runtimeStatus();
+}
+
+function shellQuote(value: string): string {
+  return `'${value.replaceAll("'", "'\\''")}'`;
+}
+
+async function ensureRuntimeLaunchers() {
+  const runtimeDir = path.join(repoRoot, "tools/runtime");
+  await fs.mkdir(runtimeDir, { recursive: true });
+  const unixLauncher = path.join(runtimeDir, "start-pixel-ops-runtime.sh");
+  const windowsLauncher = path.join(runtimeDir, "start-pixel-ops-runtime.cmd");
+  const unixContent = `#!/usr/bin/env bash
+set -euo pipefail
+cd ${shellQuote(repoRoot)}
+mkdir -p pixel_ops/output
+exec "\${PIXEL_OPS_PYTHON:-${pythonCmd}}" pixel_ops/main.py --plugin pokemon --forever >> pixel_ops/output/runtime.log 2>&1
+`;
+  const windowsContent = `@echo off
+cd /d "${repoRoot}"
+if not exist pixel_ops\\output mkdir pixel_ops\\output
+set PYTHON_CMD=%PIXEL_OPS_PYTHON%
+if "%PYTHON_CMD%"=="" set PYTHON_CMD=${pythonCmd}
+"%PYTHON_CMD%" pixel_ops/main.py --plugin pokemon --forever >> pixel_ops\\output\\runtime.log 2>&1
+`;
+  await fs.writeFile(unixLauncher, unixContent, "utf8");
+  await fs.chmod(unixLauncher, 0o755);
+  await fs.writeFile(windowsLauncher, windowsContent, "utf8");
+  return { unixLauncher, windowsLauncher };
+}
+
+async function autostartPaths() {
+  const home = os.homedir();
+  if (process.platform === "darwin") {
+    return {
+      supported: true,
+      path: path.join(home, "Library/LaunchAgents/com.pixelops.runtime.plist"),
+    };
+  }
+  if (process.platform === "win32") {
+    const appData = process.env.APPDATA || path.join(home, "AppData/Roaming");
+    return {
+      supported: true,
+      path: path.join(appData, "Microsoft/Windows/Start Menu/Programs/Startup/Pixel OPs Runtime.cmd"),
+    };
+  }
+  if (process.platform === "linux") {
+    return {
+      supported: true,
+      path: path.join(home, ".config/autostart/pixel-ops-runtime.desktop"),
+    };
+  }
+  return { supported: false, path: "" };
+}
+
+async function runtimeAutostartStatus() {
+  const target = await autostartPaths();
+  return {
+    platform: process.platform,
+    supported: target.supported,
+    installed: target.path ? await fileExists(target.path) : false,
+    path: target.path,
+  };
+}
+
+async function installRuntimeAutostart() {
+  const target = await autostartPaths();
+  if (!target.supported || !target.path) {
+    return { ok: false, message: `Autostart is not supported on ${process.platform}.`, ...(await runtimeAutostartStatus()) };
+  }
+  const launchers = await ensureRuntimeLaunchers();
+  await fs.mkdir(path.dirname(target.path), { recursive: true });
+  if (process.platform === "darwin") {
+    const plist = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.pixelops.runtime</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>${launchers.unixLauncher}</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>WorkingDirectory</key>
+  <string>${repoRoot}</string>
+  <key>StandardOutPath</key>
+  <string>${path.join(repoRoot, "pixel_ops/output/runtime.launchd.log")}</string>
+  <key>StandardErrorPath</key>
+  <string>${path.join(repoRoot, "pixel_ops/output/runtime.launchd.err.log")}</string>
+</dict>
+</plist>
+`;
+    await fs.writeFile(target.path, plist, "utf8");
+  } else if (process.platform === "win32") {
+    await fs.writeFile(target.path, `@echo off\r\ncall "${launchers.windowsLauncher}"\r\n`, "utf8");
+  } else {
+    const desktop = `[Desktop Entry]
+Type=Application
+Name=Pixel OPs Runtime
+Exec=${launchers.unixLauncher}
+Path=${repoRoot}
+Terminal=false
+X-GNOME-Autostart-enabled=true
+`;
+    await fs.writeFile(target.path, desktop, "utf8");
+  }
+  return { ok: true, message: "Runtime autostart installed.", ...(await runtimeAutostartStatus()) };
+}
+
+async function removeRuntimeAutostart() {
+  const target = await autostartPaths();
+  if (target.path && (await fileExists(target.path))) {
+    await fs.unlink(target.path);
+  }
+  return { ok: true, message: "Runtime autostart removed.", ...(await runtimeAutostartStatus()) };
 }
 
 async function ensureSpritePreviews() {
@@ -1223,12 +1351,32 @@ function runtimeConfigApi(): Plugin {
             sendJson(res, 200, await runRuntimeCommand(["pixel_ops/main.py", "--plugin", "pokemon", "--output", "preview", "--offline"]));
             return;
           }
+          if (req.method === "POST" && url.pathname === "/run/start") {
+            sendJson(res, 200, startRuntime("configured"));
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/run/stop") {
+            sendJson(res, 200, stopRuntimeWindow());
+            return;
+          }
           if (req.method === "POST" && url.pathname === "/window/start") {
             sendJson(res, 200, startRuntimeWindow());
             return;
           }
           if (req.method === "POST" && url.pathname === "/window/stop") {
             sendJson(res, 200, stopRuntimeWindow());
+            return;
+          }
+          if (req.method === "GET" && url.pathname === "/autostart/status") {
+            sendJson(res, 200, await runtimeAutostartStatus());
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/autostart/install") {
+            sendJson(res, 200, await installRuntimeAutostart());
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/autostart/remove") {
+            sendJson(res, 200, await removeRuntimeAutostart());
             return;
           }
           sendJson(res, 404, { error: "Runtime endpoint not found." });

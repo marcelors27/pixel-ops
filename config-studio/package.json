@@ -3,11 +3,17 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "app:dev": "electron electron/main.cjs",
+    "app:build": "electron-builder",
+    "app:build:mac": "electron-builder --mac",
+    "app:build:win": "electron-builder --win",
+    "app:build:linux": "electron-builder --linux"
   },
   "engines": {
     "node": ">=24.15.0"
@@ -25,11 +31,52 @@
     "@types/node": "^22.16.5",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "electron": "^39.2.7",
+    "electron-builder": "^26.0.12",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
     "typescript-eslint": "^8.56.1"
+  },
+  "build": {
+    "appId": "dev.pixelops.config-studio",
+    "productName": "Pixel OPs Config Studio",
+    "asar": false,
+    "files": [
+      "electron/**/*",
+      "src/**/*",
+      "index.html",
+      "vite.config.ts",
+      "tsconfig*.json",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "..",
+        "to": "pixel-ops",
+        "filter": [
+          "pixel_ops/**",
+          "!pixel_ops/cache/**",
+          "!pixel_ops/output/**",
+          "scripts/**",
+          "tools/**",
+          "infra/cloudflare/pixelops-kite/**",
+          "!infra/cloudflare/pixelops-kite/node_modules/**",
+          "!infra/cloudflare/pixelops-kite/.wrangler/**",
+          "requirements*.txt"
+        ]
+      }
+    ],
+    "mac": {
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
   }
 }

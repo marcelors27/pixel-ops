@@ -9,7 +9,7 @@
       "max_companions": 8,
       "zoom": {
         "focus_user_id": "",
-        "max_companions": 8
+        "max_companions": 10
       }
     },
     "slack": {

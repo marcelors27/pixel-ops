@@ -8,6 +8,7 @@ from PIL import Image
 
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.companions import CompanionSource
+from pixel_ops.data_sources.gamification import GamificationSource
 from pixel_ops.data_sources.tasks import TaskSource
 from pixel_ops.data_sources.timezones import build_people_times
 
@@ -51,6 +52,7 @@ class PixelOpsScene(Protocol):
         media=None,
         companion_snapshot=None,
         today_events=None,
+        gamification=None,
     ) -> Image.Image:
         ...
 
@@ -71,6 +73,7 @@ class PixelOpsApp:
         task_source: TaskSource | None = None,
         media_source: MediaSource | None = None,
         companion_source: CompanionSource | None = None,
+        gamification_source: GamificationSource | None = None,
     ):
         self.scene = scene
         self.people_config = people_config
@@ -83,17 +86,27 @@ class PixelOpsApp:
         self.task_source = task_source
         self.media_source = media_source
         self.companion_source = companion_source
+        self.gamification_source = gamification_source
 
     def render_frame(self, now: datetime) -> Image.Image:
+        task_snapshot = self.task_source.current(now) if self.task_source else None
+        companion_snapshot = self.companion_source.current(now) if self.companion_source else None
+        today_events = self.today_events(now) if self.today_events else []
         kwargs = {
             "pc_stats": self.pc_stats_source.current(now) if self.pc_stats_source else None,
-            "task_snapshot": self.task_source.current(now) if self.task_source else None,
+            "task_snapshot": task_snapshot,
             "media": self.media_source.current(now) if self.media_source else None,
+            "today_events": today_events,
         }
-        if self.companion_source:
-            kwargs["companion_snapshot"] = self.companion_source.current(now)
-        if self.today_events:
-            kwargs["today_events"] = self.today_events(now)
+        if companion_snapshot:
+            kwargs["companion_snapshot"] = companion_snapshot
+        if self.gamification_source:
+            kwargs["gamification"] = self.gamification_source.current(
+                now,
+                today_events=today_events,
+                task_snapshot=task_snapshot,
+                companion_snapshot=companion_snapshot,
+            )
         return self.scene.render(
             build_people_times(self.people_config, now),
             self.next_event(now),

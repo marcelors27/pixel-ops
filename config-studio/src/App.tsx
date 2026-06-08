@@ -23,6 +23,8 @@ import {
   Terminal,
   Trash2,
   Users,
+  ZoomIn,
+  ZoomOut,
 } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { ComponentType, DragEvent, MouseEvent, ReactNode } from "react";
@@ -39,10 +41,12 @@ import {
   loadGithubRepos,
   loadKiteStatus,
   loadNpcSpriteManifest,
+  loadRuntimeAutostartStatus,
   loadRuntimeStatus,
   pollDiscordOAuthStatus,
   pollGithubDeviceLogin,
   runKiteAction,
+  runRuntimeAutostartAction,
   runRuntimeAction,
   saveConfig,
   saveDiscordBotToken,
@@ -70,6 +74,7 @@ import type {
   MovementConfig,
   MovementRect,
   PersonConfig,
+  RuntimeAutostartStatus,
   RuntimeConfig,
   RuntimeStatus,
   UsbValidationResult,
@@ -119,6 +124,7 @@ const layoutWindowCatalog: LayoutWindowOption[] = [
   { kind: "timezones_clock", label: "Timezones clock", tone: "#9ad18b" },
   { kind: "activity", label: "Activity", tone: "#ef846d" },
   { kind: "meetings_day", label: "Meetings Day", tone: "#9aa7ff" },
+  { kind: "gamification", label: "Player HP", tone: "#ef6461" },
 ];
 
 const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
@@ -137,6 +143,7 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
       route_signal: "#f0a35d",
       weather: "#e8c766",
       meetings_day: "#9aa7ff",
+      gamification: "#ef6461",
     },
   },
   terminal: {
@@ -148,6 +155,7 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
       pc_stats: "#a7f3d0",
       tasks: "#facc15",
       tasks_board: "#f472b6",
+      gamification: "#65f0a1",
     },
   },
   ocean: {
@@ -158,6 +166,7 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
       timezones_clock: "#38bdf8",
       weather: "#2dd4bf",
       meetings_day: "#818cf8",
+      gamification: "#67e8f9",
     },
   },
   ember: {
@@ -168,6 +177,7 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
       route_signal: "#f97316",
       weather: "#facc15",
       media: "#fdba74",
+      gamification: "#fb7185",
     },
   },
 };
@@ -179,6 +189,12 @@ const displayArrangementWidth = 760;
 const displayArrangementHeight = 260;
 const displayArrangementPadding = 24;
 const displayArrangementScale = 0.16;
+const displayArrangementZoomStep = 0.05;
+const displayArrangementMinZoom = 0.08;
+const displayArrangementMaxZoom = 0.5;
+const layoutPreviewZoomStep = 0.25;
+const layoutPreviewMinZoom = 0.25;
+const layoutPreviewMaxZoom = 3;
 
 const equipmentOptions = [
   { target: "window", label: "Window", width: 320, height: 480, output: "window" },
@@ -216,6 +232,7 @@ export function App() {
   const [npcSpriteVariants, setNpcSpriteVariants] = useState<number[]>(fallbackDiscordSpriteVariants);
   const [pathName, setPathName] = useState(() => window.location.pathname);
   const [runtimeStatus, setRuntimeStatus] = useState<RuntimeStatus | null>(null);
+  const [runtimeAutostart, setRuntimeAutostart] = useState<RuntimeAutostartStatus | null>(null);
   const [runtimeBusy, setRuntimeBusy] = useState<string | null>(null);
   const [usbBusy, setUsbBusy] = useState<string | null>(null);
   const [usbValidation, setUsbValidation] = useState<UsbValidationResult | null>(null);
@@ -246,6 +263,7 @@ export function App() {
 
   useEffect(() => {
     void refreshRuntimeStatus();
+    void refreshRuntimeAutostartStatus();
     const interval = window.setInterval(() => void refreshRuntimeStatus(false), 2500);
     return () => window.clearInterval(interval);
   }, []);
@@ -302,11 +320,33 @@ export function App() {
     }
   }
 
-  async function triggerRuntimeAction(action: "check" | "preview" | "window/start" | "window/stop") {
+  async function refreshRuntimeAutostartStatus(reportError = true) {
+    try {
+      setRuntimeAutostart(await loadRuntimeAutostartStatus());
+    } catch (caught) {
+      if (reportError) {
+        setError(caught instanceof Error ? caught.message : String(caught));
+      }
+    }
+  }
+
+  async function triggerRuntimeAction(action: "check" | "preview" | "run/start" | "run/stop" | "window/start" | "window/stop") {
     setRuntimeBusy(action);
     setError(null);
     try {
       setRuntimeStatus(await runRuntimeAction(action));
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : String(caught));
+    } finally {
+      setRuntimeBusy(null);
+    }
+  }
+
+  async function triggerRuntimeAutostartAction(action: "install" | "remove") {
+    setRuntimeBusy(`autostart/${action}`);
+    setError(null);
+    try {
+      setRuntimeAutostart(await runRuntimeAutostartAction(action));
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : String(caught));
     } finally {
@@ -505,11 +545,16 @@ export function App() {
 
         <RuntimePanel
           status={runtimeStatus}
+          autostart={runtimeAutostart}
           busy={runtimeBusy}
           onCheck={() => void triggerRuntimeAction("check")}
           onPreview={() => void triggerRuntimeAction("preview")}
+          onStartRun={() => void triggerRuntimeAction("run/start")}
+          onStopRun={() => void triggerRuntimeAction("run/stop")}
           onStartWindow={() => void triggerRuntimeAction("window/start")}
           onStopWindow={() => void triggerRuntimeAction("window/stop")}
+          onInstallAutostart={() => void triggerRuntimeAutostartAction("install")}
+          onRemoveAutostart={() => void triggerRuntimeAutostartAction("remove")}
         />
 
         <section id="plugins" className="wide-panel">
@@ -897,7 +942,8 @@ function LayoutPreview({
   const bounds = displayBounds(displays);
   const frameWidth = bounds.width;
   const frameHeight = bounds.height;
-  const scale = 1;
+  const [layoutZoom, setLayoutZoom] = useState(1);
+  const scale = layoutZoom;
   const [gridEnabled, setGridEnabled] = useState(true);
   const [gridSize, setGridSize] = useState(8);
   const [layoutExpanded, setLayoutExpanded] = useState(false);
@@ -1134,6 +1180,15 @@ function LayoutPreview({
               <span key={color} style={{ backgroundColor: color }} />
             ))}
           </div>
+          <ZoomControls
+            className="layout-zoom-controls"
+            label="Layout zoom"
+            value={layoutZoom}
+            min={layoutPreviewMinZoom}
+            max={layoutPreviewMaxZoom}
+            step={layoutPreviewZoomStep}
+            onChange={setLayoutZoom}
+          />
           <button className="secondary-button" type="button" onClick={() => onAdd(addKind)}>
             <Plus size={16} />
             Add HUD
@@ -1257,7 +1312,10 @@ function DisplayArrangement({
   onDisplayChange: (displayId: string, next: DisplayOutputConfig) => void;
 }) {
   const bounds = displayBounds(displays);
-  const scale = displayArrangementScale;
+  const [zoom, setZoom] = useState(displayArrangementScale);
+  const scale = zoom;
+  const canvasWidth = Math.max(displayArrangementWidth, Math.round(bounds.width * scale + displayArrangementPadding * 2));
+  const canvasHeight = Math.max(displayArrangementHeight, Math.round(bounds.height * scale + displayArrangementPadding * 2));
 
   function snapDisplay(value: number): number {
     if (!gridEnabled) return Math.round(value);
@@ -1291,11 +1349,21 @@ function DisplayArrangement({
   return (
     <div className="display-arrangement">
       <div className="display-arrangement-heading">
-        <strong>Display arrangement</strong>
-        <span>Drag displays to set their relative position</span>
+        <div>
+          <strong>Display arrangement</strong>
+          <span>Drag displays to set their relative position</span>
+        </div>
+        <ZoomControls
+          label="Arrangement zoom"
+          value={zoom}
+          min={displayArrangementMinZoom}
+          max={displayArrangementMaxZoom}
+          step={displayArrangementZoomStep}
+          onChange={setZoom}
+        />
       </div>
       <div className="display-arrangement-shell">
-        <div className="display-arrangement-canvas">
+        <div className="display-arrangement-canvas" style={{ width: canvasWidth, height: canvasHeight }}>
           {displays.map((display) => (
             <div
               key={display.id}
@@ -1317,6 +1385,40 @@ function DisplayArrangement({
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+function ZoomControls({
+  label,
+  value,
+  min,
+  max,
+  step,
+  className = "",
+  onChange,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  className?: string;
+  onChange: (value: number) => void;
+}) {
+  const percent = Math.round(value * 100);
+  const decrease = () => onChange(clampZoom(value - step, min, max));
+  const increase = () => onChange(clampZoom(value + step, min, max));
+
+  return (
+    <div className={`zoom-controls ${className}`} aria-label={label}>
+      <button type="button" className="icon-button" onClick={decrease} disabled={value <= min} title="Zoom out" aria-label={`${label} out`}>
+        <ZoomOut size={16} />
+      </button>
+      <span>{percent}%</span>
+      <button type="button" className="icon-button" onClick={increase} disabled={value >= max} title="Zoom in" aria-label={`${label} in`}>
+        <ZoomIn size={16} />
+      </button>
     </div>
   );
 }
@@ -1395,18 +1497,28 @@ function Metric({ icon: Icon, label, value }: { icon: IconComponent; label: stri
 
 function RuntimePanel({
   status,
+  autostart,
   busy,
   onCheck,
   onPreview,
+  onStartRun,
+  onStopRun,
   onStartWindow,
   onStopWindow,
+  onInstallAutostart,
+  onRemoveAutostart,
 }: {
   status: RuntimeStatus | null;
+  autostart: RuntimeAutostartStatus | null;
   busy: string | null;
   onCheck: () => void;
   onPreview: () => void;
+  onStartRun: () => void;
+  onStopRun: () => void;
   onStartWindow: () => void;
   onStopWindow: () => void;
+  onInstallAutostart: () => void;
+  onRemoveAutostart: () => void;
 }) {
   const logs = status?.logs ?? [];
   return (
@@ -1415,7 +1527,7 @@ function RuntimePanel({
         <Terminal size={20} />
         <div>
           <h2>Runtime</h2>
-          <p>{status?.running ? `Window mode running · pid ${status.pid ?? "-"}` : "Window mode stopped"}</p>
+          <p>{status?.running ? `Runtime running · pid ${status.pid ?? "-"}` : "Runtime stopped"}</p>
         </div>
       </div>
       <div className="runtime-actions">
@@ -1427,6 +1539,14 @@ function RuntimePanel({
           <FileImage size={16} />
           Preview
         </button>
+        <button className="secondary-button" type="button" disabled={busy !== null || Boolean(status?.running)} onClick={onStartRun}>
+          <Play size={16} />
+          Start run
+        </button>
+        <button className="secondary-button" type="button" disabled={busy !== null || !status?.running} onClick={onStopRun}>
+          <Square size={16} />
+          Stop run
+        </button>
         <button className="secondary-button" type="button" disabled={busy !== null || Boolean(status?.running)} onClick={onStartWindow}>
           <Play size={16} />
           Start window
@@ -1435,6 +1555,23 @@ function RuntimePanel({
           <Square size={16} />
           Stop window
         </button>
+      </div>
+      <div className="runtime-autostart">
+        <div>
+          <strong>Autostart</strong>
+          <span>{autostart?.supported ? (autostart.installed ? `Installed · ${autostart.path}` : "Not installed") : `Unsupported on ${autostart?.platform ?? "this OS"}`}</span>
+          {autostart?.message ? <span>{autostart.message}</span> : null}
+        </div>
+        <div className="runtime-actions">
+          <button className="secondary-button" type="button" disabled={busy !== null || !autostart?.supported || autostart?.installed} onClick={onInstallAutostart}>
+            <Save size={16} />
+            Install autostart
+          </button>
+          <button className="danger-button" type="button" disabled={busy !== null || !autostart?.installed} onClick={onRemoveAutostart}>
+            <Trash2 size={16} />
+            Remove autostart
+          </button>
+        </div>
       </div>
       <pre className="runtime-log">{logs.length ? logs.join("\n") : "No runtime logs yet."}</pre>
     </section>
@@ -3319,6 +3456,14 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
   if (!display.layout || typeof display.layout !== "object") {
     display.layout = defaultLayoutFor(display.width, display.height);
   }
+  display.gamification = display.gamification ?? {
+    max_hp: 100,
+    meeting_cost: 8,
+    task_delivered_cost: 5,
+    base_recovery_per_hour: 0,
+    companion_recovery_per_hour: 4,
+    max_companion_bonus: 5,
+  };
   next.integrations.integrations.github.client_id = next.integrations.integrations.github.client_id ?? "Iv23litC8XR0gzcGAiaG";
   next.integrations.integrations.github.token_env = next.integrations.integrations.github.token_env ?? "PIXEL_OPS_GITHUB_TOKEN";
   next.integrations.integrations.github.repos = next.integrations.integrations.github.repos ?? [];
@@ -3524,6 +3669,13 @@ function clampNumber(value: number, min: number, max: number): number {
     return min;
   }
   return Math.max(min, Math.min(max, Math.round(value)));
+}
+
+function clampZoom(value: number, min: number, max: number): number {
+  if (!Number.isFinite(value)) {
+    return min;
+  }
+  return Number(Math.max(min, Math.min(max, value)).toFixed(2));
 }
 
 function applyEquipment(config: RuntimeConfig, target: string) {
@@ -3807,6 +3959,7 @@ function defaultWideLayoutFor(width: number, height: number): Record<LayoutKey, 
     gauges: { x: Math.round(width * 0.53), y: 16, width: Math.round(width * 0.16), height: topHeight - 20 },
     weather: { x: Math.round(width * 0.71), y: 16, width: Math.round(width * 0.12), height: topHeight - 20 },
     pc_stats: { x: Math.max(margin, width - Math.round(width * 0.14) - margin), y: 16, width: Math.round(width * 0.14), height: topHeight - 20 },
+    gamification: { x: Math.round(width * 0.84), y: height - bottomHeight + 8, width: Math.max(1, Math.round(width * 0.14)), height: bottomHeight - 18, kind: "gamification" },
     activity: { x: margin, y: height - bottomHeight + 8, width: Math.round(width * 0.44), height: bottomHeight - 18 },
     game: { x: sideWidth + margin * 2, y: gameY, width: middleWidth, height: gameHeight },
     text_box: { x: Math.round(width * 0.47), y: height - bottomHeight + 8, width: Math.max(1, Math.round(width * 0.53) - margin), height: bottomHeight - 18 },

@@ -55,7 +55,7 @@ class MainScene:
             self.ash = AshCharacter()
             self.encounter = PokemonEncounter(self.load_pokemon(self.rng.randrange(1, 152)))
 
-    def render(self, people: list[PersonTime], event: CalendarEvent | None, now: datetime | None = None):
+    def render(self, people: list[PersonTime], event: CalendarEvent | None, now: datetime | None = None, **_kwargs):
         with font_scale_for_canvas(self.renderer.width, self.renderer.height):
             self.frame += 1
             self.update_encounter()
