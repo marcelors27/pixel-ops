@@ -24,6 +24,9 @@ class ThermalrightOutput(DisplayOutput):
         self,
         vid: int = THERMALRIGHT_OBSERVED_VID,
         pid: int = THERMALRIGHT_OBSERVED_PID,
+        serial_number: str = "",
+        bus: int | None = None,
+        address: int | None = None,
         timeout_ms: int = 5000,
         jpeg_quality: int = 85,
         image_width: int = 1920,
@@ -44,6 +47,9 @@ class ThermalrightOutput(DisplayOutput):
     ):
         self.vid = vid
         self.pid = pid
+        self.serial_number = serial_number
+        self.bus = bus
+        self.address = address
         self.timeout_ms = timeout_ms
         self.min_frame_interval_ms = max(0, min_frame_interval_ms)
         self.packet_delay_ms = max(0, packet_delay_ms)
@@ -104,6 +110,9 @@ class ThermalrightOutput(DisplayOutput):
         self._transport = ThermalrightUsbTransport(
             vid=self.vid,
             pid=self.pid,
+            serial_number=self.serial_number,
+            bus=self.bus,
+            address=self.address,
             timeout_ms=self.timeout_ms,
             debug=self.debug,
             max_packet_size=8192,

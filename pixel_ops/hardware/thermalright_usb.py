@@ -145,6 +145,9 @@ class ThermalrightUsbTransport:
         device: ThermalrightDeviceInfo | None = None,
         vid: int | None = None,
         pid: int | None = None,
+        serial_number: str = "",
+        bus: int | None = None,
+        address: int | None = None,
         interface_number: int | None = None,
         out_endpoint: int = THERMALRIGHT_DEFAULT_OUT_ENDPOINT,
         in_endpoint: int = THERMALRIGHT_DEFAULT_IN_ENDPOINT,
@@ -155,6 +158,9 @@ class ThermalrightUsbTransport:
         self.device_info = device
         self.vid = vid if vid is not None else (device.vid if device else None)
         self.pid = pid if pid is not None else (device.pid if device else None)
+        self.serial_number = serial_number or (device.serial_number if device else "")
+        self.bus = bus if bus is not None else (device.bus if device else None)
+        self.address = address if address is not None else (device.address if device else None)
         self.interface_number = interface_number
         self.out_endpoint = out_endpoint
         self.in_endpoint = in_endpoint
@@ -171,10 +177,11 @@ class ThermalrightUsbTransport:
             return
         if self.vid is None or self.pid is None:
             raise RuntimeError("ThermalrightUsbTransport requires vid/pid or a ThermalrightDeviceInfo")
-        self._debug(f"opening {self.vid:04x}:{self.pid:04x}")
-        self.dev = usb.core.find(idVendor=self.vid, idProduct=self.pid)
+        selector = _device_selector_suffix(serial_number=self.serial_number, bus=self.bus, address=self.address)
+        self._debug(f"opening {self.vid:04x}:{self.pid:04x}{selector}")
+        self.dev = _find_usb_device(self.vid, self.pid, serial_number=self.serial_number, bus=self.bus, address=self.address)
         if self.dev is None:
-            raise RuntimeError(f"USB device {self.vid:04x}:{self.pid:04x} not found")
+            raise RuntimeError(f"USB device {self.vid:04x}:{self.pid:04x}{selector} not found")
         try:
             self.dev.set_configuration()
         except usb.core.USBError as error:
@@ -791,6 +798,39 @@ def _find_endpoint(dev, endpoint_address: int):
         if endpoint is not None:
             return endpoint
     return None
+
+
+def _find_usb_device(
+    vid: int,
+    pid: int,
+    *,
+    serial_number: str = "",
+    bus: int | None = None,
+    address: int | None = None,
+):
+    selector_active = bool(serial_number or bus is not None or address is not None)
+    if not selector_active:
+        return usb.core.find(idVendor=vid, idProduct=pid)
+    for dev in usb.core.find(find_all=True, idVendor=vid, idProduct=pid) or []:
+        if bus is not None and getattr(dev, "bus", None) != bus:
+            continue
+        if address is not None and getattr(dev, "address", None) != address:
+            continue
+        if serial_number and _safe_usb_string(dev, getattr(dev, "iSerialNumber", 0)) != serial_number:
+            continue
+        return dev
+    return None
+
+
+def _device_selector_suffix(*, serial_number: str = "", bus: int | None = None, address: int | None = None) -> str:
+    parts = []
+    if serial_number:
+        parts.append(f"serial={serial_number}")
+    if bus is not None:
+        parts.append(f"bus={bus}")
+    if address is not None:
+        parts.append(f"address={address}")
+    return f" ({', '.join(parts)})" if parts else ""
 
 
 def _endpoint_direction(address: int) -> str:

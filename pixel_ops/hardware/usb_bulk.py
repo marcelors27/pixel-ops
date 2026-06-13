@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import platform
 import time
+from dataclasses import dataclass
 from enum import IntEnum
 
 import usb.core
@@ -14,6 +15,17 @@ VENDOR_ID = 0x1A86
 PRODUCT_ID = 0x5722
 CDC_DATA_INTERFACE = 1
 OUT_ENDPOINT = 0x03
+
+
+@dataclass(frozen=True)
+class UsbBulkDeviceInfo:
+    vid: int
+    pid: int
+    manufacturer: str = ""
+    product: str = ""
+    serial_number: str = ""
+    bus: int | None = None
+    address: int | None = None
 
 
 class Command(IntEnum):
@@ -31,13 +43,17 @@ class UsbBulkRevA:
         vid: int = VENDOR_ID,
         pid: int = PRODUCT_ID,
         timeout_ms: int = 5000,
+        serial_number: str = "",
+        bus: int | None = None,
+        address: int | None = None,
     ):
         self.width = width
         self.height = height
         self.timeout_ms = timeout_ms
-        self.dev = usb.core.find(idVendor=vid, idProduct=pid)
+        self.dev = _find_usb_device(vid, pid, serial_number=serial_number, bus=bus, address=address)
         if self.dev is None:
-            raise RuntimeError(f"USB device {vid:04x}:{pid:04x} not found")
+            suffix = _device_selector_suffix(serial_number=serial_number, bus=bus, address=address)
+            raise RuntimeError(f"USB device {vid:04x}:{pid:04x}{suffix} not found")
 
         try:
             self.dev.set_configuration()
@@ -145,6 +161,26 @@ class UsbBulkRevA:
         return endpoint
 
 
+def scan_turzx_devices(
+    vid: int = VENDOR_ID,
+    pid: int = PRODUCT_ID,
+) -> list[UsbBulkDeviceInfo]:
+    devices = []
+    for dev in usb.core.find(find_all=True, idVendor=vid, idProduct=pid) or []:
+        devices.append(
+            UsbBulkDeviceInfo(
+                vid=int(dev.idVendor),
+                pid=int(dev.idProduct),
+                manufacturer=_safe_usb_string(dev, getattr(dev, "iManufacturer", 0)),
+                product=_safe_usb_string(dev, getattr(dev, "iProduct", 0)),
+                serial_number=_safe_usb_string(dev, getattr(dev, "iSerialNumber", 0)),
+                bus=getattr(dev, "bus", None),
+                address=getattr(dev, "address", None),
+            )
+        )
+    return devices
+
+
 def _usb_claim_error_message(vid: int, pid: int, error: usb.core.USBError) -> str:
     message = f"Could not claim USB device {vid:04x}:{pid:04x}: {error}"
     if platform.system() == "Linux":
@@ -158,3 +194,45 @@ def _usb_claim_error_message(vid: int, pid: int, error: usb.core.USBError) -> st
             "for example with Zadig, then reconnect the display."
         )
     return message
+
+
+def _find_usb_device(
+    vid: int,
+    pid: int,
+    *,
+    serial_number: str = "",
+    bus: int | None = None,
+    address: int | None = None,
+):
+    selector_active = bool(serial_number or bus is not None or address is not None)
+    if not selector_active:
+        return usb.core.find(idVendor=vid, idProduct=pid)
+    for dev in usb.core.find(find_all=True, idVendor=vid, idProduct=pid) or []:
+        if bus is not None and getattr(dev, "bus", None) != bus:
+            continue
+        if address is not None and getattr(dev, "address", None) != address:
+            continue
+        if serial_number and _safe_usb_string(dev, getattr(dev, "iSerialNumber", 0)) != serial_number:
+            continue
+        return dev
+    return None
+
+
+def _safe_usb_string(dev, index: int) -> str:
+    if not index:
+        return ""
+    try:
+        return usb.util.get_string(dev, index) or ""
+    except (ValueError, usb.core.USBError):
+        return ""
+
+
+def _device_selector_suffix(*, serial_number: str = "", bus: int | None = None, address: int | None = None) -> str:
+    parts = []
+    if serial_number:
+        parts.append(f"serial={serial_number}")
+    if bus is not None:
+        parts.append(f"bus={bus}")
+    if address is not None:
+        parts.append(f"address={address}")
+    return f" ({', '.join(parts)})" if parts else ""
