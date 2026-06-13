@@ -38,6 +38,7 @@ class DiscordIntegrationPlugin:
             guild_id=guild_id,
             bot_user_id=str(cfg.get("bot_user_id") or ctx.env_value("PIXEL_OPS_DISCORD_BOT_USER_ID", "") or ""),
             reconnect_seconds=int(cfg.get("gateway_reconnect_seconds", ctx.env_int("PIXEL_OPS_DISCORD_GATEWAY_RECONNECT_SECONDS", 10))),
+            bot_user_lookup_timeout_seconds=int(cfg.get("bot_user_lookup_timeout_seconds", ctx.env_int("PIXEL_OPS_DISCORD_BOT_USER_LOOKUP_TIMEOUT_SECONDS", 1))),
             enabled=True,
         )
         return IntegrationContribution(

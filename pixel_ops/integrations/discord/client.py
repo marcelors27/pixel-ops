@@ -39,6 +39,7 @@ class DiscordGatewayClient:
         guild_id: str = "",
         bot_user_id: str = "",
         reconnect_seconds: int = 10,
+        bot_user_lookup_timeout_seconds: int = 1,
         enabled: bool = False,
     ):
         self.bus = bus
@@ -47,6 +48,7 @@ class DiscordGatewayClient:
         self.guild_id = guild_id
         self.bot_user_id = bot_user_id
         self.reconnect_seconds = max(1, reconnect_seconds)
+        self.bot_user_lookup_timeout_seconds = max(1, int(bot_user_lookup_timeout_seconds))
         self.enabled = enabled
         self._thread: Thread | None = None
         self._running = False
@@ -54,6 +56,7 @@ class DiscordGatewayClient:
         self._sequence: int | None = None
         self._warned_missing_dependency = False
         self._warned_missing_token = False
+        self._warned_websocket_error = False
 
     def start(self) -> None:
         if not self.enabled or self._thread:
@@ -61,8 +64,6 @@ class DiscordGatewayClient:
         if not self.token:
             self._warn_once("missing PIXEL_OPS_DISCORD_BOT_TOKEN; Discord Gateway disabled")
             return
-        if not self.bot_user_id:
-            self.bot_user_id = self._resolve_bot_user_id() or ""
         self._running = True
         self._thread = Thread(target=self._run_forever, daemon=True)
         self._thread.start()
@@ -74,6 +75,8 @@ class DiscordGatewayClient:
     def _run_forever(self) -> None:
         while self._running:
             try:
+                if not self.bot_user_id:
+                    self.bot_user_id = self._resolve_bot_user_id() or ""
                 websocket = self._websocket_module()
                 if websocket is None:
                     return
@@ -192,7 +195,7 @@ class DiscordGatewayClient:
             response = requests.get(
                 f"{DISCORD_API_BASE}/users/@me",
                 headers={"Authorization": f"Bot {self.token}"},
-                timeout=8,
+                timeout=self.bot_user_lookup_timeout_seconds,
             )
             response.raise_for_status()
             data = response.json()
@@ -201,8 +204,10 @@ class DiscordGatewayClient:
         user_id = data.get("id")
         return str(user_id) if user_id else None
 
-    @staticmethod
-    def _on_error(ws, error) -> None:
+    def _on_error(self, ws, error) -> None:
+        if self._warned_websocket_error:
+            return
+        self._warned_websocket_error = True
         print(f"[pixel-ops discord] websocket error: {error}", file=sys.stderr)
 
     @staticmethod

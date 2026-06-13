@@ -6,6 +6,7 @@ from pathlib import Path
 
 from pixel_ops.data_sources.companions import MergedCompanionSource
 from pixel_ops.data_sources.tasks import MergedTaskSource
+from pixel_ops.integration_plugins.async_sources import AsyncCurrentSource, AsyncEventSource, AsyncPullRequestSource, run_background
 from pixel_ops.integration_plugins.base import (
     IntegrationContext,
     IntegrationContribution,
@@ -90,6 +91,7 @@ def build_integration_runtime(ctx: IntegrationContext) -> IntegrationRuntime:
         contribution = plugin.build(ctx)
         _merge(runtime, contribution)
         runtime.loaded_plugins.append(plugin.name)
+    _wrap_runtime_sources(runtime)
     return runtime
 
 
@@ -110,10 +112,10 @@ def _load_plugin(name: str):
 
 
 def _merge(runtime: IntegrationRuntime, contribution: IntegrationContribution) -> None:
-    runtime.event_sources.extend(contribution.event_sources)
+    runtime.event_sources.extend(AsyncEventSource(source) for source in contribution.event_sources)
     runtime.calendar_paths.extend(contribution.calendar_paths)
     runtime.starters.extend(contribution.starters)
-    runtime.warmers.extend(contribution.warmers)
+    runtime.warmers.extend(run_background(warmer, f"{warmer}") for warmer in contribution.warmers)
     runtime.closers.extend(contribution.closers)
     if contribution.pull_request_source is not None:
         runtime.pull_request_source = contribution.pull_request_source
@@ -139,3 +141,20 @@ def _merge(runtime: IntegrationRuntime, contribution: IntegrationContribution) -
             runtime.companion_source.add(contribution.companion_source)
         else:
             runtime.companion_source = MergedCompanionSource([runtime.companion_source, contribution.companion_source])
+
+
+def _wrap_runtime_sources(runtime: IntegrationRuntime) -> None:
+    if not isinstance(runtime.pull_request_source, NullPullRequestSource):
+        runtime.pull_request_source = AsyncPullRequestSource(runtime.pull_request_source)
+    if not isinstance(runtime.weather_source, NullWeatherSource):
+        runtime.weather_source = AsyncCurrentSource(runtime.weather_source)
+    if not isinstance(runtime.ai_usage_source, NullAIUsageSource):
+        runtime.ai_usage_source = AsyncCurrentSource(runtime.ai_usage_source)
+    if not isinstance(runtime.pc_stats_source, NullPCStatsSource):
+        runtime.pc_stats_source = AsyncCurrentSource(runtime.pc_stats_source)
+    if not isinstance(runtime.task_source, NullTaskSource):
+        runtime.task_source = AsyncCurrentSource(runtime.task_source)
+    if not isinstance(runtime.media_source, NullMediaSource):
+        runtime.media_source = AsyncCurrentSource(runtime.media_source)
+    if not isinstance(runtime.companion_source, NullCompanionSource):
+        runtime.companion_source = AsyncCurrentSource(runtime.companion_source)
