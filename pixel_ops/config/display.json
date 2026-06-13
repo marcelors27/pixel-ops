@@ -1,6 +1,6 @@
 {
   "display": {
-    "width": 1920,
+    "width": 2400,
     "height": 462,
     "orientation": "vertical",
     "device": {
@@ -18,8 +18,8 @@
         "jpeg_quality": 85,
         "image_width": 1920,
         "image_height": 462,
-        "min_frame_interval_ms": 500,
-        "packet_delay_ms": 2,
+        "min_frame_interval_ms": 100,
+        "packet_delay_ms": 0,
         "packet_size": 4096,
         "hard_reset_on_start": true,
         "hard_reset_wait_ms": 1500,
@@ -43,6 +43,7 @@
           "y": 0,
           "width": 1920,
           "height": 462,
+          "rotation": 0,
           "identify_number": 1,
           "thermalright": {
             "vid": "0x0416",
@@ -51,8 +52,8 @@
             "jpeg_quality": 85,
             "image_width": 1920,
             "image_height": 462,
-            "min_frame_interval_ms": 500,
-            "packet_delay_ms": 2,
+            "min_frame_interval_ms": 100,
+            "packet_delay_ms": 0,
             "packet_size": 4096,
             "hard_reset_on_start": true,
             "hard_reset_wait_ms": 1500,
@@ -64,7 +65,57 @@
             "start_retries": 0,
             "frame_retries": 1,
             "debug": false
+          },
+          "turzx": {
+            "vid": "0x1a86",
+            "pid": "0x5722",
+            "serial_number": "",
+            "bus": null,
+            "address": null,
+            "timeout_ms": 5000
           }
+        },
+        {
+          "id": "display-mq6143m3-2",
+          "label": "TURZX 2",
+          "enabled": true,
+          "target": "turzx",
+          "output": "turzx",
+          "x": 1920,
+          "y": 0,
+          "width": 480,
+          "height": 320,
+          "identify_number": 2,
+          "thermalright": {
+            "vid": "0x0416",
+            "pid": "0x5408",
+            "timeout_ms": 5000,
+            "jpeg_quality": 85,
+            "image_width": 480,
+            "image_height": 320,
+            "min_frame_interval_ms": 100,
+            "packet_delay_ms": 0,
+            "packet_size": 4096,
+            "hard_reset_on_start": true,
+            "hard_reset_wait_ms": 1500,
+            "handshake_on_first_frame": false,
+            "require_handshake": true,
+            "send_start_init": true,
+            "read_start_ack": true,
+            "read_frame_ack": true,
+            "start_retries": 0,
+            "frame_retries": 1,
+            "debug": false
+          },
+          "turzx": {
+            "vid": "0x1a86",
+            "pid": "0x5722",
+            "serial_number": "USB35INCHIPSV2",
+            "bus": null,
+            "address": null,
+            "timeout_ms": 5000
+          },
+          "rotation": 90
         }
       ]
     },
@@ -113,6 +164,13 @@
         "height": 72,
         "kind": "gamification"
       },
+      "mana": {
+        "x": 1096,
+        "y": 216,
+        "width": 168,
+        "height": 72,
+        "kind": "mana"
+      },
       "now_playing": {
         "x": 0,
         "y": 342,
@@ -127,7 +185,7 @@
         "height": 40
       },
       "game": {
-        "x": 1264,
+        "x": 1584,
         "y": 0,
         "width": 656,
         "height": 344
@@ -161,7 +219,7 @@
       }
     },
     "backend": "usb_bulk_rev_a",
-    "fps": 2,
+    "fps": 10,
     "preview_output": "pixel_ops/output/preview.png",
     "gif_output": "pixel_ops/output/preview.gif",
     "scanlines": false,
@@ -224,8 +282,8 @@
                 "jpeg_quality": 85,
                 "image_width": 1920,
                 "image_height": 462,
-                "min_frame_interval_ms": 500,
-                "packet_delay_ms": 2,
+                "min_frame_interval_ms": 100,
+                "packet_delay_ms": 0,
                 "packet_size": 4096,
                 "hard_reset_on_start": true,
                 "hard_reset_wait_ms": 1500,
@@ -285,6 +343,13 @@
             "width": 168,
             "height": 72,
             "kind": "gamification"
+          },
+          "mana": {
+            "x": 1096,
+            "y": 216,
+            "width": 168,
+            "height": 72,
+            "kind": "mana"
           },
           "now_playing": {
             "x": 0,
