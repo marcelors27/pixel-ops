@@ -117,7 +117,10 @@ const integrationSidecars: Record<string, ConfigDescriptor[]> = {
 
 const integrationLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
   gamification: [{ kind: "gamification", label: "Player HP", tone: "#ef6461" }],
-  ai_usage: [{ kind: "gauges", label: "AI Gauges", tone: "#7ee0bd" }],
+  ai_usage: [
+    { kind: "gauges", label: "AI Gauges", tone: "#7ee0bd" },
+    { kind: "mana", label: "Mana", tone: "#4f9fff" },
+  ],
   pc_stats: [{ kind: "pc_stats", label: "PC Stats", tone: "#9bd0ff" }],
   weather: [{ kind: "weather", label: "Weather", tone: "#e8c766" }],
   google_calendar: [{ kind: "meetings_day", label: "Meetings Day", tone: "#9aa7ff" }],
@@ -820,24 +823,41 @@ async function scanThermalrightUsbDisplays() {
   const script = `
 import json
 from pixel_ops.hardware.thermalright_usb import scan_thermalright_devices
+from pixel_ops.hardware.usb_bulk import scan_turzx_devices
 
-devices = scan_thermalright_devices(log=lambda *_args, **_kwargs: None)
+thermalright_devices = scan_thermalright_devices(log=lambda *_args, **_kwargs: None)
+turzx_devices = scan_turzx_devices()
+devices = [
+    {
+        "target": "thermalright",
+        "vid": f"0x{device.vid:04x}",
+        "pid": f"0x{device.pid:04x}",
+        "manufacturer": device.manufacturer,
+        "product": device.product,
+        "serial_number": device.serial_number,
+        "bus": device.bus,
+        "address": device.address,
+        "has_default_endpoints": device.has_default_endpoints,
+    }
+    for device in thermalright_devices
+] + [
+    {
+        "target": "turzx",
+        "vid": f"0x{device.vid:04x}",
+        "pid": f"0x{device.pid:04x}",
+        "manufacturer": device.manufacturer,
+        "product": device.product,
+        "serial_number": device.serial_number,
+        "bus": device.bus,
+        "address": device.address,
+        "has_default_endpoints": False,
+    }
+    for device in turzx_devices
+]
 print(json.dumps({
     "ok": True,
-    "message": f"{len(devices)} Thermalright candidate(s) found.",
-    "devices": [
-        {
-            "vid": f"0x{device.vid:04x}",
-            "pid": f"0x{device.pid:04x}",
-            "manufacturer": device.manufacturer,
-            "product": device.product,
-            "serial_number": device.serial_number,
-            "bus": device.bus,
-            "address": device.address,
-            "has_default_endpoints": device.has_default_endpoints,
-        }
-        for device in devices
-    ],
+    "message": f"{len(devices)} USB display candidate(s) found ({len(thermalright_devices)} Thermalright, {len(turzx_devices)} TURZX).",
+    "devices": devices,
 }))
 `;
   try {
@@ -860,13 +880,19 @@ async function identifyThermalrightDisplay(display: Record<string, unknown>) {
 import json
 import sys
 from PIL import Image, ImageDraw
+from pixel_ops.outputs.turzx_usb import TURZXOutput
 from pixel_ops.outputs.thermalright import ThermalrightOutput
 
 display = json.loads(sys.argv[1])
 thermalright = display.get("thermalright") or {}
+turzx = display.get("turzx") or {}
+target = str(display.get("output") or display.get("target") or "thermalright").lower()
 number = int(display.get("identify_number") or 1)
-width = int(display.get("width") or thermalright.get("image_width") or 1920)
-height = int(display.get("height") or thermalright.get("image_height") or 462)
+rotation = int(display.get("rotation") or 0)
+if rotation not in (0, 90, 180, 270):
+    rotation = 0
+native_width, native_height = (1920, 462) if target == "thermalright" else (320, 480)
+width, height = (native_height, native_width) if rotation in (90, 270) else (native_width, native_height)
 image = Image.new("RGB", (width, height), (10, 14, 24))
 draw = ImageDraw.Draw(image)
 draw.rectangle((0, 0, width - 1, height - 1), outline=(255, 255, 255), width=max(4, width // 180))
@@ -884,27 +910,35 @@ bbox = draw.textbbox((0, 0), label, font=number_font)
 draw.text(((width - (bbox[2] - bbox[0])) // 2, max(8, (height - (bbox[3] - bbox[1])) // 2 - height // 12)), label, font=number_font, fill=(255, 230, 90))
 subbox = draw.textbbox((0, 0), subtitle, font=subtitle_font)
 draw.text(((width - (subbox[2] - subbox[0])) // 2, min(height - 40, height // 2 + font_size // 3)), subtitle, font=subtitle_font, fill=(180, 220, 255))
-output = ThermalrightOutput(
-    vid=int(str(thermalright.get("vid", "0x0416")), 0),
-    pid=int(str(thermalright.get("pid", "0x5408")), 0),
-    timeout_ms=int(thermalright.get("timeout_ms", 5000)),
-    jpeg_quality=int(thermalright.get("jpeg_quality", 85)),
-    image_width=int(thermalright.get("image_width", width)),
-    image_height=int(thermalright.get("image_height", height)),
-    min_frame_interval_ms=int(thermalright.get("min_frame_interval_ms", 500)),
-    packet_delay_ms=int(thermalright.get("packet_delay_ms", 2)),
-    packet_size=int(thermalright.get("packet_size", 4096)),
-    hard_reset_on_start=bool(thermalright.get("hard_reset_on_start", True)),
-    hard_reset_wait_ms=int(thermalright.get("hard_reset_wait_ms", 1500)),
-    handshake_on_first_frame=bool(thermalright.get("handshake_on_first_frame", False)),
-    require_handshake=bool(thermalright.get("require_handshake", True)),
-    send_start_init=bool(thermalright.get("send_start_init", True)),
-    read_start_ack=bool(thermalright.get("read_start_ack", True)),
-    read_frame_ack=bool(thermalright.get("read_frame_ack", True)),
-    start_retries=int(thermalright.get("start_retries", 0)),
-    frame_retries=int(thermalright.get("frame_retries", 1)),
-    debug=bool(thermalright.get("debug", False)),
-)
+if rotation:
+    image = image.rotate(-rotation, expand=True)
+if target == "turzx":
+    output = TURZXOutput.from_config(native_width, native_height, turzx)
+else:
+    output = ThermalrightOutput(
+        vid=int(str(thermalright.get("vid", "0x0416")), 0),
+        pid=int(str(thermalright.get("pid", "0x5408")), 0),
+        serial_number=str(thermalright.get("serial_number") or ""),
+        bus=int(thermalright["bus"]) if thermalright.get("bus") not in (None, "") else None,
+        address=int(thermalright["address"]) if thermalright.get("address") not in (None, "") else None,
+        timeout_ms=int(thermalright.get("timeout_ms", 5000)),
+        jpeg_quality=int(thermalright.get("jpeg_quality", 85)),
+        image_width=native_width,
+        image_height=native_height,
+        min_frame_interval_ms=int(thermalright.get("min_frame_interval_ms", 100)),
+        packet_delay_ms=int(thermalright.get("packet_delay_ms", 0)),
+        packet_size=int(thermalright.get("packet_size", 4096)),
+        hard_reset_on_start=bool(thermalright.get("hard_reset_on_start", True)),
+        hard_reset_wait_ms=int(thermalright.get("hard_reset_wait_ms", 1500)),
+        handshake_on_first_frame=bool(thermalright.get("handshake_on_first_frame", False)),
+        require_handshake=bool(thermalright.get("require_handshake", True)),
+        send_start_init=bool(thermalright.get("send_start_init", True)),
+        read_start_ack=bool(thermalright.get("read_start_ack", True)),
+        read_frame_ack=bool(thermalright.get("read_frame_ack", True)),
+        start_retries=int(thermalright.get("start_retries", 0)),
+        frame_retries=int(thermalright.get("frame_retries", 1)),
+        debug=bool(thermalright.get("debug", False)),
+    )
 try:
     output.start()
     output.send(image)

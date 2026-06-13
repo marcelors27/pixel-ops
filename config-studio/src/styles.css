@@ -443,6 +443,19 @@ textarea {
     box-shadow 0.16s ease;
 }
 
+.readonly-value {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgba(18, 23, 33, 0.62);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 720;
+  padding: 8px 10px;
+}
+
 textarea {
   min-height: 96px;
   resize: vertical;

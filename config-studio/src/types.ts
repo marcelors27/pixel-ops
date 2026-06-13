@@ -53,6 +53,7 @@ export type UsbValidationResult = {
   ok: boolean;
   message: string;
   devices?: Array<{
+    target?: string;
     vid: string;
     pid: string;
     manufacturer: string;
@@ -76,10 +77,14 @@ export type DisplayOutputConfig = {
   y: number;
   width: number;
   height: number;
+  rotation?: 0 | 90 | 180 | 270;
   identify_number: number;
   thermalright?: {
     vid: string;
     pid: string;
+    serial_number?: string;
+    bus?: number | null;
+    address?: number | null;
     timeout_ms: number;
     jpeg_quality: number;
     image_width: number;
@@ -97,6 +102,14 @@ export type DisplayOutputConfig = {
     start_retries?: number;
     frame_retries?: number;
     debug: boolean;
+  };
+  turzx?: {
+    vid?: string;
+    pid?: string;
+    serial_number?: string;
+    bus?: number | null;
+    address?: number | null;
+    timeout_ms?: number;
   };
 };
 
@@ -205,6 +218,9 @@ export type RuntimeConfig = {
         thermalright?: {
           vid: string;
           pid: string;
+          serial_number?: string;
+          bus?: number | null;
+          address?: number | null;
           timeout_ms: number;
           jpeg_quality: number;
           image_width: number;
@@ -222,6 +238,14 @@ export type RuntimeConfig = {
           start_retries?: number;
           frame_retries?: number;
           debug: boolean;
+        };
+        turzx?: {
+          vid?: string;
+          pid?: string;
+          serial_number?: string;
+          bus?: number | null;
+          address?: number | null;
+          timeout_ms?: number;
         };
         displays?: DisplayOutputConfig[];
       };

@@ -87,6 +87,7 @@ type PokemonGameConfig = NonNullable<RuntimeConfig["game"]>["game"];
 type PokemonDataConfig = NonNullable<RuntimeConfig["pokemon"]>["pokemon"];
 type PokemonAiSelectorConfig = PokemonGameConfig["events"]["ai_selector"];
 type PokemonPanelKey = "scene" | "companions" | "ai" | "data";
+type UsbDeviceCandidate = NonNullable<UsbValidationResult["devices"]>[number];
 type SettingsTabItem = {
   key: string;
   label: string;
@@ -124,6 +125,7 @@ const layoutWindowCatalog: LayoutWindowOption[] = [
   { kind: "timezones_clock", label: "Timezones clock", tone: "#9ad18b" },
   { kind: "activity", label: "Activity", tone: "#ef846d" },
   { kind: "meetings_day", label: "Meetings Day", tone: "#9aa7ff" },
+  { kind: "mana", label: "Mana", tone: "#4f9fff" },
   { kind: "gamification", label: "Player HP", tone: "#ef6461" },
 ];
 
@@ -143,6 +145,7 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
       route_signal: "#f0a35d",
       weather: "#e8c766",
       meetings_day: "#9aa7ff",
+      mana: "#4f9fff",
       gamification: "#ef6461",
     },
   },
@@ -152,6 +155,7 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
     tones: {
       activity: "#65f0a1",
       gauges: "#4fd1c5",
+      mana: "#60ccff",
       pc_stats: "#a7f3d0",
       tasks: "#facc15",
       tasks_board: "#f472b6",
@@ -166,6 +170,7 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
       timezones_clock: "#38bdf8",
       weather: "#2dd4bf",
       meetings_day: "#818cf8",
+      mana: "#38bdf8",
       gamification: "#67e8f9",
     },
   },
@@ -177,6 +182,7 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
       route_signal: "#f97316",
       weather: "#facc15",
       media: "#fdba74",
+      mana: "#60a5fa",
       gamification: "#fb7185",
     },
   },
@@ -718,6 +724,15 @@ export function App() {
               applyMultiDisplayBounds(display);
             })
           }
+          onAddUsbDisplay={(device) =>
+            mutate((draft) => {
+              const display = draft.display.display;
+              const displays = ensureDisplayOutputs(display);
+              const next = newDisplayOutputFromUsbDevice(displays.length + 1, displays, device);
+              displays.push(next);
+              applyMultiDisplayBounds(display);
+            })
+          }
           onRemoveDisplay={(displayId) =>
             mutate((draft) => {
               const display = draft.display.display;
@@ -760,11 +775,8 @@ export function App() {
                 }
               />
             </Field>
-            <Field label="Width">
-              <NumberInput value={display.width} onChange={(value) => mutate((draft) => void (draft.display.display.width = value))} />
-            </Field>
-            <Field label="Height">
-              <NumberInput value={display.height} onChange={(value) => mutate((draft) => void (draft.display.display.height = value))} />
+            <Field label="Canvas">
+              <ReadOnlyValue value={`${display.width}x${display.height}`} />
             </Field>
             <Field label="Display FPS">
               <NumberInput value={display.fps} onChange={(value) => mutate((draft) => void (draft.display.display.fps = value))} />
@@ -914,6 +926,7 @@ function LayoutPreview({
   onIdentifyDisplay,
   onDisplayChange,
   onAddDisplay,
+  onAddUsbDisplay,
   onRemoveDisplay,
 }: {
   config: RuntimeConfig;
@@ -935,6 +948,7 @@ function LayoutPreview({
   onIdentifyDisplay: (display: DisplayOutputConfig) => void;
   onDisplayChange: (displayId: string, next: DisplayOutputConfig) => void;
   onAddDisplay: () => void;
+  onAddUsbDisplay: (device: UsbDeviceCandidate) => void;
   onRemoveDisplay: (displayId: string) => void;
 }) {
   const display = config.display.display;
@@ -1135,7 +1149,19 @@ function LayoutPreview({
         {usbValidation ? (
           <div className={`usb-validation ${usbValidation.ok ? "is-ok" : "is-error"}`}>
             <span>{usbValidation.message}</span>
-            {usbValidation.devices?.length ? <span>{usbValidation.devices.map((device) => `${device.vid}:${device.pid}${device.product ? ` ${device.product}` : ""}`).join(" | ")}</span> : null}
+            {usbValidation.devices?.length ? (
+              <span>{usbValidation.devices.map((device) => `${device.target ?? "usb"} ${device.vid}:${device.pid}${device.product ? ` ${device.product}` : ""}`).join(" | ")}</span>
+            ) : null}
+          </div>
+        ) : null}
+        {usbValidation?.devices?.length ? (
+          <div className="display-array-actions">
+            {usbValidation.devices.map((device, index) => (
+              <button className="secondary-button" type="button" key={`${device.target ?? "usb"}-${device.vid}-${device.pid}-${device.bus ?? "b"}-${device.address ?? "a"}-${index}`} onClick={() => onAddUsbDisplay(device)}>
+                <Plus size={16} />
+                Add {device.target ?? "USB"} {device.bus != null && device.address != null ? `${device.bus}:${device.address}` : device.product || device.pid}
+              </button>
+            ))}
           </div>
         ) : null}
         <DisplayArrangement
@@ -1440,6 +1466,21 @@ function DisplayOutputRow({
   onIdentify: () => void;
   onRemove: () => void;
 }) {
+  const usbTarget = normalizeUsbTarget(display.output);
+  const usbConfig = usbTarget === "turzx" ? display.turzx ?? defaultTurzxDeviceConfig() : display.thermalright ?? defaultThermalrightDeviceConfig();
+  const isWindowOutput = normalizeOutputTarget(display.output) === "window";
+  const isKnownUsbDisplay = !isWindowOutput && knownUsbDisplay(usbConfig);
+  const updateUsbConfig = (patch: Record<string, unknown>) => {
+    if (usbTarget === "turzx") {
+      onChange({ ...display, turzx: { ...(display.turzx ?? defaultTurzxDeviceConfig()), ...patch } });
+      return;
+    }
+    onChange({ ...display, thermalright: { ...(display.thermalright ?? defaultThermalrightDeviceConfig()), ...patch } });
+  };
+  const changeOutput = (value: string) => {
+    const target = normalizeOutputTarget(value);
+    onChange(lockDisplayResolution({ ...display, output: target, target }));
+  };
   return (
     <div className="display-output-row">
       <div className="display-badge">{display.identify_number || index + 1}</div>
@@ -1447,7 +1488,7 @@ function DisplayOutputRow({
         <TextInput value={display.label} onChange={(value) => onChange({ ...display, label: value })} />
       </Field>
       <Field label="Output">
-        <Select value={display.output} options={["thermalright", "turzx", "window", "preview", "gif"]} onChange={(value) => onChange({ ...display, output: value, target: value })} />
+        <Select value={display.output} options={["thermalright", "turzx", "window", "preview", "gif"]} onChange={changeOutput} />
       </Field>
       <Field label="X">
         <NumberInput value={display.x} onChange={(value) => onChange({ ...display, x: value })} />
@@ -1455,18 +1496,44 @@ function DisplayOutputRow({
       <Field label="Y">
         <NumberInput value={display.y} onChange={(value) => onChange({ ...display, y: value })} />
       </Field>
-      <Field label="Width">
-        <NumberInput value={display.width} onChange={(value) => onChange({ ...display, width: Math.max(1, value), thermalright: syncThermalrightSize(display.thermalright, Math.max(1, value), display.height) })} />
-      </Field>
-      <Field label="Height">
-        <NumberInput value={display.height} onChange={(value) => onChange({ ...display, height: Math.max(1, value), thermalright: syncThermalrightSize(display.thermalright, display.width, Math.max(1, value)) })} />
-      </Field>
-      <Field label="USB VID">
-        <TextInput value={display.thermalright?.vid ?? "0x0416"} onChange={(value) => onChange({ ...display, thermalright: { ...(display.thermalright ?? defaultThermalrightDeviceConfig()), vid: value } })} />
-      </Field>
-      <Field label="USB PID">
-        <TextInput value={display.thermalright?.pid ?? "0x5408"} onChange={(value) => onChange({ ...display, thermalright: { ...(display.thermalright ?? defaultThermalrightDeviceConfig()), pid: value } })} />
-      </Field>
+      {isWindowOutput ? (
+        <>
+          <Field label="Width">
+            <NumberInput value={display.width} onChange={(value) => onChange({ ...display, width: Math.max(1, value), thermalright: syncThermalrightSize(display.thermalright, Math.max(1, value), display.height) })} />
+          </Field>
+          <Field label="Height">
+            <NumberInput value={display.height} onChange={(value) => onChange({ ...display, height: Math.max(1, value), thermalright: syncThermalrightSize(display.thermalright, display.width, Math.max(1, value)) })} />
+          </Field>
+        </>
+      ) : (
+        <Field label="Resolution">
+          <ReadOnlyValue value={`${display.width}x${display.height}`} />
+        </Field>
+      )}
+      {!isWindowOutput ? (
+        <Field label="Rotation">
+          <Select value={String(display.rotation ?? 0)} options={["0", "90", "180", "270"]} onChange={(value) => onChange(lockDisplayResolution({ ...display, rotation: normalizeDisplayRotation(value) }))} />
+        </Field>
+      ) : null}
+      {!isWindowOutput ? (
+        <>
+          <Field label="USB VID">
+            <TextInput disabled={isKnownUsbDisplay} value={usbConfig.vid ?? (usbTarget === "turzx" ? "0x1a86" : "0x0416")} onChange={(value) => updateUsbConfig({ vid: value })} />
+          </Field>
+          <Field label="USB PID">
+            <TextInput disabled={isKnownUsbDisplay} value={usbConfig.pid ?? (usbTarget === "turzx" ? "0x5722" : "0x5408")} onChange={(value) => updateUsbConfig({ pid: value })} />
+          </Field>
+          <Field label="Bus">
+            <NumberInput disabled={isKnownUsbDisplay} value={Number(usbConfig.bus ?? 0)} onChange={(value) => updateUsbConfig({ bus: value || null })} />
+          </Field>
+          <Field label="Address">
+            <NumberInput disabled={isKnownUsbDisplay} value={Number(usbConfig.address ?? 0)} onChange={(value) => updateUsbConfig({ address: value || null })} />
+          </Field>
+          <Field label="Serial">
+            <TextInput disabled={isKnownUsbDisplay} value={usbConfig.serial_number ?? ""} onChange={(value) => updateUsbConfig({ serial_number: value })} />
+          </Field>
+        </>
+      ) : null}
       <Field label="Enabled">
         <Switch checked={display.enabled} onChange={(value) => onChange({ ...display, enabled: value })} />
       </Field>
@@ -2830,16 +2897,20 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-function TextInput({ value, onChange }: { value: string; onChange: (value: string) => void }) {
-  return <input value={value} onChange={(event) => onChange(event.target.value)} />;
+function TextInput({ value, onChange, disabled = false }: { value: string; onChange: (value: string) => void; disabled?: boolean }) {
+  return <input value={value} disabled={disabled} onChange={(event) => onChange(event.target.value)} />;
 }
 
 function PasswordInput({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   return <input type="password" value={value} autoComplete="off" onChange={(event) => onChange(event.target.value)} />;
 }
 
-function NumberInput({ value, onChange }: { value: number; onChange: (value: number) => void }) {
-  return <input type="number" value={value} onChange={(event) => onChange(Number(event.target.value))} />;
+function NumberInput({ value, onChange, disabled = false }: { value: number; onChange: (value: number) => void; disabled?: boolean }) {
+  return <input type="number" value={value} disabled={disabled} onChange={(event) => onChange(Number(event.target.value))} />;
+}
+
+function ReadOnlyValue({ value }: { value: string }) {
+  return <div className="readonly-value">{value}</div>;
 }
 
 function TextArea({ value, onChange }: { value: string; onChange: (value: string) => void }) {
@@ -3690,12 +3761,12 @@ function applyEquipment(config: RuntimeConfig, target: string) {
   }
   if (target === "thermalright") {
     display.orientation = "vertical";
-    display.fps = Math.min(display.fps || 2, 2);
+    display.fps = Math.max(display.fps || 10, 10);
     display.device.thermalright = display.device.thermalright ?? defaultThermalrightDeviceConfig();
   }
 }
 
-function defaultThermalrightDeviceConfig() {
+function defaultThermalrightDeviceConfig(): NonNullable<DisplayOutputConfig["thermalright"]> {
   return {
     vid: "0x0416",
     pid: "0x5408",
@@ -3703,8 +3774,8 @@ function defaultThermalrightDeviceConfig() {
     jpeg_quality: 85,
     image_width: 1920,
     image_height: 462,
-    min_frame_interval_ms: 500,
-    packet_delay_ms: 2,
+    min_frame_interval_ms: 100,
+    packet_delay_ms: 0,
     packet_size: 4096,
     hard_reset_on_start: true,
     hard_reset_wait_ms: 1500,
@@ -3719,24 +3790,39 @@ function defaultThermalrightDeviceConfig() {
   };
 }
 
+function defaultTurzxDeviceConfig(): NonNullable<DisplayOutputConfig["turzx"]> {
+  return {
+    vid: "0x1a86",
+    pid: "0x5722",
+    serial_number: "",
+    bus: null,
+    address: null,
+    timeout_ms: 5000,
+  };
+}
+
 function displayOutputFromConfig(display: RuntimeConfig["display"]["display"], index = 1): DisplayOutputConfig {
+  const output = normalizeOutputTarget(display.device.output || display.device.target || "window");
+  const resolution = lockedDisplayResolution(output);
   return {
     id: `display-${index}`,
     label: `Display ${index}`,
     enabled: true,
-    target: display.device.target || "window",
-    output: display.device.output || "window",
+    target: output,
+    output,
     x: 0,
     y: 0,
-    width: display.width,
-    height: display.height,
+    width: resolution.width,
+    height: resolution.height,
+    rotation: 0,
     identify_number: index,
     thermalright: {
       ...defaultThermalrightDeviceConfig(),
       ...(display.device.thermalright ?? {}),
-      image_width: display.width,
-      image_height: display.height,
+      image_width: resolution.width,
+      image_height: resolution.height,
     },
+    turzx: display.device.turzx ? { ...defaultTurzxDeviceConfig(), ...display.device.turzx } : defaultTurzxDeviceConfig(),
   };
 }
 
@@ -3749,40 +3835,125 @@ function ensureDisplayOutputs(display: RuntimeConfig["display"]["display"]): Dis
 }
 
 function normalizeDisplayOutput(raw: Partial<DisplayOutputConfig>, index: number): DisplayOutputConfig {
-  const width = Math.max(1, Number(raw.width ?? 320));
-  const height = Math.max(1, Number(raw.height ?? 480));
+  const output = normalizeOutputTarget(raw.output || raw.target || "window");
+  const rotation = normalizeDisplayRotation(raw.rotation);
+  const resolution = lockedDisplayResolution(output, rotation, raw.width, raw.height);
   return {
     id: raw.id || `display-${index}`,
     label: raw.label || `Display ${index}`,
     enabled: raw.enabled ?? true,
-    target: raw.target || raw.output || "window",
-    output: raw.output || raw.target || "window",
+    target: output,
+    output,
     x: Number(raw.x ?? 0),
     y: Number(raw.y ?? 0),
-    width,
-    height,
+    width: resolution.width,
+    height: resolution.height,
+    rotation,
     identify_number: Number(raw.identify_number ?? index),
-    thermalright: syncThermalrightSize({ ...defaultThermalrightDeviceConfig(), ...(raw.thermalright ?? {}) }, width, height),
+    thermalright: syncThermalrightSize({ ...defaultThermalrightDeviceConfig(), ...(raw.thermalright ?? {}) }, resolution.width, resolution.height),
+    turzx: { ...defaultTurzxDeviceConfig(), ...(raw.turzx ?? {}) },
   };
 }
 
 function newDisplayOutput(index: number, displays: DisplayOutputConfig[]): DisplayOutputConfig {
   const previous = displays[displays.length - 1];
-  const width = previous?.width ?? 320;
-  const height = previous?.height ?? 480;
+  const output = normalizeOutputTarget(previous?.output || previous?.target || "thermalright");
+  const rotation = previous?.rotation ?? 0;
+  const resolution = lockedDisplayResolution(output, rotation, previous?.width, previous?.height);
   return {
     id: `display-${Date.now().toString(36)}-${index}`,
     label: `Display ${index}`,
     enabled: true,
-    target: previous?.target ?? "thermalright",
-    output: previous?.output ?? "thermalright",
+    target: output,
+    output,
     x: previous ? previous.x + previous.width : 0,
     y: previous?.y ?? 0,
-    width,
-    height,
+    width: resolution.width,
+    height: resolution.height,
+    rotation,
     identify_number: index,
-    thermalright: syncThermalrightSize(previous?.thermalright ?? defaultThermalrightDeviceConfig(), width, height),
+    thermalright: syncThermalrightSize(previous?.thermalright ?? defaultThermalrightDeviceConfig(), resolution.width, resolution.height),
+    turzx: { ...defaultTurzxDeviceConfig(), ...(previous?.turzx ?? {}) },
   };
+}
+
+function newDisplayOutputFromUsbDevice(index: number, displays: DisplayOutputConfig[], device: UsbDeviceCandidate): DisplayOutputConfig {
+  const target = normalizeUsbTarget(device.target);
+  const resolution = lockedDisplayResolution(target, 0);
+  const base: DisplayOutputConfig = {
+    id: `display-${Date.now().toString(36)}-${index}`,
+    label: `${target === "thermalright" ? "Thermalright" : "TURZX"} ${index}`,
+    enabled: true,
+    target,
+    output: target,
+    x: displays.length ? Math.max(...displays.map((item) => item.x + item.width)) : 0,
+    y: 0,
+    width: resolution.width,
+    height: resolution.height,
+    rotation: 0,
+    identify_number: index,
+    thermalright: syncThermalrightSize(defaultThermalrightDeviceConfig(), resolution.width, resolution.height),
+    turzx: defaultTurzxDeviceConfig(),
+  };
+  const usbFields = {
+    vid: device.vid,
+    pid: device.pid,
+    serial_number: device.serial_number || "",
+    bus: device.bus ?? null,
+    address: device.address ?? null,
+  };
+  if (target === "thermalright") {
+    base.thermalright = syncThermalrightSize({ ...defaultThermalrightDeviceConfig(), ...usbFields }, resolution.width, resolution.height);
+  } else {
+    base.turzx = { ...defaultTurzxDeviceConfig(), ...usbFields };
+  }
+  return base;
+}
+
+function normalizeUsbTarget(value: string | undefined): "thermalright" | "turzx" {
+  return value === "turzx" ? "turzx" : "thermalright";
+}
+
+function normalizeOutputTarget(value: string): "thermalright" | "turzx" | "window" | "preview" | "gif" {
+  if (value === "display") return "turzx";
+  if (value === "turzx" || value === "window" || value === "preview" || value === "gif") return value;
+  return "thermalright";
+}
+
+function lockedDisplayResolution(output: string, rotation: unknown = 0, fallbackWidth?: unknown, fallbackHeight?: unknown): { width: number; height: number } {
+  const target = normalizeOutputTarget(output);
+  if (target === "window") {
+    return {
+      width: Math.max(1, Number(fallbackWidth ?? 320)),
+      height: Math.max(1, Number(fallbackHeight ?? 480)),
+    };
+  }
+  const native = target === "thermalright" ? { width: 1920, height: 462 } : { width: 320, height: 480 };
+  const displayRotation = normalizeDisplayRotation(rotation);
+  if (displayRotation === 90 || displayRotation === 270) {
+    return { width: native.height, height: native.width };
+  }
+  return native;
+}
+
+function lockDisplayResolution(display: DisplayOutputConfig): DisplayOutputConfig {
+  const resolution = lockedDisplayResolution(display.output || display.target, display.rotation, display.width, display.height);
+  return {
+    ...display,
+    width: resolution.width,
+    height: resolution.height,
+    thermalright: syncThermalrightSize(display.thermalright, resolution.width, resolution.height),
+  };
+}
+
+function normalizeDisplayRotation(value: unknown): 0 | 90 | 180 | 270 {
+  const rotation = Number(value);
+  return rotation === 90 || rotation === 180 || rotation === 270 ? rotation : 0;
+}
+
+function knownUsbDisplay(config: { serial_number?: string; bus?: number | null; address?: number | null } | undefined): boolean {
+  if (!config) return false;
+  return Boolean(config.serial_number) || (config.bus != null && config.address != null);
 }
 
 function syncThermalrightSize(thermalright: DisplayOutputConfig["thermalright"] | undefined, width: number, height: number) {
