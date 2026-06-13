@@ -502,7 +502,9 @@ class OverworldScene:
             if not isinstance(raw, dict):
                 continue
             if str(raw.get("kind") or item_key) == kind:
-                boxes.append(self._layout_box(item_key, (0, 0, 1, 1)))
+                box = self._layout_box(item_key, (0, 0, 1, 1))
+                if box[2] - box[0] >= 8 and box[3] - box[1] >= 8:
+                    boxes.append(box)
         return boxes
 
     def render_dirty_regions(self, base: Image.Image, now: datetime | None = None) -> list[tuple[int, int, Image.Image]]:
@@ -1918,10 +1920,31 @@ def _draw_panel_title(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int],
     return x0, min(y1 - 1, y0 + 13), x1, y1
 
 
+_TEXT_WIDTH_CACHE: dict[tuple[int, str], int] = {}
+
+
+def _text_width(draw: ImageDraw.ImageDraw, text: str, text_font) -> int:
+    key = (id(text_font), text)
+    cached = _TEXT_WIDTH_CACHE.get(key)
+    if cached is not None:
+        return cached
+    bounds = draw.textbbox((0, 0), text, font=text_font)
+    width = bounds[2] - bounds[0]
+    if len(_TEXT_WIDTH_CACHE) > 4096:
+        _TEXT_WIDTH_CACHE.clear()
+    _TEXT_WIDTH_CACHE[key] = width
+    return width
+
+
 def _fit_text(draw: ImageDraw.ImageDraw, text: str, max_width: int, text_font) -> str:
-    if draw.textbbox((0, 0), text, font=text_font)[2] <= max_width:
+    if _text_width(draw, text, text_font) <= max_width:
         return text
-    clipped = text
-    while clipped and draw.textbbox((0, 0), f"{clipped}...", font=text_font)[2] > max_width:
-        clipped = clipped[:-1]
-    return f"{clipped}..." if clipped else ""
+    lo = 0
+    hi = len(text)
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if _text_width(draw, f"{text[:mid]}...", text_font) <= max_width:
+            lo = mid
+        else:
+            hi = mid - 1
+    return f"{text[:lo]}..." if lo else ""

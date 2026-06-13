@@ -30,6 +30,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "calendar_day": (247, 201, 72),
         "route_signal": (95, 191, 122),
         "gauges": (190, 119, 246),
+        "mana": (79, 159, 255),
         "weather": (79, 192, 218),
         "pc_stats": (240, 163, 93),
         "tasks": (126, 196, 122),
@@ -48,6 +49,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "calendar_day": (232, 219, 116),
         "route_signal": (142, 255, 188),
         "gauges": (150, 225, 255),
+        "mana": (96, 204, 255),
         "weather": (90, 195, 255),
         "pc_stats": (188, 255, 128),
         "tasks": (122, 240, 164),
@@ -66,6 +68,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "calendar_day": (165, 216, 255),
         "route_signal": (86, 214, 165),
         "gauges": (120, 190, 255),
+        "mana": (75, 175, 225),
         "weather": (66, 197, 218),
         "pc_stats": (88, 183, 210),
         "tasks": (123, 225, 188),
@@ -84,6 +87,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "calendar_day": (255, 207, 102),
         "route_signal": (255, 142, 83),
         "gauges": (234, 118, 165),
+        "mana": (93, 169, 233),
         "weather": (255, 154, 89),
         "pc_stats": (255, 190, 98),
         "tasks": (255, 161, 96),
@@ -118,13 +122,34 @@ def hud_palette_for_kind(pal, layout_theme: str | None, kind: str):
     )
 
 
+_TEXT_WIDTH_CACHE: dict[tuple[int, str], int] = {}
+
+
+def _text_width(draw: ImageDraw.ImageDraw, text: str, text_font) -> int:
+    key = (id(text_font), text)
+    cached = _TEXT_WIDTH_CACHE.get(key)
+    if cached is not None:
+        return cached
+    bounds = draw.textbbox((0, 0), text, font=text_font)
+    width = bounds[2] - bounds[0]
+    if len(_TEXT_WIDTH_CACHE) > 4096:
+        _TEXT_WIDTH_CACHE.clear()
+    _TEXT_WIDTH_CACHE[key] = width
+    return width
+
+
 def _fit_text(draw: ImageDraw.ImageDraw, text: str, max_width: int, text_font) -> str:
-    if draw.textbbox((0, 0), text, font=text_font)[2] <= max_width:
+    if _text_width(draw, text, text_font) <= max_width:
         return text
-    clipped = text
-    while clipped and draw.textbbox((0, 0), f"{clipped}...", font=text_font)[2] > max_width:
-        clipped = clipped[:-1]
-    return f"{clipped}..." if clipped else ""
+    lo = 0
+    hi = len(text)
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if _text_width(draw, f"{text[:mid]}...", text_font) <= max_width:
+            lo = mid
+        else:
+            hi = mid - 1
+    return f"{text[:lo]}..." if lo else ""
 
 
 def _wrap_text(draw: ImageDraw.ImageDraw, text: str, max_width: int, text_font, max_lines: int) -> list[str]:
@@ -135,7 +160,7 @@ def _wrap_text(draw: ImageDraw.ImageDraw, text: str, max_width: int, text_font, 
     current = ""
     for word in words:
         candidate = f"{current} {word}".strip()
-        if not current or draw.textbbox((0, 0), candidate, font=text_font)[2] <= max_width:
+        if not current or _text_width(draw, candidate, text_font) <= max_width:
             current = candidate
             continue
         lines.append(current)
@@ -146,7 +171,7 @@ def _wrap_text(draw: ImageDraw.ImageDraw, text: str, max_width: int, text_font, 
         lines.append(current)
     if len(lines) == max_lines:
         used_words = " ".join(lines).split()
-        if len(used_words) < len(words) or draw.textbbox((0, 0), lines[-1], font=text_font)[2] > max_width:
+        if len(used_words) < len(words) or _text_width(draw, lines[-1], text_font) > max_width:
             lines[-1] = _fit_text(draw, lines[-1], max_width, text_font)
     return lines
 
@@ -363,6 +388,9 @@ def _draw_configured_hud(
 
     for gauges_box in _layout_boxes(layout, "gauges"):
         _draw_ai_usage_panel(draw, ai_usage, now, gauges_box, hud_palette_for_kind(pal, layout_theme, "gauges"))
+
+    for mana_box in [*_layout_boxes(layout, "mana"), *_layout_boxes(layout, "mp")]:
+        _draw_mana_panel(draw, ai_usage, now, mana_box, hud_palette_for_kind(pal, layout_theme, "mana"))
 
     for weather_box in _layout_boxes(layout, "weather"):
         _draw_weather_compact(draw, weather, weather_box, hud_palette_for_kind(pal, layout_theme, "weather"))
@@ -1078,6 +1106,50 @@ def _draw_ai_usage_panel(draw: ImageDraw.ImageDraw, ai_usage: AIUsageSnapshot | 
     _draw_ai_usage_window(draw, ai_usage, now, content_box, pal)
 
 
+def _draw_mana_panel(draw: ImageDraw.ImageDraw, ai_usage: AIUsageSnapshot | None, now: datetime, box: tuple[int, int, int, int], pal) -> None:
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    label_font = font(8)
+    value_font = font(10)
+    meta_font = font(7)
+    x0, y0, x1, y1 = _draw_panel_title(draw, box, "MANA", pal)
+    content_x = x0 + 8
+    content_w = max(1, x1 - x0 - 16)
+    gauge = _mana_usage_gauge(ai_usage, now)
+    if gauge is None:
+        draw.text((content_x, y0 + 7), "No mana source", font=label_font, fill=pal.ink)
+        return
+
+    used_pct = _ai_usage_percent(gauge)
+    if used_pct is None and gauge.provider == "codex" and gauge.total_tokens:
+        used_pct = min(100.0, gauge.total_tokens / 250_000 * 100.0)
+    mana_pct = max(0.0, min(100.0, 100.0 - (used_pct or 0.0)))
+    mana_label = f"MP {int(round(mana_pct))}/100"
+    draw.text((content_x, y0 + 6), _fit_text(draw, mana_label, content_w, value_font), font=value_font, fill=pal.ink)
+
+    bar_y = y0 + 22
+    bar_h = 12 if y1 - y0 >= 54 else 8
+    draw.rectangle((content_x, bar_y, content_x + content_w, bar_y + bar_h), outline=pal.ink, fill=pal.panel)
+    fill_w = int((content_w - 2) * mana_pct / 100.0)
+    fill_color = _ai_mana_color(mana_pct, pal)
+    if fill_w > 0:
+        draw.rectangle((content_x + 1, bar_y + 1, content_x + fill_w, bar_y + bar_h - 1), fill=fill_color)
+    if content_w >= 88:
+        for index in range(1, 10):
+            tick_x = content_x + int(content_w * index / 10)
+            draw.line((tick_x, bar_y + 1, tick_x, bar_y + bar_h - 1), fill=pal.panel_shadow)
+
+    meta_y = bar_y + bar_h + 5
+    if meta_y + 8 > y1 - 2:
+        return
+    spent = _ai_usage_label(gauge.total_tokens, gauge.cost_usd)
+    window = "codex 5h" if gauge.provider == "codex" and "5H" in gauge.label else _ai_usage_gauge_short_label(gauge).lower()
+    drain = f"-{spent} tokens {window}" if spent != "-" else f"{window} quiet"
+    draw.text((content_x, meta_y), _fit_text(draw, drain, content_w, meta_font), font=meta_font, fill=pal.blue)
+    if meta_y + 18 <= y1 - 2 and gauge.reset_at:
+        reset = f"+reset in {_ai_usage_reset_countdown(now, gauge.reset_at)}"
+        draw.text((content_x, meta_y + 9), _fit_text(draw, reset, content_w, meta_font), font=meta_font, fill=pal.green)
+
+
 def _draw_pc_stats_panel(draw: ImageDraw.ImageDraw, pc_stats: PCStatsSnapshot | None, box: tuple[int, int, int, int], pal) -> None:
     PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
     content_box = _draw_panel_title(draw, box, "PC STATS", pal)
@@ -1502,6 +1574,14 @@ def _visible_ai_usage_gauges(ai_usage: AIUsageSnapshot, now: datetime) -> list:
     return [item for item in (codex_5h, second or openai_api) if item is not None]
 
 
+def _mana_usage_gauge(ai_usage: AIUsageSnapshot | None, now: datetime):
+    if not ai_usage:
+        return None
+    gauges = _visible_ai_usage_gauges(ai_usage, now)
+    codex_5h = next((item for item in gauges if item.provider == "codex" and "5H" in item.label), None)
+    return codex_5h or (gauges[0] if gauges else None)
+
+
 def _ai_usage_gauge_short_label(gauge) -> str:
     if gauge.provider == "openai_api":
         return "API"
@@ -1515,24 +1595,42 @@ def _ai_usage_percent(gauge) -> float | None:
     return pct
 
 
-def _ai_usage_gauge_value(gauge, pct: float | None, now: datetime) -> str:
+def _ai_mana_percent(gauge) -> float | None:
+    pct = _ai_usage_percent(gauge)
+    if pct is None:
+        return None
+    return max(0.0, min(100.0, 100.0 - pct))
+
+
+def _ai_mana_color(mana_pct: float, pal):
+    if mana_pct <= 10:
+        return pal.red
+    if mana_pct <= 25:
+        return pal.yellow
+    return pal.blue
+
+
+def _ai_usage_gauge_value(gauge, pct: float | None, now: datetime, mana: bool = False) -> str:
     if gauge.status == "error":
         return "ERR"
-    usage = _ai_usage_used_label(gauge, pct)
+    usage = _ai_usage_used_label(gauge, pct, mana=mana)
     if gauge.provider == "openai_api":
         return usage
     if pct is not None and gauge.reset_at:
-        return f"{usage} used | {_ai_usage_reset_countdown(now, gauge.reset_at)} reset"
+        state = "left" if mana else "used"
+        return f"{usage} {state} | {_ai_usage_reset_countdown(now, gauge.reset_at)} reset"
     return usage
 
 
-def _ai_usage_used_label(gauge, pct: float | None) -> str:
+def _ai_usage_used_label(gauge, pct: float | None, mana: bool = False) -> str:
     tokens = _ai_usage_label(gauge.total_tokens, gauge.cost_usd)
     if pct is None:
         return tokens
-    pct_label = f"{max(0.0, min(100.0, pct)):.0f}%"
+    display_pct = 100.0 - pct if mana else pct
+    pct_label = f"{max(0.0, min(100.0, display_pct)):.0f}%"
     if tokens != "-":
-        return f"{tokens} {pct_label}"
+        suffix = " MP" if mana else ""
+        return f"{tokens} {pct_label}{suffix}"
     return pct_label
 
 

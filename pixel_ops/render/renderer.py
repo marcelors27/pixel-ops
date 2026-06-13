@@ -14,9 +14,18 @@ class PixelRenderer:
     @staticmethod
     def draw_panel(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], fill, shadow, ink) -> None:
         x0, y0, x1, y1 = box
+        if x1 < x0:
+            x0, x1 = x1, x0
+        if y1 < y0:
+            y0, y1 = y1, y0
+        if x1 <= x0 or y1 <= y0:
+            return
+
         draw.rectangle((x0 + 4, y0 + 4, x1 + 4, y1 + 4), fill=shadow)
-        draw.rectangle(box, fill=fill, outline=ink, width=3)
-        draw.rectangle((x0 + 5, y0 + 5, x1 - 5, y1 - 5), outline=ink, width=1)
+        border_width = 3 if x1 - x0 >= 8 and y1 - y0 >= 8 else 1
+        draw.rectangle((x0, y0, x1, y1), fill=fill, outline=ink, width=border_width)
+        if x1 - x0 >= 12 and y1 - y0 >= 12:
+            draw.rectangle((x0 + 5, y0 + 5, x1 - 5, y1 - 5), outline=ink, width=1)
 
     @staticmethod
     def apply_scanlines(image: Image.Image) -> Image.Image:
