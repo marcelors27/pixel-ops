@@ -5,6 +5,7 @@ import argparse
 import os
 import sys
 import time
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -19,12 +20,31 @@ from pixel_ops.events.mock_events import MockEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext
 from pixel_ops.integration_plugins.registry import build_integration_runtime
 from pixel_ops.outputs import GifOutput, PreviewOutput, TURZXOutput, ThermalrightOutput, WindowOutput
-from pixel_ops.outputs.base import DisplayOutput
+from pixel_ops.outputs.base import CroppedOutput, DisplayOutput
 from pixel_ops.plugins.ai.plugin import build_ai_plugin
 from pixel_ops.plugins.registry import available_plugins, get_plugin
 from pixel_ops.render.splash import render_splash, splash_frame_count, splash_seconds
 
 APP_DIR = Path(__file__).resolve().parent
+
+
+@dataclass
+class RuntimeTarget:
+    name: str
+    display_cfg: dict
+    width: int
+    height: int
+    output_name: str
+    output: DisplayOutput
+
+
+@dataclass
+class RuntimeState:
+    display_cfg: dict
+    width: int
+    height: int
+    app: object
+    targets: list[RuntimeTarget]
 
 
 def load_config(path: Path) -> dict:
@@ -151,7 +171,7 @@ def runtime_orientation(args: argparse.Namespace, display_cfg: dict) -> str:
     return orientation if orientation in ("vertical", "horizontal") else "vertical"
 
 
-def runtime_display_config(args: argparse.Namespace, display_cfg: dict) -> dict:
+def runtime_display_config(args: argparse.Namespace, display_cfg: dict, select_configured_display: bool = True) -> dict:
     orientation = runtime_orientation(args, display_cfg)
     profiles = display_cfg.get("orientations", {})
     profile = profiles.get(orientation, {}) if isinstance(profiles, dict) else {}
@@ -162,16 +182,110 @@ def runtime_display_config(args: argparse.Namespace, display_cfg: dict) -> dict:
         if key in profile:
             active[key] = profile[key]
     active["orientation"] = orientation
+    output_name = _runtime_output_name(args, active)
+    display = _configured_display_for_output(active, output_name) if select_configured_display else None
+    if display is not None:
+        active = _display_runtime_config(active, display)
     return active
 
 
+def runtime_display_configs(args: argparse.Namespace, display_cfg: dict) -> list[dict]:
+    if args.output or args.display or args.window or args.gif or args.preview:
+        return [runtime_display_config(args, display_cfg)]
+    active = runtime_display_config(args, display_cfg, select_configured_display=False)
+    device_cfg = runtime_device_config(active)
+    displays = device_cfg.get("displays", [])
+    if not isinstance(displays, list):
+        return [runtime_display_config(args, display_cfg)]
+    configs = [
+        _display_runtime_config(active, item)
+        for item in displays
+        if isinstance(item, dict)
+        and bool(item.get("enabled", True))
+        and _normalize_output_name(item.get("output") or item.get("target") or device_cfg.get("output") or device_cfg.get("target")) in ("thermalright", "turzx")
+    ]
+    return configs or [runtime_display_config(args, display_cfg)]
+
+
+def _display_runtime_config(display_cfg: dict, display: dict) -> dict:
+    active = dict(display_cfg)
+    device_cfg = dict(runtime_device_config(display_cfg))
+    output_name = _normalize_output_name(display.get("output") or display.get("target") or device_cfg.get("output") or device_cfg.get("target"))
+    device_cfg["target"] = output_name
+    device_cfg["output"] = output_name
+    if output_name == "thermalright":
+        device_cfg["thermalright"] = _merged_device_config(device_cfg.get("thermalright"), display.get("thermalright"))
+    elif output_name == "turzx":
+        device_cfg["turzx"] = _merged_device_config(device_cfg.get("turzx"), display.get("turzx"))
+    active["device"] = device_cfg
+    if display is not None:
+        rotation = _normalize_rotation(display.get("rotation", 0))
+        active["width"], active["height"] = _display_region_size(output_name, rotation, display, active)
+        active["display_region"] = {
+            "x": int(display.get("x", 0)),
+            "y": int(display.get("y", 0)),
+            "width": active["width"],
+            "height": active["height"],
+            "rotation": rotation,
+        }
+        if isinstance(display.get("layout"), dict):
+            active["layout"] = display["layout"]
+        elif isinstance(active.get("layout"), dict):
+            active["layout"] = _layout_for_display(active["layout"], display)
+    return active
+
+
+def _layout_for_display(layout: dict, display: dict) -> dict:
+    try:
+        dx = int(display.get("x", 0))
+        dy = int(display.get("y", 0))
+        dw = int(display.get("width", 320))
+        dh = int(display.get("height", 480))
+    except (TypeError, ValueError):
+        return layout
+    if dw <= 0 or dh <= 0:
+        return {}
+
+    display_x1 = dx + dw
+    display_y1 = dy + dh
+    scoped: dict = {}
+    for key, raw in layout.items():
+        if not isinstance(raw, dict):
+            scoped[key] = raw
+            continue
+        try:
+            x = int(raw.get("x", 0))
+            y = int(raw.get("y", 0))
+            width = int(raw.get("width", 0))
+            height = int(raw.get("height", 0))
+        except (TypeError, ValueError):
+            continue
+        x1 = x + max(1, width)
+        y1 = y + max(1, height)
+        ix0 = max(x, dx)
+        iy0 = max(y, dy)
+        ix1 = min(x1, display_x1)
+        iy1 = min(y1, display_y1)
+        if ix1 - ix0 < 8 or iy1 - iy0 < 8:
+            continue
+        item = dict(raw)
+        item["x"] = ix0 - dx
+        item["y"] = iy0 - dy
+        item["width"] = ix1 - ix0
+        item["height"] = iy1 - iy0
+        scoped[key] = item
+    return scoped
+
+
 def runtime_output(args: argparse.Namespace, display_cfg: dict) -> str:
+    return _runtime_output_name(args, display_cfg)
+
+
+def _runtime_output_name(args: argparse.Namespace, display_cfg: dict) -> str:
     if args.output or args.display or args.window or args.gif or args.preview:
         return selected_output(args)
     device_cfg = runtime_device_config(display_cfg)
-    output = str(device_cfg.get("output") or device_cfg.get("target") or "preview")
-    if output == "display":
-        return "turzx"
+    output = _normalize_output_name(device_cfg.get("output") or device_cfg.get("target") or "preview")
     if output in ("preview", "gif", "turzx", "thermalright", "window"):
         return output
     return "preview"
@@ -213,36 +327,96 @@ def build_output(
     if output_name == "gif":
         return GifOutput(root_dir / display_cfg["gif_output"], fps=fps)
     if output_name == "turzx":
-        return TURZXOutput(width=width, height=height)
+        display = None if "display_region" in display_cfg else _configured_display_for_output(display_cfg, output_name)
+        cfg = _merged_device_config(runtime_device_config(display_cfg).get("turzx"), display.get("turzx") if display else None)
+        return TURZXOutput.from_config(width, height, cfg)
     if output_name == "thermalright":
         device_cfg = runtime_device_config(display_cfg)
-        thermalright_cfg = device_cfg.get("thermalright", {})
-        if not isinstance(thermalright_cfg, dict):
-            thermalright_cfg = {}
-        return ThermalrightOutput(
-            vid=parse_hex_int(thermalright_cfg.get("vid", "0x0416")),
-            pid=parse_hex_int(thermalright_cfg.get("pid", "0x5408")),
-            timeout_ms=int(thermalright_cfg.get("timeout_ms", 5000)),
-            jpeg_quality=int(thermalright_cfg.get("jpeg_quality", 85)),
-            image_width=int(thermalright_cfg.get("image_width", 1920)),
-            image_height=int(thermalright_cfg.get("image_height", 462)),
-            min_frame_interval_ms=int(thermalright_cfg.get("min_frame_interval_ms", 0)),
-            packet_delay_ms=int(thermalright_cfg.get("packet_delay_ms", 0)),
-            packet_size=int(thermalright_cfg.get("packet_size", 4096)),
-            hard_reset_on_start=bool(thermalright_cfg.get("hard_reset_on_start", True)),
-            hard_reset_wait_ms=int(thermalright_cfg.get("hard_reset_wait_ms", 1500)),
-            handshake_on_first_frame=bool(thermalright_cfg.get("handshake_on_first_frame", False)),
-            require_handshake=bool(thermalright_cfg.get("require_handshake", True)),
-            send_start_init=bool(thermalright_cfg.get("send_start_init", True)),
-            read_start_ack=bool(thermalright_cfg.get("read_start_ack", True)),
-            read_frame_ack=bool(thermalright_cfg.get("read_frame_ack", True)),
-            start_retries=int(thermalright_cfg.get("start_retries", 0)),
-            frame_retries=int(thermalright_cfg.get("frame_retries", 0)),
-            debug=bool(thermalright_cfg.get("debug", False)),
-        )
+        display = None if "display_region" in display_cfg else _configured_display_for_output(display_cfg, output_name)
+        thermalright_cfg = _merged_device_config(device_cfg.get("thermalright"), display.get("thermalright") if display else None)
+        if "display_region" in display_cfg:
+            thermalright_cfg["image_width"] = width
+            thermalright_cfg["image_height"] = height
+        return _thermalright_output(thermalright_cfg, width, height)
     if output_name == "window":
         return WindowOutput(width=width, height=height, scale=runtime_window_scale(args, display_cfg))
     raise ValueError(f"Unsupported output: {output_name}")
+
+
+def _configured_display_for_output(display_cfg: dict, output_name: str) -> dict | None:
+    if output_name not in ("thermalright", "turzx"):
+        return None
+    device_cfg = runtime_device_config(display_cfg)
+    displays = device_cfg.get("displays", [])
+    if not isinstance(displays, list):
+        return None
+    for item in displays:
+        if not isinstance(item, dict) or not bool(item.get("enabled", True)):
+            continue
+        target = _normalize_output_name(item.get("output") or item.get("target") or device_cfg.get("output") or device_cfg.get("target"))
+        if target == output_name:
+            return item
+    return None
+
+
+def _thermalright_output(thermalright_cfg: dict, width: int, height: int) -> ThermalrightOutput:
+    return ThermalrightOutput(
+        vid=parse_hex_int(thermalright_cfg.get("vid", "0x0416")),
+        pid=parse_hex_int(thermalright_cfg.get("pid", "0x5408")),
+        serial_number=str(thermalright_cfg.get("serial_number") or ""),
+        bus=parse_optional_int(thermalright_cfg.get("bus")),
+        address=parse_optional_int(thermalright_cfg.get("address")),
+        timeout_ms=int(thermalright_cfg.get("timeout_ms", 5000)),
+        jpeg_quality=int(thermalright_cfg.get("jpeg_quality", 85)),
+        image_width=int(thermalright_cfg.get("image_width", width)),
+        image_height=int(thermalright_cfg.get("image_height", height)),
+        min_frame_interval_ms=int(thermalright_cfg.get("min_frame_interval_ms", 0)),
+        packet_delay_ms=int(thermalright_cfg.get("packet_delay_ms", 0)),
+        packet_size=int(thermalright_cfg.get("packet_size", 4096)),
+        hard_reset_on_start=bool(thermalright_cfg.get("hard_reset_on_start", True)),
+        hard_reset_wait_ms=int(thermalright_cfg.get("hard_reset_wait_ms", 1500)),
+        handshake_on_first_frame=bool(thermalright_cfg.get("handshake_on_first_frame", False)),
+        require_handshake=bool(thermalright_cfg.get("require_handshake", True)),
+        send_start_init=bool(thermalright_cfg.get("send_start_init", True)),
+        read_start_ack=bool(thermalright_cfg.get("read_start_ack", True)),
+        read_frame_ack=bool(thermalright_cfg.get("read_frame_ack", True)),
+        start_retries=int(thermalright_cfg.get("start_retries", 0)),
+        frame_retries=int(thermalright_cfg.get("frame_retries", 0)),
+        debug=bool(thermalright_cfg.get("debug", False)),
+    )
+
+
+def _merged_device_config(base, override) -> dict:
+    merged = base if isinstance(base, dict) else {}
+    if isinstance(override, dict):
+        return {**merged, **override}
+    return dict(merged)
+
+
+def _normalize_output_name(value) -> str:
+    output = str(value or "preview").strip().lower()
+    return "turzx" if output == "display" else output
+
+
+def _normalize_rotation(value) -> int:
+    try:
+        rotation = int(value)
+    except (TypeError, ValueError):
+        return 0
+    return rotation if rotation in (0, 90, 180, 270) else 0
+
+
+def _display_region_size(output_name: str, rotation: int, display: dict, fallback: dict) -> tuple[int, int]:
+    if output_name == "thermalright":
+        width, height = 1920, 462
+    elif output_name == "turzx":
+        width, height = 320, 480
+    else:
+        width = int(display.get("width", fallback.get("width", 320)))
+        height = int(display.get("height", fallback.get("height", 480)))
+    if rotation in (90, 270):
+        return height, width
+    return width, height
 
 
 def parse_hex_int(value) -> int:
@@ -252,13 +426,21 @@ def parse_hex_int(value) -> int:
     return int(text, 16) if text.startswith("0x") else int(text, 10)
 
 
+def parse_optional_int(value) -> int | None:
+    if value in (None, ""):
+        return None
+    return parse_hex_int(value)
+
+
 def main() -> int:
     args = build_parser().parse_args()
     load_env(ROOT_DIR / ".env")
     plugin = get_plugin(args.plugin)
     plugin_dir = APP_DIR / "plugins" / plugin.name
     runtime_config = load_runtime_config()
-    display_cfg = runtime_display_config(args, load_config(APP_DIR / "config/display.json")["display"])
+    raw_display_cfg = load_config(APP_DIR / "config/display.json")["display"]
+    use_virtual_displays = not (args.output or args.display or args.window or args.gif or args.preview)
+    display_cfg = runtime_display_config(args, raw_display_cfg, select_configured_display=not use_virtual_displays)
     people_cfg = load_config(APP_DIR / "config/people.json")["people"]
     plugin_cfg = plugin.load_config(plugin_dir, load_config)
     config_watcher = ConfigWatcher(
@@ -298,9 +480,8 @@ def main() -> int:
 
     integration_runtime = build_integration_runtime_from_config(runtime_config)
 
-    def build_runtime_app():
+    def build_runtime_app(current_display_cfg: dict, target_width: int, target_height: int):
         nonlocal integration_runtime
-        current_display_cfg = runtime_display_config(args, load_config(APP_DIR / "config/display.json")["display"])
         current_people_cfg = load_config(APP_DIR / "config/people.json")["people"]
         current_plugin_cfg = plugin.load_config(plugin_dir, load_config)
         current_events_cfg = plugin.event_config(current_plugin_cfg)
@@ -309,17 +490,38 @@ def main() -> int:
             MockEventSource(enabled=env_bool("PIXEL_OPS_MOCK_EVENTS", bool(current_events_cfg.get("mock_events", False)))),
             *integration_runtime.event_sources,
         ]
+        calendar_cache = {
+            "next_checked_at": None,
+            "next_value": None,
+            "today_checked_at": None,
+            "today_value": [],
+        }
+
+        def cached_next_event(now):
+            checked_at = calendar_cache["next_checked_at"]
+            if checked_at is None or (now - checked_at).total_seconds() >= 30:
+                calendar_cache["next_checked_at"] = now
+                calendar_cache["next_value"] = next_event(now, integration_runtime.calendar_paths, current_calendar_enabled)
+            return calendar_cache["next_value"]
+
+        def cached_today_events(now):
+            checked_at = calendar_cache["today_checked_at"]
+            if checked_at is None or checked_at.date() != now.date() or (now - checked_at).total_seconds() >= 30:
+                calendar_cache["today_checked_at"] = now
+                calendar_cache["today_value"] = today_events(now, integration_runtime.calendar_paths, current_calendar_enabled)
+            return calendar_cache["today_value"]
+
         return plugin.build_app(
             args=args,
             root_dir=ROOT_DIR,
             display_cfg=current_display_cfg,
             config=current_plugin_cfg,
-            width=width,
-            height=height,
+            width=target_width,
+            height=target_height,
             fps=fps,
             people_config=current_people_cfg,
-            next_event=lambda now: next_event(now, integration_runtime.calendar_paths, current_calendar_enabled),
-            today_events=lambda now: today_events(now, integration_runtime.calendar_paths, current_calendar_enabled),
+            next_event=cached_next_event,
+            today_events=cached_today_events,
             pull_request_source=integration_runtime.pull_request_source,
             weather_source=integration_runtime.weather_source,
             ai_usage_source=integration_runtime.ai_usage_source,
@@ -331,52 +533,94 @@ def main() -> int:
             event_sources=current_event_sources,
         )
 
-    app = build_runtime_app()
+    def build_runtime_targets(current_raw_display_cfg: dict) -> list[RuntimeTarget]:
+        current_display_cfgs = runtime_display_configs(args, current_raw_display_cfg)
+        targets: list[RuntimeTarget] = []
+        multi_display = use_virtual_displays and len(current_display_cfgs) > 1
+        for current_display_cfg in current_display_cfgs:
+            target_width = int(current_display_cfg["width"])
+            target_height = int(current_display_cfg["height"])
+            target_output_name = runtime_output(args, current_display_cfg)
+            region = current_display_cfg.get("display_region", {})
+            rotation = _normalize_rotation(region.get("rotation", 0))
+            output_width, output_height = (target_height, target_width) if rotation in (90, 270) else (target_width, target_height)
+            target_output = build_output(target_output_name, args, ROOT_DIR, current_display_cfg, output_width, output_height, fps)
+            if multi_display or rotation:
+                x = int(region.get("x", 0))
+                y = int(region.get("y", 0))
+                box = (x, y, x + target_width, y + target_height) if multi_display else (0, 0, target_width, target_height)
+                target_output = CroppedOutput(target_output, box, rotation=rotation)
+            target_name = str(runtime_device_config(current_display_cfg).get("output") or target_output_name)
+            targets.append(RuntimeTarget(target_name, current_display_cfg, target_width, target_height, target_output_name, target_output))
+        return targets
 
-    def maybe_reload_app(current_app):
+    def build_runtime_state() -> RuntimeState:
+        current_raw_display_cfg = load_config(APP_DIR / "config/display.json")["display"]
+        current_display_cfg = runtime_display_config(args, current_raw_display_cfg, select_configured_display=not use_virtual_displays)
+        target_width = int(current_display_cfg["width"])
+        target_height = int(current_display_cfg["height"])
+        return RuntimeState(
+            display_cfg=current_display_cfg,
+            width=target_width,
+            height=target_height,
+            app=build_runtime_app(current_display_cfg, target_width, target_height),
+            targets=build_runtime_targets(current_raw_display_cfg),
+        )
+
+    runtime_state = build_runtime_state()
+
+    def maybe_reload_runtime(current_state: RuntimeState):
         nonlocal integration_runtime, runtime_config
         if not config_watcher.changed():
-            return current_app
+            return current_state
         try:
             next_runtime_config = load_runtime_config()
             if next_runtime_config != runtime_config:
                 integration_runtime.close()
                 integration_runtime = build_integration_runtime_from_config(next_runtime_config)
                 runtime_config = next_runtime_config
-            return build_runtime_app()
+            for target in current_state.targets:
+                target.output.stop()
+            next_state = build_runtime_state()
+            for target in next_state.targets:
+                target.output.start()
+            return next_state
         except Exception as error:
             print(f"[pixel-ops config] hot reload failed: {type(error).__name__}: {error}", file=sys.stderr)
-            return current_app
+            return current_state
 
-    output_name = runtime_output(args, display_cfg)
-    output = build_output(output_name, args, ROOT_DIR, display_cfg, width, height, fps)
     try:
-        output.start()
-        if output_name == "preview" and not runtime_preview_sequence(args, display_cfg):
+        for target in runtime_state.targets:
+            target.output.start()
+        if len(runtime_state.targets) == 1 and runtime_state.targets[0].output_name == "preview" and not runtime_preview_sequence(args, display_cfg):
             now = datetime.now(ZoneInfo(primary_tz))
-            output.send(app.render_frame(now))
+            runtime_state.targets[0].output.send(runtime_state.app.render_frame(now))
             return 0
 
         frame_delay = 1 / fps
-        splash_frame = render_splash(ROOT_DIR, display_cfg, width, height)
-        splash_frames = splash_frame_count(display_cfg, fps) if splash_frame else 0
-        if output_name == "gif":
+        splash_frame = render_splash(ROOT_DIR, runtime_state.display_cfg, runtime_state.width, runtime_state.height)
+        splash_frame_limit = splash_frame_count(runtime_state.display_cfg, fps) if splash_frame is not None else 0
+        if len(runtime_state.targets) == 1 and runtime_state.targets[0].output_name == "gif":
             started = datetime.now(ZoneInfo(primary_tz))
             total_frames = max(1, int(runtime_seconds(args, display_cfg) * fps))
             for frame_index in range(total_frames):
-                app = maybe_reload_app(app)
-                if frame_index < splash_frames:
-                    output.send(splash_frame)
+                runtime_state = maybe_reload_runtime(runtime_state)
+                target = runtime_state.targets[0]
+                if splash_frame is not None and frame_index < splash_frame_count(runtime_state.display_cfg, fps):
+                    target.output.send(splash_frame)
                 else:
-                    now = started + timedelta(seconds=(frame_index - splash_frames) / fps)
-                    output.send(app.render_frame(now))
+                    target_splash_frames = splash_frame_count(runtime_state.display_cfg, fps) if splash_frame is not None else 0
+                    now = started + timedelta(seconds=(frame_index - target_splash_frames) / fps)
+                    target.output.send(runtime_state.app.render_frame(now))
             return 0
 
-        if splash_frame:
-            splash_end_at = time.perf_counter() + splash_seconds(display_cfg)
+        if splash_frame_limit > 0:
+            splash_end_at = time.perf_counter() + splash_seconds(runtime_state.display_cfg)
             while time.perf_counter() < splash_end_at:
                 loop_started = time.perf_counter()
-                output.send(splash_frame)
+                if splash_frame is not None:
+                    for target in runtime_state.targets:
+                        target.output.send(splash_frame)
                 elapsed = time.perf_counter() - loop_started
                 remaining = splash_end_at - time.perf_counter()
                 if remaining <= 0:
@@ -387,9 +631,11 @@ def main() -> int:
         end_at = None if runtime_forever(args, display_cfg) or seconds <= 0 else time.perf_counter() + seconds
         while end_at is None or time.perf_counter() < end_at:
             loop_started = time.perf_counter()
-            app = maybe_reload_app(app)
+            runtime_state = maybe_reload_runtime(runtime_state)
             now = datetime.now(ZoneInfo(primary_tz))
-            output.send(app.render_frame(now))
+            frame = runtime_state.app.render_frame(now)
+            for target in runtime_state.targets:
+                target.output.send(frame)
             elapsed = time.perf_counter() - loop_started
             if elapsed < frame_delay:
                 time.sleep(frame_delay - elapsed)
@@ -398,7 +644,8 @@ def main() -> int:
         return 1
     finally:
         integration_runtime.close()
-        output.stop()
+        for target in runtime_state.targets:
+            target.output.stop()
     return 0
 
 
