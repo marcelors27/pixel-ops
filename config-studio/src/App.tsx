@@ -1626,7 +1626,14 @@ function RuntimePanel({
       <div className="runtime-autostart">
         <div>
           <strong>Autostart</strong>
-          <span>{autostart?.supported ? (autostart.installed ? `Installed · ${autostart.path}` : "Not installed") : `Unsupported on ${autostart?.platform ?? "this OS"}`}</span>
+          <span>
+            {autostart?.supported
+              ? autostart.installed
+                ? `Installed${autostart.loaded === false ? " · not loaded" : autostart.state ? ` · ${autostart.state}` : ""} · ${autostart.path}`
+                : "Not installed"
+              : `Unsupported on ${autostart?.platform ?? "this OS"}`}
+          </span>
+          {autostart?.last_exit_code ? <span>Last exit: {autostart.last_exit_code}</span> : null}
           {autostart?.message ? <span>{autostart.message}</span> : null}
         </div>
         <div className="runtime-actions">

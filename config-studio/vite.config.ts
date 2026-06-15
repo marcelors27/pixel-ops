@@ -188,11 +188,12 @@ function resolvePythonCommand() {
   ].filter(Boolean) as string[];
   for (const candidate of candidates) {
     try {
-      execFileSync(candidate, ["-c", "import PIL, yaml, requests"], {
+      const executable = execFileSync(candidate, ["-c", "import sys; import PIL, yaml, requests; print(sys.executable)"], {
         cwd: repoRoot,
-        stdio: "ignore",
-      });
-      return candidate;
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"],
+      }).trim();
+      return executable || candidate;
     } catch {
       continue;
     }
@@ -988,6 +989,18 @@ function shellQuote(value: string): string {
   return `'${value.replaceAll("'", "'\\''")}'`;
 }
 
+function xmlEscape(value: string): string {
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&apos;");
+}
+
+function macAutostartSupportDir() {
+  return path.join(os.homedir(), "Library/Application Support/Pixel OPs");
+}
+
+function macAutostartLogDir() {
+  return path.join(os.homedir(), "Library/Logs/Pixel OPs");
+}
+
 async function ensureRuntimeLaunchers() {
   const runtimeDir = path.join(repoRoot, "tools/runtime");
   await fs.mkdir(runtimeDir, { recursive: true });
@@ -1009,7 +1022,23 @@ if "%PYTHON_CMD%"=="" set PYTHON_CMD=${pythonCmd}
   await fs.writeFile(unixLauncher, unixContent, "utf8");
   await fs.chmod(unixLauncher, 0o755);
   await fs.writeFile(windowsLauncher, windowsContent, "utf8");
-  return { unixLauncher, windowsLauncher };
+  let macLauncher = unixLauncher;
+  if (process.platform === "darwin") {
+    const supportDir = macAutostartSupportDir();
+    const logDir = macAutostartLogDir();
+    await fs.mkdir(supportDir, { recursive: true });
+    await fs.mkdir(logDir, { recursive: true });
+    macLauncher = path.join(supportDir, "start-pixel-ops-runtime.sh");
+    const macContent = `#!/usr/bin/env bash
+set -euo pipefail
+cd ${shellQuote(repoRoot)}
+mkdir -p pixel_ops/output
+exec "\${PIXEL_OPS_PYTHON:-${pythonCmd}}" pixel_ops/main.py --plugin pokemon --forever >> ${shellQuote(path.join(logDir, "runtime.log"))} 2>&1
+`;
+    await fs.writeFile(macLauncher, macContent, "utf8");
+    await fs.chmod(macLauncher, 0o755);
+  }
+  return { unixLauncher, windowsLauncher, macLauncher };
 }
 
 async function autostartPaths() {
@@ -1038,11 +1067,13 @@ async function autostartPaths() {
 
 async function runtimeAutostartStatus() {
   const target = await autostartPaths();
+  const launchd = process.platform === "darwin" ? await macLaunchAgentStatus() : {};
   return {
     platform: process.platform,
     supported: target.supported,
     installed: target.path ? await fileExists(target.path) : false,
     path: target.path,
+    ...launchd,
   };
 }
 
@@ -1054,6 +1085,8 @@ async function installRuntimeAutostart() {
   const launchers = await ensureRuntimeLaunchers();
   await fs.mkdir(path.dirname(target.path), { recursive: true });
   if (process.platform === "darwin") {
+    const logDir = macAutostartLogDir();
+    await fs.mkdir(logDir, { recursive: true });
     const plist = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -1062,20 +1095,21 @@ async function installRuntimeAutostart() {
   <string>com.pixelops.runtime</string>
   <key>ProgramArguments</key>
   <array>
-    <string>${launchers.unixLauncher}</string>
+    <string>${xmlEscape(launchers.macLauncher)}</string>
   </array>
   <key>RunAtLoad</key>
   <true/>
   <key>WorkingDirectory</key>
-  <string>${repoRoot}</string>
+  <string>${xmlEscape(macAutostartSupportDir())}</string>
   <key>StandardOutPath</key>
-  <string>${path.join(repoRoot, "pixel_ops/output/runtime.launchd.log")}</string>
+  <string>${xmlEscape(path.join(logDir, "runtime.launchd.log"))}</string>
   <key>StandardErrorPath</key>
-  <string>${path.join(repoRoot, "pixel_ops/output/runtime.launchd.err.log")}</string>
+  <string>${xmlEscape(path.join(logDir, "runtime.launchd.err.log"))}</string>
 </dict>
 </plist>
 `;
     await fs.writeFile(target.path, plist, "utf8");
+    await reloadMacLaunchAgent(target.path);
   } else if (process.platform === "win32") {
     await fs.writeFile(target.path, `@echo off\r\ncall "${launchers.windowsLauncher}"\r\n`, "utf8");
   } else {
@@ -1094,10 +1128,51 @@ X-GNOME-Autostart-enabled=true
 
 async function removeRuntimeAutostart() {
   const target = await autostartPaths();
+  if (process.platform === "darwin") {
+    await unloadMacLaunchAgent(target.path);
+  }
   if (target.path && (await fileExists(target.path))) {
     await fs.unlink(target.path);
   }
   return { ok: true, message: "Runtime autostart removed.", ...(await runtimeAutostartStatus()) };
+}
+
+function macLaunchAgentDomain() {
+  return `gui/${typeof process.getuid === "function" ? process.getuid() : os.userInfo().uid}`;
+}
+
+async function macLaunchAgentStatus() {
+  try {
+    const { stdout } = await execFileAsync("launchctl", ["print", `${macLaunchAgentDomain()}/com.pixelops.runtime`], { maxBuffer: 1024 * 1024 });
+    const lastExit = stdout.match(/last exit code = ([^\n]+)/)?.[1]?.trim();
+    const state = stdout.match(/state = ([^\n]+)/)?.[1]?.trim();
+    const failed = Boolean(lastExit && !lastExit.startsWith("0") && !lastExit.includes("never exited"));
+    return {
+      loaded: true,
+      state,
+      last_exit_code: lastExit,
+      message: failed ? `launchd loaded, last exit ${lastExit}. Check ${path.join(macAutostartLogDir(), "runtime.launchd.err.log")}` : undefined,
+    };
+  } catch {
+    return { loaded: false };
+  }
+}
+
+async function reloadMacLaunchAgent(plistPath: string) {
+  await unloadMacLaunchAgent(plistPath);
+  await execFileAsync("launchctl", ["bootstrap", macLaunchAgentDomain(), plistPath]);
+  await execFileAsync("launchctl", ["kickstart", "-k", `${macLaunchAgentDomain()}/com.pixelops.runtime`]);
+}
+
+async function unloadMacLaunchAgent(plistPath: string) {
+  if (!plistPath) {
+    return;
+  }
+  try {
+    await execFileAsync("launchctl", ["bootout", macLaunchAgentDomain(), plistPath]);
+  } catch {
+    // Not loaded yet.
+  }
 }
 
 async function ensureSpritePreviews() {

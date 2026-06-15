@@ -34,6 +34,9 @@ export type RuntimeAutostartStatus = {
   supported: boolean;
   installed: boolean;
   path: string;
+  loaded?: boolean;
+  state?: string;
+  last_exit_code?: string;
   ok?: boolean;
   message?: string;
 };
