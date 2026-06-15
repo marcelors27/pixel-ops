@@ -36,6 +36,9 @@ class RuntimeTarget:
     height: int
     output_name: str
     output: DisplayOutput
+    started: bool = False
+    next_start_attempt_at: float = 0.0
+    last_error: str = ""
 
 
 @dataclass
@@ -149,13 +152,13 @@ def today_events(now: datetime, calendar_paths: list[Path], calendar_enabled: bo
 
 
 def selected_output(args: argparse.Namespace) -> str:
-    if args.output:
+    if getattr(args, "output", None):
         return args.output
-    if args.display:
+    if getattr(args, "display", False):
         return "turzx"
-    if args.window:
+    if getattr(args, "window", False):
         return "window"
-    if args.gif:
+    if getattr(args, "gif", False):
         return "gif"
     return "preview"
 
@@ -190,7 +193,7 @@ def runtime_display_config(args: argparse.Namespace, display_cfg: dict, select_c
 
 
 def runtime_display_configs(args: argparse.Namespace, display_cfg: dict) -> list[dict]:
-    if args.output or args.display or args.window or args.gif or args.preview:
+    if _args_selects_output(args):
         return [runtime_display_config(args, display_cfg)]
     active = runtime_display_config(args, display_cfg, select_configured_display=False)
     device_cfg = runtime_device_config(active)
@@ -282,13 +285,23 @@ def runtime_output(args: argparse.Namespace, display_cfg: dict) -> str:
 
 
 def _runtime_output_name(args: argparse.Namespace, display_cfg: dict) -> str:
-    if args.output or args.display or args.window or args.gif or args.preview:
+    if _args_selects_output(args):
         return selected_output(args)
     device_cfg = runtime_device_config(display_cfg)
     output = _normalize_output_name(device_cfg.get("output") or device_cfg.get("target") or "preview")
     if output in ("preview", "gif", "turzx", "thermalright", "window"):
         return output
     return "preview"
+
+
+def _args_selects_output(args: argparse.Namespace) -> bool:
+    return bool(
+        getattr(args, "output", None)
+        or getattr(args, "display", False)
+        or getattr(args, "window", False)
+        or getattr(args, "gif", False)
+        or getattr(args, "preview", False)
+    )
 
 
 def runtime_seconds(args: argparse.Namespace, display_cfg: dict) -> float:
@@ -439,7 +452,7 @@ def main() -> int:
     plugin_dir = APP_DIR / "plugins" / plugin.name
     runtime_config = load_runtime_config()
     raw_display_cfg = load_config(APP_DIR / "config/display.json")["display"]
-    use_virtual_displays = not (args.output or args.display or args.window or args.gif or args.preview)
+    use_virtual_displays = not _args_selects_output(args)
     display_cfg = runtime_display_config(args, raw_display_cfg, select_configured_display=not use_virtual_displays)
     people_cfg = load_config(APP_DIR / "config/people.json")["people"]
     plugin_cfg = plugin.load_config(plugin_dir, load_config)
@@ -580,21 +593,68 @@ def main() -> int:
                 integration_runtime = build_integration_runtime_from_config(next_runtime_config)
                 runtime_config = next_runtime_config
             for target in current_state.targets:
-                target.output.stop()
+                if target.started:
+                    target.output.stop()
             next_state = build_runtime_state()
             for target in next_state.targets:
-                target.output.start()
+                start_target(target)
             return next_state
         except Exception as error:
             print(f"[pixel-ops config] hot reload failed: {type(error).__name__}: {error}", file=sys.stderr)
             return current_state
 
+    output_retry_mode = runtime_forever(args, display_cfg)
+    output_retry_seconds = max(1.0, float(runtime_device_config(display_cfg).get("output_retry_seconds", 5)))
+
+    def start_target(target: RuntimeTarget, retry: bool = output_retry_mode) -> bool:
+        if target.started:
+            return True
+        now_monotonic = time.monotonic()
+        if retry and now_monotonic < target.next_start_attempt_at:
+            return False
+        try:
+            target.output.start()
+            target.started = True
+            target.last_error = ""
+            print(f"[pixel-ops output] started {target.name}", file=sys.stderr)
+            return True
+        except RuntimeError as error:
+            if not retry:
+                raise
+            message = str(error)
+            if message != target.last_error:
+                print(f"[pixel-ops output] {target.name} unavailable: {message}; retrying in {output_retry_seconds:.0f}s", file=sys.stderr)
+                target.last_error = message
+            target.next_start_attempt_at = now_monotonic + output_retry_seconds
+            target.started = False
+            try:
+                target.output.stop()
+            except Exception:
+                pass
+            return False
+
+    def send_frame(target: RuntimeTarget, frame) -> None:
+        if not start_target(target):
+            return
+        try:
+            target.output.send(frame)
+        except RuntimeError as error:
+            if not output_retry_mode:
+                raise
+            print(f"[pixel-ops output] {target.name} send failed: {error}; will reconnect", file=sys.stderr)
+            target.started = False
+            target.next_start_attempt_at = time.monotonic() + output_retry_seconds
+            try:
+                target.output.stop()
+            except Exception:
+                pass
+
     try:
         for target in runtime_state.targets:
-            target.output.start()
+            start_target(target)
         if len(runtime_state.targets) == 1 and runtime_state.targets[0].output_name == "preview" and not runtime_preview_sequence(args, display_cfg):
             now = datetime.now(ZoneInfo(primary_tz))
-            runtime_state.targets[0].output.send(runtime_state.app.render_frame(now))
+            send_frame(runtime_state.targets[0], runtime_state.app.render_frame(now))
             return 0
 
         frame_delay = 1 / fps
@@ -607,11 +667,11 @@ def main() -> int:
                 runtime_state = maybe_reload_runtime(runtime_state)
                 target = runtime_state.targets[0]
                 if splash_frame is not None and frame_index < splash_frame_count(runtime_state.display_cfg, fps):
-                    target.output.send(splash_frame)
+                    send_frame(target, splash_frame)
                 else:
                     target_splash_frames = splash_frame_count(runtime_state.display_cfg, fps) if splash_frame is not None else 0
                     now = started + timedelta(seconds=(frame_index - target_splash_frames) / fps)
-                    target.output.send(runtime_state.app.render_frame(now))
+                    send_frame(target, runtime_state.app.render_frame(now))
             return 0
 
         if splash_frame_limit > 0:
@@ -620,7 +680,7 @@ def main() -> int:
                 loop_started = time.perf_counter()
                 if splash_frame is not None:
                     for target in runtime_state.targets:
-                        target.output.send(splash_frame)
+                        send_frame(target, splash_frame)
                 elapsed = time.perf_counter() - loop_started
                 remaining = splash_end_at - time.perf_counter()
                 if remaining <= 0:
@@ -635,7 +695,7 @@ def main() -> int:
             now = datetime.now(ZoneInfo(primary_tz))
             frame = runtime_state.app.render_frame(now)
             for target in runtime_state.targets:
-                target.output.send(frame)
+                send_frame(target, frame)
             elapsed = time.perf_counter() - loop_started
             if elapsed < frame_delay:
                 time.sleep(frame_delay - elapsed)
@@ -645,7 +705,8 @@ def main() -> int:
     finally:
         integration_runtime.close()
         for target in runtime_state.targets:
-            target.output.stop()
+            if target.started:
+                target.output.stop()
     return 0
 
 
