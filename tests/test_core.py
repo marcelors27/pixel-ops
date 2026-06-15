@@ -4,13 +4,16 @@ import json
 import tempfile
 import time
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from PIL import Image
 
 from pixel_ops.config_loader import ConfigWatcher, load_config_prefer_json
 from pixel_ops.core.app import PixelOpsApp
+from pixel_ops.data_sources.calendar import CalendarEvent
+from pixel_ops.data_sources.companions import CompanionMember, CompanionSnapshot
 from pixel_ops.events.event_bus import EventBus
 from pixel_ops.main import runtime_display_config
 
@@ -71,6 +74,11 @@ class DummyCompanionSource:
         return {"members": 1}
 
 
+class DummySnapshotCompanionSource:
+    def current(self, now=None):
+        return CompanionSnapshot(members=(CompanionMember(user_id="discord:u1", name="Ana"),), group_id="discord:c1")
+
+
 class CoreTests(unittest.TestCase):
     def test_event_bus_is_bounded_and_drains_in_order(self):
         bus = EventBus[str](maxlen=2)
@@ -123,6 +131,37 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(scene.last["companion_snapshot"], {"members": 1})
         self.assertEqual(scene.last["today_events"], ["meeting-a", "meeting-b"])
         self.assertEqual(scene.last["people_times"][0].timezone, "America/Sao_Paulo")
+
+    def test_pixel_ops_app_adds_calendar_companions_only_during_meeting_time(self):
+        scene = DummyScene()
+        now = datetime(2026, 6, 13, 10, 15, tzinfo=ZoneInfo("America/Sao_Paulo"))
+        meeting = CalendarEvent(
+            "Planning",
+            now.replace(hour=10, minute=0),
+            ends_at=now.replace(hour=10, minute=30),
+            attendees=("Bia", "Caio"),
+        )
+        app = PixelOpsApp(
+            scene=scene,
+            people_config=[],
+            next_event=lambda _: meeting,
+            today_events=lambda _: [meeting],
+            pull_request_source=DummyPullRequests(),
+            companion_source=DummySnapshotCompanionSource(),
+        )
+
+        app.render_frame(now)
+
+        snapshot = scene.last["companion_snapshot"]
+        self.assertIsInstance(snapshot, CompanionSnapshot)
+        self.assertEqual([member.user_id.split(":", 1)[0] for member in snapshot.members], ["discord", "calendar", "calendar"])
+        self.assertEqual([member.name for member in snapshot.members], ["Ana", "Bia", "Caio"])
+        self.assertIn("calendar:", snapshot.group_id)
+
+        app.render_frame(now + timedelta(minutes=30))
+
+        snapshot = scene.last["companion_snapshot"]
+        self.assertEqual([member.user_id for member in snapshot.members], ["discord:u1"])
 
     def test_config_loader_prefers_json_over_yaml(self):
         with tempfile.TemporaryDirectory() as tmp:

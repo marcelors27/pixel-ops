@@ -1228,6 +1228,7 @@ class OverworldScene:
             seed = int(hashlib.sha1(member.user_id.encode("utf-8")).hexdigest()[:8], 16)
             visual = self._companion_visual(member.user_id)
             state = self._voice_companion_state(member.user_id, seed, ash_x, ash_y, visual.get("sprite_variant"))
+            calendar_companion = self._is_calendar_companion(member.user_id)
             muted = bool(getattr(member, "muted", False))
             streaming = stream_active and member.user_id in streamer_ids
             watching_stream = stream_active and not streaming
@@ -1244,6 +1245,8 @@ class OverworldScene:
             if streaming or muted or (abs(state.x - state.target_x) < 0.6 and abs(state.y - state.target_y) < 0.6):
                 anim = f"idle_{state.direction}"
             companion = self.npc_sprites.frame(state.variant, anim, self.frame)
+            if calendar_companion:
+                companion = self._calendar_companion_sprite(companion)
             if watching_stream:
                 companion = self._stream_viewer_sprite(companion)
             if muted:
@@ -1262,6 +1265,8 @@ class OverworldScene:
                 state.target_x = state.x
                 state.target_y = state.y
             label = str(visual.get("label") or member.name)
+            if calendar_companion:
+                label = f"CAL {label}"
             layers.append((companion, x, y, self._short_companion_name(label)))
             if streaming:
                 screen = self._live_screen_sprite()
@@ -1315,6 +1320,22 @@ class OverworldScene:
         muted = Image.blend(rgba, shade, 0.48)
         muted.putalpha(alpha)
         return muted
+
+    @staticmethod
+    def _calendar_companion_sprite(sprite: Image.Image) -> Image.Image:
+        rgba = sprite.convert("RGBA")
+        alpha = rgba.getchannel("A")
+        aura = Image.new("RGBA", rgba.size, (245, 190, 74, 255))
+        tinted = Image.blend(rgba, aura, 0.22)
+        draw = ImageDraw.Draw(tinted)
+        draw.rectangle((0, 0, min(9, tinted.width - 1), min(7, tinted.height - 1)), fill=(36, 42, 68, 230), outline=(245, 220, 132, 255))
+        draw.rectangle((2, 3, min(7, tinted.width - 2), min(5, tinted.height - 2)), fill=(245, 220, 132, 255))
+        tinted.putalpha(alpha)
+        return tinted
+
+    @staticmethod
+    def _is_calendar_companion(user_id: str) -> bool:
+        return str(user_id).startswith("calendar:")
 
     def _companion_visual(self, user_id: str) -> dict:
         raw = self.companion_config if isinstance(self.companion_config, dict) else {}

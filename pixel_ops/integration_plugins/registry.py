@@ -156,5 +156,3 @@ def _wrap_runtime_sources(runtime: IntegrationRuntime) -> None:
         runtime.task_source = AsyncCurrentSource(runtime.task_source)
     if not isinstance(runtime.media_source, NullMediaSource):
         runtime.media_source = AsyncCurrentSource(runtime.media_source)
-    if not isinstance(runtime.companion_source, NullCompanionSource):
-        runtime.companion_source = AsyncCurrentSource(runtime.companion_source)

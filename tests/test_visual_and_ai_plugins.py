@@ -134,6 +134,30 @@ class VisualAndAiPluginTests(unittest.TestCase):
         scene.frame += max(1, scene.scene_fps // 4)
         self.assertNotEqual(scene._live_screen_sprite().tobytes(), live_screen.tobytes())
 
+    def test_pokemon_scene_marks_calendar_companions_differently_from_discord(self):
+        snapshot = CompanionSnapshot(
+            group_id="discord:c1,calendar:planning",
+            members=(
+                CompanionMember("discord:u1", "Ana"),
+                CompanionMember("calendar:planning:bia", "Bia"),
+            ),
+        )
+        scene = OverworldScene(
+            320,
+            240,
+            "America/Sao_Paulo",
+            scanlines=False,
+            pokemon_api=None,
+            lazy_download=False,
+            game_config={"hud_height": 72, "text_box_height": 76},
+        )
+
+        scene.render_full([], None, datetime.now(ZoneInfo("America/Sao_Paulo")), companion_snapshot=snapshot)
+
+        labels = [layer[3] for layer in scene._sprite_layers(scene.state.phase) if layer[3]]
+        self.assertIn("Ana", labels)
+        self.assertIn("CAL Bia", labels)
+
     def test_pokemon_capture_hud_renders_recent_captures(self):
         now = datetime(2026, 5, 26, 12, 0, tzinfo=ZoneInfo("UTC"))
         scene = OverworldScene(

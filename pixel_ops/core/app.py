@@ -7,7 +7,7 @@ from typing import Protocol
 from PIL import Image
 
 from pixel_ops.data_sources.calendar import CalendarEvent
-from pixel_ops.data_sources.companions import CompanionSource
+from pixel_ops.data_sources.companions import CompanionSnapshot, CompanionSource, calendar_companion_snapshot, merge_companion_snapshots
 from pixel_ops.data_sources.gamification import GamificationSource
 from pixel_ops.data_sources.tasks import TaskSource
 from pixel_ops.data_sources.timezones import build_people_times
@@ -90,8 +90,13 @@ class PixelOpsApp:
 
     def render_frame(self, now: datetime) -> Image.Image:
         task_snapshot = self.task_source.current(now) if self.task_source else None
-        companion_snapshot = self.companion_source.current(now) if self.companion_source else None
         today_events = self.today_events(now) if self.today_events else []
+        source_companion_snapshot = self.companion_source.current(now) if self.companion_source else None
+        meeting_companion_snapshot = calendar_companion_snapshot(today_events, now)
+        if isinstance(source_companion_snapshot, CompanionSnapshot):
+            companion_snapshot = merge_companion_snapshots(source_companion_snapshot, meeting_companion_snapshot)
+        else:
+            companion_snapshot = meeting_companion_snapshot or source_companion_snapshot
         kwargs = {
             "pc_stats": self.pc_stats_source.current(now) if self.pc_stats_source else None,
             "task_snapshot": task_snapshot,
