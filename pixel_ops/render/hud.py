@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import math
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageSequence
 
 from pixel_ops.data_sources.ai_usage import AIUsageSnapshot
 from pixel_ops.data_sources.availability import status_for
@@ -14,7 +15,7 @@ from pixel_ops.data_sources.media import MediaNowPlaying
 from pixel_ops.data_sources.pc_stats import PCStatsSnapshot
 from pixel_ops.data_sources.tasks import TaskItem, TaskSnapshot
 from pixel_ops.data_sources.timezones import PersonTime
-from pixel_ops.data_sources.weather import WeatherState
+from pixel_ops.data_sources.weather import WeatherForecastDay, WeatherState
 from pixel_ops.events.base import EventCategory, WorkEvent
 from pixel_ops.events.github_events import PullRequestSummary
 from pixel_ops.render.fonts import font, icon_font, scaled_px
@@ -25,6 +26,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
     "pokemon": {
         "timezones": (93, 169, 233),
         "timezones_clock": (93, 169, 233),
+        "clock": (93, 169, 233),
         "activity": (239, 100, 97),
         "meetings_day": (247, 201, 72),
         "calendar_day": (247, 201, 72),
@@ -32,18 +34,21 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "gauges": (190, 119, 246),
         "mana": (79, 159, 255),
         "weather": (79, 192, 218),
+        "weather_forecast": (79, 192, 218),
         "pc_stats": (240, 163, 93),
         "tasks": (126, 196, 122),
         "clickup_tasks": (126, 196, 122),
         "tasks_board": (223, 122, 122),
         "media": (247, 169, 64),
         "now_playing": (247, 169, 64),
+        "media_asset": (149, 215, 255),
         "gamification": (235, 86, 96),
         "pokemon_captures": (235, 86, 96),
     },
     "terminal": {
         "timezones": (98, 220, 142),
         "timezones_clock": (98, 220, 142),
+        "clock": (98, 220, 142),
         "activity": (96, 204, 255),
         "meetings_day": (232, 219, 116),
         "calendar_day": (232, 219, 116),
@@ -51,18 +56,21 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "gauges": (150, 225, 255),
         "mana": (96, 204, 255),
         "weather": (90, 195, 255),
+        "weather_forecast": (90, 195, 255),
         "pc_stats": (188, 255, 128),
         "tasks": (122, 240, 164),
         "clickup_tasks": (122, 240, 164),
         "tasks_board": (255, 160, 128),
         "media": (188, 255, 128),
         "now_playing": (188, 255, 128),
+        "media_asset": (96, 204, 255),
         "gamification": (122, 240, 164),
         "pokemon_captures": (122, 240, 164),
     },
     "ocean": {
         "timezones": (75, 175, 225),
         "timezones_clock": (75, 175, 225),
+        "clock": (75, 175, 225),
         "activity": (91, 204, 189),
         "meetings_day": (165, 216, 255),
         "calendar_day": (165, 216, 255),
@@ -70,18 +78,21 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "gauges": (120, 190, 255),
         "mana": (75, 175, 225),
         "weather": (66, 197, 218),
+        "weather_forecast": (66, 197, 218),
         "pc_stats": (88, 183, 210),
         "tasks": (123, 225, 188),
         "clickup_tasks": (123, 225, 188),
         "tasks_board": (102, 190, 235),
         "media": (140, 210, 255),
         "now_playing": (140, 210, 255),
+        "media_asset": (91, 204, 189),
         "gamification": (98, 184, 222),
         "pokemon_captures": (98, 184, 222),
     },
     "ember": {
         "timezones": (255, 177, 93),
         "timezones_clock": (255, 177, 93),
+        "clock": (255, 177, 93),
         "activity": (255, 111, 91),
         "meetings_day": (255, 207, 102),
         "calendar_day": (255, 207, 102),
@@ -89,12 +100,14 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "gauges": (234, 118, 165),
         "mana": (93, 169, 233),
         "weather": (255, 154, 89),
+        "weather_forecast": (255, 154, 89),
         "pc_stats": (255, 190, 98),
         "tasks": (255, 161, 96),
         "clickup_tasks": (255, 161, 96),
         "tasks_board": (255, 112, 112),
         "media": (255, 196, 92),
         "now_playing": (255, 196, 92),
+        "media_asset": (255, 177, 93),
         "gamification": (255, 96, 96),
         "pokemon_captures": (255, 96, 96),
     },
@@ -123,6 +136,9 @@ def hud_palette_for_kind(pal, layout_theme: str | None, kind: str):
 
 
 _TEXT_WIDTH_CACHE: dict[tuple[int, str], int] = {}
+_ASSET_IMAGE_CACHE: dict[tuple[str, float], tuple[Image.Image, ...]] = {}
+_ASSET_DURATION_CACHE: dict[tuple[str, float], tuple[int, ...]] = {}
+_ASSET_VIDEO_FRAME_CACHE: dict[tuple[str, float, int], Image.Image] = {}
 
 
 def _text_width(draw: ImageDraw.ImageDraw, text: str, text_font) -> int:
@@ -377,6 +393,9 @@ def _draw_configured_hud(
         inner_box = _draw_panel_title(draw, timezones_box, "TIMEZONES", hud_pal)
         _draw_timezone_clock_grid(draw, people, inner_box, chip_font, zone_font, name_font, hud_pal)
 
+    for clock_item, clock_box in _layout_items(layout, "clock"):
+        _draw_clock_panel(draw, now, clock_box, hud_palette_for_kind(pal, layout_theme, "clock"), clock_item)
+
     for activity_box in _layout_boxes(layout, "activity"):
         _draw_activity_panel(draw, event, pull_requests, now, activity_box, hud_palette_for_kind(pal, layout_theme, "activity"))
 
@@ -395,6 +414,9 @@ def _draw_configured_hud(
     for weather_box in _layout_boxes(layout, "weather"):
         _draw_weather_compact(draw, weather, weather_box, hud_palette_for_kind(pal, layout_theme, "weather"))
 
+    for weather_box in _layout_boxes(layout, "weather_forecast"):
+        _draw_weather_forecast_panel(draw, weather, weather_box, hud_palette_for_kind(pal, layout_theme, "weather_forecast"))
+
     for pc_box in _layout_boxes(layout, "pc_stats"):
         _draw_pc_stats_panel(draw, pc_stats, pc_box, hud_palette_for_kind(pal, layout_theme, "pc_stats"))
 
@@ -407,18 +429,25 @@ def _draw_configured_hud(
     for media_box in [*_layout_boxes(layout, "media"), *_layout_boxes(layout, "now_playing")]:
         _draw_media_panel(draw, media, now, media_box, hud_palette_for_kind(pal, layout_theme, "media"))
 
+    for asset_item, asset_box in _layout_items(layout, "media_asset"):
+        _draw_media_asset_panel(draw, now, asset_box, hud_palette_for_kind(pal, layout_theme, "media_asset"), asset_item)
+
     for game_box in [*_layout_boxes(layout, "gamification"), *_layout_boxes(layout, "hp")]:
         _draw_gamification_panel(draw, gamification, game_box, hud_palette_for_kind(pal, layout_theme, "gamification"))
 
 
 def _layout_boxes(layout: dict, key: str) -> list[tuple[int, int, int, int]]:
+    return [box for _raw, box in _layout_items(layout, key)]
+
+
+def _layout_items(layout: dict, key: str) -> list[tuple[dict, tuple[int, int, int, int]]]:
     boxes = []
     for item_key, raw in layout.items():
         if not isinstance(raw, dict):
             continue
         kind = str(raw.get("kind") or item_key)
         if kind == key:
-            boxes.append(_layout_raw_box(raw, (0, 0, 1, 1)))
+            boxes.append((raw, _layout_raw_box(raw, (0, 0, 1, 1))))
     return boxes
 
 
@@ -751,18 +780,18 @@ def _draw_weather_compact(draw: ImageDraw.ImageDraw, weather: WeatherState | Non
     PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
     content_box = _draw_panel_title(draw, box, "WEATHER", pal)
     label_font = font(10)
-    range_font = font(7)
+    metric_font = font(6)
     x0, y0, x1, y1 = content_box
     content_w = max(1, x1 - x0 - 12)
     content_h = max(1, y1 - y0 - 8)
     icon_w = 24
-    gap = 7
-    text_w = min(max(1, content_w - icon_w - gap), 70)
+    gap = 6
+    text_w = max(1, content_w - icon_w - gap)
     group_w = icon_w + gap + text_w
     group_x = x0 + max(6, (x1 - x0 - group_w) // 2)
-    group_y = y0 + max(4, (content_h - 31) // 2 + 4)
+    group_y = y0 + max(3, (content_h - 34) // 2 + 3)
     icon_x = group_x
-    icon_y = group_y + max(0, (31 - 23) // 2)
+    icon_y = group_y + max(0, (34 - 23) // 2)
     text_x = group_x + icon_w + gap
     text_width = max(1, min(text_w, x1 - text_x - 6))
     if weather is None:
@@ -773,8 +802,122 @@ def _draw_weather_compact(draw: ImageDraw.ImageDraw, weather: WeatherState | Non
     condition = _weather_condition(weather)
     _draw_weather_icon(draw, condition, icon_x, icon_y, pal)
     label = f"{round(weather.temperature_c):d}° {_weather_condition_label(condition)}"
-    draw.text((text_x, group_y + 4), _fit_text(draw, label, text_width, label_font), font=label_font, fill=pal.ink)
-    _draw_temperature_range(draw, weather, text_x, group_y + 21, text_width, range_font, pal)
+    draw.text((text_x, group_y), _fit_text(draw, label, text_width, label_font), font=label_font, fill=pal.ink)
+    _draw_current_weather_metrics(draw, weather, text_x, group_y + 10, text_width, max(1, y1 - group_y - 10), metric_font, pal)
+
+
+def _draw_current_weather_metrics(
+    draw: ImageDraw.ImageDraw,
+    weather: WeatherState,
+    x: int,
+    y: int,
+    width: int,
+    height: int,
+    text_font,
+    pal,
+) -> None:
+    metrics = [
+        ("FEEL", f"{round(weather.apparent_temperature_c):d}°"),
+        ("H/L", _temperature_range_label(weather)),
+        ("PREC", f"{weather.precipitation_mm:.1f}"),
+        ("RAIN", f"{weather.rain_mm:.1f}"),
+        ("SNOW", f"{weather.snowfall_cm:.1f}"),
+        ("CLD", f"{weather.cloud_cover:d}%"),
+        ("WND", f"{round(weather.wind_speed_kmh):d}"),
+        ("GST", f"{round(weather.wind_gusts_kmh):d}"),
+    ]
+    if height < 22 or width < 74:
+        compact = " ".join(f"{label}:{value}" for label, value in metrics[:3])
+        draw.text((x, y), _fit_text(draw, compact, width, text_font), font=text_font, fill=pal.ink)
+        if height >= 18:
+            compact_second = " ".join(f"{label}:{value}" for label, value in metrics[3:])
+            draw.text((x, y + 9), _fit_text(draw, compact_second, width, text_font), font=text_font, fill=pal.blue)
+        return
+    columns = 2 if width >= 108 else 1
+    row_h = 7
+    rows = max(1, height // row_h)
+    visible = metrics[: rows * columns]
+    col_w = max(1, width // columns)
+    for index, (label, value) in enumerate(visible):
+        column = index % columns
+        row = index // columns
+        item_x = x + column * col_w
+        item_y = y + row * row_h
+        text = f"{label} {value}"
+        fill = pal.ink if row % 2 == 0 else pal.blue
+        draw.text((item_x, item_y), _fit_text(draw, text, col_w - 2, text_font), font=text_font, fill=fill)
+
+
+def _temperature_range_label(weather: WeatherState) -> str:
+    high = "--" if weather.temperature_max_c is None else f"{round(weather.temperature_max_c):d}"
+    low = "--" if weather.temperature_min_c is None else f"{round(weather.temperature_min_c):d}"
+    return f"{high}/{low}"
+
+
+def _draw_weather_forecast_panel(draw: ImageDraw.ImageDraw, weather: WeatherState | None, box: tuple[int, int, int, int], pal) -> None:
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    content_box = _draw_panel_title(draw, box, "7 DAY FORECAST", pal)
+    if weather is None or not weather.forecast_days:
+        text_font = font(8)
+        x0, y0, x1, y1 = content_box
+        label = "No forecast"
+        text_w = _text_width(draw, label, text_font)
+        draw.text((x0 + max(4, (x1 - x0 - text_w) // 2), y0 + max(4, (y1 - y0 - 8) // 2)), label, font=text_font, fill=pal.ink)
+        return
+    _draw_weather_forecast(draw, weather, content_box, pal)
+
+
+def _draw_weather_forecast(draw: ImageDraw.ImageDraw, weather: WeatherState, box: tuple[int, int, int, int], pal) -> None:
+    label_font = font(8)
+    temp_font = font(7)
+    micro_font = font(6)
+    x0, y0, x1, y1 = box
+    content_x = x0 + 6
+    content_y = y0 + 4
+    content_w = max(1, x1 - x0 - 12)
+    days = weather.forecast_days[:7]
+    if not days:
+        return
+    gap = 1
+    col_w = max(12, (content_w - gap * (len(days) - 1)) // len(days))
+    for index, day in enumerate(days):
+        col_x = content_x + index * (col_w + gap)
+        col_box = (col_x, content_y, min(x1 - 5, col_x + col_w), y1 - 4)
+        _draw_weather_forecast_day(draw, day, col_box, label_font, temp_font, micro_font, pal)
+
+
+def _draw_weather_forecast_day(
+    draw: ImageDraw.ImageDraw,
+    day: WeatherForecastDay,
+    box: tuple[int, int, int, int],
+    label_font,
+    temp_font,
+    micro_font,
+    pal,
+) -> None:
+    x0, y0, x1, y1 = box
+    width = max(1, x1 - x0)
+    day_label = day.date.strftime("%a")[:1].upper()
+    day_w = _text_width(draw, day_label, micro_font)
+    draw.text((x0 + max(0, (width - day_w) // 2), y0), day_label, font=micro_font, fill=pal.blue)
+    condition = _forecast_condition(day)
+    icon_size = 12 if width < 20 else 14
+    _draw_weather_icon_sized(draw, condition, x0 + max(0, (width - icon_size) // 2), y0 + 10, icon_size, pal)
+    high = "--" if day.temperature_max_c is None else f"{round(day.temperature_max_c):d}"
+    low = "--" if day.temperature_min_c is None else f"{round(day.temperature_min_c):d}"
+    if width >= 24:
+        temp_label = f"{high}/{low}"
+        text_font = temp_font
+    else:
+        temp_label = high
+        text_font = label_font
+    fitted = _fit_text(draw, temp_label, width, text_font)
+    temp_w = _text_width(draw, fitted, text_font)
+    draw.text((x0 + max(0, (width - temp_w) // 2), max(y0 + 24, y1 - 10)), fitted, font=text_font, fill=pal.ink)
+
+
+def _forecast_condition(day: WeatherForecastDay) -> str:
+    return _weather_condition_from(day.weather_code, day.effects, 0)
 
 
 def _draw_temperature_range(
@@ -803,27 +946,31 @@ def _draw_temperature_range(
 
 
 def _weather_condition(weather: WeatherState) -> str:
-    code = weather.weather_code
-    effects = set(weather.effects)
+    return _weather_condition_from(weather.weather_code, weather.effects, weather.cloud_cover)
+
+
+def _weather_condition_from(weather_code: int, effects: tuple[str, ...], cloud_cover: int) -> str:
+    code = weather_code
+    effect_set = set(effects)
     if code in (95, 96, 99):
         return "storm"
-    if code in (71, 73, 75, 77, 85, 86) or "snow" in effects:
+    if code in (71, 73, 75, 77, 85, 86) or "snow" in effect_set:
         return "snow"
     if code in (51, 53, 55, 56, 57):
         return "drizzle"
-    if code in (61, 63, 65, 66, 67, 80, 81, 82) or "rain" in effects:
+    if code in (61, 63, 65, 66, 67, 80, 81, 82) or "rain" in effect_set:
         return "rain"
     if code in (45, 48):
         return "fog"
     if code == 3:
         return "cloudy"
-    if code in (1, 2) or weather.cloud_cover >= 35:
+    if code in (1, 2) or cloud_cover >= 35:
         return "partly"
-    if "wind" in effects:
+    if "wind" in effect_set:
         return "wind"
-    if "cold" in effects:
+    if "cold" in effect_set:
         return "cold"
-    if "hot" in effects:
+    if "hot" in effect_set:
         return "hot"
     return "clear"
 
@@ -845,10 +992,15 @@ def _weather_condition_label(condition: str) -> str:
 
 
 def _draw_weather_icon(draw: ImageDraw.ImageDraw, condition: str, x: int, y: int, pal) -> None:
+    _draw_weather_icon_sized(draw, condition, x, y, 20, pal)
+
+
+def _draw_weather_icon_sized(draw: ImageDraw.ImageDraw, condition: str, x: int, y: int, size: int, pal) -> None:
     glyph, color = _weather_icon_glyph(condition, getattr(pal, "phase", ""))
-    glyph_font = icon_font(20)
+    glyph_font = icon_font(size)
+    box_size = max(12, size + 4)
     bounds = draw.textbbox((0, 0), glyph, font=glyph_font)
-    draw.text((x + (24 - (bounds[2] - bounds[0])) // 2, y + (23 - (bounds[3] - bounds[1])) // 2 - bounds[1]), glyph, font=glyph_font, fill=color)
+    draw.text((x + (box_size - (bounds[2] - bounds[0])) // 2, y + (box_size - (bounds[3] - bounds[1])) // 2 - bounds[1]), glyph, font=glyph_font, fill=color)
 
 
 def _weather_icon_glyph(condition: str, day_phase: str) -> tuple[str, tuple[int, int, int]]:
@@ -1288,6 +1440,302 @@ def _task_board_meta(task: TaskItem, now: datetime) -> str:
         bits.append(task.assignee)
     bits.append(_task_due_label(task, now))
     return " / ".join(bits)
+
+
+def _draw_clock_panel(draw: ImageDraw.ImageDraw, now: datetime, box: tuple[int, int, int, int], pal, raw: dict | None = None) -> None:
+    raw = raw or {}
+    mode = str(raw.get("clock_mode") or raw.get("mode") or "digital").lower()
+    skin = str(raw.get("clock_skin") or raw.get("skin") or "classic").lower()
+    use_24_hour = bool(raw.get("use_24_hour", True))
+    show_seconds = bool(raw.get("show_seconds", mode == "analog"))
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    x0, y0, x1, y1 = _draw_panel_title(draw, box, "CLOCK", pal)
+    inner = (x0 + 6, y0 + 5, x1 - 6, y1 - 6)
+    if mode in ("analog", "hands", "pointers", "ponteiros"):
+        _draw_analog_clock(draw, now, inner, pal, skin, show_seconds)
+    else:
+        _draw_digital_clock(draw, now, inner, pal, skin, use_24_hour, show_seconds)
+
+
+def _draw_digital_clock(draw: ImageDraw.ImageDraw, now: datetime, box: tuple[int, int, int, int], pal, skin: str, use_24_hour: bool, show_seconds: bool) -> None:
+    x0, y0, x1, y1 = box
+    width = max(1, x1 - x0)
+    height = max(1, y1 - y0)
+    if use_24_hour:
+        time_label = now.strftime("%H:%M:%S" if show_seconds else "%H:%M")
+        meridiem = ""
+    else:
+        time_label = now.strftime("%I:%M:%S" if show_seconds else "%I:%M").lstrip("0")
+        meridiem = now.strftime("%p")
+    date_label = now.strftime("%a %d %b").upper()
+    meta_label = meridiem or now.strftime("%Z") or "LOCAL"
+    value_font = _largest_font(draw, time_label, width, max(11, height - 18), 11, 30)
+    bounds = draw.textbbox((0, 0), time_label, font=value_font)
+    text_w = bounds[2] - bounds[0]
+    text_h = bounds[3] - bounds[1]
+    text_x = x0 + max(0, (width - text_w) // 2)
+    text_y = y0 + max(0, (height - text_h - 13) // 2)
+    accent = _clock_skin_color(pal, skin)
+    if skin == "neon":
+        draw.rectangle((x0, y0, x1, y1), outline=accent)
+        draw.text((text_x + 1, text_y), time_label, font=value_font, fill=pal.panel_shadow)
+    elif skin == "terminal":
+        for scan_y in range(y0 + 2, y1, 4):
+            draw.line((x0 + 1, scan_y, x1 - 1, scan_y), fill=pal.panel_shadow)
+    elif skin == "sunrise":
+        draw.rectangle((x0, y1 - 7, x1, y1 - 5), fill=pal.yellow)
+        draw.rectangle((x0, y1 - 4, x1, y1 - 2), fill=pal.red)
+    draw.text((text_x, text_y), time_label, font=value_font, fill=accent)
+    small = font(7)
+    date_y = min(y1 - 9, text_y + text_h + 4)
+    draw.text((x0, date_y), _fit_text(draw, date_label, width // 2 + 8, small), font=small, fill=pal.ink)
+    meta = _fit_text(draw, meta_label, width // 2 - 2, small)
+    meta_w = _text_width(draw, meta, small)
+    draw.text((x1 - meta_w, date_y), meta, font=small, fill=pal.blue)
+
+
+def _draw_analog_clock(draw: ImageDraw.ImageDraw, now: datetime, box: tuple[int, int, int, int], pal, skin: str, show_seconds: bool) -> None:
+    x0, y0, x1, y1 = box
+    width = max(1, x1 - x0)
+    height = max(1, y1 - y0)
+    radius = max(8, min(width, height) // 2 - 2)
+    cx = x0 + width // 2
+    cy = y0 + height // 2
+    if width > height + 34:
+        cx = x0 + radius + 2
+    accent = _clock_skin_color(pal, skin)
+    face = (cx - radius, cy - radius, cx + radius, cy + radius)
+    if skin == "station":
+        draw.ellipse(face, fill=pal.ink, outline=accent)
+        draw.ellipse((cx - radius + 3, cy - radius + 3, cx + radius - 3, cy + radius - 3), fill=pal.panel, outline=pal.ink)
+    elif skin == "neon":
+        draw.ellipse(face, fill=pal.panel_shadow, outline=accent)
+        if radius > 13:
+            draw.ellipse((cx - radius + 3, cy - radius + 3, cx + radius - 3, cy + radius - 3), outline=pal.blue)
+    elif skin == "minimal":
+        draw.ellipse(face, outline=pal.ink)
+    else:
+        draw.ellipse(face, fill=pal.panel, outline=pal.ink)
+        draw.ellipse((cx - radius + 2, cy - radius + 2, cx + radius - 2, cy + radius - 2), outline=pal.panel_shadow)
+    for tick in range(60):
+        major = tick % 5 == 0
+        if not major and radius < 22:
+            continue
+        angle = math.radians(tick * 6 - 90)
+        outer = radius - 2
+        inner = radius - (6 if major else 3)
+        color = accent if major else pal.panel_shadow
+        draw.line(
+            (
+                cx + int(math.cos(angle) * inner),
+                cy + int(math.sin(angle) * inner),
+                cx + int(math.cos(angle) * outer),
+                cy + int(math.sin(angle) * outer),
+            ),
+            fill=color,
+            width=2 if major and radius >= 26 else 1,
+        )
+    hour_value = (now.hour % 12) + now.minute / 60.0
+    minute_value = now.minute + now.second / 60.0
+    _draw_clock_hand(draw, cx, cy, hour_value * 30 - 90, radius * 0.48, pal.ink, 3 if radius >= 24 else 2)
+    _draw_clock_hand(draw, cx, cy, minute_value * 6 - 90, radius * 0.72, accent, 2)
+    if show_seconds and radius >= 16:
+        _draw_clock_hand(draw, cx, cy, now.second * 6 - 90, radius * 0.78, pal.red, 1)
+    hub = 3 if radius >= 20 else 2
+    draw.ellipse((cx - hub, cy - hub, cx + hub, cy + hub), fill=accent, outline=pal.ink)
+    if width > height + 34:
+        label_font = font(8)
+        label_x = cx + radius + 7
+        label_w = max(1, x1 - label_x)
+        draw.text((label_x, cy - 11), _fit_text(draw, now.strftime("%H:%M"), label_w, label_font), font=label_font, fill=accent)
+        draw.text((label_x, cy + 1), _fit_text(draw, now.strftime("%a %d").upper(), label_w, font(7)), font=font(7), fill=pal.ink)
+
+
+def _draw_clock_hand(draw: ImageDraw.ImageDraw, cx: int, cy: int, degrees: float, length: float, color, width: int) -> None:
+    angle = math.radians(degrees)
+    draw.line((cx, cy, cx + int(math.cos(angle) * length), cy + int(math.sin(angle) * length)), fill=color, width=width)
+
+
+def _clock_skin_color(pal, skin: str):
+    if skin == "terminal":
+        return pal.green
+    if skin == "sunrise":
+        return pal.yellow
+    if skin == "neon":
+        return pal.blue
+    if skin == "station":
+        return pal.red
+    return pal.blue
+
+
+def _largest_font(draw: ImageDraw.ImageDraw, text: str, max_width: int, max_height: int, min_size: int, max_size: int):
+    best = font(min_size)
+    for size in range(min_size, max_size + 1):
+        candidate = font(size)
+        bounds = draw.textbbox((0, 0), text, font=candidate)
+        if bounds[2] - bounds[0] <= max_width and bounds[3] - bounds[1] <= max_height:
+            best = candidate
+        else:
+            break
+    return best
+
+
+def _draw_media_asset_panel(draw: ImageDraw.ImageDraw, now: datetime, box: tuple[int, int, int, int], pal, raw: dict | None = None) -> None:
+    raw = raw or {}
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    title = str(raw.get("asset_title") or raw.get("title") or "ASSET")
+    x0, y0, x1, y1 = _draw_panel_title(draw, box, title.upper(), pal)
+    content_box = (x0 + 5, y0 + 5, x1 - 5, y1 - 5)
+    asset_path = str(raw.get("asset_path") or raw.get("path") or "").strip()
+    asset_type = str(raw.get("asset_type") or "auto").lower()
+    fit = str(raw.get("asset_fit") or "contain").lower()
+    fps = _optional_int(raw.get("asset_fps"), 12)
+    if not asset_path:
+        _draw_media_asset_empty(draw, content_box, "No asset", pal)
+        return
+    frame = _load_media_asset_frame(asset_path, asset_type, now, max(1, fps))
+    if frame is None:
+        _draw_media_asset_empty(draw, content_box, "Unavailable", pal)
+        return
+    rendered = _render_asset_frame(frame, content_box, fit, pal)
+    draw._image.paste(rendered, (content_box[0], content_box[1]))
+
+
+def _draw_media_asset_empty(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], label: str, pal) -> None:
+    x0, y0, x1, y1 = box
+    text_font = font(8)
+    draw.rectangle((x0, y0, x1, y1), fill=pal.panel_shadow, outline=pal.ink)
+    fitted = _fit_text(draw, label, max(1, x1 - x0 - 8), text_font)
+    text_w = _text_width(draw, fitted, text_font)
+    draw.text((x0 + max(4, (x1 - x0 - text_w) // 2), y0 + max(4, (y1 - y0 - 8) // 2)), fitted, font=text_font, fill=pal.ink)
+
+
+def _load_media_asset_frame(asset_path: str, asset_type: str, now: datetime, fps: int) -> Image.Image | None:
+    path = Path(asset_path).expanduser()
+    if not path.is_absolute():
+        path = Path.cwd() / path
+    try:
+        stat = path.stat()
+    except OSError:
+        return None
+    suffix = path.suffix.lower()
+    detected_type = asset_type if asset_type != "auto" else _media_asset_type_from_suffix(suffix)
+    try:
+        if detected_type == "gif":
+            return _load_gif_asset_frame(path, stat.st_mtime, now)
+        if detected_type == "video":
+            return _load_video_asset_frame(path, stat.st_mtime, now, fps)
+        return _load_static_asset_frame(path, stat.st_mtime)
+    except (OSError, ValueError, IndexError):
+        return None
+
+
+def _media_asset_type_from_suffix(suffix: str) -> str:
+    if suffix == ".gif":
+        return "gif"
+    if suffix in (".mp4", ".mov", ".m4v", ".webm", ".avi"):
+        return "video"
+    return "image"
+
+
+def _load_static_asset_frame(path: Path, mtime: float) -> Image.Image | None:
+    key = (str(path), mtime)
+    frames = _ASSET_IMAGE_CACHE.get(key)
+    if frames:
+        return frames[0]
+    image = Image.open(path).convert("RGBA")
+    _cache_asset_frames(key, (image,), (1000,))
+    return image
+
+
+def _load_gif_asset_frame(path: Path, mtime: float, now: datetime) -> Image.Image | None:
+    key = (str(path), mtime)
+    frames = _ASSET_IMAGE_CACHE.get(key)
+    durations = _ASSET_DURATION_CACHE.get(key)
+    if not frames or not durations:
+        image = Image.open(path)
+        loaded_frames: list[Image.Image] = []
+        loaded_durations: list[int] = []
+        for frame in ImageSequence.Iterator(image):
+            loaded_frames.append(frame.convert("RGBA"))
+            loaded_durations.append(max(20, int(frame.info.get("duration") or image.info.get("duration") or 100)))
+        if not loaded_frames:
+            return None
+        frames = tuple(loaded_frames)
+        durations = tuple(loaded_durations)
+        _cache_asset_frames(key, frames, durations)
+    elapsed_ms = int(now.timestamp() * 1000)
+    cycle_ms = max(1, sum(durations))
+    cursor = elapsed_ms % cycle_ms
+    total = 0
+    for index, duration in enumerate(durations):
+        total += duration
+        if cursor < total:
+            return frames[index]
+    return frames[-1]
+
+
+def _load_video_asset_frame(path: Path, mtime: float, now: datetime, fps: int) -> Image.Image | None:
+    frame_index = int((now.timestamp() % 10) * fps)
+    key = (str(path), mtime, frame_index)
+    cached = _ASSET_VIDEO_FRAME_CACHE.get(key)
+    if cached is not None:
+        return cached
+    try:
+        import imageio.v3 as iio  # type: ignore
+    except ImportError:
+        return None
+    try:
+        frame = iio.imread(path, index=frame_index)
+    except Exception:
+        try:
+            frame = iio.imread(path, index=0)
+        except Exception:
+            return None
+    image = Image.fromarray(frame).convert("RGBA")
+    if len(_ASSET_VIDEO_FRAME_CACHE) > 32:
+        _ASSET_VIDEO_FRAME_CACHE.clear()
+    _ASSET_VIDEO_FRAME_CACHE[key] = image
+    return image
+
+
+def _cache_asset_frames(key: tuple[str, float], frames: tuple[Image.Image, ...], durations: tuple[int, ...]) -> None:
+    if len(_ASSET_IMAGE_CACHE) > 16:
+        _ASSET_IMAGE_CACHE.clear()
+        _ASSET_DURATION_CACHE.clear()
+    _ASSET_IMAGE_CACHE[key] = frames
+    _ASSET_DURATION_CACHE[key] = durations
+
+
+def _render_asset_frame(frame: Image.Image, box: tuple[int, int, int, int], fit: str, pal) -> Image.Image:
+    x0, y0, x1, y1 = box
+    width = max(1, x1 - x0)
+    height = max(1, y1 - y0)
+    canvas = Image.new("RGB", (width, height), pal.panel_shadow)
+    source = frame.convert("RGBA")
+    if fit == "stretch":
+        resized = source.resize((width, height), Image.Resampling.LANCZOS)
+        canvas.paste(resized.convert("RGB"), (0, 0), resized)
+        return canvas
+    scale = max(width / source.width, height / source.height) if fit == "cover" else min(width / source.width, height / source.height)
+    resized = source.resize((max(1, int(source.width * scale)), max(1, int(source.height * scale))), Image.Resampling.LANCZOS)
+    if fit == "cover":
+        left = max(0, (resized.width - width) // 2)
+        top = max(0, (resized.height - height) // 2)
+        resized = resized.crop((left, top, left + width, top + height))
+        canvas.paste(resized.convert("RGB"), (0, 0), resized)
+        return canvas
+    paste_x = (width - resized.width) // 2
+    paste_y = (height - resized.height) // 2
+    canvas.paste(resized.convert("RGB"), (paste_x, paste_y), resized)
+    return canvas
+
+
+def _optional_int(value, default: int) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
 
 
 def _draw_media_panel(draw: ImageDraw.ImageDraw, media: MediaNowPlaying | None, now: datetime, box: tuple[int, int, int, int], pal) -> None:

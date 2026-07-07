@@ -5,7 +5,7 @@ import json
 import random
 import tempfile
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -18,6 +18,7 @@ from pixel_ops.data_sources.timezones import build_people_times
 from pixel_ops.data_sources.weather import (
     OpenMeteoWeatherSource,
     OpenWeatherMapWeatherSource,
+    WeatherForecastDay,
     WeatherState,
     WttrInWeatherSource,
     build_weather_source,
@@ -36,6 +37,8 @@ from pixel_ops.render.hud import (
     _ai_usage_gauge_value,
     _ai_usage_percent,
     _draw_ai_usage_panel,
+    _draw_weather_compact,
+    _draw_weather_forecast_panel,
     _draw_timezone_timeline_row,
     _future_local_time,
     _timezone_timeline_fill,
@@ -207,6 +210,130 @@ class VisualAndAiPluginTests(unittest.TestCase):
         panel = img.getpixel((250, 110))
         card_pixels = [img.getpixel((x, y)) for x in range(8, 220) for y in range(20, 80)]
         self.assertGreater(sum(1 for pixel in card_pixels if pixel != panel), 80)
+
+    def test_clock_hud_renders_digital_time(self):
+        now = datetime(2026, 6, 2, 18, 35, tzinfo=ZoneInfo("America/Sao_Paulo"))
+        scene = OverworldScene(
+            132,
+            64,
+            "America/Sao_Paulo",
+            scanlines=False,
+            pokemon_api=None,
+            lazy_download=False,
+            game_config={"hud_height": 0, "text_box_height": 0},
+            display_layout={
+                "clock": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 132,
+                    "height": 64,
+                    "kind": "clock",
+                    "clock_mode": "digital",
+                    "clock_skin": "neon",
+                    "use_24_hour": True,
+                }
+            },
+        )
+
+        img = scene.render_base([], None, now)
+
+        panel = img.getpixel((124, 56))
+        clock_pixels = [img.getpixel((x, y)) for x in range(8, 120) for y in range(18, 48)]
+        self.assertGreater(sum(1 for pixel in clock_pixels if pixel != panel), 80)
+
+    def test_clock_hud_renders_analog_hands(self):
+        now = datetime(2026, 6, 2, 10, 10, 30, tzinfo=ZoneInfo("America/Sao_Paulo"))
+        scene = OverworldScene(
+            96,
+            96,
+            "America/Sao_Paulo",
+            scanlines=False,
+            pokemon_api=None,
+            lazy_download=False,
+            game_config={"hud_height": 0, "text_box_height": 0},
+            display_layout={
+                "clock": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 96,
+                    "height": 96,
+                    "kind": "clock",
+                    "clock_mode": "analog",
+                    "clock_skin": "station",
+                    "show_seconds": True,
+                }
+            },
+        )
+
+        img = scene.render_base([], None, now)
+
+        panel = img.getpixel((88, 88))
+        clock_pixels = [img.getpixel((x, y)) for x in range(18, 78) for y in range(24, 84)]
+        self.assertGreater(sum(1 for pixel in clock_pixels if pixel != panel), 120)
+
+    def test_media_asset_hud_renders_static_image(self):
+        now = datetime(2026, 6, 2, 10, 10, 30, tzinfo=ZoneInfo("America/Sao_Paulo"))
+        with tempfile.TemporaryDirectory() as tmp:
+            asset_path = Path(tmp) / "badge.png"
+            Image.new("RGB", (40, 24), (220, 40, 80)).save(asset_path)
+            scene = OverworldScene(
+                128,
+                88,
+                "America/Sao_Paulo",
+                scanlines=False,
+                pokemon_api=None,
+                lazy_download=False,
+                game_config={"hud_height": 0, "text_box_height": 0},
+                display_layout={
+                    "asset": {
+                        "x": 0,
+                        "y": 0,
+                        "width": 128,
+                        "height": 88,
+                        "kind": "media_asset",
+                        "asset_path": str(asset_path),
+                        "asset_type": "image",
+                        "asset_fit": "contain",
+                    }
+                },
+            )
+
+            img = scene.render_base([], None, now)
+
+        asset_pixels = [img.getpixel((x, y)) for x in range(16, 112) for y in range(22, 76)]
+        self.assertGreater(sum(1 for pixel in asset_pixels if pixel[0] > 180 and pixel[1] < 80), 80)
+
+    def test_media_asset_hud_animates_gif_frames(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            asset_path = Path(tmp) / "pulse.gif"
+            frames = [Image.new("RGB", (32, 32), (230, 30, 40)), Image.new("RGB", (32, 32), (30, 200, 90))]
+            frames[0].save(asset_path, save_all=True, append_images=[frames[1]], duration=250, loop=0)
+            scene = OverworldScene(
+                96,
+                96,
+                "America/Sao_Paulo",
+                scanlines=False,
+                pokemon_api=None,
+                lazy_download=False,
+                game_config={"hud_height": 0, "text_box_height": 0},
+                display_layout={
+                    "asset": {
+                        "x": 0,
+                        "y": 0,
+                        "width": 96,
+                        "height": 96,
+                        "kind": "media_asset",
+                        "asset_path": str(asset_path),
+                        "asset_type": "gif",
+                        "asset_fit": "cover",
+                    }
+                },
+            )
+
+            first = scene.render_base([], None, datetime(1970, 1, 1, 0, 0, 0, 0, tzinfo=ZoneInfo("UTC")))
+            second = scene.render_base([], None, datetime(1970, 1, 1, 0, 0, 0, 300000, tzinfo=ZoneInfo("UTC")))
+
+        self.assertNotEqual(first.tobytes(), second.tobytes())
 
     def test_pokemon_capture_cause_does_not_render_message_body(self):
         event = WorkEvent(category=EventCategory.MESSAGE_IMPORTANT, title="private raw message body", source="slack")
@@ -496,6 +623,74 @@ class VisualAndAiPluginTests(unittest.TestCase):
         scene.render_base([], None, datetime.now(ZoneInfo("America/Sao_Paulo")), weather=weather)
 
         self.assertEqual(calls, [])
+
+    def test_weather_hud_renders_current_conditions(self):
+        weather = WeatherState(
+            city="Porto Alegre",
+            temperature_c=18,
+            temperature_min_c=14,
+            temperature_max_c=22,
+            apparent_temperature_c=17,
+            precipitation_mm=1.2,
+            rain_mm=1.2,
+            snowfall_cm=0,
+            cloud_cover=62,
+            wind_speed_kmh=18,
+            wind_gusts_kmh=31,
+            weather_code=61,
+            effects=("rain", "cloudy"),
+        )
+        pal = day_night_palette(12)
+        img = Image.new("RGB", (220, 64), pal.sky_top)
+        draw = ImageDraw.Draw(img)
+
+        _draw_weather_compact(draw, weather, (0, 0, 208, 56), pal)
+
+        self.assertIsNotNone(img.getbbox())
+        self.assertGreater(
+            len({img.getpixel((x, y)) for x in range(img.width) for y in range(img.height)}),
+            8,
+        )
+
+    def test_weather_forecast_hud_renders_seven_day_strip(self):
+        now = datetime(2026, 6, 15, 12, 0, tzinfo=ZoneInfo("America/Sao_Paulo"))
+        weather = WeatherState(
+            city="Porto Alegre",
+            temperature_c=18,
+            temperature_min_c=14,
+            temperature_max_c=22,
+            apparent_temperature_c=18,
+            precipitation_mm=0,
+            rain_mm=0,
+            snowfall_cm=0,
+            cloud_cover=20,
+            wind_speed_kmh=8,
+            wind_gusts_kmh=14,
+            weather_code=0,
+            effects=("clear",),
+            forecast_days=tuple(
+                WeatherForecastDay(
+                    date=now.date() + timedelta(days=index),
+                    temperature_min_c=12 + index,
+                    temperature_max_c=20 + index,
+                    precipitation_mm=0,
+                    weather_code=61 if index == 2 else 0,
+                    effects=("rain",) if index == 2 else ("clear",),
+                )
+                for index in range(7)
+            ),
+        )
+        pal = day_night_palette(12)
+        img = Image.new("RGB", (220, 64), pal.sky_top)
+        draw = ImageDraw.Draw(img)
+
+        _draw_weather_forecast_panel(draw, weather, (0, 0, 208, 56), pal)
+
+        self.assertIsNotNone(img.getbbox())
+        self.assertGreater(
+            len({img.getpixel((x, y)) for x in range(img.width) for y in range(img.height)}),
+            8,
+        )
 
     def test_ai_usage_panel_draws_full_width_progress_and_used_label(self):
         now = datetime(2026, 5, 26, 12, 0, tzinfo=ZoneInfo("UTC"))

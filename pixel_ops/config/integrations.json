@@ -188,11 +188,25 @@
     "media": {
       "enabled": true,
       "providers": [
+        "browser_extension",
         "spotify",
         "youtube_browser"
       ],
+      "youtube_browser_apps": [
+        "Google Chrome",
+        "Brave Browser",
+        "Microsoft Edge",
+        "Arc",
+        "Safari"
+      ],
+      "browser_extension": {
+        "host": "127.0.0.1",
+        "port": 47832,
+        "token": "",
+        "stale_seconds": 15
+      },
       "poll_seconds": 10,
-      "timeout_seconds": 2
+      "timeout_seconds": 10
     }
   }
 }

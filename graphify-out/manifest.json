@@ -10,8 +10,23 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tools/runtime/start-pixel-ops-runtime.sh": {
-    "mtime": 1781385069.899476,
-    "ast_hash": "5f143ccbf717f56a5d511fa9671ad321",
+    "mtime": 1781562277.7111409,
+    "ast_hash": "cbb992b79c9413f15ee5307718b5e32f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tools/browser-media-extension/manifest.json": {
+    "mtime": 1782743338.4703155,
+    "ast_hash": "dec6bb6242c6012d6e88b557dc9bb852",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tools/browser-media-extension/content-script.js": {
+    "mtime": 1782743610.3474524,
+    "ast_hash": "3da658616bcf82e422f6812aada53939",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tools/browser-media-extension/service-worker.js": {
+    "mtime": 1782743338.619883,
+    "ast_hash": "4d491f76401a436a6328e1a2a916e1d3",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config_loader.py": {
@@ -65,13 +80,13 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/integrations.json": {
-    "mtime": 1780978473.544559,
-    "ast_hash": "05ec16217f073db45613c9e3ea00476c",
+    "mtime": 1782743270.318911,
+    "ast_hash": "4fe6a3dbc5d9cc6dc0f82e2efff1d557",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/display.json": {
-    "mtime": 1781331183.3255045,
-    "ast_hash": "37d3252758f972f283eeea7e86ee58de",
+    "mtime": 1781752111.0426612,
+    "ast_hash": "edcede4b0a076b3edce9f716bf25e164",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/discord_people.json": {
@@ -285,8 +300,8 @@
     "semantic_hash": "6a3edc4bfd1aec9d56174459b0a5be0e"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/render/hud.py": {
-    "mtime": 1781331137.4667652,
-    "ast_hash": "b813648f2df02b5c2eb78d5c39534d52",
+    "mtime": 1781752802.0061793,
+    "ast_hash": "f74c01176026baa13aeca2fe08f64927",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/render/fonts.py": {
@@ -530,13 +545,13 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/media/plugin.py": {
-    "mtime": 1780347424.8803172,
-    "ast_hash": "6e630da687ad6054eaf87cf1d315912a",
+    "mtime": 1782743262.8564534,
+    "ast_hash": "4f32cb3170fa03ff4df1be523db6ce6e",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/media.py": {
-    "mtime": 1780347519.4411328,
-    "ast_hash": "019ac6e1e9ff7e74f5ab4fc63b4ccb5c",
+    "mtime": 1782743618.1885183,
+    "ast_hash": "3b919f223d3e1b58c0c6b0a92d559a71",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/tasks.py": {
@@ -550,8 +565,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/weather.py": {
-    "mtime": 1779500692.5662065,
-    "ast_hash": "01b18acc6cd0ae11ff66da1ba86b174f",
+    "mtime": 1781549902.2742426,
+    "ast_hash": "e90adea772bf9d16912912480d8c9fb4",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/companions.py": {
@@ -735,13 +750,13 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_media.py": {
-    "mtime": 1780347536.3604813,
-    "ast_hash": "ce98fa6b5d6809e20f0a78f7a8fcd6bc",
+    "mtime": 1782743362.4482286,
+    "ast_hash": "c106c53ea4f1a83c6dfd841ae986c70d",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_visual_and_ai_plugins.py": {
-    "mtime": 1781384254.1724842,
-    "ast_hash": "fc3646121aef547c3ef15c7f0ced23bb",
+    "mtime": 1781752833.0597496,
+    "ast_hash": "77205b8e0453f32a3bf67ea28fe366a5",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_todoist.py": {
@@ -775,8 +790,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/package.json": {
-    "mtime": 1780704090.7773228,
-    "ast_hash": "3d5f43879afe1bb62c38b5a343e24cd3",
+    "mtime": 1781562185.5936859,
+    "ast_hash": "9c4d7fc2263a8e363c71decec180ba6a",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/tsconfig.json": {
@@ -790,13 +805,13 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/vite.config.ts": {
-    "mtime": 1781384949.83543,
-    "ast_hash": "c57047c660b989d0b1985be72fd687df",
+    "mtime": 1781571004.1149855,
+    "ast_hash": "b278577a1d558cbdf18653f40234c09a",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/App.tsx": {
-    "mtime": 1781384875.3039281,
-    "ast_hash": "aae91f194969347556c972d1bf55ef78",
+    "mtime": 1782743376.6996908,
+    "ast_hash": "21b11b05b2c763a06101cad376aa0c7a",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/main.tsx": {
@@ -805,8 +820,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/types.ts": {
-    "mtime": 1781384867.55357,
-    "ast_hash": "974a64f2f76a9b604eb096f548585047",
+    "mtime": 1782743275.5427668,
+    "ast_hash": "c7f524a2e64bb84786333f9ecfd02e8a",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/components/PixelMascot.tsx": {
@@ -835,13 +850,13 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/requirements.txt": {
-    "mtime": 1779764768.3185081,
-    "ast_hash": "be3e6d083e8cd816a5ddf2385b9f420a",
+    "mtime": 1781752885.9132967,
+    "ast_hash": "2001ab06d2b9aa1a2de49ca692c28f7b",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/README.md": {
-    "mtime": 1780625768.2392452,
-    "ast_hash": "7540a8efaf742c226c3fabbd6f916e4b",
+    "mtime": 1781562217.050045,
+    "ast_hash": "a7adce518501b271dcb10913238c3e34",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/AGENTS.md": {
@@ -857,6 +872,11 @@
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/infra/cloudflare/pixelops-kite/README.md": {
     "mtime": 1780627309.9122798,
     "ast_hash": "909f22b0fdfb01f7090329e1d5d5e769",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tools/browser-media-extension/README.md": {
+    "mtime": 1782743338.9289036,
+    "ast_hash": "98505b0a90730daa3807e8ae4830b18d",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/display.yaml": {
@@ -985,8 +1005,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0019-media-now-playing-is-local-presence.md": {
-    "mtime": 1780342693.0521624,
-    "ast_hash": "5f88b2e2f7b6208662d779baf9e7ec7f",
+    "mtime": 1782743372.4576967,
+    "ast_hash": "3cf2f580d9eda58212ca89673bbf9f1e",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0005-json-runtime-configuration-and-hot-reload.md": {
@@ -1035,8 +1055,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/README.md": {
-    "mtime": 1779577824.1108832,
-    "ast_hash": "6b09221fc71e728ac5fd989c9a8fbf81",
+    "mtime": 1781562212.4035795,
+    "ast_hash": "bb671c7529a0284c058fbdf302aabd8f",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/.github/workflows/windows.yml": {

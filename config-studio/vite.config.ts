@@ -16,6 +16,14 @@ let runtimeProcess: ChildProcessWithoutNullStreams | null = null;
 const runtimeLogs: string[] = [];
 const npcSpritePreviewFormatVersion = 2;
 
+type RuntimeProcessSource = "managed" | "external";
+
+type RuntimeProcessInfo = {
+  pid: number;
+  source: RuntimeProcessSource;
+  command?: string;
+};
+
 type ConfigDescriptor = {
   key: string;
   label: string;
@@ -122,7 +130,10 @@ const integrationLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
     { kind: "mana", label: "Mana", tone: "#4f9fff" },
   ],
   pc_stats: [{ kind: "pc_stats", label: "PC Stats", tone: "#9bd0ff" }],
-  weather: [{ kind: "weather", label: "Weather", tone: "#e8c766" }],
+  weather: [
+    { kind: "weather", label: "Weather Now", tone: "#e8c766" },
+    { kind: "weather_forecast", label: "Weather Forecast", tone: "#9bd0ff" },
+  ],
   google_calendar: [{ kind: "meetings_day", label: "Meetings Day", tone: "#9aa7ff" }],
   ics: [{ kind: "meetings_day", label: "Meetings Day", tone: "#9aa7ff" }],
   zoom: [{ kind: "activity", label: "Meeting Activity", tone: "#9aa7ff" }],
@@ -645,10 +656,17 @@ function pushRuntimeLog(value: string) {
   }
 }
 
-function runtimeStatus() {
+function runtimePidPath() {
+  return path.join(repoRoot, "pixel_ops/output/runtime.pid");
+}
+
+async function runtimeStatus() {
+  const discovered = await discoverRuntimeProcess();
   return {
-    running: runtimeProcess !== null,
-    pid: runtimeProcess?.pid ?? null,
+    running: discovered !== null,
+    pid: discovered?.pid ?? null,
+    source: discovered?.source ?? null,
+    command: discovered?.command ?? null,
     logs: runtimeLogs.slice(-80),
   };
 }
@@ -669,17 +687,17 @@ async function runRuntimeCommand(args: string[]) {
     });
     pushRuntimeLog(stdout);
     pushRuntimeLog(stderr);
-    return { ok: true, stdout, stderr, ...runtimeStatus() };
+    return { ok: true, stdout, stderr, ...(await runtimeStatus()) };
   } catch (error) {
     const err = error as Error & { stdout?: string; stderr?: string };
     pushRuntimeLog(err.stdout || "");
     pushRuntimeLog(err.stderr || err.message);
-    return { ok: false, stdout: err.stdout || "", stderr: err.stderr || err.message, ...runtimeStatus() };
+    return { ok: false, stdout: err.stdout || "", stderr: err.stderr || err.message, ...(await runtimeStatus()) };
   }
 }
 
-function startRuntime(mode: "configured" | "window" = "configured") {
-  if (runtimeProcess) {
+async function startRuntime(mode: "configured" | "window" = "configured") {
+  if (await discoverRuntimeProcess()) {
     return runtimeStatus();
   }
   const args = runtimeCommandArgs(mode);
@@ -689,13 +707,115 @@ function startRuntime(mode: "configured" | "window" = "configured") {
   });
   pushRuntimeLog(`Started ${mode === "window" ? "window" : "configured"} runtime pid=${runtimeProcess.pid ?? "unknown"}`);
   pushRuntimeLog(`${pythonCmd} ${args.join(" ")}`);
+  writeRuntimePid(runtimeProcess.pid).catch(() => undefined);
   runtimeProcess.stdout.on("data", (chunk) => pushRuntimeLog(String(chunk)));
   runtimeProcess.stderr.on("data", (chunk) => pushRuntimeLog(String(chunk)));
   runtimeProcess.on("exit", (code, signal) => {
     pushRuntimeLog(`Runtime exited code=${code ?? "-"} signal=${signal ?? "-"}`);
     runtimeProcess = null;
+    removeRuntimePid().catch(() => undefined);
   });
   return runtimeStatus();
+}
+
+async function writeRuntimePid(pid: number | undefined) {
+  if (!pid) return;
+  await fs.mkdir(path.dirname(runtimePidPath()), { recursive: true });
+  await fs.writeFile(runtimePidPath(), String(pid), "utf8");
+}
+
+async function removeRuntimePid() {
+  try {
+    await fs.unlink(runtimePidPath());
+  } catch {
+    // The pid file is best-effort and may not exist for older launchers.
+  }
+}
+
+async function discoverRuntimeProcess(): Promise<RuntimeProcessInfo | null> {
+  if (runtimeProcess?.pid && isProcessAlive(runtimeProcess.pid)) {
+    return { pid: runtimeProcess.pid, source: "managed" };
+  }
+  runtimeProcess = null;
+  const pidFileProcess = await runtimeProcessFromPidFile();
+  if (pidFileProcess) {
+    return pidFileProcess;
+  }
+  return scanRuntimeProcesses();
+}
+
+async function runtimeProcessFromPidFile(): Promise<RuntimeProcessInfo | null> {
+  try {
+    const raw = await fs.readFile(runtimePidPath(), "utf8");
+    const pid = Number(raw.trim());
+    if (!Number.isInteger(pid) || pid <= 0 || !isProcessAlive(pid)) {
+      await removeRuntimePid();
+      return null;
+    }
+    const command = await processCommand(pid);
+    if (!isPixelOpsRuntimeCommand(command)) {
+      await removeRuntimePid();
+      return null;
+    }
+    return { pid, source: "external", command };
+  } catch {
+    return null;
+  }
+}
+
+function isProcessAlive(pid: number) {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function processCommand(pid: number): Promise<string> {
+  try {
+    if (process.platform === "win32") {
+      const { stdout } = await execFileAsync("powershell.exe", ["-NoProfile", "-Command", `Get-CimInstance Win32_Process -Filter "ProcessId = ${pid}" | ForEach-Object { $_.CommandLine }`]);
+      return stdout.trim();
+    }
+    const { stdout } = await execFileAsync("ps", ["-p", String(pid), "-o", "command="]);
+    return stdout.trim();
+  } catch {
+    return "";
+  }
+}
+
+async function scanRuntimeProcesses(): Promise<RuntimeProcessInfo | null> {
+  try {
+    if (process.platform === "win32") {
+      const { stdout } = await execFileAsync("powershell.exe", [
+        "-NoProfile",
+        "-Command",
+        "Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -match 'pixel_ops[\\\\\\\\/]main\\.py' -and $_.CommandLine -match '--forever' } | Select-Object ProcessId,CommandLine | ConvertTo-Json -Compress",
+      ]);
+      const parsed = stdout.trim() ? JSON.parse(stdout) : null;
+      const rows = Array.isArray(parsed) ? parsed : parsed ? [parsed] : [];
+      const match = rows.find((row) => Number.isInteger(Number(row.ProcessId)) && isPixelOpsRuntimeCommand(String(row.CommandLine || "")));
+      return match ? { pid: Number(match.ProcessId), source: "external", command: String(match.CommandLine || "") } : null;
+    }
+    const { stdout } = await execFileAsync("ps", ["-axo", "pid=,command="], { maxBuffer: 1024 * 1024 * 4 });
+    for (const line of stdout.split("\n")) {
+      const match = line.match(/^\s*(\d+)\s+(.+)$/);
+      if (!match) continue;
+      const pid = Number(match[1]);
+      const command = match[2];
+      if (pid !== process.pid && isPixelOpsRuntimeCommand(command)) {
+        return { pid, source: "external", command };
+      }
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+function isPixelOpsRuntimeCommand(command: string) {
+  return /pixel_ops[\\/]+main\.py/.test(command) && command.includes("--forever");
 }
 
 async function runKiteCommand(command: string, args: string[] = [], input = ""): Promise<KiteCommandResult> {
@@ -871,7 +991,7 @@ print(json.dumps({
 }
 
 async function identifyThermalrightDisplay(display: Record<string, unknown>) {
-  if (runtimeProcess) {
+  if (await discoverRuntimeProcess()) {
     return {
       ok: false,
       message: "Stop the running window/runtime before identifying USB displays. Thermalright USB can only be claimed by one process at a time.",
@@ -971,18 +1091,38 @@ function friendlyUsbError(value: string) {
   return value.split("\n").filter(Boolean).slice(-1)[0] || value;
 }
 
-function startRuntimeWindow() {
+async function startRuntimeWindow() {
   return startRuntime("window");
 }
 
-function stopRuntimeWindow() {
-  if (!runtimeProcess) {
+async function stopRuntimeWindow() {
+  const discovered = await discoverRuntimeProcess();
+  if (!discovered) {
     return runtimeStatus();
   }
-  pushRuntimeLog(`Stopping window runtime pid=${runtimeProcess.pid ?? "unknown"}`);
-  runtimeProcess.kill();
-  runtimeProcess = null;
+  pushRuntimeLog(`Stopping ${discovered.source} runtime pid=${discovered.pid}`);
+  try {
+    if (runtimeProcess && discovered.source === "managed") {
+      runtimeProcess.kill();
+      runtimeProcess = null;
+    } else {
+      process.kill(discovered.pid);
+    }
+  } catch (error) {
+    pushRuntimeLog(error instanceof Error ? error.message : String(error));
+  }
+  await waitForRuntimeStop(discovered.pid);
+  await removeRuntimePid();
   return runtimeStatus();
+}
+
+async function waitForRuntimeStop(pid: number) {
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    if (!isProcessAlive(pid)) {
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 120));
+  }
 }
 
 function shellQuote(value: string): string {
@@ -1010,6 +1150,7 @@ async function ensureRuntimeLaunchers() {
 set -euo pipefail
 cd ${shellQuote(repoRoot)}
 mkdir -p pixel_ops/output
+echo $$ > pixel_ops/output/runtime.pid
 exec "\${PIXEL_OPS_PYTHON:-${pythonCmd}}" pixel_ops/main.py --plugin pokemon --forever >> pixel_ops/output/runtime.log 2>&1
 `;
   const windowsContent = `@echo off
@@ -1033,6 +1174,7 @@ if "%PYTHON_CMD%"=="" set PYTHON_CMD=${pythonCmd}
 set -euo pipefail
 cd ${shellQuote(repoRoot)}
 mkdir -p pixel_ops/output
+echo $$ > pixel_ops/output/runtime.pid
 exec "\${PIXEL_OPS_PYTHON:-${pythonCmd}}" pixel_ops/main.py --plugin pokemon --forever >> ${shellQuote(path.join(logDir, "runtime.log"))} 2>&1
 `;
     await fs.writeFile(macLauncher, macContent, "utf8");
@@ -1448,7 +1590,7 @@ function runtimeConfigApi(): Plugin {
         try {
           const url = new URL(req.url || "/", "http://localhost");
           if (req.method === "GET" && url.pathname === "/status") {
-            sendJson(res, 200, runtimeStatus());
+            sendJson(res, 200, await runtimeStatus());
             return;
           }
           if (req.method === "POST" && url.pathname === "/check") {
@@ -1461,19 +1603,19 @@ function runtimeConfigApi(): Plugin {
             return;
           }
           if (req.method === "POST" && url.pathname === "/run/start") {
-            sendJson(res, 200, startRuntime("configured"));
+            sendJson(res, 200, await startRuntime("configured"));
             return;
           }
           if (req.method === "POST" && url.pathname === "/run/stop") {
-            sendJson(res, 200, stopRuntimeWindow());
+            sendJson(res, 200, await stopRuntimeWindow());
             return;
           }
           if (req.method === "POST" && url.pathname === "/window/start") {
-            sendJson(res, 200, startRuntimeWindow());
+            sendJson(res, 200, await startRuntimeWindow());
             return;
           }
           if (req.method === "POST" && url.pathname === "/window/stop") {
-            sendJson(res, 200, stopRuntimeWindow());
+            sendJson(res, 200, await stopRuntimeWindow());
             return;
           }
           if (req.method === "GET" && url.pathname === "/autostart/status") {
@@ -1490,7 +1632,7 @@ function runtimeConfigApi(): Plugin {
           }
           sendJson(res, 404, { error: "Runtime endpoint not found." });
         } catch (error) {
-          sendJson(res, 500, { error: error instanceof Error ? error.message : String(error), ...runtimeStatus() });
+          sendJson(res, 500, { error: error instanceof Error ? error.message : String(error), ...(await runtimeStatus()) });
         }
       });
       server.middlewares.use("/api/usb", async (req, res) => {

@@ -68,7 +68,7 @@ npm install
 npm run dev
 ```
 
-The dev server exposes local endpoints that read and write repository JSON files. The production build is static; use `npm run dev` for editing config.
+The dev server exposes local endpoints that read and write repository JSON files. The packaged Electron app starts the same local server against the bundled Pixel OPs runtime; on Windows the installer creates Start Menu and desktop shortcuts for `Pixel OPs Config Studio`.
 
 Config Studio detects available visual plugins from `pixel_ops/plugins/*/plugin.py`, loads plugin-owned JSON only when the plugin is selected, and detects integrations from `pixel_ops/integrations/*/plugin.py`.
 

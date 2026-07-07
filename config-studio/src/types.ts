@@ -23,6 +23,8 @@ export type ConfigManifest = {
 export type RuntimeStatus = {
   running: boolean;
   pid: number | null;
+  source?: "managed" | "external" | null;
+  command?: string | null;
   logs: string[];
   ok?: boolean;
   stdout?: string;
@@ -416,6 +418,13 @@ export type RuntimeConfig = {
       };
       media: IntegrationToggle & {
         providers: string[];
+        youtube_browser_apps: string[];
+        browser_extension: {
+          host: string;
+          port: number;
+          token: string;
+          stale_seconds: number;
+        };
         poll_seconds: number;
         timeout_seconds: number;
       };
@@ -494,6 +503,15 @@ export type LayoutWindowOption = {
 
 export type LayoutBox = {
   kind?: string;
+  clock_mode?: "digital" | "analog";
+  clock_skin?: "classic" | "minimal" | "neon" | "terminal" | "sunrise" | "station";
+  use_24_hour?: boolean;
+  show_seconds?: boolean;
+  asset_path?: string;
+  asset_type?: "auto" | "image" | "gif" | "video";
+  asset_fit?: "contain" | "cover" | "stretch";
+  asset_title?: string;
+  asset_fps?: number;
   x: number;
   y: number;
   width: number;

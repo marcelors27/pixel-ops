@@ -126,6 +126,17 @@
         "width": 720,
         "height": 296
       },
+      "clock": {
+        "x": 1264,
+        "y": 144,
+        "width": 88,
+        "height": 72,
+        "kind": "clock",
+        "clock_mode": "digital",
+        "clock_skin": "classic",
+        "use_24_hour": true,
+        "show_seconds": false
+      },
       "route_signal": {
         "x": 480,
         "y": 400,
@@ -143,6 +154,13 @@
         "y": 400,
         "width": 208,
         "height": 56
+      },
+      "weather_forecast": {
+        "x": 1096,
+        "y": 288,
+        "width": 256,
+        "height": 56,
+        "kind": "weather_forecast"
       },
       "pc_stats": {
         "x": 720,
@@ -209,6 +227,17 @@
         "width": 480,
         "height": 320,
         "layout": {
+          "clock": {
+            "x": 8,
+            "y": 8,
+            "width": 120,
+            "height": 48,
+            "kind": "clock",
+            "clock_mode": "analog",
+            "clock_skin": "minimal",
+            "use_24_hour": true,
+            "show_seconds": false
+          },
           "game": {
             "x": 0,
             "y": 112,
@@ -306,6 +335,17 @@
             "width": 720,
             "height": 296
           },
+          "clock": {
+            "x": 1264,
+            "y": 144,
+            "width": 88,
+            "height": 72,
+            "kind": "clock",
+            "clock_mode": "digital",
+            "clock_skin": "classic",
+            "use_24_hour": true,
+            "show_seconds": false
+          },
           "route_signal": {
             "x": 480,
             "y": 400,
@@ -323,6 +363,13 @@
             "y": 400,
             "width": 208,
             "height": 56
+          },
+          "weather_forecast": {
+            "x": 1096,
+            "y": 288,
+            "width": 256,
+            "height": 56,
+            "kind": "weather_forecast"
           },
           "pc_stats": {
             "x": 720,

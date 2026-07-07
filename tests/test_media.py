@@ -10,7 +10,7 @@ from unittest.mock import Mock, patch
 from PIL import Image
 import requests
 
-from pixel_ops.data_sources.media import LocalMediaSource, _youtube_browser_script, _youtube_thumbnail_url
+from pixel_ops.data_sources.media import BrowserMediaSnapshotReceiver, LocalMediaSource, _youtube_browser_script, _youtube_thumbnail_url
 
 
 class LocalMediaSourceTests(unittest.TestCase):
@@ -107,6 +107,18 @@ class LocalMediaSourceTests(unittest.TestCase):
             _youtube_thumbnail_url("https://www.youtube.com/watch?v=abc123&list=xyz"),
             "https://img.youtube.com/vi/abc123/mqdefault.jpg",
         )
+        self.assertEqual(
+            _youtube_thumbnail_url("https://youtu.be/short42"),
+            "https://img.youtube.com/vi/short42/mqdefault.jpg",
+        )
+        self.assertEqual(
+            _youtube_thumbnail_url("https://www.youtube.com/shorts/shorts42"),
+            "https://img.youtube.com/vi/shorts42/mqdefault.jpg",
+        )
+        self.assertEqual(
+            _youtube_thumbnail_url("https://www.youtube.com/embed/embed42"),
+            "https://img.youtube.com/vi/embed42/mqdefault.jpg",
+        )
 
     def test_youtube_snapshot_caches_thumbnail_from_tab_url(self):
         response = Mock()
@@ -139,13 +151,100 @@ class LocalMediaSourceTests(unittest.TestCase):
         chrome_script = _youtube_browser_script("Google Chrome")
         safari_script = _youtube_browser_script("Safari")
 
+        self.assertIn("set fallbackResult to \"\"", chrome_script)
+        self.assertIn("youtube.com/shorts/", chrome_script)
+        self.assertIn("youtu.be/", chrome_script)
         self.assertIn("repeat with browserWindow in windows", chrome_script)
-        self.assertIn("repeat with browserTab in tabs of browserWindow", chrome_script)
-        self.assertIn("execute browserTab javascript", chrome_script)
+        self.assertIn("repeat with tabIndex from 1 to count of tabs of browserWindow", chrome_script)
+        self.assertIn("set browserTab to item tabIndex of tabs of browserWindow", chrome_script)
+        self.assertIn("tabTitle contains \"jazz\"", chrome_script)
+        self.assertIn("tabUrl contains \"list=RD\"", chrome_script)
         self.assertNotIn("active tab of front window", chrome_script)
+        self.assertNotIn("«event CrSuExJa»", chrome_script)
+        self.assertIn("return fallbackResult", chrome_script)
+        self.assertIn("set fallbackResult to \"\"", safari_script)
+        self.assertIn("youtube.com/embed/", safari_script)
         self.assertIn("repeat with browserWindow in windows", safari_script)
-        self.assertIn("do JavaScript", safari_script)
+        self.assertIn("tabTitle contains \"vinyl\"", safari_script)
+        self.assertNotIn("do JavaScript", safari_script)
         self.assertNotIn("current tab of front window", safari_script)
+        self.assertIn("return fallbackResult", safari_script)
+
+    def test_youtube_browser_apps_are_configurable(self):
+        source = LocalMediaSource(providers=["youtube_browser"], youtube_browser_apps=["Arc"])
+        scripts: list[str] = []
+
+        def fake_osascript(script: str) -> str:
+            scripts.append(script)
+            return "Song Name\nArtist Name\nhttps://youtu.be/video42"
+
+        source._run_osascript = fake_osascript
+
+        snapshot = source.current(datetime(2026, 6, 1, 12, tzinfo=timezone.utc))
+
+        self.assertIsNotNone(snapshot)
+        self.assertEqual(len(scripts), 1)
+        self.assertIn('application "Arc"', scripts[0])
+        assert snapshot is not None
+        self.assertEqual(snapshot.title, "Song Name")
+        self.assertEqual(snapshot.artist, "Artist Name")
+
+    def test_browser_extension_snapshot_is_preferred(self):
+        source = LocalMediaSource(providers=["browser_extension", "youtube_browser"], poll_seconds=10, browser_extension_port=0)
+        source._run_osascript = lambda _script: "Fallback Video - YouTube\nYouTube"
+        source.browser_extension.update(
+            {
+                "provider": "youtube_music",
+                "title": "Browser Song",
+                "artist": "Browser Artist",
+                "url": "https://music.youtube.com/watch?v=browser42",
+                "is_playing": True,
+            },
+            now=datetime(2026, 6, 1, 12, tzinfo=timezone.utc),
+        )
+
+        snapshot = source.current(datetime(2026, 6, 1, 12, 0, 3, tzinfo=timezone.utc))
+
+        self.assertIsNotNone(snapshot)
+        assert snapshot is not None
+        self.assertEqual(snapshot.provider, "youtube_music")
+        self.assertEqual(snapshot.title, "Browser Song")
+        self.assertEqual(snapshot.artist, "Browser Artist")
+        self.assertTrue(snapshot.is_music)
+
+    def test_browser_extension_snapshot_expires(self):
+        source = LocalMediaSource(
+            providers=["browser_extension"],
+            poll_seconds=10,
+            browser_extension_port=0,
+            browser_extension_stale_seconds=5,
+        )
+        source.browser_extension.update(
+            {"provider": "youtube", "title": "Old Song", "is_playing": True},
+            now=datetime(2026, 6, 1, 12, tzinfo=timezone.utc),
+        )
+
+        self.assertIsNone(source.current(datetime(2026, 6, 1, 12, 0, 6, tzinfo=timezone.utc)))
+
+    def test_browser_extension_http_receiver_accepts_snapshot(self):
+        receiver = BrowserMediaSnapshotReceiver(port=0, token="secret")
+        receiver.start()
+        try:
+            response = requests.post(
+                f"http://127.0.0.1:{receiver.port}/media/now-playing",
+                headers={"X-Pixel-Ops-Token": "secret"},
+                json={"provider": "youtube", "title": "HTTP Song", "artist": "HTTP Artist", "is_playing": True},
+                timeout=2,
+            )
+            self.assertEqual(response.status_code, 200)
+            payload = receiver.current_payload(datetime.now().astimezone())
+        finally:
+            receiver.close()
+
+        self.assertIsNotNone(payload)
+        assert payload is not None
+        self.assertEqual(payload["title"], "HTTP Song")
+        self.assertEqual(payload["artist"], "HTTP Artist")
 
 
 def _png_bytes() -> bytes:

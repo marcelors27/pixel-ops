@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Pixel OPs Browser Media",
+  "description": "Sends compact local now-playing state to Pixel OPs.",
+  "version": "0.1.0",
+  "permissions": ["tabs"],
+  "host_permissions": [
+    "http://127.0.0.1:47832/*",
+    "http://localhost:47832/*",
+    "https://www.youtube.com/*",
+    "https://music.youtube.com/*",
+    "https://youtu.be/*"
+  ],
+  "background": {
+    "service_worker": "service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://music.youtube.com/*",
+        "https://youtu.be/*"
+      ],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

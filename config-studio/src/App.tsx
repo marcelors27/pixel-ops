@@ -121,6 +121,8 @@ const visualPluginIcons: Record<string, IconComponent> = {
 };
 
 const layoutWindowCatalog: LayoutWindowOption[] = [
+  { kind: "clock", label: "Clock", tone: "#7fb2e6" },
+  { kind: "media_asset", label: "Media Asset", tone: "#95d7ff" },
   { kind: "timezones", label: "Timezones timeline", tone: "#7fb2e6" },
   { kind: "timezones_clock", label: "Timezones clock", tone: "#9ad18b" },
   { kind: "activity", label: "Activity", tone: "#ef846d" },
@@ -144,9 +146,12 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
       pokemon_captures: "#ef6461",
       route_signal: "#f0a35d",
       weather: "#e8c766",
+      clock: "#5da9e9",
+      media_asset: "#95d7ff",
       meetings_day: "#9aa7ff",
       mana: "#4f9fff",
       gamification: "#ef6461",
+      weather_forecast: "#9bd0ff",
     },
   },
   terminal: {
@@ -154,6 +159,8 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
     palette: ["#65f0a1", "#4fd1c5", "#a7f3d0", "#facc15", "#f472b6", "#93c5fd", "#c4b5fd", "#fb7185"],
     tones: {
       activity: "#65f0a1",
+      clock: "#65f0a1",
+      media_asset: "#60ccff",
       gauges: "#4fd1c5",
       mana: "#60ccff",
       pc_stats: "#a7f3d0",
@@ -168,7 +175,10 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
     tones: {
       timezones: "#67e8f9",
       timezones_clock: "#38bdf8",
+      clock: "#67e8f9",
+      media_asset: "#2dd4bf",
       weather: "#2dd4bf",
+      weather_forecast: "#818cf8",
       meetings_day: "#818cf8",
       mana: "#38bdf8",
       gamification: "#67e8f9",
@@ -179,8 +189,11 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
     palette: ["#fb7185", "#f97316", "#facc15", "#fdba74", "#fda4af", "#c084fc", "#60a5fa", "#34d399"],
     tones: {
       activity: "#fb7185",
+      clock: "#facc15",
+      media_asset: "#fdba74",
       route_signal: "#f97316",
       weather: "#facc15",
+      weather_forecast: "#fdba74",
       media: "#fdba74",
       mana: "#60a5fa",
       gamification: "#fb7185",
@@ -977,6 +990,7 @@ function LayoutPreview({
     });
   const activeKey = display.layout[selected] ? selected : layoutItems[0]?.key;
   const box = (activeKey ? display.layout[activeKey] : undefined) ?? { x: 0, y: 0, width: frameWidth, height: frameHeight };
+  const activeKind = activeKey ? layoutWindowKind(activeKey, box) : "";
 
   useEffect(() => {
     if (!options.some((option) => option.kind === addKind)) {
@@ -1310,6 +1324,57 @@ function LayoutPreview({
             <Field label="Height">
               <NumberInput value={box.height} onChange={(value) => activeKey && commitBox(activeKey, { ...box, height: value })} />
             </Field>
+            {activeKey && activeKind === "clock" ? (
+              <>
+                <Field label="Clock mode">
+                  <Select
+                    value={box.clock_mode ?? "digital"}
+                    options={["digital", "analog"]}
+                    onChange={(value) => commitBox(activeKey, { ...box, clock_mode: value as LayoutBox["clock_mode"] })}
+                  />
+                </Field>
+                <Field label="Clock skin">
+                  <Select
+                    value={box.clock_skin ?? "classic"}
+                    options={(box.clock_mode ?? "digital") === "analog" ? ["classic", "minimal", "neon", "station"] : ["classic", "minimal", "neon", "terminal", "sunrise"]}
+                    onChange={(value) => commitBox(activeKey, { ...box, clock_skin: value as LayoutBox["clock_skin"] })}
+                  />
+                </Field>
+                <Field label="24 hour">
+                  <Switch checked={box.use_24_hour ?? true} onChange={(value) => commitBox(activeKey, { ...box, use_24_hour: value })} />
+                </Field>
+                <Field label="Seconds">
+                  <Switch checked={box.show_seconds ?? false} onChange={(value) => commitBox(activeKey, { ...box, show_seconds: value })} />
+                </Field>
+              </>
+            ) : null}
+            {activeKey && activeKind === "media_asset" ? (
+              <>
+                <Field label="Asset path">
+                  <TextInput value={box.asset_path ?? ""} onChange={(value) => commitBox(activeKey, { ...box, asset_path: value })} />
+                </Field>
+                <Field label="Asset type">
+                  <Select
+                    value={box.asset_type ?? "auto"}
+                    options={["auto", "image", "gif", "video"]}
+                    onChange={(value) => commitBox(activeKey, { ...box, asset_type: value as LayoutBox["asset_type"] })}
+                  />
+                </Field>
+                <Field label="Asset fit">
+                  <Select
+                    value={box.asset_fit ?? "contain"}
+                    options={["contain", "cover", "stretch"]}
+                    onChange={(value) => commitBox(activeKey, { ...box, asset_fit: value as LayoutBox["asset_fit"] })}
+                  />
+                </Field>
+                <Field label="Asset title">
+                  <TextInput value={box.asset_title ?? "Asset"} onChange={(value) => commitBox(activeKey, { ...box, asset_title: value })} />
+                </Field>
+                <Field label="Asset FPS">
+                  <NumberInput value={box.asset_fps ?? 12} onChange={(value) => commitBox(activeKey, { ...box, asset_fps: clampNumber(value, 1, 60) })} />
+                </Field>
+              </>
+            ) : null}
             <button className="secondary-button" type="button" disabled={!activeKey} onClick={() => activeKey && onChange(activeKey, layoutBoxForNewWindow(layoutWindowKind(activeKey, box), frameWidth, frameHeight, display.layout))}>
               Reset selected
             </button>
@@ -1588,13 +1653,16 @@ function RuntimePanel({
   onRemoveAutostart: () => void;
 }) {
   const logs = status?.logs ?? [];
+  const statusLabel = status?.running
+    ? `Runtime running · ${status.source === "external" ? "external" : "managed"} · pid ${status.pid ?? "-"}`
+    : "Runtime stopped";
   return (
     <section id="runtime" className="wide-panel runtime-panel">
       <div className="section-heading">
         <Terminal size={20} />
         <div>
           <h2>Runtime</h2>
-          <p>{status?.running ? `Runtime running · pid ${status.pid ?? "-"}` : "Runtime stopped"}</p>
+          <p>{statusLabel}</p>
         </div>
       </div>
       <div className="runtime-actions">
@@ -1757,7 +1825,7 @@ function IntegrationPanel({
     );
   }
 
-  if (activeKey === "weather") {
+  if (activeKey === "weather" || activeKey === "weather_forecast") {
     return (
       <Panel title="Weather" icon={CloudSun} subtitle="Weather-like mood source">
         <Field label="Provider">
@@ -1985,6 +2053,36 @@ function IntegrationPanel({
             onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.media.providers = commaList(value)))}
           />
         </Field>
+        <Field label="YouTube browsers">
+          <TextInput
+            value={config.integrations.integrations.media.youtube_browser_apps.join(", ")}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.media.youtube_browser_apps = commaList(value)))}
+          />
+        </Field>
+        <Field label="Extension host">
+          <TextInput
+            value={config.integrations.integrations.media.browser_extension.host}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.media.browser_extension.host = value || "127.0.0.1"))}
+          />
+        </Field>
+        <Field label="Extension port">
+          <NumberInput
+            value={config.integrations.integrations.media.browser_extension.port}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.media.browser_extension.port = clampNumber(value, 1024, 65535)))}
+          />
+        </Field>
+        <Field label="Extension token">
+          <TextInput
+            value={config.integrations.integrations.media.browser_extension.token}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.media.browser_extension.token = value))}
+          />
+        </Field>
+        <Field label="Stale seconds">
+          <NumberInput
+            value={config.integrations.integrations.media.browser_extension.stale_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.media.browser_extension.stale_seconds = clampNumber(value, 3, 120)))}
+          />
+        </Field>
         <Field label="Poll seconds">
           <NumberInput
             value={config.integrations.integrations.media.poll_seconds}
@@ -1999,7 +2097,7 @@ function IntegrationPanel({
         </Field>
         <div className="field field-wide">
           <span>Available providers</span>
-          <span className="empty-note">spotify, youtube_browser</span>
+          <span className="empty-note">browser_extension, spotify, youtube_browser</span>
         </div>
       </Panel>
     );
@@ -3647,13 +3745,32 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
   next.integrations.integrations.todoist.timeout_seconds = next.integrations.integrations.todoist.timeout_seconds ?? 10;
   next.integrations.integrations.media = next.integrations.integrations.media ?? {
     enabled: false,
-    providers: ["spotify"],
+    providers: ["browser_extension", "spotify"],
+    youtube_browser_apps: ["Google Chrome", "Brave Browser", "Microsoft Edge", "Arc", "Safari"],
+    browser_extension: { host: "127.0.0.1", port: 47832, token: "", stale_seconds: 15 },
     poll_seconds: 10,
-    timeout_seconds: 2,
+    timeout_seconds: 10,
   };
-  next.integrations.integrations.media.providers = next.integrations.integrations.media.providers ?? ["spotify"];
+  next.integrations.integrations.media.providers = next.integrations.integrations.media.providers ?? ["browser_extension", "spotify"];
+  next.integrations.integrations.media.youtube_browser_apps = next.integrations.integrations.media.youtube_browser_apps ?? [
+    "Google Chrome",
+    "Brave Browser",
+    "Microsoft Edge",
+    "Arc",
+    "Safari",
+  ];
+  next.integrations.integrations.media.browser_extension = next.integrations.integrations.media.browser_extension ?? {
+    host: "127.0.0.1",
+    port: 47832,
+    token: "",
+    stale_seconds: 15,
+  };
+  next.integrations.integrations.media.browser_extension.host = next.integrations.integrations.media.browser_extension.host ?? "127.0.0.1";
+  next.integrations.integrations.media.browser_extension.port = next.integrations.integrations.media.browser_extension.port ?? 47832;
+  next.integrations.integrations.media.browser_extension.token = next.integrations.integrations.media.browser_extension.token ?? "";
+  next.integrations.integrations.media.browser_extension.stale_seconds = next.integrations.integrations.media.browser_extension.stale_seconds ?? 15;
   next.integrations.integrations.media.poll_seconds = next.integrations.integrations.media.poll_seconds ?? 10;
-  next.integrations.integrations.media.timeout_seconds = next.integrations.integrations.media.timeout_seconds ?? 2;
+  next.integrations.integrations.media.timeout_seconds = next.integrations.integrations.media.timeout_seconds ?? 10;
   next.integrations.integrations.discord = next.integrations.integrations.discord ?? {
     enabled: false,
     bot_token_env: "PIXEL_OPS_DISCORD_BOT_TOKEN",
@@ -4114,8 +4231,9 @@ function defaultLayoutFor(width: number, height: number): Record<LayoutKey, Layo
     route_signal: { x: 8, y: middleHudY, width: Math.max(88, Math.round(width * 0.28)), height: 40 },
     gauges: { x: Math.max(104, Math.round(width * 0.33)), y: middleHudY, width: Math.max(72, Math.round(width * 0.24)), height: 40 },
     weather: { x: Math.max(8, width - 120), y: middleHudY, width: 112, height: 40 },
+    weather_forecast: { x: Math.max(8, width - 164), y: lowerHudY, width: 156, height: 40, kind: "weather_forecast" },
     pc_stats: { x: Math.max(8, width - 132), y: 8, width: 124, height: Math.max(54, middleHudY - 12) },
-    activity: { x: 8, y: lowerHudY, width: contentWidth, height: 40 },
+    activity: { x: 8, y: lowerHudY, width: Math.max(1, contentWidth - 164), height: 40 },
     game: { x: 0, y: gameY, width, height: Math.max(1, textY - gameY - 4) },
     text_box: { x: 8, y: textY, width: Math.max(1, width - 16), height: Math.max(1, height - textY - 2) },
   };
@@ -4135,8 +4253,9 @@ function defaultWideLayoutFor(width: number, height: number): Record<LayoutKey, 
     pokemon_captures: { x: Math.max(margin, width - Math.round(width * 0.32) - margin), y: gameY, width: Math.round(width * 0.18), height: Math.min(144, gameHeight), kind: "pokemon_captures" },
     route_signal: { x: Math.round(width * 0.35), y: 16, width: Math.round(width * 0.16), height: topHeight - 20 },
     gauges: { x: Math.round(width * 0.53), y: 16, width: Math.round(width * 0.16), height: topHeight - 20 },
-    weather: { x: Math.round(width * 0.71), y: 16, width: Math.round(width * 0.12), height: topHeight - 20 },
-    pc_stats: { x: Math.max(margin, width - Math.round(width * 0.14) - margin), y: 16, width: Math.round(width * 0.14), height: topHeight - 20 },
+    weather: { x: Math.round(width * 0.71), y: 16, width: Math.round(width * 0.08), height: topHeight - 20 },
+    weather_forecast: { x: Math.round(width * 0.795), y: 16, width: Math.round(width * 0.105), height: topHeight - 20, kind: "weather_forecast" },
+    pc_stats: { x: Math.max(margin, Math.round(width * 0.905)), y: 16, width: Math.max(1, Math.round(width * 0.085) - margin), height: topHeight - 20 },
     gamification: { x: Math.round(width * 0.84), y: height - bottomHeight + 8, width: Math.max(1, Math.round(width * 0.14)), height: bottomHeight - 18, kind: "gamification" },
     activity: { x: margin, y: height - bottomHeight + 8, width: Math.round(width * 0.44), height: bottomHeight - 18 },
     game: { x: sideWidth + margin * 2, y: gameY, width: middleWidth, height: gameHeight },
@@ -4200,7 +4319,7 @@ function layoutBoxForNewWindow(
   layout: Record<LayoutKey, LayoutBox>,
 ): LayoutBox {
   const defaults = defaultLayoutFor(frameWidth, frameHeight);
-  const base = defaults[kind] ?? {
+  const base = kind === "clock" ? defaultClockLayoutBox(frameWidth, frameHeight) : kind === "media_asset" ? defaultMediaAssetLayoutBox(frameWidth, frameHeight) : defaults[kind] ?? {
     x: 8,
     y: 8,
     width: Math.max(40, Math.round(frameWidth * 0.35)),
@@ -4217,6 +4336,36 @@ function layoutBoxForNewWindow(
     frameWidth,
     frameHeight,
   );
+}
+
+function defaultClockLayoutBox(frameWidth: number, frameHeight: number): LayoutBox {
+  const compact = frameWidth < 640;
+  return {
+    x: 8,
+    y: 8,
+    width: compact ? 112 : 144,
+    height: compact ? 56 : 64,
+    kind: "clock",
+    clock_mode: "digital",
+    clock_skin: "classic",
+    use_24_hour: true,
+    show_seconds: false,
+  };
+}
+
+function defaultMediaAssetLayoutBox(frameWidth: number, frameHeight: number): LayoutBox {
+  return {
+    x: 8,
+    y: 8,
+    width: Math.max(120, Math.round(frameWidth * 0.24)),
+    height: Math.max(80, Math.round(frameHeight * 0.26)),
+    kind: "media_asset",
+    asset_path: "",
+    asset_type: "auto",
+    asset_fit: "contain",
+    asset_title: "Asset",
+    asset_fps: 12,
+  };
 }
 
 function clampBox(box: LayoutBox, frameWidth: number, frameHeight: number): LayoutBox {

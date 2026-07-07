@@ -14,10 +14,18 @@ npm run dev
 
 Use the Vite dev server for the real configuration workflow. The production build is static and does not provide the local write API.
 
+The packaged Electron app starts the same local Config Studio server and points it at the bundled Pixel OPs runtime. On Windows, the installer creates Start Menu and desktop shortcuts named `Pixel OPs Config Studio`.
+
 ## Build
 
 ```bash
 npm run build
+```
+
+For an installable desktop app:
+
+```bash
+npm run app:build
 ```
 
 ## What It Edits

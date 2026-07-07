@@ -3,10 +3,20 @@ from __future__ import annotations
 import os
 import urllib.parse
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from threading import Lock, Thread
 
 import requests
+
+
+@dataclass(frozen=True)
+class WeatherForecastDay:
+    date: date
+    temperature_min_c: float | None
+    temperature_max_c: float | None
+    precipitation_mm: float
+    weather_code: int
+    effects: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -25,6 +35,7 @@ class WeatherState:
     weather_code: int
     effects: tuple[str, ...]
     observed_at: datetime | None = None
+    forecast_days: tuple[WeatherForecastDay, ...] = ()
 
     @property
     def primary_effect(self) -> str:
@@ -109,6 +120,17 @@ class BaseWeatherSource:
             weather_code=weather_code,
             effects=effects,
             observed_at=now,
+            forecast_days=tuple(
+                WeatherForecastDay(
+                    date=now.date() + timedelta(days=offset),
+                    temperature_min_c=14,
+                    temperature_max_c=22,
+                    precipitation_mm=2.4 if effect in ("drizzle", "rain", "storm") else 0,
+                    weather_code=weather_code,
+                    effects=effects,
+                )
+                for offset in range(7)
+            ),
         )
 
     def _fetch_weather(self, now: datetime) -> WeatherState:
@@ -189,8 +211,8 @@ class OpenMeteoWeatherSource(BaseWeatherSource):
                         "wind_gusts_10m",
                     )
                 ),
-                "daily": "temperature_2m_max,temperature_2m_min",
-                "forecast_days": 1,
+                "daily": "weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum,snowfall_sum,wind_speed_10m_max,wind_gusts_10m_max",
+                "forecast_days": 7,
                 "timezone": "auto",
             }
         )
@@ -237,7 +259,51 @@ class OpenMeteoWeatherSource(BaseWeatherSource):
                 weather_code,
             ),
             observed_at=now,
+            forecast_days=self._daily_forecast(daily),
         )
+
+    def _daily_forecast(self, daily: dict) -> tuple[WeatherForecastDay, ...]:
+        dates = daily.get("time") or []
+        min_temperatures = daily.get("temperature_2m_min") or []
+        max_temperatures = daily.get("temperature_2m_max") or []
+        precipitation = daily.get("precipitation_sum") or []
+        rain = daily.get("rain_sum") or []
+        snowfall = daily.get("snowfall_sum") or []
+        weather_codes = daily.get("weather_code") or []
+        wind_speed = daily.get("wind_speed_10m_max") or []
+        wind_gusts = daily.get("wind_gusts_10m_max") or []
+        forecast: list[WeatherForecastDay] = []
+        for index, raw_date in enumerate(dates[:7]):
+            weather_code = int(_list_value(weather_codes, index, 0) or 0)
+            min_temp = _optional_float(_list_value(min_temperatures, index))
+            max_temp = _optional_float(_list_value(max_temperatures, index))
+            precipitation_mm = float(_list_value(precipitation, index, 0) or 0)
+            rain_mm = float(_list_value(rain, index, precipitation_mm) or 0)
+            snowfall_cm = float(_list_value(snowfall, index, 0) or 0)
+            day_wind = float(_list_value(wind_speed, index, 0) or 0)
+            day_gusts = float(_list_value(wind_gusts, index, day_wind) or 0)
+            reference_temp = max_temp if max_temp is not None else min_temp if min_temp is not None else 0
+            forecast.append(
+                WeatherForecastDay(
+                    date=date.fromisoformat(str(raw_date)),
+                    temperature_min_c=min_temp,
+                    temperature_max_c=max_temp,
+                    precipitation_mm=precipitation_mm,
+                    weather_code=weather_code,
+                    effects=self._effects(
+                        reference_temp,
+                        reference_temp,
+                        precipitation_mm,
+                        rain_mm,
+                        snowfall_cm,
+                        0,
+                        day_wind,
+                        day_gusts,
+                        weather_code,
+                    ),
+                )
+            )
+        return tuple(forecast)
 
 
 class WttrInWeatherSource(BaseWeatherSource):
@@ -245,7 +311,7 @@ class WttrInWeatherSource(BaseWeatherSource):
 
     def _fetch_weather(self, now: datetime) -> WeatherState:
         location = ",".join(part for part in (self.city, self.country_code) if part)
-        response = requests.get(f"https://wttr.in/{urllib.parse.quote(location)}?format=j1", timeout=self.timeout_seconds)
+        response = requests.get(f"https://wttr.in/{urllib.parse.quote(location)}?format=j1&num_of_days=7", timeout=self.timeout_seconds)
         response.raise_for_status()
         data = response.json()
         current = data["current_condition"][0]
@@ -284,7 +350,43 @@ class WttrInWeatherSource(BaseWeatherSource):
                 weather_code,
             ),
             observed_at=now,
+            forecast_days=self._daily_forecast(data.get("weather") or []),
         )
+
+    def _daily_forecast(self, daily_items: list[dict]) -> tuple[WeatherForecastDay, ...]:
+        forecast: list[WeatherForecastDay] = []
+        for item in daily_items[:7]:
+            hourly = item.get("hourly") or []
+            midpoint = hourly[len(hourly) // 2] if hourly else {}
+            cloud_cover = int(midpoint.get("cloudcover", 0) or 0)
+            weather_code = _wttr_to_wmo(int(midpoint.get("weatherCode", 0) or 0), cloud_cover)
+            precipitation = _optional_float(item.get("totalSnow_cm")) or 0
+            precipitation += sum((_optional_float(hour.get("precipMM")) or 0) for hour in hourly)
+            wind_speed = float(midpoint.get("windspeedKmph", 0) or 0)
+            min_temp = _optional_float(item.get("mintempC"))
+            max_temp = _optional_float(item.get("maxtempC"))
+            reference_temp = max_temp if max_temp is not None else min_temp if min_temp is not None else 0
+            forecast.append(
+                WeatherForecastDay(
+                    date=date.fromisoformat(str(item["date"])),
+                    temperature_min_c=min_temp,
+                    temperature_max_c=max_temp,
+                    precipitation_mm=precipitation,
+                    weather_code=weather_code,
+                    effects=self._effects(
+                        reference_temp,
+                        reference_temp,
+                        precipitation,
+                        precipitation,
+                        _optional_float(item.get("totalSnow_cm")) or 0,
+                        cloud_cover,
+                        wind_speed,
+                        wind_speed,
+                        weather_code,
+                    ),
+                )
+            )
+        return tuple(forecast)
 
 
 class OpenWeatherMapWeatherSource(BaseWeatherSource):
@@ -358,7 +460,31 @@ class OpenWeatherMapWeatherSource(BaseWeatherSource):
                 weather_code,
             ),
             observed_at=now,
+            forecast_days=(
+                WeatherForecastDay(
+                    date=now.date(),
+                    temperature_min_c=temperature_min,
+                    temperature_max_c=temperature_max,
+                    precipitation_mm=precipitation,
+                    weather_code=weather_code,
+                    effects=self._effects(
+                        temperature,
+                        apparent,
+                        precipitation,
+                        rain_mm,
+                        snowfall / 10,
+                        cloud_cover,
+                        wind_speed,
+                        wind_gusts,
+                        weather_code,
+                    ),
+                ),
+            ),
         )
+
+
+def _list_value(values: list | tuple, index: int, default=None):
+    return values[index] if index < len(values) else default
 
 
 def _optional_float(value) -> float | None:
