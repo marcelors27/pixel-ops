@@ -1,4 +1,1569 @@
 {
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/windowed/window_cartoon.h": {
+    "mtime": 1784951622.301293,
+    "ast_hash": "461a513a6298c5879644e7254681917d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/bitmap_data/pencils_200x200.h": {
+    "mtime": 1784951622.2998335,
+    "ast_hash": "60d6cd924f48d413f807cc9b61dcfeb6",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/bitmap_data/pencils_152x152.h": {
+    "mtime": 1784951622.299764,
+    "ast_hash": "cc6a806210c203a865d830f187d4677f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/bitmap_data/pencils_250x122.h": {
+    "mtime": 1784951622.2999156,
+    "ast_hash": "2f417f41509cc0beec4aaafd92356621",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/bitmap_data/example_resources.h": {
+    "mtime": 1784951622.2997062,
+    "ast_hash": "e985c844f42b3c8573df3c4b2cf5f534",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/bitmap_data/pencils_296x128.h": {
+    "mtime": 1784951622.2999916,
+    "ast_hash": "a53d2f3360563d2191ede358e8504d31",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/fast_mode/hourglass_3.h": {
+    "mtime": 1784951622.300234,
+    "ast_hash": "e5111bee2630f96c03081996be95d423",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/fast_mode/hourglass_2.h": {
+    "mtime": 1784951622.3001885,
+    "ast_hash": "dbe4f7e9675d55087fc2d697fd8dea05",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/fast_mode/hourglass_1.h": {
+    "mtime": 1784951622.3001332,
+    "ast_hash": "141dc80e271d55c6fbd7db4a0efdd28a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Vision Master/download/tjpgd.h": {
+    "mtime": 1784951622.2980115,
+    "ast_hash": "8e3e5794007c1e76bd285feef68e7aa5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Vision Master/download/TJpg_Decoder.h": {
+    "mtime": 1784951622.2977664,
+    "ast_hash": "ccefc363dafdcdf6b43f6db33da0c636",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Vision Master/download/tjpgdcnf.h": {
+    "mtime": 1784951622.2980545,
+    "ast_hash": "c7796a8bf7e7b21d1425f79816113d4f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Vision Master/download/TJpg_Decoder.cpp": {
+    "mtime": 1784951622.297705,
+    "ast_hash": "bb406a50c02310bdb0b2ed7af8399188",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Vision Master/download/tjpgd.c": {
+    "mtime": 1784951622.2979531,
+    "ast_hash": "e088a724d75e29ccbf988e41048b6bd2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/xbitmap_multicolor/apples_red_250x122.h": {
+    "mtime": 1784951622.3020089,
+    "ast_hash": "6a9e08227a8a69b88b8f9b3dc5e406a1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/xbitmap_multicolor/apples_black_250x122.h": {
+    "mtime": 1784951622.3019376,
+    "ast_hash": "899175f957397720147fb10ab99ceb96",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/xbitmap_bw/chess_152x152.h": {
+    "mtime": 1784951622.3014557,
+    "ast_hash": "378ff9d2e4805d4bfcc5c81688d7cf95",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/xbitmap_bw/chess_200x200.h": {
+    "mtime": 1784951622.3015373,
+    "ast_hash": "2af99a7eb80f90e81ae6cd8e7da13438",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/xbitmap_bw/chess_296x128.h": {
+    "mtime": 1784951622.3017108,
+    "ast_hash": "cdc9dfe3031013631efd4fb50745bec0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/xbitmap_bw/example_resources.h": {
+    "mtime": 1784951622.301769,
+    "ast_hash": "ca3b716b5eda885af053ff731c35e5da",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/xbitmap_bw/chess_250x122.h": {
+    "mtime": 1784951622.3016372,
+    "ast_hash": "f33e4fc514dc7b3b91316aeaa21d496e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/sprites/ball.h": {
+    "mtime": 1784951622.3007731,
+    "ast_hash": "f46ae1be3cad8ac3939d87ee911cecb5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/hardware/image_chess_250x122.h": {
+    "mtime": 1784951622.2989233,
+    "ast_hash": "f33e4fc514dc7b3b91316aeaa21d496e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/hardware/image_radiolib_guide1.h": {
+    "mtime": 1784951622.2990649,
+    "ast_hash": "9c6223536b9d4c175ae416a5e682909b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/hardware/lora_demo_install.h": {
+    "mtime": 1784951622.2993276,
+    "ast_hash": "f0d99e6795425450adb7ce0b76f6cff0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/hardware/intro_outro.h": {
+    "mtime": 1784951622.299223,
+    "ast_hash": "059369fca92efbc7113cd6bc8051ec5a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/hardware/ble_demo.h": {
+    "mtime": 1784951622.2986205,
+    "ast_hash": "a83cdfa0baa9e456aa5cd76923e47194",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/hardware/image_radiolib_guide2.h": {
+    "mtime": 1784951622.2991207,
+    "ast_hash": "1edc4439368edddc08e6ec6e0bd0c897",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/hardware/wifi_demo.h": {
+    "mtime": 1784951622.2995183,
+    "ast_hash": "bf2669eda83378cbff51ce9a82935002",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/hardware/image_board_inverse.h": {
+    "mtime": 1784951622.298837,
+    "ast_hash": "c3568f8b51ef4a862346142f81029d98",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/hardware/image_radiolib_guide3.h": {
+    "mtime": 1784951622.2991745,
+    "ast_hash": "228525bfe29d2dd8dde7b3eaa676414c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/hardware/graphical_elements.h": {
+    "mtime": 1784951622.2986672,
+    "ast_hash": "b4a8bfc488d97ce885997e68dbb754cf",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/hardware/image_arrow_hooked.h": {
+    "mtime": 1784951622.2987683,
+    "ast_hash": "ede1e2adf28651e64a93934c5f2d1980",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/hardware/sleep_demo.h": {
+    "mtime": 1784951622.2994666,
+    "ast_hash": "14769f9e4078a708920efa932f359084",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/hardware/led_button_demo.h": {
+    "mtime": 1784951622.2992666,
+    "ast_hash": "d40990b792e901d78a20473b27f30f2a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/download/tjpgd.h": {
+    "mtime": 1784951622.2984939,
+    "ast_hash": "8e3e5794007c1e76bd285feef68e7aa5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/download/TJpg_Decoder.h": {
+    "mtime": 1784951622.2982855,
+    "ast_hash": "ccefc363dafdcdf6b43f6db33da0c636",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/download/tjpgdcnf.h": {
+    "mtime": 1784951622.2985365,
+    "ast_hash": "c7796a8bf7e7b21d1425f79816113d4f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/download/TJpg_Decoder.cpp": {
+    "mtime": 1784951622.298229,
+    "ast_hash": "bb406a50c02310bdb0b2ed7af8399188",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/examples/Wireless Paper/download/tjpgd.c": {
+    "mtime": 1784951622.298438,
+    "ast_hash": "e088a724d75e29ccbf988e41048b6bd2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/heltec-eink-modules.h": {
+    "mtime": 1784951622.323755,
+    "ast_hash": "ef660ca4c42913e5847293a4b032808f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/optimization.h": {
+    "mtime": 1784951622.3237965,
+    "ast_hash": "9784ea093fad1f0154e1c4efd5eee687",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/GFX_Root/gfxfont.h": {
+    "mtime": 1784951622.312975,
+    "ast_hash": "7928b9339a518aa52a76a9940be0222c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/GFX_Root/GFX.h": {
+    "mtime": 1784951622.312892,
+    "ast_hash": "c91e5b51fd995c02dddd0395b67432fb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/GFX_Root/glcdfont.c": {
+    "mtime": 1784951622.3130414,
+    "ast_hash": "1be2b02b8041110e1d18f9f737c79f84",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/GFX_Root/GFX.cpp": {
+    "mtime": 1784951622.3128164,
+    "ast_hash": "6fa1bb1fb03cea26444289c85b27514d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/warnings.h": {
+    "mtime": 1784951622.3148317,
+    "ast_hash": "bc57968e90233ed41b7e714bd9bee842",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/platforms.h": {
+    "mtime": 1784951622.3147922,
+    "ast_hash": "23d0522eaa3f3f239abfa7fcc8eb957a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/VisionMasterE213/VisionMasterE213.h": {
+    "mtime": 1784951622.314211,
+    "ast_hash": "68ac98207e8aec9863de20b9a1920dd4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/VisionMasterE213/spi.cpp": {
+    "mtime": 1784951622.314309,
+    "ast_hash": "10dd0bc450249c0973bdf33f3bf9ddb0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/VisionMasterE213/power_controls.cpp": {
+    "mtime": 1784951622.3142676,
+    "ast_hash": "a95bd56e57e3a9e5ee24b588acbe65b6",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/fallback/fallback.h": {
+    "mtime": 1784951622.3147113,
+    "ast_hash": "b3708a179b1d17af532aeb94341cd1f2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/fallback/spi.cpp": {
+    "mtime": 1784951622.3147514,
+    "ast_hash": "62b6665741538d98e894ea071c47375d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/M2560/M2560.h": {
+    "mtime": 1784951622.31361,
+    "ast_hash": "f4ff2279558c68f4bb1f631aa83671d2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/M2560/spi.cpp": {
+    "mtime": 1784951622.3138032,
+    "ast_hash": "5e9a084edbdfcb7cdb500baa2cba9b4e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/VisionMasterE290/spi.cpp": {
+    "mtime": 1784951622.3144636,
+    "ast_hash": "94a252491b008e0e31bcc47d443f3100",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/VisionMasterE290/VisionMasterE290.h": {
+    "mtime": 1784951622.314378,
+    "ast_hash": "b559474fb4e26f176b3d9e186c2fcf3b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/VisionMasterE290/power_controls.cpp": {
+    "mtime": 1784951622.314425,
+    "ast_hash": "f4db72134e500bb274bf18f3bd53497a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/SAMD21G18A/spi.cpp": {
+    "mtime": 1784951622.3141232,
+    "ast_hash": "ab4007f30f23c757d6e503b9e4651932",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/SAMD21G18A/pin_mux.cpp": {
+    "mtime": 1784951622.3140821,
+    "ast_hash": "72c20c9dbb8b6235bb7fbfd5e2558b7d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/SAMD21G18A/SAMD21G18A.h": {
+    "mtime": 1784951622.3140075,
+    "ast_hash": "7a24e79a7fc737a00076d0f06cecf2ba",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/ESP32/spi.cpp": {
+    "mtime": 1784951622.3133388,
+    "ast_hash": "54e4e1396bf0ead4c4ea6022470c847d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/ESP32/ESP32.h": {
+    "mtime": 1784951622.3132918,
+    "ast_hash": "1e61eba2791cee705fd4454326b44191",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/M1280/spi.cpp": {
+    "mtime": 1784951622.313543,
+    "ast_hash": "5c3c63008d65ae9f1c6462f44745227e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/M1280/M1280.h": {
+    "mtime": 1784951622.313504,
+    "ast_hash": "760dd1999c621eca808f67b3fabe1d40",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/ESP8266/ESP8266.h": {
+    "mtime": 1784951622.3133998,
+    "ast_hash": "74f3a5175617de758efc26abafc7f106",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/ESP8266/spi.cpp": {
+    "mtime": 1784951622.3134387,
+    "ast_hash": "d920bb6c31bdc035764763b055dec98f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/WirelessPaper/WirelessPaper.h": {
+    "mtime": 1784951622.3145404,
+    "ast_hash": "6ef0ae27a7aacf4af4f4197036ef976e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/WirelessPaper/spi.cpp": {
+    "mtime": 1784951622.314632,
+    "ast_hash": "9aa916b0994eacc3267a3fc9e5d8fc13",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/WirelessPaper/power_controls.cpp": {
+    "mtime": 1784951622.3145826,
+    "ast_hash": "7fc1deb3eeaead4f714e4b2385bcce03",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/M328P/spi.cpp": {
+    "mtime": 1784951622.3139412,
+    "ast_hash": "2f7b95705702701363efbb66e8916594",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Platforms/M328P/M328P.h": {
+    "mtime": 1784951622.3138976,
+    "ast_hash": "ae928eee1d95a70a415328b57488cc8c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/class-aliases.h": {
+    "mtime": 1784951622.3083568,
+    "ast_hash": "2d601441366ba57aa076b00424f800cd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/LCMEN2R13EFC1/graphical.cpp": {
+    "mtime": 1784951622.3077588,
+    "ast_hash": "0a84b1344c8c836e90805d4735410ee2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/LCMEN2R13EFC1/hardware.cpp": {
+    "mtime": 1784951622.307809,
+    "ast_hash": "73f93a4ca21ac9a8ed34ebea8703a308",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/LCMEN2R13EFC1/paging.cpp": {
+    "mtime": 1784951622.3079042,
+    "ast_hash": "112c955f26b990e9b1e0f96ebb46acaf",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/LCMEN2R13EFC1/setup.cpp": {
+    "mtime": 1784951622.307948,
+    "ast_hash": "3f938b922e40cb9a804aa2c4f74d9413",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/LCMEN2R13EFC1/LCMEN2R13EFC1.h": {
+    "mtime": 1784951622.3073618,
+    "ast_hash": "f26024c2122d8309eea70038c2e09641",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/LCMEN2R13EFC1/SD.cpp": {
+    "mtime": 1784951622.3076982,
+    "ast_hash": "d25b7abf64efbdaccac8134277d97fb2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/LCMEN2R13EFC1/mode.cpp": {
+    "mtime": 1784951622.3078547,
+    "ast_hash": "3a03a4db8e1cbcbd152a3f06f0c61f3b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/LCMEN2R13EFC1/LUTs/partial_vcom_dc.inc": {
+    "mtime": 1784951622.307527,
+    "ast_hash": "4b0e157871c5541340bb513bc42efa70",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/LCMEN2R13EFC1/LUTs/partial_bb.inc": {
+    "mtime": 1784951622.307437,
+    "ast_hash": "56fb672e1697703d7a4f3cde9cf00d57",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/LCMEN2R13EFC1/LUTs/partial_wb.inc": {
+    "mtime": 1784951622.3075738,
+    "ast_hash": "1ccfe2fa2c1267e41999827d7c355a3b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/LCMEN2R13EFC1/LUTs/partial_ww.inc": {
+    "mtime": 1784951622.3076234,
+    "ast_hash": "50fb78c1c1d41f2ab7cb9afa43124ae2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/LCMEN2R13EFC1/LUTs/partial_bw.inc": {
+    "mtime": 1784951622.3074846,
+    "ast_hash": "1841e23b6024a78fc6d3fb4fc5ac9a1e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0150BNS810/hardware.cpp": {
+    "mtime": 1784951622.3037214,
+    "ast_hash": "1f26b9e5ba0d4456ca765b4872e8f6e8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0150BNS810/DEPG0150BNS810.h": {
+    "mtime": 1784951622.303655,
+    "ast_hash": "858fb1ac2b1c81ea6bb95c242d6a3cd7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0150BNS810/setup.cpp": {
+    "mtime": 1784951622.3038993,
+    "ast_hash": "46e8cc9f13eb3852e593250139671b92",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0150BNS810/lut_partial.inc": {
+    "mtime": 1784951622.3037827,
+    "ast_hash": "c7eecaa0fb8ced2f6048d6d7db3a5205",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0150BNS810/mode.cpp": {
+    "mtime": 1784951622.3038425,
+    "ast_hash": "437c17795532c6ad8adda32a945165e7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/QYEG0213RWS800/hardware.cpp": {
+    "mtime": 1784951622.308178,
+    "ast_hash": "379e17222afd34e5ab1c7476d049cdc8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/QYEG0213RWS800/setup.cpp": {
+    "mtime": 1784951622.3082972,
+    "ast_hash": "9cdf3080c9844344be42f719a2c7ae49",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/QYEG0213RWS800/QYEG0213RWS800.h": {
+    "mtime": 1784951622.3080285,
+    "ast_hash": "3e720d866eacc1a67b2fbb0df9be09f5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/QYEG0213RWS800/mode.cpp": {
+    "mtime": 1784951622.3082495,
+    "ast_hash": "03e4a9fec2cbcf4bdcb5a37310cfa496",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/GDE029A1/GDE029A1.h": {
+    "mtime": 1784951622.3062105,
+    "ast_hash": "7b50e909c1fb9de64976bd6e558992ea",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/GDE029A1/hardware.cpp": {
+    "mtime": 1784951622.306407,
+    "ast_hash": "4e750ab0b001d97d5680c40fcf1b7d76",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/GDE029A1/setup.cpp": {
+    "mtime": 1784951622.3067834,
+    "ast_hash": "7a3bda07cc73e9670602ddf979f3c775",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/GDE029A1/lut_partial.inc": {
+    "mtime": 1784951622.3066776,
+    "ast_hash": "c5b2a2917c384d7fb39cbd95d976f76e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/GDE029A1/lut_full.inc": {
+    "mtime": 1784951622.306595,
+    "ast_hash": "3e87a2c76fff470411048df4d155188f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/GDE029A1/mode.cpp": {
+    "mtime": 1784951622.306733,
+    "ast_hash": "0867c57b8accc9233c1ebe34ae579e38",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0290BNS75A/hardware.cpp": {
+    "mtime": 1784951622.3050702,
+    "ast_hash": "79a88d475fec7782a40a8bfe7173e372",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0290BNS75A/setup.cpp": {
+    "mtime": 1784951622.305362,
+    "ast_hash": "4049427786dddef9bec90018ae12bd79",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0290BNS75A/lut_partial.inc": {
+    "mtime": 1784951622.3052552,
+    "ast_hash": "691096d237234bb81f9b84834e15b97e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0290BNS75A/DEPG0290BNS75A.h": {
+    "mtime": 1784951622.3049865,
+    "ast_hash": "55f9cae3c6108a36c0c6156b4509acb3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0290BNS75A/mode.cpp": {
+    "mtime": 1784951622.3053129,
+    "ast_hash": "1b1e43897c40772a5ab0ea07a0ceff0b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/E0213A367/hardware.cpp": {
+    "mtime": 1784951622.3058872,
+    "ast_hash": "a592851483175777fabf09d0fc8c8415",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/E0213A367/setup.cpp": {
+    "mtime": 1784951622.3060272,
+    "ast_hash": "932d2273d804628aa367791279ca6469",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/E0213A367/E0213A367.h": {
+    "mtime": 1784951622.305829,
+    "ast_hash": "a64e93f979e57135c44c34f003fdf44a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/E0213A367/mode.cpp": {
+    "mtime": 1784951622.3059669,
+    "ast_hash": "32a706413fb1aa8400f5ac9b706ee131",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/GDEP015OC1/GDEP015OC1.h": {
+    "mtime": 1784951622.3068657,
+    "ast_hash": "ce6ebd1f04ec9dbdc25dbccde5b9a3e0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/GDEP015OC1/hardware.cpp": {
+    "mtime": 1784951622.306915,
+    "ast_hash": "8ced956e62d5e9bb0513d77bca9a50df",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/GDEP015OC1/setup.cpp": {
+    "mtime": 1784951622.3072505,
+    "ast_hash": "f3c2b9e8344725755c3c6b0c0c89f650",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/GDEP015OC1/lut_partial.inc": {
+    "mtime": 1784951622.3070197,
+    "ast_hash": "8e9ae1e08995b00a7b1ce4b0338a83a0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/GDEP015OC1/lut_full.inc": {
+    "mtime": 1784951622.3069642,
+    "ast_hash": "17ba9d12077c70fd3194881d8f93225a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/GDEP015OC1/mode.cpp": {
+    "mtime": 1784951622.3070724,
+    "ast_hash": "73635bc0407d5eb02762c08781674b84",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/BaseDisplay/graphical.cpp": {
+    "mtime": 1784951622.303024,
+    "ast_hash": "9ce4a5eebb1962e79c71bc94f24e6cef",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/BaseDisplay/hardware.cpp": {
+    "mtime": 1784951622.3031216,
+    "ast_hash": "6abfd539c3972d77e490df2e7a33303e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/BaseDisplay/text.cpp": {
+    "mtime": 1784951622.3035522,
+    "ast_hash": "1f54e0a40b2e633da39cfdadee41ad49",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/BaseDisplay/paging.cpp": {
+    "mtime": 1784951622.30341,
+    "ast_hash": "3d60ea9326135bb0358d4e85fbbabcd6",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/BaseDisplay/layout.cpp": {
+    "mtime": 1784951622.303203,
+    "ast_hash": "a4074eb1f6bdfcf885bb0da06f01d10a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/BaseDisplay/setup.cpp": {
+    "mtime": 1784951622.3034718,
+    "ast_hash": "e1b7377fb674a41c88cf0ee63af1020e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/BaseDisplay/enums.h": {
+    "mtime": 1784951622.3029475,
+    "ast_hash": "514cd2f0f23bb89a139805471c33c6b3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/BaseDisplay/SD.cpp": {
+    "mtime": 1784951622.3027976,
+    "ast_hash": "5fabbe755aa6724f29ad7b6d83fc32e8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/BaseDisplay/mode.cpp": {
+    "mtime": 1784951622.3033373,
+    "ast_hash": "787675e21bae870b3709eaccfb8c9b14",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/BaseDisplay/base.h": {
+    "mtime": 1784951622.3028834,
+    "ast_hash": "2eb255215c3d3a9d155e48f99edb6cbd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/BaseDisplay/Bounds/window.cpp": {
+    "mtime": 1784951622.3026438,
+    "ast_hash": "1ad4af0cfb916a3a68250cf668f2946d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/BaseDisplay/Bounds/window.h": {
+    "mtime": 1784951622.3027115,
+    "ast_hash": "dd4e89313ea5b284b8c296e64b23994c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/BaseDisplay/Bounds/bounds.h": {
+    "mtime": 1784951622.3024273,
+    "ast_hash": "84067fa3a1ad6c9f543c72dd5cd72622",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/BaseDisplay/Bounds/full.h": {
+    "mtime": 1784951622.3024766,
+    "ast_hash": "a7c2194c068fe8008de1b082cca23c2b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0154BNS800/hardware.cpp": {
+    "mtime": 1784951622.3040645,
+    "ast_hash": "192644397af642765f2b8b46a598d317",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0154BNS800/setup.cpp": {
+    "mtime": 1784951622.3043845,
+    "ast_hash": "20d9e9c49279332f40a41b9a506c8fe7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0154BNS800/lut_partial.inc": {
+    "mtime": 1784951622.3041155,
+    "ast_hash": "bf154c93af892eb206eb6c4c68599f79",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0154BNS800/DEPG0154BNS800.h": {
+    "mtime": 1784951622.3040109,
+    "ast_hash": "ca6e73537356a4a36623dc160ca3e1cd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0154BNS800/mode.cpp": {
+    "mtime": 1784951622.3042996,
+    "ast_hash": "b2d4dc20727ea14fc819b51aac8170d8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0290BNS800/hardware.cpp": {
+    "mtime": 1784951622.3055205,
+    "ast_hash": "46fcab18f8ceeb8b52e8efb5d2a78c87",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0290BNS800/setup.cpp": {
+    "mtime": 1784951622.3056762,
+    "ast_hash": "47f587fd9f966550ada1825b69195b83",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0290BNS800/lut_partial.inc": {
+    "mtime": 1784951622.3055646,
+    "ast_hash": "5681a098ac6707024bb43921b957b336",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0290BNS800/DEPG0290BNS800.h": {
+    "mtime": 1784951622.3054655,
+    "ast_hash": "b861218c3623d8aa21bcdd8cb9305c5b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0290BNS800/mode.cpp": {
+    "mtime": 1784951622.3056233,
+    "ast_hash": "7e46f676296d84f3195554c59ce03252",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0213BNS800/hardware.cpp": {
+    "mtime": 1784951622.3045459,
+    "ast_hash": "467d0cae88ecc05f05a1d0acdcfa60da",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0213BNS800/DEPG0213BNS800.h": {
+    "mtime": 1784951622.3044887,
+    "ast_hash": "0126c69167734d488ee123a573f34de9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0213BNS800/setup.cpp": {
+    "mtime": 1784951622.30482,
+    "ast_hash": "8c63bd277e3c36500d05886124558740",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0213BNS800/lut_partial.inc": {
+    "mtime": 1784951622.3046048,
+    "ast_hash": "1e5901ac80ad84c34f06a461a2059e9f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Displays/DEPG0213BNS800/mode.cpp": {
+    "mtime": 1784951622.3047655,
+    "ast_hash": "20a192558d2ae2d9be87e69cc628789b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/sd_wrapper.h": {
+    "mtime": 1784951622.323711,
+    "ast_hash": "3b66ec1cb71cbc48e7bd58013ab5cbd9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/sd_wrapper.cpp": {
+    "mtime": 1784951622.3236647,
+    "ast_hash": "19d3fa0be9c4d34f7db353b40c2189d2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/MinimumSerial.cpp": {
+    "mtime": 1784951622.3185294,
+    "ast_hash": "f8a246873f70f0a6577086ba3e6f449e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/RingBuf.h": {
+    "mtime": 1784951622.3187368,
+    "ast_hash": "a8dd3ce6c77668e2f25d2b3bb714f543",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SdFatConfig.h": {
+    "mtime": 1784951622.3198698,
+    "ast_hash": "cd420954b636444ec1b06f8b6a07e9c3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/sdios.h": {
+    "mtime": 1784951622.3235981,
+    "ast_hash": "9dde137e779932dae079c2c39677878a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/BufferedPrint.h": {
+    "mtime": 1784951622.3149626,
+    "ast_hash": "a9a7bc764aec5d814889ef2395005443",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FreeStack.h": {
+    "mtime": 1784951622.3178623,
+    "ast_hash": "86f615a8a7581ee488f0a1b6f3375cc5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/MinimumSerial.h": {
+    "mtime": 1784951622.3185923,
+    "ast_hash": "59fbe693934a685a5d351aa3ac32a323",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SdFat.h": {
+    "mtime": 1784951622.3198,
+    "ast_hash": "d9ba6026beb2d1843ba9b06237910eeb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FreeStack.cpp": {
+    "mtime": 1784951622.3177938,
+    "ast_hash": "7ca42281410c0b8b86d8181f43b44b1e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SdCard/SdioCard.h": {
+    "mtime": 1784951622.3195982,
+    "ast_hash": "fb057bb3f17c4eee0e017388a8ab07e0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SdCard/SdioTeensy.h": {
+    "mtime": 1784951622.3197348,
+    "ast_hash": "d688839cfc8f57753ab7b42d7b117483",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SdCard/SdCardInfo.h": {
+    "mtime": 1784951622.3192945,
+    "ast_hash": "52f11702426e79de9624ef71af97630d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SdCard/SdCardInfo.cpp": {
+    "mtime": 1784951622.3192174,
+    "ast_hash": "15c8c24d593d3d058fdb7f3ab7a4ac77",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SdCard/SdCard.h": {
+    "mtime": 1784951622.3190374,
+    "ast_hash": "8f2f0abd32a3fc7a089ba3718d86ce63",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SdCard/SdSpiCard.cpp": {
+    "mtime": 1784951622.3194423,
+    "ast_hash": "b183c09f21be07e17b04dbb3a5e0b645",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SdCard/SdCardInterface.h": {
+    "mtime": 1784951622.3193662,
+    "ast_hash": "3c250b19da217645408e1c898ca4911f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SdCard/SdSpiCard.h": {
+    "mtime": 1784951622.3195288,
+    "ast_hash": "169fce3b3a8ec5becd6ba221f34e9800",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SdCard/SdioTeensy.cpp": {
+    "mtime": 1784951622.3196564,
+    "ast_hash": "3c5aa7835a00a89bb231bd2a845ac6d4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/ExFatLib/ExFatFormatter.cpp": {
+    "mtime": 1784951622.3161418,
+    "ast_hash": "c6df98af4ee990174433ed1541120a2a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/ExFatLib/ExFatConfig.h": {
+    "mtime": 1784951622.3157215,
+    "ast_hash": "a5108830f492a70e74ec50d7bc1d041a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/ExFatLib/ExFatName.cpp": {
+    "mtime": 1784951622.3163457,
+    "ast_hash": "5ade3e2e4c1a23f323a3da1a655f5484",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/ExFatLib/ExFatFile.h": {
+    "mtime": 1784951622.3159273,
+    "ast_hash": "a9832a2c4c4f8775325751a335d2ab24",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/ExFatLib/ExFatPartition.cpp": {
+    "mtime": 1784951622.316446,
+    "ast_hash": "5e289301ca7a4172001a4ecd182a4462",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/ExFatLib/ExFatPartition.h": {
+    "mtime": 1784951622.3165221,
+    "ast_hash": "213527b20d9274e7d9dd3f9b91127a0a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/ExFatLib/ExFatVolume.cpp": {
+    "mtime": 1784951622.3165896,
+    "ast_hash": "b48d6ef1daf89a436494c9cc8f8acdb6",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/ExFatLib/ExFatLib.h": {
+    "mtime": 1784951622.3162673,
+    "ast_hash": "b6434836dad211eeefcf0c4dca718644",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/ExFatLib/ExFatFormatter.h": {
+    "mtime": 1784951622.31621,
+    "ast_hash": "77d0c63362bf7d8bb54df97f75df151a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/ExFatLib/ExFatFilePrint.cpp": {
+    "mtime": 1784951622.3159955,
+    "ast_hash": "f317020ba4cfb5781379abe1e6200538",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/ExFatLib/ExFatFile.cpp": {
+    "mtime": 1784951622.315855,
+    "ast_hash": "e09bdec4fe3cf98edfb8aaddeff97c98",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/ExFatLib/ExFatFileWrite.cpp": {
+    "mtime": 1784951622.3160584,
+    "ast_hash": "9a474e294c67bbf468dab9bee8d18bfb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/ExFatLib/ExFatVolume.h": {
+    "mtime": 1784951622.316668,
+    "ast_hash": "c311d2d8ee7370526530d59817376d8b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/ExFatLib/ExFatDbg.cpp": {
+    "mtime": 1784951622.3157804,
+    "ast_hash": "058b4f853fd081bf9ba1562f6ce159e4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FatLib/FatPartition.cpp": {
+    "mtime": 1784951622.3175192,
+    "ast_hash": "91c347be43974170f49eb32931a99e76",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FatLib/FatFormatter.cpp": {
+    "mtime": 1784951622.317269,
+    "ast_hash": "acadee3169212094f53bb4a3938059c7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FatLib/FatVolume.h": {
+    "mtime": 1784951622.3177216,
+    "ast_hash": "7a9454ac5505bf2566c58f1f4eae830d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FatLib/FatFormatter.h": {
+    "mtime": 1784951622.3173203,
+    "ast_hash": "60454577ebf1a58ff27e1a11607cc9e0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FatLib/FatFileLFN.cpp": {
+    "mtime": 1784951622.317033,
+    "ast_hash": "79f999c0a3908bbaa4857cc253dad736",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FatLib/FatFileSFN.cpp": {
+    "mtime": 1784951622.3171887,
+    "ast_hash": "9510f4f075e02c0927be0fd2eeb7d89c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FatLib/FatFile.cpp": {
+    "mtime": 1784951622.316865,
+    "ast_hash": "74c0a7010d473cce79a342982a7d8a65",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FatLib/FatFilePrint.cpp": {
+    "mtime": 1784951622.317087,
+    "ast_hash": "12f264807a2704e8e3928f50422c2160",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FatLib/FatDbg.cpp": {
+    "mtime": 1784951622.3167734,
+    "ast_hash": "90f8c0847fd0f18d97f2618834fc1a89",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FatLib/FatPartition.h": {
+    "mtime": 1784951622.3175986,
+    "ast_hash": "ea6f9058ff8b28a636d12c4bfc78acd1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FatLib/FatFile.h": {
+    "mtime": 1784951622.3169606,
+    "ast_hash": "a54e6998d5b81cf567ac2b667aed1662",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FatLib/FatLib.h": {
+    "mtime": 1784951622.317365,
+    "ast_hash": "9937096f1265359eb4ffa4309a3bec2e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FatLib/FatVolume.cpp": {
+    "mtime": 1784951622.3176386,
+    "ast_hash": "1828627c9fcd6db299226a509ecae118",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FatLib/FatName.cpp": {
+    "mtime": 1784951622.31745,
+    "ast_hash": "efe733a0efceb2bccff6454c70ce8cc0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiArtemis.cpp": {
+    "mtime": 1784951622.3200119,
+    "ast_hash": "a8aa706bfe86b52de1a33dc133bf6d86",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiLibDriver.h": {
+    "mtime": 1784951622.3204708,
+    "ast_hash": "df430a465e37aac4562730239e33e967",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiSoftDriver.h": {
+    "mtime": 1784951622.3207433,
+    "ast_hash": "d2c8cb8d54312bf6974da2d129c12059",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiSTM32.cpp": {
+    "mtime": 1784951622.3205764,
+    "ast_hash": "bb654e4f233a6bb233a4b6ec47fcc0ed",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiTeensy3.cpp": {
+    "mtime": 1784951622.3209796,
+    "ast_hash": "1cee138d206a8e3a85a84a3f6b6316bb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiAvr.h": {
+    "mtime": 1784951622.32006,
+    "ast_hash": "e31885d748a2c5fed2ac4cba5ef99a4f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiBaseClass.h": {
+    "mtime": 1784951622.3201816,
+    "ast_hash": "fa92ea82d7ff5e2a494d6c419160a36f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiChipSelect.cpp": {
+    "mtime": 1784951622.320228,
+    "ast_hash": "5fb5fe3036fdfb409e68861d6293c96d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiDue.cpp": {
+    "mtime": 1784951622.3203387,
+    "ast_hash": "4f5d65c27a8a1f8274894cfd4caf502a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiESP.cpp": {
+    "mtime": 1784951622.3203917,
+    "ast_hash": "f1db3f0337e893e82b7b8f75acd71d00",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiParticle.cpp": {
+    "mtime": 1784951622.3205273,
+    "ast_hash": "6d87bb01146bd262d7fc75342b12eb6f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiDriver.h": {
+    "mtime": 1784951622.320284,
+    "ast_hash": "3cc165f0e1de33ca250123f402135344",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiArduinoDriver.h": {
+    "mtime": 1784951622.3199623,
+    "ast_hash": "557b0d40189a8bfcaaddc8e7ca7ba24b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiSTM32Core.cpp": {
+    "mtime": 1784951622.3206463,
+    "ast_hash": "f0833401b2dac33b6b39b6bf5521f370",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/SpiDriver/SdSpiBareUnoDriver.h": {
+    "mtime": 1784951622.320125,
+    "ast_hash": "e90d1ac4e5538c83d727d5a66ca05aef",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FsLib/FsFile.cpp": {
+    "mtime": 1784951622.3179698,
+    "ast_hash": "369f7a65b4092bd658733d0e5f030e8e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FsLib/FsNew.h": {
+    "mtime": 1784951622.3183222,
+    "ast_hash": "288bb896e64d678fdc3b5caa1d635447",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FsLib/FsFormatter.h": {
+    "mtime": 1784951622.3181317,
+    "ast_hash": "7241157207d283c8352d558600edc6f3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FsLib/FsVolume.h": {
+    "mtime": 1784951622.3184583,
+    "ast_hash": "ad97a24bc4cfd2bf4206298bab553e7b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FsLib/FsFile.h": {
+    "mtime": 1784951622.3180702,
+    "ast_hash": "df5ccbf46a3697df30752001f515193b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FsLib/FsVolume.cpp": {
+    "mtime": 1784951622.3183818,
+    "ast_hash": "5d0d054b00a9cdf50c9fdb16f26988da",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FsLib/FsNew.cpp": {
+    "mtime": 1784951622.318249,
+    "ast_hash": "866d4dc3be48a15ae9086ba4edb21a1e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/FsLib/FsLib.h": {
+    "mtime": 1784951622.3181949,
+    "ast_hash": "2f01ef7b403e443ebb2683974efb9c79",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FsName.h": {
+    "mtime": 1784951622.3223305,
+    "ast_hash": "e6d036079f8c9fdc0dbe591192ccaef1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FsUtf.h": {
+    "mtime": 1784951622.3226252,
+    "ast_hash": "6dd20bd6fdec28c6e66140730cdcdd39",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FsBlockDevice.h": {
+    "mtime": 1784951622.321824,
+    "ast_hash": "7b9d1e39d6fe41224dfce9d3d25d6d3b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/ArduinoFiles.h": {
+    "mtime": 1784951622.3212192,
+    "ast_hash": "424c364b29b677ac107069ce40e0a3c8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FsUtf.cpp": {
+    "mtime": 1784951622.322582,
+    "ast_hash": "ea7e3bed861269eefcf38c5522be7457",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FsBlockDeviceInterface.h": {
+    "mtime": 1784951622.3220131,
+    "ast_hash": "acac7d7d477f79671883c0698eedfce5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FmtNumber.h": {
+    "mtime": 1784951622.3215935,
+    "ast_hash": "a5d1d72aa724b52693b4cf0e63567229",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/upcase.h": {
+    "mtime": 1784951622.3227577,
+    "ast_hash": "eeee77a3492f9d2db506f27f3ab6da23",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/upcase.cpp": {
+    "mtime": 1784951622.3227198,
+    "ast_hash": "352178a89b9877ecde0f972b9149b1c3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FmtNumber.cpp": {
+    "mtime": 1784951622.3214538,
+    "ast_hash": "be366216ea06c0571b7750375c1bd57b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FsName.cpp": {
+    "mtime": 1784951622.322283,
+    "ast_hash": "ed7648a43530abbc80cbd89fa4b22947",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FsApiConstants.h": {
+    "mtime": 1784951622.3216717,
+    "ast_hash": "fbbe3d5e980ea7c0c7efd5c27c717cef",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/CompileDateTime.h": {
+    "mtime": 1784951622.3213305,
+    "ast_hash": "2748b59cb6a50fdc83f9e870ceeea613",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FsCache.h": {
+    "mtime": 1784951622.3221204,
+    "ast_hash": "3fdf24228528abebfb32327feea89375",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FsStructs.cpp": {
+    "mtime": 1784951622.3223774,
+    "ast_hash": "8eaf813781b69c2795402807104e8daa",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FsCache.cpp": {
+    "mtime": 1784951622.322067,
+    "ast_hash": "a5efc9b176ebcdd82837eafe9e6cf8f4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/SysCall.h": {
+    "mtime": 1784951622.322671,
+    "ast_hash": "55ef83c7b6a92e1cfcb32af6d357d319",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FsDateTime.h": {
+    "mtime": 1784951622.322239,
+    "ast_hash": "ded8932b2340899099d72b668664bfef",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FsStructs.h": {
+    "mtime": 1784951622.3224306,
+    "ast_hash": "cf96dbe1615ad849be748326ea5a4edf",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/DebugMacros.h": {
+    "mtime": 1784951622.3213794,
+    "ast_hash": "9f33752c3b7eb7adf5a1b5a1a5208c4f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/common/FsDateTime.cpp": {
+    "mtime": 1784951622.322173,
+    "ast_hash": "6c3b83c894fa04ff93f0bad9f2c6724c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/iostream/ostream.h": {
+    "mtime": 1784951622.3235514,
+    "ast_hash": "6e925b5e259ebe71feb611f8d2d3e905",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/iostream/fstream.h": {
+    "mtime": 1784951622.3231792,
+    "ast_hash": "1e6879a657ef8069c2c8c8b90a213cdb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/iostream/StreamBaseClass.cpp": {
+    "mtime": 1784951622.3230476,
+    "ast_hash": "4aa19523e1fd71795be3953ad5045c8f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/iostream/ios.h": {
+    "mtime": 1784951622.323241,
+    "ast_hash": "e4948263c469fead25a839c2353b2273",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/iostream/iostream.h": {
+    "mtime": 1784951622.3232906,
+    "ast_hash": "22461d0b1cdacfb5be71ca9f7f8b94f4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/iostream/StdioStream.h": {
+    "mtime": 1784951622.3229759,
+    "ast_hash": "6d1c7f344e679e353b2890b63a1938d3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/iostream/StdioStream.cpp": {
+    "mtime": 1784951622.322913,
+    "ast_hash": "d10e24a27e3d592cdb8c2f2ad027313e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/iostream/ostream.cpp": {
+    "mtime": 1784951622.323489,
+    "ast_hash": "4bd67f9fdf534628a0baba511250c4a4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/iostream/bufstream.h": {
+    "mtime": 1784951622.323109,
+    "ast_hash": "e6bc1603791a81f80ee0ac32b74d97cb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/iostream/istream.cpp": {
+    "mtime": 1784951622.32336,
+    "ast_hash": "8e8aac0ce98f7eb052cad2bd700b8c3f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/iostream/istream.h": {
+    "mtime": 1784951622.323432,
+    "ast_hash": "df1e1e0b6772239744768466285ada2e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/iostream/ArduinoStream.h": {
+    "mtime": 1784951622.3228369,
+    "ast_hash": "d0039356d11698a9178dc9512ad31cb8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/DigitalIO/SoftSPI.h": {
+    "mtime": 1784951622.315116,
+    "ast_hash": "a8bcc8846152f79dc41f0d50fca73631",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/DigitalIO/DigitalPin.h": {
+    "mtime": 1784951622.3150601,
+    "ast_hash": "3ba6898092c637e554d87f2bd9910d9f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/DigitalIO/boards/MegaGpioPinMap.h": {
+    "mtime": 1784951622.3153706,
+    "ast_hash": "fbb9365aa3151a3040dad0bda65c868a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/DigitalIO/boards/Teensy2ppGpioPinMap.h": {
+    "mtime": 1784951622.315558,
+    "ast_hash": "08e8f145e8ea12f1b57758aa80da8caa",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/DigitalIO/boards/Standard1284GpioPinMap.h": {
+    "mtime": 1784951622.3154602,
+    "ast_hash": "211fd33fab54cc288b82164f3c95ff3a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/DigitalIO/boards/UnoGpioPinMap.h": {
+    "mtime": 1784951622.3156087,
+    "ast_hash": "9bdb557b52156d26acadcf8233364fe4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/DigitalIO/boards/BobuinoGpioPinMap.h": {
+    "mtime": 1784951622.3152323,
+    "ast_hash": "31e2b7f8dbaa636e1befe7527624a04e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/DigitalIO/boards/GpioPinMap.h": {
+    "mtime": 1784951622.3152807,
+    "ast_hash": "365859bfec55756a73ebf5a3c23ac0c7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/DigitalIO/boards/Teensy2GpioPinMap.h": {
+    "mtime": 1784951622.3155055,
+    "ast_hash": "388b4ae1a5240de524d109ad985e85e2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/DigitalIO/boards/LeonardoGpioPinMap.h": {
+    "mtime": 1784951622.3153257,
+    "ast_hash": "8e0be8298ddcd49f6dbec2271e080636",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/DigitalIO/boards/AvrDevelopersGpioPinMap.h": {
+    "mtime": 1784951622.315185,
+    "ast_hash": "f78eac3e64c4988c241eb16268eb1218",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/DigitalIO/boards/SleepingBeautyGpioPinMap.h": {
+    "mtime": 1784951622.3154206,
+    "ast_hash": "556f20dc0db3ed798311bc7ff9af829c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerifBoldItalic12pt7b.h": {
+    "mtime": 1784951622.3117752,
+    "ast_hash": "b9e6b2e4d3a66258fab70b287b1018fe",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMonoBoldOblique12pt7b.h": {
+    "mtime": 1784951622.3092482,
+    "ast_hash": "6311b688d1ed47dea6a6287927e3bfce",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSansBoldOblique18pt7b.h": {
+    "mtime": 1784951622.3106205,
+    "ast_hash": "c4a339ef7dc588b35fa1cdcf5092e317",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/Picopixel.h": {
+    "mtime": 1784951622.3124173,
+    "ast_hash": "f1262e9ac6b296a458dbcf4d503ccaa8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerifItalic12pt7b.h": {
+    "mtime": 1784951622.3120482,
+    "ast_hash": "e7bc93ae37f21105abcd01d325c52ff1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMono18pt7b.h": {
+    "mtime": 1784951622.3085313,
+    "ast_hash": "6a991cba6d4ca1b421451bab5f32cb95",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSansBold18pt7b.h": {
+    "mtime": 1784951622.3102787,
+    "ast_hash": "85405e3dabf9a2d2c36dc4002ce27c84",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSansOblique24pt7b.h": {
+    "mtime": 1784951622.3110902,
+    "ast_hash": "f028991ba19ea391e329d8477e54aacb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMonoOblique12pt7b.h": {
+    "mtime": 1784951622.3095493,
+    "ast_hash": "900adcfbdb567ae17ad14f7c5e974a50",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSansBold9pt7b.h": {
+    "mtime": 1784951622.3104904,
+    "ast_hash": "3efbd21426e11969d0731874974dad68",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSans12pt7b.h": {
+    "mtime": 1784951622.3098958,
+    "ast_hash": "6077f0ad97d48ad3a4b16a1062b70abd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSansOblique9pt7b.h": {
+    "mtime": 1784951622.311159,
+    "ast_hash": "6104377eb1fe57d64397c1486fe686b1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMonoBold9pt7b.h": {
+    "mtime": 1784951622.309191,
+    "ast_hash": "b13572e6190d77118ef82f1296fbb613",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerif12pt7b.h": {
+    "mtime": 1784951622.311223,
+    "ast_hash": "35fb374e7a5b6d5524f728e65ff22366",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSansBoldOblique24pt7b.h": {
+    "mtime": 1784951622.3106775,
+    "ast_hash": "ab74aad100673734b548c8db0a0907f4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMonoOblique9pt7b.h": {
+    "mtime": 1784951622.3098369,
+    "ast_hash": "df7375b07f2bf727208c4931e87d8515",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerifItalic9pt7b.h": {
+    "mtime": 1784951622.3122876,
+    "ast_hash": "fda0dd6f0a4b5439fe9152e6d779f35e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerifBold9pt7b.h": {
+    "mtime": 1784951622.3117127,
+    "ast_hash": "a87844806859510794856b63b6fe062a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/TomThumb.h": {
+    "mtime": 1784951622.3125718,
+    "ast_hash": "f27fd462b92b54be7dd1a058f55ffaa1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSans9pt7b.h": {
+    "mtime": 1784951622.310131,
+    "ast_hash": "54fdf94fe5adfaddc3b3ab5dcb40ac14",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMono24pt7b.h": {
+    "mtime": 1784951622.3086195,
+    "ast_hash": "737cb2f7e7b276a813104253030366f6",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSansBold24pt7b.h": {
+    "mtime": 1784951622.3104107,
+    "ast_hash": "b1cbaa2f69717d80e7fa5c40b5f71560",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerifBold12pt7b.h": {
+    "mtime": 1784951622.311473,
+    "ast_hash": "dd1f92f98aa194cdd7683642fdc6a72c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMonoBold12pt7b.h": {
+    "mtime": 1784951622.308791,
+    "ast_hash": "ae3f7a55d40e17552dc3acb26525bc7a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSansOblique18pt7b.h": {
+    "mtime": 1784951622.3109288,
+    "ast_hash": "d4ee4dcd4c6c4e5ad7235e83914d97cd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerifBoldItalic24pt7b.h": {
+    "mtime": 1784951622.3119276,
+    "ast_hash": "a5bdceee3e9b53e2329113b2df1cad6f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerifBoldItalic9pt7b.h": {
+    "mtime": 1784951622.311995,
+    "ast_hash": "9ed638d9f68fbebabbe9c445fbe4b46d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMonoBoldOblique24pt7b.h": {
+    "mtime": 1784951622.309387,
+    "ast_hash": "3f3cc7c8f66f8a54c885745c4ccfdee5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSansBoldOblique9pt7b.h": {
+    "mtime": 1784951622.3107822,
+    "ast_hash": "db7477cbbaef63d083c99418a26ede54",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerifItalic24pt7b.h": {
+    "mtime": 1784951622.3122077,
+    "ast_hash": "b2cacfc1dd5a75a7b6c0602597d49523",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMonoBoldOblique9pt7b.h": {
+    "mtime": 1784951622.3094814,
+    "ast_hash": "e5535c96fa5603c6af25c9f148e83694",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerif18pt7b.h": {
+    "mtime": 1784951622.3112843,
+    "ast_hash": "c09e2c334b49b0a0783805c51aebd377",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerifBold18pt7b.h": {
+    "mtime": 1784951622.311553,
+    "ast_hash": "d1018d2c70447e4e06f0fa2722334e27",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSansOblique12pt7b.h": {
+    "mtime": 1784951622.3108404,
+    "ast_hash": "f7691c8045f2ff86092742effe9cc357",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMonoBold18pt7b.h": {
+    "mtime": 1784951622.308857,
+    "ast_hash": "fe27b50050aa6a0217150ea656f1820f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSans24pt7b.h": {
+    "mtime": 1784951622.3100471,
+    "ast_hash": "ac776c3c2ebcfe8f6d4de058666c52c3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMonoOblique24pt7b.h": {
+    "mtime": 1784951622.3097475,
+    "ast_hash": "bdb3b2d939076abef6483e1fe38d1c0d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerifItalic18pt7b.h": {
+    "mtime": 1784951622.3121192,
+    "ast_hash": "a989b895c79eeeb2d2e8ce1403227275",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerif9pt7b.h": {
+    "mtime": 1784951622.3114188,
+    "ast_hash": "f977a01e83ba7a4a13f02840938352f1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSansBoldOblique12pt7b.h": {
+    "mtime": 1784951622.3105483,
+    "ast_hash": "ae93f593770b9f170768237e2ae65ecc",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerif24pt7b.h": {
+    "mtime": 1784951622.3113408,
+    "ast_hash": "3aa0fe307e1361c82d5351e821e31a44",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerifBoldItalic18pt7b.h": {
+    "mtime": 1784951622.311845,
+    "ast_hash": "65ebf4282a20e461ec10598e30d60a30",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMonoBoldOblique18pt7b.h": {
+    "mtime": 1784951622.3093214,
+    "ast_hash": "0263d151678e2cbcd3e2c83cca434efe",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/Org_01.h": {
+    "mtime": 1784951622.3123534,
+    "ast_hash": "f3db8b9618652dc6ff62341cf0c15122",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/Tiny3x3a2pt7b.h": {
+    "mtime": 1784951622.3125124,
+    "ast_hash": "86a9be4b4b4f9674c59ceef6407479ee",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSans18pt7b.h": {
+    "mtime": 1784951622.3099623,
+    "ast_hash": "798b73970d5bbd3b56ea8ca8cd00d5c1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMonoOblique18pt7b.h": {
+    "mtime": 1784951622.3096106,
+    "ast_hash": "e08a3560998b69469fc19a54402f240c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSerifBold24pt7b.h": {
+    "mtime": 1784951622.3116355,
+    "ast_hash": "c1e06facb14ecfaa243590f84d27bab6",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeSansBold12pt7b.h": {
+    "mtime": 1784951622.3101974,
+    "ast_hash": "562ac8b7921727d384dd733484acbacf",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMonoBold24pt7b.h": {
+    "mtime": 1784951622.3091004,
+    "ast_hash": "56fe7fa21aee7cbdc1f10b02b6d96329",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMono9pt7b.h": {
+    "mtime": 1784951622.3087215,
+    "ast_hash": "39f5ba7c3668e00e764065e9b0abdd1a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/FreeMono12pt7b.h": {
+    "mtime": 1784951622.308458,
+    "ast_hash": "6a6cd6a000ac52ac63ef46c0e1f109fd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/src/main.cpp": {
+    "mtime": 1784952806.2314596,
+    "ast_hash": "0f56fbaf5e940a0ac55e42efc683e2f8",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/infra/cloudflare/pixelops-kite/package.json": {
     "mtime": 1780625627.5399709,
     "ast_hash": "08a4e3946c547e9ce79683829aa23142",
@@ -40,8 +1605,8 @@
     "semantic_hash": "728dd70ea0c7965cc2b9c68c2049dbdb"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/main.py": {
-    "mtime": 1781385048.8489568,
-    "ast_hash": "feb75a45bba84e257a2e2d46df951b8d",
+    "mtime": 1784951528.6774209,
+    "ast_hash": "1543bd9c91b4221a00a89cfb5d2f1967",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/thermalright_cli.py": {
@@ -80,22 +1645,22 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/integrations.json": {
-    "mtime": 1782743270.318911,
+    "mtime": 1784954258.5627007,
     "ast_hash": "4fe6a3dbc5d9cc6dc0f82e2efff1d557",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/display.json": {
-    "mtime": 1781752111.0426612,
-    "ast_hash": "edcede4b0a076b3edce9f716bf25e164",
+    "mtime": 1784954258.562701,
+    "ast_hash": "74619fa294f9098bc0ec4d5feb549d1e",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/discord_people.json": {
-    "mtime": 1780978473.5445528,
+    "mtime": 1784954258.5627418,
     "ast_hash": "ad451f389326a555e8f72735c730c9eb",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/people.json": {
-    "mtime": 1780978473.5445378,
+    "mtime": 1784954258.5627377,
     "ast_hash": "f7db92a9d1e4ad2bd31f30247f21d97e",
     "semantic_hash": ""
   },
@@ -115,12 +1680,12 @@
     "semantic_hash": "9a8a7318e5ed0fcd20f37096ae20381f"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/companions.json": {
-    "mtime": 1780978473.544874,
+    "mtime": 1784954258.562726,
     "ast_hash": "ba53346223bd5291b7a005fead013a10",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game.json": {
-    "mtime": 1780978473.5453353,
+    "mtime": 1784954258.5627067,
     "ast_hash": "73bbc2488584dc7cd073b549d1ceb8b6",
     "semantic_hash": ""
   },
@@ -140,7 +1705,7 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/pokemon.json": {
-    "mtime": 1780978473.544892,
+    "mtime": 1784954258.5627394,
     "ast_hash": "e7b0d141f87d260f64c1c714b8b534bd",
     "semantic_hash": ""
   },
@@ -684,9 +2249,14 @@
     "ast_hash": "f3b4a1b6604a5cb6ee9e7b3eb870d2d3",
     "semantic_hash": "f3b4a1b6604a5cb6ee9e7b3eb870d2d3"
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/eink_http.py": {
+    "mtime": 1784952698.3039844,
+    "ast_hash": "4ea31051ae375c46c5390df12d77431b",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/__init__.py": {
-    "mtime": 1779894790.4490042,
-    "ast_hash": "b2a1c8a85eb81dc0586b77fbb2d47ed1",
+    "mtime": 1784951528.586012,
+    "ast_hash": "749a3d8d20701aa22388c1da336b25af",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/file_gif.py": {
@@ -774,6 +2344,11 @@
     "ast_hash": "f187cebb04df442cad33d43b07ca5134",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_eink_http.py": {
+    "mtime": 1784952702.9364934,
+    "ast_hash": "8603e0b63389ee0a7863952d8937de0c",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_clickup.py": {
     "mtime": 1780364426.6870728,
     "ast_hash": "a5f92a0fa7f8bbe441e6f9a8899ca066",
@@ -810,8 +2385,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/App.tsx": {
-    "mtime": 1782743376.6996908,
-    "ast_hash": "21b11b05b2c763a06101cad376aa0c7a",
+    "mtime": 1784955216.5642846,
+    "ast_hash": "19a0912005d546c1165551e6d6722050",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/main.tsx": {
@@ -820,8 +2395,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/types.ts": {
-    "mtime": 1782743275.5427668,
-    "ast_hash": "c7f524a2e64bb84786333f9ecfd02e8a",
+    "mtime": 1784951676.8688774,
+    "ast_hash": "0a56303aaa2f6dfdaa3e812a19d84708",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/components/PixelMascot.tsx": {
@@ -868,6 +2443,151 @@
     "mtime": 1778610817.2035027,
     "ast_hash": "af0bff3ffdb21d7afd07837c6ce73eb5",
     "semantic_hash": "af0bff3ffdb21d7afd07837c6ce73eb5"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/README.md": {
+    "mtime": 1784952698.49619,
+    "ast_hash": "c18c3239ba5a83fbe2d062b6cce00357",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/breaking_changes.md": {
+    "mtime": 1784951622.239752,
+    "ast_hash": "74ac1264ac3e851048410054d41d363a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/API.md": {
+    "mtime": 1784951622.239957,
+    "ast_hash": "8c615f2db8daf3a8aed6f0722f4196df",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/README.md": {
+    "mtime": 1784951622.2817655,
+    "ast_hash": "6fdba4ca6c610034a38434d1895131c4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/SD/sd.md": {
+    "mtime": 1784951622.2826166,
+    "ast_hash": "b50be782e0c13bc149364f27c3383881",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/SD/MinimalSerial.md": {
+    "mtime": 1784951622.281865,
+    "ast_hash": "603b2a660a9f34268e8a67509c051c70",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/VisionMaster/vision_master.md": {
+    "mtime": 1784951622.28366,
+    "ast_hash": "e38b54a536f61f583683d9a32d00ac7c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Wiring/wiring_esp8266.md": {
+    "mtime": 1784951622.2883112,
+    "ast_hash": "da69b9445166f8962ebe5a8f1f59ba53",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Wiring/wiring_esp32.md": {
+    "mtime": 1784951622.288262,
+    "ast_hash": "217ceb380536e68c1860158fed2d6a71",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Wiring/wiring_m328p.md": {
+    "mtime": 1784951622.288599,
+    "ast_hash": "4a7539c75fdf064b92145512ec978b83",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Wiring/wiring_vme290.md": {
+    "mtime": 1784951622.2887526,
+    "ast_hash": "1c8bc2e70475a907e9dc0462be9a97ed",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Wiring/wiring_vme213.md": {
+    "mtime": 1784951622.2887058,
+    "ast_hash": "e208ff73282ad6e9bfb7b70e214d2e90",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Wiring/wiring_m2560.md": {
+    "mtime": 1784951622.2885368,
+    "ast_hash": "d4042e1c515eaafd374872dde8611951",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Wiring/wiring_samd21g18a.md": {
+    "mtime": 1784951622.288648,
+    "ast_hash": "00c1f033c0cab6eb7104ce21070bc7f6",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Paging/paging.md": {
+    "mtime": 1784951622.2803862,
+    "ast_hash": "03a56305c33ee9c7d6b8ddd67e481a8e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/XBitmapTutorial/3color.md": {
+    "mtime": 1784951622.2932687,
+    "ast_hash": "76cc33d6f4b07332d27e78ce660cc946",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/XBitmapTutorial/README.md": {
+    "mtime": 1784951622.294983,
+    "ast_hash": "c47d61b4a0e55e8df71b7dda1ecf109a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/XBitmapTutorial/xbitmap-tutorial.md": {
+    "mtime": 1784951622.29701,
+    "ast_hash": "2e5570a04e240074f353a75564c71fe9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/XBitmapTutorial/mono.md": {
+    "mtime": 1784951622.2960885,
+    "ast_hash": "208a22e66e2deb705e2e3a94870ff6fd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/WirelessPaper/wireless_paper.md": {
+    "mtime": 1784951622.2846534,
+    "ast_hash": "e12e5d62d522c7688d20852d4647fa22",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/FlexConnector/flex_labels.md": {
+    "mtime": 1784951622.2738628,
+    "ast_hash": "5d50a366084434d1b32763046ce1add0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/GFX_Root/README.md": {
+    "mtime": 1784951622.3129337,
+    "ast_hash": "9a128fea0dd64c9e6ef0b1ece7f69fce",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/GFX_Root/license_Adafruit_GFX.txt": {
+    "mtime": 1784951622.313087,
+    "ast_hash": "ba5a06aa56afaf9200c817fc6992087b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/GFX_Root/license_GFX_Root.txt": {
+    "mtime": 1784951622.3131657,
+    "ast_hash": "1ebbd3e34237af26da5dc08a4e440464",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/README.md": {
+    "mtime": 1784951622.3186443,
+    "ast_hash": "0156a566d6ffd13645659831a1f48dd7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/SDWrapper/SdFat/DigitalIO/readme.txt": {
+    "mtime": 1784951622.315651,
+    "ast_hash": "1cb10cd58b2188993dccb5c7009046a1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/README.md": {
+    "mtime": 1784951622.3124604,
+    "ast_hash": "621c7568dd31d2bf0784bd653d8bb63f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/license_Adafruit_GFX.txt": {
+    "mtime": 1784951622.3126197,
+    "ast_hash": "ba5a06aa56afaf9200c817fc6992087b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/src/Fonts/license_GFX_Root.txt": {
+    "mtime": 1784951622.3127038,
+    "ast_hash": "1ebbd3e34237af26da5dc08a4e440464",
+    "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/infra/cloudflare/pixelops-kite/README.md": {
     "mtime": 1780627309.9122798,
@@ -1034,6 +2754,11 @@
     "ast_hash": "fc3154c59c13b77b67e5bd4b8beb4029",
     "semantic_hash": "fc3154c59c13b77b67e5bd4b8beb4029"
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0025-eink-displays-are-network-output-terminals.md": {
+    "mtime": 1784951637.608363,
+    "ast_hash": "e4aa3694b5c2411f4c5478006b8b5072",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0020-tasks-huds-share-provider-neutral-board-state.md": {
     "mtime": 1780364449.7200623,
     "ast_hash": "7d37222a432e2a7e57d343e2ab864768",
@@ -1067,6 +2792,56 @@
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/.github/workflows/linux.yml": {
     "mtime": 1779765163.0697227,
     "ast_hash": "64a61316a19e8a117e0f4af3f4e74dbe",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Datasheets/HTVME213Schematic.pdf": {
+    "mtime": 1784951622.2585616,
+    "ast_hash": "f3997723ede8550839489fd8a89e2e97",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Datasheets/DEPG0154BNS800.pdf": {
+    "mtime": 1784951622.2483988,
+    "ast_hash": "cc0359852c17983ed236463c84b7976b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Datasheets/HTVME290Schematic.pdf": {
+    "mtime": 1784951622.2588263,
+    "ast_hash": "2821b52471132ad397965f0bc488df16",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Datasheets/DEPG0290BNS75A.pdf": {
+    "mtime": 1784951622.2553623,
+    "ast_hash": "f73f3024de750fc400d81e652984c60c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Datasheets/QYEG0213RWS800.pdf": {
+    "mtime": 1784951622.2732337,
+    "ast_hash": "3e78edfbbb2610af069e8ac83ef872da",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Datasheets/DEPG0150BNS810.pdf": {
+    "mtime": 1784951622.244713,
+    "ast_hash": "2386dbfc059e504becc150882be6be65",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Datasheets/DEPG0213BNS800.pdf": {
+    "mtime": 1784951622.2522333,
+    "ast_hash": "02b32a68b8f2e5c22a4741a3b505be28",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Datasheets/GDE029A1.pdf": {
+    "mtime": 1784951622.2582538,
+    "ast_hash": "a7357513567a75a8422f31b49fa0f707",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Datasheets/WirelessPaperSchematic.pdf": {
+    "mtime": 1784951622.2735639,
+    "ast_hash": "8fbec81f77025f55bb8d75ac8a9a71ae",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/docs/Datasheets/LCMEN2R13EFC1.pdf": {
+    "mtime": 1784951622.269953,
+    "ast_hash": "4daf16cf8fc8cb439f31e22d192fa2b8",
     "semantic_hash": ""
   }
 }
