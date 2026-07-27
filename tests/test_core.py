@@ -15,7 +15,7 @@ from pixel_ops.core.app import PixelOpsApp
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.companions import CompanionMember, CompanionSnapshot
 from pixel_ops.events.event_bus import EventBus
-from pixel_ops.main import runtime_display_config
+from pixel_ops.main import runtime_display_config, virtual_display_config
 
 
 class DummyScene:
@@ -221,6 +221,26 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(active["orientation"], "vertical")
         self.assertEqual(active["width"], 320)
         self.assertEqual(active["height"], 480)
+
+    def test_virtual_display_config_ignores_single_display_orientation_profile(self):
+        display_cfg = {
+            "width": 2650,
+            "height": 462,
+            "orientation": "horizontal",
+            "layout": {"weather_forecast": {"x": 2408, "y": 8, "width": 152, "height": 40}},
+            "orientations": {"horizontal": {"width": 480, "height": 320, "layout": {}}},
+            "device": {
+                "displays": [
+                    {"enabled": True, "x": 0, "y": 0, "width": 1920, "height": 462},
+                    {"enabled": True, "x": 2400, "y": 0, "width": 250, "height": 122},
+                ]
+            },
+        }
+
+        active = virtual_display_config(display_cfg)
+
+        self.assertEqual((active["width"], active["height"]), (2650, 462))
+        self.assertIn("weather_forecast", active["layout"])
 
 
 if __name__ == "__main__":

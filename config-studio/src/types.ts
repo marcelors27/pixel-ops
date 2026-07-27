@@ -116,6 +116,17 @@ export type DisplayOutputConfig = {
     address?: number | null;
     timeout_ms?: number;
   };
+  eink?: {
+    url: string;
+    token?: string;
+    timeout_seconds?: number;
+    min_frame_interval_seconds?: number;
+    full_refresh_every?: number;
+    dither?: boolean;
+    threshold?: number;
+    invert?: boolean;
+    accent_pattern?: boolean;
+  };
 };
 
 export type LayoutProfileConfig = {
@@ -252,6 +263,7 @@ export type RuntimeConfig = {
           address?: number | null;
           timeout_ms?: number;
         };
+        eink?: DisplayOutputConfig["eink"];
         displays?: DisplayOutputConfig[];
       };
       layout: Record<LayoutKey, LayoutBox>;

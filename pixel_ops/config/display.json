@@ -1,8 +1,8 @@
 {
   "display": {
-    "width": 2400,
+    "width": 2650,
     "height": 462,
-    "orientation": "vertical",
+    "orientation": "horizontal",
     "device": {
       "target": "thermalright",
       "output": "thermalright",
@@ -31,6 +31,16 @@
         "start_retries": 0,
         "frame_retries": 1,
         "debug": false
+      },
+      "eink": {
+        "url": "http://pixelops-e213.local",
+        "token": "",
+        "timeout_seconds": 10,
+        "min_frame_interval_seconds": 15,
+        "full_refresh_every": 10,
+        "dither": true,
+        "threshold": 160,
+        "invert": false
       },
       "displays": [
         {
@@ -73,10 +83,21 @@
             "bus": null,
             "address": null,
             "timeout_ms": 5000
+          },
+          "eink": {
+            "url": "http://pixelops-e213.local",
+            "token": "",
+            "timeout_seconds": 10,
+            "min_frame_interval_seconds": 15,
+            "full_refresh_every": 10,
+            "dither": true,
+            "threshold": 160,
+            "invert": false,
+            "accent_pattern": true
           }
         },
         {
-          "id": "display-mq6143m3-2",
+          "id": "display-mrzwgt3q-2",
           "label": "TURZX 2",
           "enabled": true,
           "target": "turzx",
@@ -85,6 +106,7 @@
           "y": 0,
           "width": 480,
           "height": 320,
+          "rotation": 90,
           "identify_number": 2,
           "thermalright": {
             "vid": "0x0416",
@@ -111,115 +133,132 @@
             "vid": "0x1a86",
             "pid": "0x5722",
             "serial_number": "USB35INCHIPSV2",
-            "bus": null,
-            "address": null,
+            "bus": 2,
+            "address": 3,
             "timeout_ms": 5000
           },
-          "rotation": 90
+          "eink": {
+            "url": "http://pixelops-e213.local",
+            "token": "",
+            "timeout_seconds": 10,
+            "min_frame_interval_seconds": 15,
+            "full_refresh_every": 10,
+            "dither": true,
+            "threshold": 160,
+            "invert": false,
+            "accent_pattern": true
+          }
+        },
+        {
+          "id": "display-mrzwhjkh-3",
+          "label": "Heltec E213",
+          "enabled": true,
+          "target": "eink",
+          "output": "eink",
+          "x": 2400,
+          "y": 16,
+          "width": 250,
+          "height": 122,
+          "rotation": 0,
+          "identify_number": 3,
+          "thermalright": {
+            "vid": "0x0416",
+            "pid": "0x5408",
+            "timeout_ms": 5000,
+            "jpeg_quality": 85,
+            "image_width": 250,
+            "image_height": 122,
+            "min_frame_interval_ms": 100,
+            "packet_delay_ms": 0,
+            "packet_size": 4096,
+            "hard_reset_on_start": true,
+            "hard_reset_wait_ms": 1500,
+            "handshake_on_first_frame": false,
+            "require_handshake": true,
+            "send_start_init": true,
+            "read_start_ack": true,
+            "read_frame_ack": true,
+            "start_retries": 0,
+            "frame_retries": 1,
+            "debug": false
+          },
+          "turzx": {
+            "vid": "0x1a86",
+            "pid": "0x5722",
+            "serial_number": "USB35INCHIPSV2",
+            "bus": 2,
+            "address": 3,
+            "timeout_ms": 5000
+          },
+          "eink": {
+            "url": "http://pixelops-e213.local",
+            "token": "",
+            "timeout_seconds": 10,
+            "min_frame_interval_seconds": 15,
+            "full_refresh_every": 10,
+            "dither": true,
+            "threshold": 160,
+            "invert": false,
+            "accent_pattern": true
+          }
         }
       ]
     },
     "layout": {
       "timezones": {
-        "x": 0,
-        "y": 8,
-        "width": 720,
-        "height": 296
-      },
-      "clock": {
-        "x": 1264,
+        "x": 288,
         "y": 144,
-        "width": 88,
-        "height": 72,
-        "kind": "clock",
-        "clock_mode": "digital",
-        "clock_skin": "classic",
-        "use_24_hour": true,
-        "show_seconds": false
+        "width": 232,
+        "height": 88
       },
       "route_signal": {
-        "x": 480,
-        "y": 400,
-        "width": 232,
-        "height": 56
+        "x": 8,
+        "y": 48,
+        "width": 88,
+        "height": 40
       },
       "gauges": {
-        "x": 272,
-        "y": 344,
-        "width": 448,
-        "height": 56
+        "x": 2408,
+        "y": 56,
+        "width": 240,
+        "height": 64
       },
       "weather": {
-        "x": 272,
-        "y": 400,
-        "width": 208,
-        "height": 56
+        "x": 112,
+        "y": 160,
+        "width": 112,
+        "height": 40
       },
       "weather_forecast": {
-        "x": 1096,
-        "y": 288,
-        "width": 256,
-        "height": 56,
+        "x": 2408,
+        "y": 8,
+        "width": 152,
+        "height": 40,
         "kind": "weather_forecast"
       },
       "pc_stats": {
-        "x": 720,
-        "y": 8,
-        "width": 200,
-        "height": 128
-      },
-      "pokemon_captures": {
-        "x": 920,
-        "y": 8,
-        "width": 344,
-        "height": 128,
-        "kind": "pokemon_captures"
-      },
-      "gamification": {
-        "x": 1096,
-        "y": 144,
-        "width": 168,
-        "height": 72,
-        "kind": "gamification"
-      },
-      "mana": {
-        "x": 1096,
-        "y": 216,
-        "width": 168,
-        "height": 72,
-        "kind": "mana"
-      },
-      "now_playing": {
-        "x": 0,
-        "y": 342,
-        "width": 272,
-        "height": 120,
-        "kind": "media"
+        "x": 496,
+        "y": 56,
+        "width": 128,
+        "height": 56
       },
       "activity": {
-        "x": 0,
-        "y": 304,
-        "width": 720,
+        "x": 8,
+        "y": 68,
+        "width": 70,
         "height": 40
       },
       "game": {
-        "x": 1584,
+        "x": 1920,
         "y": 0,
-        "width": 656,
-        "height": 344
+        "width": 472,
+        "height": 320
       },
       "text_box": {
-        "x": 1352,
-        "y": 344,
-        "width": 448,
-        "height": 104
-      },
-      "meetings_day": {
-        "x": 720,
-        "y": 144,
-        "width": 376,
-        "height": 312,
-        "kind": "meetings_day"
+        "x": 512,
+        "y": 232,
+        "width": 264,
+        "height": 32
       }
     },
     "orientations": {
@@ -248,7 +287,7 @@
       }
     },
     "backend": "usb_bulk_rev_a",
-    "fps": 10,
+    "fps": 1,
     "preview_output": "pixel_ops/output/preview.png",
     "gif_output": "pixel_ops/output/preview.gif",
     "scanlines": false,

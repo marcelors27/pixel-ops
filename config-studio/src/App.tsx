@@ -220,6 +220,7 @@ const equipmentOptions = [
   { target: "turzx_35", label: "TURZX 3.5", width: 320, height: 480, output: "turzx" },
   { target: "turzx_94", label: "TURZX 9.4", width: 480, height: 320, output: "turzx" },
   { target: "thermalright", label: "Thermalright LY", width: 1920, height: 462, output: "thermalright" },
+  { target: "eink", label: "Heltec E213", width: 250, height: 122, output: "eink" },
   { target: "preview", label: "Preview PNG", width: 320, height: 480, output: "preview" },
   { target: "gif", label: "GIF", width: 320, height: 480, output: "gif" },
 ] as const;
@@ -728,11 +729,11 @@ export function App() {
               applyPrimaryDisplay(draft.display.display, displays[0]);
             })
           }
-          onAddDisplay={() =>
+          onAddDisplay={(output) =>
             mutate((draft) => {
               const display = draft.display.display;
               const displays = ensureDisplayOutputs(display);
-              const next = newDisplayOutput(displays.length + 1, displays);
+              const next = newDisplayOutput(displays.length + 1, displays, output);
               displays.push(next);
               applyMultiDisplayBounds(display);
             })
@@ -776,11 +777,11 @@ export function App() {
             <Field label="Output">
               <Select
                 value={display.device.output}
-                options={["window", "preview", "gif", "turzx", "thermalright"]}
+                options={["window", "preview", "gif", "turzx", "thermalright", "eink"]}
                 onChange={(value) =>
                   mutate((draft) => {
-                    if (value === "thermalright") {
-                      applyEquipment(draft, "thermalright");
+                    if (value === "thermalright" || value === "eink") {
+                      applyEquipment(draft, value);
                     } else {
                       draft.display.display.device.output = value;
                     }
@@ -960,7 +961,7 @@ function LayoutPreview({
   onUsbScan: () => void;
   onIdentifyDisplay: (display: DisplayOutputConfig) => void;
   onDisplayChange: (displayId: string, next: DisplayOutputConfig) => void;
-  onAddDisplay: () => void;
+  onAddDisplay: (output?: DisplayOutputConfig["output"]) => void;
   onAddUsbDisplay: (device: UsbDeviceCandidate) => void;
   onRemoveDisplay: (displayId: string) => void;
 }) {
@@ -1154,9 +1155,13 @@ function LayoutPreview({
               <Cable size={16} />
               {usbBusy === "scan" ? "Scanning" : "Validate USB"}
             </button>
-            <button className="secondary-button" type="button" onClick={onAddDisplay}>
+            <button className="secondary-button" type="button" onClick={() => onAddDisplay()}>
               <Plus size={16} />
               Add display
+            </button>
+            <button className="secondary-button" type="button" onClick={() => onAddDisplay("eink")}>
+              <Plus size={16} />
+              Add Heltec E213
             </button>
           </div>
         </div>
@@ -1534,6 +1539,7 @@ function DisplayOutputRow({
   const usbTarget = normalizeUsbTarget(display.output);
   const usbConfig = usbTarget === "turzx" ? display.turzx ?? defaultTurzxDeviceConfig() : display.thermalright ?? defaultThermalrightDeviceConfig();
   const isWindowOutput = normalizeOutputTarget(display.output) === "window";
+  const isEinkOutput = normalizeOutputTarget(display.output) === "eink";
   const isKnownUsbDisplay = !isWindowOutput && knownUsbDisplay(usbConfig);
   const updateUsbConfig = (patch: Record<string, unknown>) => {
     if (usbTarget === "turzx") {
@@ -1553,7 +1559,7 @@ function DisplayOutputRow({
         <TextInput value={display.label} onChange={(value) => onChange({ ...display, label: value })} />
       </Field>
       <Field label="Output">
-        <Select value={display.output} options={["thermalright", "turzx", "window", "preview", "gif"]} onChange={changeOutput} />
+        <Select value={display.output} options={["thermalright", "turzx", "eink", "window", "preview", "gif"]} onChange={changeOutput} />
       </Field>
       <Field label="X">
         <NumberInput value={display.x} onChange={(value) => onChange({ ...display, x: value })} />
@@ -1575,10 +1581,20 @@ function DisplayOutputRow({
           <ReadOnlyValue value={`${display.width}x${display.height}`} />
         </Field>
       )}
-      {!isWindowOutput ? (
+      {!isWindowOutput && !isEinkOutput ? (
         <Field label="Rotation">
           <Select value={String(display.rotation ?? 0)} options={["0", "90", "180", "270"]} onChange={(value) => onChange(lockDisplayResolution({ ...display, rotation: normalizeDisplayRotation(value) }))} />
         </Field>
+      ) : null}
+      {isEinkOutput ? (
+        <>
+          <Field label="Device URL">
+            <TextInput value={display.eink?.url ?? "http://pixelops-e213.local"} onChange={(value) => onChange({ ...display, eink: { ...defaultEinkDeviceConfig(), ...(display.eink ?? {}), url: value } })} />
+          </Field>
+          <Field label="Token">
+            <TextInput value={display.eink?.token ?? ""} onChange={(value) => onChange({ ...display, eink: { ...defaultEinkDeviceConfig(), ...(display.eink ?? {}), token: value } })} />
+          </Field>
+        </>
       ) : null}
       {!isWindowOutput ? (
         <>
@@ -1603,7 +1619,7 @@ function DisplayOutputRow({
         <Switch checked={display.enabled} onChange={(value) => onChange({ ...display, enabled: value })} />
       </Field>
       <div className="display-row-actions">
-        <button className="secondary-button" type="button" onClick={onIdentify} disabled={busy}>
+        <button className="secondary-button" type="button" onClick={onIdentify} disabled={busy || isEinkOutput}>
           <Monitor size={16} />
           {busy ? "Sending" : "Identify"}
         </button>
@@ -3627,6 +3643,7 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
     full_frame: false,
   };
   display.device.thermalright = display.device.thermalright ?? defaultThermalrightDeviceConfig();
+  display.device.eink = display.device.eink ?? defaultEinkDeviceConfig();
   ensureDisplayOutputs(display);
   display.layout_theme = layoutThemeCatalog[display.layout_theme ?? "default"] ? (display.layout_theme ?? "default") : "default";
   if (!display.layout || typeof display.layout !== "object") {
@@ -3888,6 +3905,11 @@ function applyEquipment(config: RuntimeConfig, target: string) {
     display.fps = Math.max(display.fps || 10, 10);
     display.device.thermalright = display.device.thermalright ?? defaultThermalrightDeviceConfig();
   }
+  if (target === "eink") {
+    display.orientation = "horizontal";
+    display.fps = 1;
+    display.device.eink = display.device.eink ?? defaultEinkDeviceConfig();
+  }
 }
 
 function defaultThermalrightDeviceConfig(): NonNullable<DisplayOutputConfig["thermalright"]> {
@@ -3925,6 +3947,20 @@ function defaultTurzxDeviceConfig(): NonNullable<DisplayOutputConfig["turzx"]> {
   };
 }
 
+function defaultEinkDeviceConfig(): NonNullable<DisplayOutputConfig["eink"]> {
+  return {
+    url: "http://pixelops-e213.local",
+    token: "",
+    timeout_seconds: 10,
+    min_frame_interval_seconds: 15,
+    full_refresh_every: 10,
+    dither: false,
+    threshold: 175,
+    invert: false,
+    accent_pattern: true,
+  };
+}
+
 function displayOutputFromConfig(display: RuntimeConfig["display"]["display"], index = 1): DisplayOutputConfig {
   const output = normalizeOutputTarget(display.device.output || display.device.target || "window");
   const resolution = lockedDisplayResolution(output);
@@ -3947,6 +3983,7 @@ function displayOutputFromConfig(display: RuntimeConfig["display"]["display"], i
       image_height: resolution.height,
     },
     turzx: display.device.turzx ? { ...defaultTurzxDeviceConfig(), ...display.device.turzx } : defaultTurzxDeviceConfig(),
+    eink: { ...defaultEinkDeviceConfig(), ...(display.device.eink ?? {}) },
   };
 }
 
@@ -3976,28 +4013,38 @@ function normalizeDisplayOutput(raw: Partial<DisplayOutputConfig>, index: number
     identify_number: Number(raw.identify_number ?? index),
     thermalright: syncThermalrightSize({ ...defaultThermalrightDeviceConfig(), ...(raw.thermalright ?? {}) }, resolution.width, resolution.height),
     turzx: { ...defaultTurzxDeviceConfig(), ...(raw.turzx ?? {}) },
+    eink: { ...defaultEinkDeviceConfig(), ...(raw.eink ?? {}) },
   };
 }
 
-function newDisplayOutput(index: number, displays: DisplayOutputConfig[]): DisplayOutputConfig {
+function newDisplayOutput(index: number, displays: DisplayOutputConfig[], requestedOutput?: string): DisplayOutputConfig {
   const previous = displays[displays.length - 1];
-  const output = normalizeOutputTarget(previous?.output || previous?.target || "thermalright");
-  const rotation = previous?.rotation ?? 0;
-  const resolution = lockedDisplayResolution(output, rotation, previous?.width, previous?.height);
+  const output = normalizeOutputTarget(requestedOutput || previous?.output || previous?.target || "thermalright");
+  const rotation = requestedOutput ? 0 : previous?.rotation ?? 0;
+  const resolution = lockedDisplayResolution(
+    output,
+    rotation,
+    requestedOutput ? undefined : previous?.width,
+    requestedOutput ? undefined : previous?.height,
+  );
+  const rightEdge = displays.length ? Math.max(...displays.map((item) => item.x + item.width)) : 0;
   return {
     id: `display-${Date.now().toString(36)}-${index}`,
-    label: `Display ${index}`,
+    label: output === "eink" ? "Heltec E213" : `Display ${index}`,
     enabled: true,
     target: output,
     output,
-    x: previous ? previous.x + previous.width : 0,
-    y: previous?.y ?? 0,
+    x: rightEdge,
+    y: 0,
     width: resolution.width,
     height: resolution.height,
     rotation,
     identify_number: index,
     thermalright: syncThermalrightSize(previous?.thermalright ?? defaultThermalrightDeviceConfig(), resolution.width, resolution.height),
     turzx: { ...defaultTurzxDeviceConfig(), ...(previous?.turzx ?? {}) },
+    eink: requestedOutput === "eink"
+      ? defaultEinkDeviceConfig()
+      : { ...defaultEinkDeviceConfig(), ...(previous?.eink ?? {}) },
   };
 }
 
@@ -4038,9 +4085,11 @@ function normalizeUsbTarget(value: string | undefined): "thermalright" | "turzx"
   return value === "turzx" ? "turzx" : "thermalright";
 }
 
-function normalizeOutputTarget(value: string): "thermalright" | "turzx" | "window" | "preview" | "gif" {
+function normalizeOutputTarget(value: string): "thermalright" | "turzx" | "eink" | "window" | "preview" | "gif" {
   if (value === "display") return "turzx";
-  if (value === "turzx" || value === "window" || value === "preview" || value === "gif") return value;
+  if (value === "turzx" || value === "eink" || value === "e-ink" || value === "eink_http" || value === "window" || value === "preview" || value === "gif") {
+    return value === "e-ink" || value === "eink_http" ? "eink" : value;
+  }
   return "thermalright";
 }
 
@@ -4052,7 +4101,7 @@ function lockedDisplayResolution(output: string, rotation: unknown = 0, fallback
       height: Math.max(1, Number(fallbackHeight ?? 480)),
     };
   }
-  const native = target === "thermalright" ? { width: 1920, height: 462 } : { width: 320, height: 480 };
+  const native = target === "thermalright" ? { width: 1920, height: 462 } : target === "eink" ? { width: 250, height: 122 } : { width: 320, height: 480 };
   const displayRotation = normalizeDisplayRotation(rotation);
   if (displayRotation === 90 || displayRotation === 270) {
     return { width: native.height, height: native.width };

@@ -20,3 +20,7 @@ pixel_ops/cache/
 pixel_ops/state/*.sqlite
 pixel_ops/state/*.sqlite-*
 pixel_ops/plugins/*/assets/cache/
+# PlatformIO build artifacts
+firmware/**/.pio/
+# Local hardware recovery images
+hardware-backups/

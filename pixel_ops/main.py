@@ -19,7 +19,7 @@ from pixel_ops.config_loader import ConfigWatcher, load_config_prefer_json
 from pixel_ops.events.mock_events import MockEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext
 from pixel_ops.integration_plugins.registry import build_integration_runtime
-from pixel_ops.outputs import GifOutput, PreviewOutput, TURZXOutput, ThermalrightOutput, WindowOutput
+from pixel_ops.outputs import EInkHttpOutput, GifOutput, PreviewOutput, TURZXOutput, ThermalrightOutput, WindowOutput
 from pixel_ops.outputs.base import CroppedOutput, DisplayOutput
 from pixel_ops.plugins.ai.plugin import build_ai_plugin
 from pixel_ops.plugins.registry import available_plugins, get_plugin
@@ -99,7 +99,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Pixel OPs timezone dashboard renderer.")
     plugin_names = sorted(available_plugins())
     parser.add_argument("--plugin", choices=plugin_names, default="pokemon", help="Interface plugin to render.")
-    parser.add_argument("--output", choices=("preview", "gif", "turzx", "thermalright", "window"), help="Frame output target.")
+    parser.add_argument("--output", choices=("preview", "gif", "turzx", "thermalright", "eink", "window"), help="Frame output target.")
     parser.add_argument("--display", action="store_true", help="Send frames to UsbMonitor via USB bulk.")
     parser.add_argument("--window", action="store_true", help="Render frames in a desktop window.")
     parser.add_argument("--window-scale", type=int, help="Desktop window pixel scale.")
@@ -195,7 +195,7 @@ def runtime_display_config(args: argparse.Namespace, display_cfg: dict, select_c
 def runtime_display_configs(args: argparse.Namespace, display_cfg: dict) -> list[dict]:
     if _args_selects_output(args):
         return [runtime_display_config(args, display_cfg)]
-    active = runtime_display_config(args, display_cfg, select_configured_display=False)
+    active = virtual_display_config(display_cfg)
     device_cfg = runtime_device_config(active)
     displays = device_cfg.get("displays", [])
     if not isinstance(displays, list):
@@ -205,9 +205,27 @@ def runtime_display_configs(args: argparse.Namespace, display_cfg: dict) -> list
         for item in displays
         if isinstance(item, dict)
         and bool(item.get("enabled", True))
-        and _normalize_output_name(item.get("output") or item.get("target") or device_cfg.get("output") or device_cfg.get("target")) in ("thermalright", "turzx")
+        and _normalize_output_name(item.get("output") or item.get("target") or device_cfg.get("output") or device_cfg.get("target")) in ("thermalright", "turzx", "eink")
     ]
     return configs or [runtime_display_config(args, display_cfg)]
+
+
+def virtual_display_config(display_cfg: dict) -> dict:
+    """Keep the global canvas for multi-display rendering.
+
+    Orientation profiles describe a single presentation surface. Applying one
+    before cropping virtual displays can shrink the shared frame and turn
+    displays positioned outside that profile into blank crops.
+    """
+
+    active = dict(display_cfg)
+    device_cfg = runtime_device_config(active)
+    displays = device_cfg.get("displays", [])
+    enabled = [item for item in displays if isinstance(item, dict) and bool(item.get("enabled", True))]
+    if enabled:
+        active["width"] = max(int(active.get("width", 1)), max(int(item.get("x", 0)) + int(item.get("width", 1)) for item in enabled))
+        active["height"] = max(int(active.get("height", 1)), max(int(item.get("y", 0)) + int(item.get("height", 1)) for item in enabled))
+    return active
 
 
 def _display_runtime_config(display_cfg: dict, display: dict) -> dict:
@@ -220,6 +238,8 @@ def _display_runtime_config(display_cfg: dict, display: dict) -> dict:
         device_cfg["thermalright"] = _merged_device_config(device_cfg.get("thermalright"), display.get("thermalright"))
     elif output_name == "turzx":
         device_cfg["turzx"] = _merged_device_config(device_cfg.get("turzx"), display.get("turzx"))
+    elif output_name == "eink":
+        device_cfg["eink"] = _merged_device_config(device_cfg.get("eink"), display.get("eink"))
     active["device"] = device_cfg
     if display is not None:
         rotation = _normalize_rotation(display.get("rotation", 0))
@@ -289,7 +309,7 @@ def _runtime_output_name(args: argparse.Namespace, display_cfg: dict) -> str:
         return selected_output(args)
     device_cfg = runtime_device_config(display_cfg)
     output = _normalize_output_name(device_cfg.get("output") or device_cfg.get("target") or "preview")
-    if output in ("preview", "gif", "turzx", "thermalright", "window"):
+    if output in ("preview", "gif", "turzx", "thermalright", "eink", "window"):
         return output
     return "preview"
 
@@ -351,13 +371,17 @@ def build_output(
             thermalright_cfg["image_width"] = width
             thermalright_cfg["image_height"] = height
         return _thermalright_output(thermalright_cfg, width, height)
+    if output_name == "eink":
+        display = None if "display_region" in display_cfg else _configured_display_for_output(display_cfg, output_name)
+        eink_cfg = _merged_device_config(runtime_device_config(display_cfg).get("eink"), display.get("eink") if display else None)
+        return EInkHttpOutput.from_config(width, height, eink_cfg)
     if output_name == "window":
         return WindowOutput(width=width, height=height, scale=runtime_window_scale(args, display_cfg))
     raise ValueError(f"Unsupported output: {output_name}")
 
 
 def _configured_display_for_output(display_cfg: dict, output_name: str) -> dict | None:
-    if output_name not in ("thermalright", "turzx"):
+    if output_name not in ("thermalright", "turzx", "eink"):
         return None
     device_cfg = runtime_device_config(display_cfg)
     displays = device_cfg.get("displays", [])
@@ -408,7 +432,11 @@ def _merged_device_config(base, override) -> dict:
 
 def _normalize_output_name(value) -> str:
     output = str(value or "preview").strip().lower()
-    return "turzx" if output == "display" else output
+    if output == "display":
+        return "turzx"
+    if output in ("e-ink", "eink_http"):
+        return "eink"
+    return output
 
 
 def _normalize_rotation(value) -> int:
@@ -453,7 +481,7 @@ def main() -> int:
     runtime_config = load_runtime_config()
     raw_display_cfg = load_config(APP_DIR / "config/display.json")["display"]
     use_virtual_displays = not _args_selects_output(args)
-    display_cfg = runtime_display_config(args, raw_display_cfg, select_configured_display=not use_virtual_displays)
+    display_cfg = virtual_display_config(raw_display_cfg) if use_virtual_displays else runtime_display_config(args, raw_display_cfg)
     people_cfg = load_config(APP_DIR / "config/people.json")["people"]
     plugin_cfg = plugin.load_config(plugin_dir, load_config)
     config_watcher = ConfigWatcher(
@@ -569,9 +597,11 @@ def main() -> int:
 
     def build_runtime_state() -> RuntimeState:
         current_raw_display_cfg = load_config(APP_DIR / "config/display.json")["display"]
-        current_display_cfg = runtime_display_config(args, current_raw_display_cfg, select_configured_display=not use_virtual_displays)
+        current_display_cfg = virtual_display_config(current_raw_display_cfg) if use_virtual_displays else runtime_display_config(args, current_raw_display_cfg)
         target_width = int(current_display_cfg["width"])
         target_height = int(current_display_cfg["height"])
+        if use_virtual_displays:
+            print(f"[pixel-ops canvas] {target_width}x{target_height} with {len(current_display_cfg.get('layout', {}))} layout regions", file=sys.stderr)
         return RuntimeState(
             display_cfg=current_display_cfg,
             width=target_width,
