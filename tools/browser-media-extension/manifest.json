@@ -1,12 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "Pixel OPs Browser Media",
-  "description": "Sends compact local now-playing state to Pixel OPs.",
-  "version": "0.1.0",
-  "permissions": ["tabs"],
+  "name": "Pixel OPs Browser Bridge",
+  "description": "Sends compact local browser state to Pixel OPs, including an explicitly authorized CrossHero session.",
+  "version": "0.2.0",
+  "permissions": ["tabs", "cookies", "storage"],
   "host_permissions": [
     "http://127.0.0.1:47832/*",
     "http://localhost:47832/*",
+    "http://127.0.0.1:5174/*",
+    "http://localhost:5174/*",
+    "https://crosshero.com/*",
     "https://www.youtube.com/*",
     "https://music.youtube.com/*",
     "https://youtu.be/*"
@@ -23,6 +26,19 @@
         "https://youtu.be/*"
       ],
       "js": ["content-script.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "http://127.0.0.1:5174/*",
+        "http://localhost:5174/*"
+      ],
+      "js": ["studio-bridge.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://crosshero.com/*"],
+      "js": ["crosshero-bridge.js"],
       "run_at": "document_idle"
     }
   ]

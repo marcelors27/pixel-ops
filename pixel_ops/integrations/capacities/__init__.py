@@ -1,0 +1,1 @@
+"""Capacities project-radar integration."""

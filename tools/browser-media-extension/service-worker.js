@@ -1,8 +1,25 @@
 const PIXEL_OPS_ENDPOINT = "http://127.0.0.1:47832/media/now-playing";
 const PIXEL_OPS_TOKEN = "";
 const snapshots = new Map();
+const CROSSHERO_DOMAIN = "crosshero.com";
+const CROSSHERO_STUDIO_ENDPOINTS = [
+  "http://127.0.0.1:5174/api/crosshero/browser-session",
+  "http://localhost:5174/api/crosshero/browser-session"
+];
 
 chrome.runtime.onMessage.addListener((message, sender) => {
+  if (message && message.type === "pixel-ops-crosshero-cookie-request") {
+    syncCrossHeroSession(true).then((result) => {
+      if (sender.tab && Number.isFinite(sender.tab.id)) {
+        chrome.tabs.sendMessage(sender.tab.id, { type: "pixel-ops-crosshero-cookie-result", result }).catch(() => {});
+      }
+    });
+    return;
+  }
+  if (message && message.type === "pixel-ops-crosshero-session-seen") {
+    syncCrossHeroSession(true);
+    return;
+  }
   if (!message || message.type !== "pixel-ops-media") {
     return;
   }
@@ -17,6 +34,13 @@ chrome.runtime.onMessage.addListener((message, sender) => {
     updatedAt: Date.now()
   });
   publishBestSnapshot();
+});
+
+chrome.cookies.onChanged.addListener((changeInfo) => {
+  const domain = String(changeInfo.cookie && changeInfo.cookie.domain || "").replace(/^\./, "");
+  if (domain === CROSSHERO_DOMAIN || domain.endsWith(`.${CROSSHERO_DOMAIN}`)) {
+    syncCrossHeroSession(false);
+  }
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
@@ -105,5 +129,41 @@ async function postSnapshot(snapshot) {
     });
   } catch (_error) {
     // Pixel OPs may be stopped; the next content update will try again.
+  }
+}
+
+async function syncCrossHeroSession(enableSync) {
+  try {
+    if (!enableSync) {
+      const state = await chrome.storage.local.get("crossheroSyncEnabled");
+      if (!state.crossheroSyncEnabled) return { ok: false, message: "CrossHero sync is not enabled." };
+    }
+    const cookies = await chrome.cookies.getAll({ domain: CROSSHERO_DOMAIN });
+    const usable = cookies
+      .filter((cookie) => !cookie.expirationDate || cookie.expirationDate * 1000 > Date.now())
+      .sort((left, right) => left.name.localeCompare(right.name));
+    if (!usable.length) {
+      return { ok: false, message: "Faça login no CrossHero neste navegador e tente novamente." };
+    }
+    const cookieHeader = usable.map((cookie) => `${cookie.name}=${cookie.value}`).join("; ");
+    let lastError = "Config Studio não encontrado na porta 5174.";
+    for (const endpoint of CROSSHERO_STUDIO_ENDPOINTS) {
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ cookie: cookieHeader })
+        });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
+        if (enableSync) await chrome.storage.local.set({ crossheroSyncEnabled: true });
+        return { ok: true, message: payload.message || "Sessão do CrossHero importada." };
+      } catch (error) {
+        lastError = error instanceof Error ? error.message : String(error);
+      }
+    }
+    return { ok: false, message: lastError };
+  } catch (error) {
+    return { ok: false, message: error instanceof Error ? error.message : String(error) };
   }
 }

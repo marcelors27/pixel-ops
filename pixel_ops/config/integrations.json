@@ -185,6 +185,28 @@
       "include_undated": true,
       "timeout_seconds": 10
     },
+    "capacities": {
+      "enabled": true,
+      "token_env": "PIXEL_OPS_CAPACITIES_TOKEN",
+      "structure_names": [
+        "Projeto",
+        "Project"
+      ],
+      "poll_seconds": 60,
+      "max_projects": 24,
+      "timeout_seconds": 10
+    },
+    "crosshero": {
+      "enabled": true,
+      "box_env": "PIXEL_OPS_CROSSHERO_BOX",
+      "token_env": "PIXEL_OPS_CROSSHERO_ACCESS_TOKEN",
+      "session_cookie_env": "PIXEL_OPS_CROSSHERO_SESSION_COOKIE",
+      "dashboard_url": "https://crosshero.com/dashboard/classes",
+      "workout_url": "",
+      "classes_url": "",
+      "poll_seconds": 600,
+      "timeout_seconds": 10
+    },
     "media": {
       "enabled": true,
       "providers": [
