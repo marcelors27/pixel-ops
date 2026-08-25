@@ -7,7 +7,7 @@
 
 <img src="pixel_ops/assets/logo/pixel_ops_gaco_logo.jpg" alt="Pixel OPs logo" width="512">
 
-Pixel OPs is a plugin-based runtime for small pixel-art operations dashboards. The core owns outputs, event sources, shared data, and display hardware; visual interfaces live in plugins. The default visual plugin is `pokemon`.
+Pixel Ops is an event-driven runtime for ambient pixel-art worlds. Integrations translate outside activity into neutral events, a selected game engine owns its projections and visual rules, and output drivers deliver frames to files, windows, or hardware. Pokemon is the default game engine, not the platform model; Spaceship is the first independent persistent world.
 
 The display is intentionally ambient. Meetings become encounters, pull requests become world events, Discord voice state becomes map companions, and operational pressure becomes mood instead of a notification wall.
 
@@ -15,10 +15,12 @@ The display is intentionally ambient. Meetings become encounters, pull requests 
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --output preview
+python pixel_ops/main.py --plugin spaceship --output preview
 python pixel_ops/main.py --plugin pokemon --output window --forever
 python pixel_ops/main.py --plugin pokemon --output gif --seconds 8
 python pixel_ops/main.py --plugin pokemon --output turzx --forever --fps 10 --offline
 python pixel_ops/main.py --plugin pokemon --output thermalright --forever --fps 2 --offline
+python pixel_ops/main.py --plugin pokemon --output lcd --forever --fps 10 --offline
 ```
 
 Window mode:
@@ -88,6 +90,11 @@ Pokemon plugin config:
 - `pixel_ops/plugins/pokemon/pokemon.json`: PokeAPI, cache, sprite, and offline settings.
 - `pixel_ops/plugins/pokemon/companions.json`: Pokemon-specific visual mapping for Discord companions.
 
+Spaceship plugin config:
+
+- `pixel_ops/plugins/spaceship/game.json`: procedural layout seed, active-time progression, save cadence, palette, and event settings.
+- `pixel_ops/plugins/spaceship/assets/`: local PixelLab-generated ship, crew, interior, and asteroid sprites.
+
 Integration sidecars:
 
 - `pixel_ops/config/discord_people.json`: recent Discord users and nicknames observed from voice state.
@@ -111,19 +118,36 @@ OPENAI_ADMIN_KEY=sk-admin-...
 OPENWEATHERMAP_API_KEY=...
 ```
 
-## Plugin Types
+## Runtime Architecture
+
+```text
+provider transport
+  -> integration event source
+  -> WorkEvent / PixelOpsEvent
+  -> selected GameEngine
+  -> game-owned projection and renderer
+  -> output driver
+```
+
+`PixelOpsApp` never queries provider-specific state or assembles a scene-shaped render call. It delivers events, emits `runtime.tick`, and requests a frame. The selected engine decides how calendar, GitHub, weather, social presence, tasks, local metrics, media, and AI usage affect its world.
+
+Snapshot APIs are adapted into observation events. Important event types include `calendar.today_updated`, `github.pull_requests_updated`, `weather.conditions_updated`, `system.metrics_updated`, `tasks.snapshot_updated`, and `social.companions_updated`.
+
+See [ADR 0026](docs/adr/0026-all-game-inputs-are-platform-events.md) for the boundary and migration constraints.
+
+## Extension Types
 
 Pixel OPs has three plugin-style boundaries:
 
-- visual interface plugins render the world;
-- integration plugins collect outside activity and normalize it;
+- game engines consume events, own projections, and render a world;
+- integration plugins collect outside activity and emit neutral events;
 - AI decision plugins provide optional structured model decisions.
 
-### Visual Interface Plugins
+### Game Engine Plugins
 
-Visual plugins live in `pixel_ops/plugins/<name>/`. They own a complete display experience and translate shared runtime state into pixels.
+Game plugins live in `pixel_ops/plugins/<name>/`. They own a complete display experience, event projections, world rules, and rendering.
 
-Visual plugins may consume core data types such as `PersonTime`, `CalendarEvent`, `PullRequestSummary`, `WeatherState`, `AIUsageSnapshot`, `WorkEvent`, and `EventSource`. They must not make provider transport calls directly.
+Games consume `WorkEvent` and `PixelOpsEvent` through the `GameEngine` contract. They must not make provider transport calls or receive provider source objects directly.
 
 The visual plugin object contract is duck-typed by `pixel_ops/main.py`:
 
@@ -134,7 +158,7 @@ The visual plugin object contract is duck-typed by `pixel_ops/main.py`:
 - `maybe_handle_command(args, root_dir, config)`: handle one-shot commands.
 - `fps(config, display_fps)`: choose render FPS.
 - `event_config(config)`: expose event settings to the runtime.
-- `build_app(...)`: return a `PixelOpsApp`.
+- `build_app(...)`: construct a `GameEngine` and return a `PixelOpsApp` wired only to event sources.
 
 To create a visual plugin:
 
@@ -142,12 +166,13 @@ To create a visual plugin:
 2. Add plugin JSON files under that directory.
 3. Implement the plugin class.
 4. Register it in `pixel_ops/plugins/registry.py`.
-5. Consume core events/data sources instead of importing provider transports.
+5. Build game-owned projections from events instead of importing provider transports or sources.
 6. Add documentation and an ADR when changing runtime boundaries or event semantics.
 
-Pokemon-specific docs:
+Game-specific docs:
 
 - [Pokemon plugin documentation](pixel_ops/plugins/pokemon/README.md)
+- [Spaceship plugin documentation](pixel_ops/plugins/spaceship/README.md)
 
 ### Integration Plugins
 
@@ -159,16 +184,13 @@ Integration plugins implement the protocol in `pixel_ops/integration_plugins/bas
 - `enabled(ctx)`: decide whether the plugin should load.
 - `build(ctx)`: return an `IntegrationContribution`.
 
-`IntegrationContribution` can provide:
+`IntegrationContribution` can provide only event and lifecycle boundaries:
 
 - `event_sources`;
 - `calendar_paths`;
 - `starters`;
 - `warmers`;
 - `closers`;
-- `pull_request_source`;
-- `weather_source`;
-- `ai_usage_source`.
 
 To create an integration plugin:
 
@@ -279,6 +301,25 @@ GitHub pull requests feed the compact HUD. When `fetch_deployments` is enabled, 
 ```
 
 ClickUp tasks feed the optional `tasks` HUD window with assigned task names, due dates, and remaining time. Leave `team_id` and `assignee_id` empty to resolve the first authorized Workspace and current API user.
+
+### Capacities Project Radar
+
+Capacities can feed the optional `project_radar` HUD with one active project, one project that needs to resurface, and compact Inbox/Review pressure counts. Create a custom Capacities object type named `Projeto` or `Project` with any of these properties (Portuguese and English names are both discovered):
+
+- `Estado` / `State` or `Status`
+- `Área` / `Area`
+- `Próxima ação` / `Next action`
+- `Revisitar em` / `Review date`
+- `Último toque` / `Last touched`
+- `Importância` / `Importance`
+
+Create a read-only personal token under Capacities Settings → Capacities API and store it in `.env`:
+
+```bash
+PIXEL_OPS_CAPACITIES_TOKEN=cap-api-...
+```
+
+Enable `capacities` in `pixel_ops/config/integrations.json`, then add a `project_radar` HUD window in Config Studio. The Capacities MCP connection used by AI clients is separate from this unattended runtime token.
 
 ### Weather
 

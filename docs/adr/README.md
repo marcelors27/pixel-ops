@@ -34,3 +34,8 @@ Current ADRs:
 - [0021 - Local Runtime State Uses SQLite](0021-local-runtime-state-uses-sqlite.md)
 - [0022 - Zoom Meeting Companions Use Provider Neutral Snapshots](0022-zoom-meeting-companions-use-provider-neutral-snapshots.md)
 - [0023 - PixelOpsKite Relays Webhooks Over WebSocket](0023-pixelops-kite-relays-webhooks-over-websocket.md)
+- [0024 - Gamification HUD Uses Provider-Neutral State](0024-gamification-hud-uses-provider-neutral-state.md)
+- [0025 - E-Ink Displays Are Hybrid Network Outputs](0025-eink-displays-are-network-output-terminals.md)
+- [0026 - All Game Inputs Are Platform Events](0026-all-game-inputs-are-platform-events.md)
+- [0027 - Spaceship Progress Is Active-Time And Game-Owned](0027-spaceship-progress-is-active-time-and-game-owned.md)
+- [0028 - Project Radar Uses Provider-Neutral Observations](0028-project-radar-uses-provider-neutral-observations.md)
