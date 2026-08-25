@@ -31,6 +31,20 @@ export type RuntimeStatus = {
   stderr?: string;
 };
 
+export type FirmwareStatus = {
+  busy: boolean;
+  operation: "build" | "upload" | null;
+  result: { ok: boolean; message: string } | null;
+  started_at: string | null;
+  finished_at: string | null;
+  ports: string[];
+  environment: string;
+  firmware_path: string;
+  tool: string | null;
+  tool_error: string | null;
+  logs: string[];
+};
+
 export type RuntimeAutostartStatus = {
   platform: string;
   supported: boolean;
@@ -122,10 +136,26 @@ export type DisplayOutputConfig = {
     timeout_seconds?: number;
     min_frame_interval_seconds?: number;
     full_refresh_every?: number;
+    white_background?: boolean;
     dither?: boolean;
     threshold?: number;
     invert?: boolean;
     accent_pattern?: boolean;
+    heartbeat_interval_seconds?: number;
+    heartbeat_lease_seconds?: number;
+    standalone_weather_enabled?: boolean;
+    standalone_latitude?: number;
+    standalone_longitude?: number;
+    standalone_utc_offset_minutes?: number;
+    battery_powered?: boolean;
+    deep_sleep_seconds?: number;
+    pull_port?: number;
+  };
+  lcd?: {
+    url: string;
+    token?: string;
+    timeout_seconds?: number;
+    min_frame_interval_seconds?: number;
   };
 };
 
@@ -204,6 +234,12 @@ export type DiscordProfileResponse = {
   guilds: DiscordGuildOption[];
 };
 
+export type CrossHeroSessionResponse = {
+  ok: boolean;
+  configured: boolean;
+  message: string;
+};
+
 export type NpcSpriteManifest = {
   count: number;
   variants: number[];
@@ -224,6 +260,7 @@ export type RuntimeConfig = {
         }
       >;
       device: {
+        plugin?: string;
         target: string;
         output: string;
         window_scale: number;
@@ -264,6 +301,7 @@ export type RuntimeConfig = {
           timeout_ms?: number;
         };
         eink?: DisplayOutputConfig["eink"];
+        lcd?: DisplayOutputConfig["lcd"];
         displays?: DisplayOutputConfig[];
       };
       layout: Record<LayoutKey, LayoutBox>;
@@ -428,6 +466,13 @@ export type RuntimeConfig = {
         include_undated: boolean;
         timeout_seconds: number;
       };
+      capacities: IntegrationToggle & {
+        token_env: string;
+        structure_names: string[];
+        poll_seconds: number;
+        max_projects: number;
+        timeout_seconds: number;
+      };
       media: IntegrationToggle & {
         providers: string[];
         youtube_browser_apps: string[];
@@ -437,6 +482,16 @@ export type RuntimeConfig = {
           token: string;
           stale_seconds: number;
         };
+        poll_seconds: number;
+        timeout_seconds: number;
+      };
+      crosshero: IntegrationToggle & {
+        box_env: string;
+        token_env: string;
+        session_cookie_env: string;
+        dashboard_url: string;
+        workout_url: string;
+        classes_url: string;
         poll_seconds: number;
         timeout_seconds: number;
       };
@@ -515,6 +570,7 @@ export type LayoutWindowOption = {
 
 export type LayoutBox = {
   kind?: string;
+  monochrome?: boolean;
   clock_mode?: "digital" | "analog";
   clock_skin?: "classic" | "minimal" | "neon" | "terminal" | "sunrise" | "station";
   use_24_hour?: boolean;

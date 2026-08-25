@@ -1,9 +1,10 @@
 {
   "display": {
-    "width": 2650,
+    "width": 2822,
     "height": 462,
-    "orientation": "horizontal",
+    "orientation": "vertical",
     "device": {
+      "plugin": "pokemon",
       "target": "thermalright",
       "output": "thermalright",
       "window_scale": 2,
@@ -33,14 +34,30 @@
         "debug": false
       },
       "eink": {
-        "url": "http://pixelops-e213.local",
+        "url": "http://192.168.0.14",
         "token": "",
-        "timeout_seconds": 10,
+        "timeout_seconds": 45,
         "min_frame_interval_seconds": 15,
-        "full_refresh_every": 10,
+        "full_refresh_every": 100,
+        "white_background": true,
         "dither": true,
         "threshold": 160,
-        "invert": false
+        "invert": false,
+        "heartbeat_interval_seconds": 3,
+        "heartbeat_lease_seconds": 12,
+        "standalone_weather_enabled": true,
+        "standalone_latitude": -30.0346,
+        "standalone_longitude": -51.2177,
+        "standalone_utc_offset_minutes": -180,
+        "battery_powered": true,
+        "deep_sleep_seconds": 300,
+        "pull_port": 8765
+      },
+      "lcd": {
+        "url": "http://192.168.0.104",
+        "token": "",
+        "timeout_seconds": 5,
+        "min_frame_interval_seconds": 0.1
       },
       "displays": [
         {
@@ -85,15 +102,31 @@
             "timeout_ms": 5000
           },
           "eink": {
-            "url": "http://pixelops-e213.local",
+            "url": "http://192.168.0.14",
             "token": "",
-            "timeout_seconds": 10,
+            "timeout_seconds": 45,
             "min_frame_interval_seconds": 15,
-            "full_refresh_every": 10,
+            "full_refresh_every": 100,
+            "white_background": true,
             "dither": true,
             "threshold": 160,
             "invert": false,
-            "accent_pattern": true
+            "accent_pattern": true,
+            "heartbeat_interval_seconds": 3,
+            "heartbeat_lease_seconds": 12,
+            "standalone_weather_enabled": true,
+            "standalone_latitude": -30.0346,
+            "standalone_longitude": -51.2177,
+            "standalone_utc_offset_minutes": -180,
+            "battery_powered": true,
+            "deep_sleep_seconds": 300,
+            "pull_port": 8765
+          },
+          "lcd": {
+            "url": "http://192.168.0.104",
+            "token": "",
+            "timeout_seconds": 5,
+            "min_frame_interval_seconds": 0.1
           }
         },
         {
@@ -133,20 +166,36 @@
             "vid": "0x1a86",
             "pid": "0x5722",
             "serial_number": "USB35INCHIPSV2",
-            "bus": 2,
-            "address": 3,
+            "bus": null,
+            "address": null,
             "timeout_ms": 5000
           },
           "eink": {
-            "url": "http://pixelops-e213.local",
+            "url": "http://192.168.0.14",
             "token": "",
-            "timeout_seconds": 10,
+            "timeout_seconds": 45,
             "min_frame_interval_seconds": 15,
-            "full_refresh_every": 10,
+            "full_refresh_every": 100,
+            "white_background": true,
             "dither": true,
             "threshold": 160,
             "invert": false,
-            "accent_pattern": true
+            "accent_pattern": true,
+            "heartbeat_interval_seconds": 3,
+            "heartbeat_lease_seconds": 12,
+            "standalone_weather_enabled": true,
+            "standalone_latitude": -30.0346,
+            "standalone_longitude": -51.2177,
+            "standalone_utc_offset_minutes": -180,
+            "battery_powered": true,
+            "deep_sleep_seconds": 300,
+            "pull_port": 8765
+          },
+          "lcd": {
+            "url": "http://pixelops-lcd.local",
+            "token": "",
+            "timeout_seconds": 5,
+            "min_frame_interval_seconds": 0.1
           }
         },
         {
@@ -156,7 +205,7 @@
           "target": "eink",
           "output": "eink",
           "x": 2400,
-          "y": 16,
+          "y": 0,
           "width": 250,
           "height": 122,
           "rotation": 0,
@@ -186,79 +235,194 @@
             "vid": "0x1a86",
             "pid": "0x5722",
             "serial_number": "USB35INCHIPSV2",
-            "bus": 2,
-            "address": 3,
+            "bus": null,
+            "address": null,
             "timeout_ms": 5000
           },
           "eink": {
-            "url": "http://pixelops-e213.local",
+            "url": "http://192.168.0.15",
             "token": "",
-            "timeout_seconds": 10,
+            "timeout_seconds": 45,
             "min_frame_interval_seconds": 15,
-            "full_refresh_every": 10,
-            "dither": true,
+            "full_refresh_every": 100,
+            "white_background": true,
+            "dither": false,
             "threshold": 160,
             "invert": false,
-            "accent_pattern": true
+            "accent_pattern": false,
+            "heartbeat_interval_seconds": 3,
+            "heartbeat_lease_seconds": 12,
+            "standalone_weather_enabled": true,
+            "standalone_latitude": -30.0346,
+            "standalone_longitude": -51.2177,
+            "standalone_utc_offset_minutes": -180,
+            "battery_powered": true,
+            "deep_sleep_seconds": 300,
+            "pull_port": 8765
+          },
+          "lcd": {
+            "url": "http://pixelops-lcd.local",
+            "token": "",
+            "timeout_seconds": 5,
+            "min_frame_interval_seconds": 0.1
+          }
+        },
+        {
+          "id": "display-mstbtx9b-4",
+          "label": "ESP32-C6 LCD 1.47",
+          "enabled": true,
+          "target": "lcd",
+          "output": "lcd",
+          "x": 2650,
+          "y": 0,
+          "width": 172,
+          "height": 320,
+          "rotation": 0,
+          "identify_number": 4,
+          "thermalright": {
+            "vid": "0x0416",
+            "pid": "0x5408",
+            "timeout_ms": 5000,
+            "jpeg_quality": 85,
+            "image_width": 172,
+            "image_height": 320,
+            "min_frame_interval_ms": 100,
+            "packet_delay_ms": 0,
+            "packet_size": 4096,
+            "hard_reset_on_start": true,
+            "hard_reset_wait_ms": 1500,
+            "handshake_on_first_frame": false,
+            "require_handshake": true,
+            "send_start_init": true,
+            "read_start_ack": true,
+            "read_frame_ack": true,
+            "start_retries": 0,
+            "frame_retries": 1,
+            "debug": false
+          },
+          "turzx": {
+            "vid": "0x1a86",
+            "pid": "0x5722",
+            "serial_number": "USB35INCHIPSV2",
+            "bus": null,
+            "address": null,
+            "timeout_ms": 5000
+          },
+          "eink": {
+            "url": "http://192.168.0.14",
+            "token": "",
+            "timeout_seconds": 45,
+            "min_frame_interval_seconds": 15,
+            "full_refresh_every": 100,
+            "white_background": true,
+            "dither": false,
+            "threshold": 160,
+            "invert": false,
+            "accent_pattern": false,
+            "heartbeat_interval_seconds": 3,
+            "heartbeat_lease_seconds": 12,
+            "standalone_weather_enabled": true,
+            "standalone_latitude": -30.0346,
+            "standalone_longitude": -51.2177,
+            "standalone_utc_offset_minutes": -180,
+            "battery_powered": true,
+            "deep_sleep_seconds": 300,
+            "pull_port": 8765
+          },
+          "lcd": {
+            "url": "http://192.168.0.106",
+            "token": "",
+            "timeout_seconds": 5,
+            "min_frame_interval_seconds": 0.1
           }
         }
       ]
     },
     "layout": {
       "timezones": {
-        "x": 288,
-        "y": 144,
-        "width": 232,
-        "height": 88
+        "x": 8,
+        "y": 8,
+        "width": 760,
+        "height": 344
       },
       "route_signal": {
-        "x": 8,
-        "y": 48,
+        "x": 200,
+        "y": 384,
         "width": 88,
         "height": 40
       },
       "gauges": {
-        "x": 2408,
-        "y": 56,
-        "width": 240,
-        "height": 64
+        "x": 2656,
+        "y": 16,
+        "width": 160,
+        "height": 80
       },
       "weather": {
-        "x": 112,
-        "y": 160,
-        "width": 112,
-        "height": 40
+        "x": 616,
+        "y": 360,
+        "width": 136,
+        "height": 88
       },
       "weather_forecast": {
         "x": 2408,
         "y": 8,
-        "width": 152,
-        "height": 40,
+        "width": 232,
+        "height": 64,
         "kind": "weather_forecast"
       },
       "pc_stats": {
-        "x": 496,
-        "y": 56,
-        "width": 128,
-        "height": 56
+        "x": 2664,
+        "y": 104,
+        "width": 144,
+        "height": 152
       },
       "activity": {
-        "x": 8,
-        "y": 68,
-        "width": 70,
-        "height": 40
+        "x": 312,
+        "y": 360,
+        "width": 256,
+        "height": 96
+      },
+      "crosshero_wod": {
+        "x": 1224,
+        "y": 8,
+        "width": 368,
+        "height": 416,
+        "kind": "crosshero_wod"
+      },
+      "crosshero_classes": {
+        "x": 1600,
+        "y": 8,
+        "width": 296,
+        "height": 232,
+        "kind": "crosshero_classes"
+      },
+      "project_radar": {
+        "x": 784,
+        "y": 8,
+        "width": 432,
+        "height": 416,
+        "kind": "project_radar"
       },
       "game": {
-        "x": 1920,
+        "x": 1928,
         "y": 0,
-        "width": 472,
-        "height": 320
+        "width": 464,
+        "height": 312,
+        "kind": "game"
       },
       "text_box": {
-        "x": 512,
-        "y": 232,
+        "x": 1608,
+        "y": 256,
         "width": 264,
-        "height": 32
+        "height": 72,
+        "kind": "text_box"
+      },
+      "eink_battery": {
+        "x": 2416,
+        "y": 72,
+        "width": 80,
+        "height": 40,
+        "kind": "eink_battery"
       }
     },
     "orientations": {
@@ -287,7 +451,7 @@
       }
     },
     "backend": "usb_bulk_rev_a",
-    "fps": 1,
+    "fps": 10,
     "preview_output": "pixel_ops/output/preview.png",
     "gif_output": "pixel_ops/output/preview.gif",
     "scanlines": false,

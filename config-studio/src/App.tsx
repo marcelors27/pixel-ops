@@ -7,6 +7,7 @@ import {
   CloudSun,
   Code2,
   Cpu,
+  Database,
   Github,
   GripVertical,
   Maximize2,
@@ -21,6 +22,7 @@ import {
   Save,
   Square,
   Terminal,
+  Upload,
   Trash2,
   Users,
   ZoomIn,
@@ -35,9 +37,11 @@ import { PixelMascot } from "./components/PixelMascot";
 import {
   cloneConfig,
   configureKiteSecrets,
+  loadCrossHeroSessionStatus,
   loadConfig,
   loadConfigManifest,
   loadDiscordProfile,
+  loadFirmwareStatus,
   loadGithubRepos,
   loadKiteStatus,
   loadNpcSpriteManifest,
@@ -46,6 +50,7 @@ import {
   pollDiscordOAuthStatus,
   pollGithubDeviceLogin,
   runKiteAction,
+  runFirmwareAction,
   runRuntimeAutostartAction,
   runRuntimeAction,
   saveConfig,
@@ -58,11 +63,13 @@ import {
 } from "./lib/configApi";
 import type {
   ConfigManifest,
+  CrossHeroSessionResponse,
   DetectedPlugin,
   DiscordGuildOption,
   DiscordOAuthStartResponse,
   DiscordPersonConfig,
   DisplayOutputConfig,
+  FirmwareStatus,
   GitHubDeviceStartResponse,
   GitHubRepoOption,
   IntegrationToggle,
@@ -109,7 +116,9 @@ const integrationIcons: Record<string, IconComponent> = {
   pc_stats: Cpu,
   clickup: Check,
   todoist: Check,
+  capacities: Database,
   media: Music2,
+  crosshero: Activity,
   kite: Cable,
   slack: Bot,
   discord: Bot,
@@ -129,6 +138,11 @@ const layoutWindowCatalog: LayoutWindowOption[] = [
   { kind: "meetings_day", label: "Meetings Day", tone: "#9aa7ff" },
   { kind: "mana", label: "Mana", tone: "#4f9fff" },
   { kind: "gamification", label: "Player HP", tone: "#ef6461" },
+  { kind: "crosshero_wod", label: "CrossHero WOD", tone: "#f58236" },
+  { kind: "crosshero_classes", label: "CrossHero Classes", tone: "#4ac29a" },
+  { kind: "eink_battery", label: "E-ink Battery", tone: "#7ee0bd" },
+  { kind: "eink_wireless", label: "E-ink Wireless", tone: "#7fb2e6" },
+  { kind: "eink_status", label: "E-ink Status", tone: "#f0a35d" },
 ];
 
 const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
@@ -151,6 +165,9 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
       meetings_day: "#9aa7ff",
       mana: "#4f9fff",
       gamification: "#ef6461",
+      eink_battery: "#7ee0bd",
+      eink_wireless: "#7fb2e6",
+      eink_status: "#f0a35d",
       weather_forecast: "#9bd0ff",
     },
   },
@@ -166,6 +183,7 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
       pc_stats: "#a7f3d0",
       tasks: "#facc15",
       tasks_board: "#f472b6",
+      project_radar: "#c4b5fd",
       gamification: "#65f0a1",
     },
   },
@@ -221,6 +239,7 @@ const equipmentOptions = [
   { target: "turzx_94", label: "TURZX 9.4", width: 480, height: 320, output: "turzx" },
   { target: "thermalright", label: "Thermalright LY", width: 1920, height: 462, output: "thermalright" },
   { target: "eink", label: "Heltec E213", width: 250, height: 122, output: "eink" },
+  { target: "lcd", label: "ESP32-C6 LCD 1.47", width: 172, height: 320, output: "lcd" },
   { target: "preview", label: "Preview PNG", width: 320, height: 480, output: "preview" },
   { target: "gif", label: "GIF", width: 320, height: 480, output: "gif" },
 ] as const;
@@ -254,6 +273,8 @@ export function App() {
   const [runtimeStatus, setRuntimeStatus] = useState<RuntimeStatus | null>(null);
   const [runtimeAutostart, setRuntimeAutostart] = useState<RuntimeAutostartStatus | null>(null);
   const [runtimeBusy, setRuntimeBusy] = useState<string | null>(null);
+  const [firmwareStatus, setFirmwareStatus] = useState<FirmwareStatus | null>(null);
+  const [firmwarePort, setFirmwarePort] = useState("");
   const [usbBusy, setUsbBusy] = useState<string | null>(null);
   const [usbValidation, setUsbValidation] = useState<UsbValidationResult | null>(null);
   const [activeSettingsTab, setActiveSettingsTab] = useState<string>("");
@@ -261,6 +282,12 @@ export function App() {
 
   useEffect(() => {
     void refreshManifest();
+  }, []);
+
+  useEffect(() => {
+    void refreshFirmwareStatus();
+    const interval = window.setInterval(() => void refreshFirmwareStatus(false), 1200);
+    return () => window.clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -371,6 +398,28 @@ export function App() {
       setError(caught instanceof Error ? caught.message : String(caught));
     } finally {
       setRuntimeBusy(null);
+    }
+  }
+
+  async function refreshFirmwareStatus(reportError = true) {
+    try {
+      const next = await loadFirmwareStatus();
+      setFirmwareStatus(next);
+      setFirmwarePort((current) => current && next.ports.includes(current) ? current : next.ports[0] ?? "");
+    } catch (caught) {
+      if (reportError) setError(caught instanceof Error ? caught.message : String(caught));
+    }
+  }
+
+  async function triggerFirmwareAction(action: "build" | "upload") {
+    if (action === "upload" && !firmwarePort) return;
+    if (action === "upload" && !window.confirm(`Instalar o firmware em ${firmwarePort}? O painel será reiniciado.`)) return;
+    setError(null);
+    try {
+      setFirmwareStatus(await runFirmwareAction(action, action === "upload" ? firmwarePort : undefined));
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : String(caught));
+      await refreshFirmwareStatus(false);
     }
   }
 
@@ -577,6 +626,15 @@ export function App() {
           onRemoveAutostart={() => void triggerRuntimeAutostartAction("remove")}
         />
 
+        <FirmwarePanel
+          status={firmwareStatus}
+          port={firmwarePort}
+          onPortChange={setFirmwarePort}
+          onRefresh={() => void refreshFirmwareStatus()}
+          onBuild={() => void triggerFirmwareAction("build")}
+          onUpload={() => void triggerFirmwareAction("upload")}
+        />
+
         <section id="plugins" className="wide-panel">
           <div className="section-heading">
             <Code2 size={20} />
@@ -774,13 +832,20 @@ export function App() {
                 onChange={(value) => mutate((draft) => applyEquipment(draft, value))}
               />
             </Field>
+            <Field label="Game">
+              <Select
+                value={display.device.plugin ?? "pokemon"}
+                options={manifest.visualPlugins.map((plugin) => plugin.key)}
+                onChange={(value) => mutate((draft) => void (draft.display.display.device.plugin = value))}
+              />
+            </Field>
             <Field label="Output">
               <Select
                 value={display.device.output}
-                options={["window", "preview", "gif", "turzx", "thermalright", "eink"]}
+                options={["window", "preview", "gif", "turzx", "thermalright", "eink", "lcd"]}
                 onChange={(value) =>
                   mutate((draft) => {
-                    if (value === "thermalright" || value === "eink") {
+                    if (value === "thermalright" || value === "eink" || value === "lcd") {
                       applyEquipment(draft, value);
                     } else {
                       draft.display.display.device.output = value;
@@ -1163,6 +1228,10 @@ function LayoutPreview({
               <Plus size={16} />
               Add Heltec E213
             </button>
+            <button className="secondary-button" type="button" onClick={() => onAddDisplay("lcd")}>
+              <Plus size={16} />
+              Add ESP32-C6 LCD
+            </button>
           </div>
         </div>
         {usbValidation ? (
@@ -1540,6 +1609,8 @@ function DisplayOutputRow({
   const usbConfig = usbTarget === "turzx" ? display.turzx ?? defaultTurzxDeviceConfig() : display.thermalright ?? defaultThermalrightDeviceConfig();
   const isWindowOutput = normalizeOutputTarget(display.output) === "window";
   const isEinkOutput = normalizeOutputTarget(display.output) === "eink";
+  const isLcdOutput = normalizeOutputTarget(display.output) === "lcd";
+  const isNetworkOutput = isEinkOutput || isLcdOutput;
   const isKnownUsbDisplay = !isWindowOutput && knownUsbDisplay(usbConfig);
   const updateUsbConfig = (patch: Record<string, unknown>) => {
     if (usbTarget === "turzx") {
@@ -1559,7 +1630,7 @@ function DisplayOutputRow({
         <TextInput value={display.label} onChange={(value) => onChange({ ...display, label: value })} />
       </Field>
       <Field label="Output">
-        <Select value={display.output} options={["thermalright", "turzx", "eink", "window", "preview", "gif"]} onChange={changeOutput} />
+        <Select value={display.output} options={["thermalright", "turzx", "eink", "lcd", "window", "preview", "gif"]} onChange={changeOutput} />
       </Field>
       <Field label="X">
         <NumberInput value={display.x} onChange={(value) => onChange({ ...display, x: value })} />
@@ -1594,9 +1665,35 @@ function DisplayOutputRow({
           <Field label="Token">
             <TextInput value={display.eink?.token ?? ""} onChange={(value) => onChange({ ...display, eink: { ...defaultEinkDeviceConfig(), ...(display.eink ?? {}), token: value } })} />
           </Field>
+          <Field label="White background">
+            <Switch checked={display.eink?.white_background ?? true} onChange={(value) => onChange({ ...display, eink: { ...defaultEinkDeviceConfig(), ...(display.eink ?? {}), white_background: value } })} />
+          </Field>
+          <Field label="Battery powered">
+            <Switch checked={display.eink?.battery_powered ?? true} onChange={(value) => onChange({ ...display, eink: { ...defaultEinkDeviceConfig(), ...(display.eink ?? {}), battery_powered: value } })} />
+          </Field>
+          {display.eink?.battery_powered ?? true ? (
+            <>
+              <Field label="Wake interval (seconds)">
+                <NumberInput value={display.eink?.deep_sleep_seconds ?? 300} onChange={(value) => onChange({ ...display, eink: { ...defaultEinkDeviceConfig(), ...(display.eink ?? {}), deep_sleep_seconds: Math.max(30, value) } })} />
+              </Field>
+              <Field label="Frame pull port">
+                <NumberInput value={display.eink?.pull_port ?? 8765} onChange={(value) => onChange({ ...display, eink: { ...defaultEinkDeviceConfig(), ...(display.eink ?? {}), pull_port: Math.max(1, Math.min(65535, value)) } })} />
+              </Field>
+            </>
+          ) : null}
         </>
       ) : null}
-      {!isWindowOutput ? (
+      {isLcdOutput ? (
+        <>
+          <Field label="Device URL">
+            <TextInput value={display.lcd?.url ?? "http://pixelops-lcd.local"} onChange={(value) => onChange({ ...display, lcd: { ...defaultLcdDeviceConfig(), ...(display.lcd ?? {}), url: value } })} />
+          </Field>
+          <Field label="Token">
+            <TextInput value={display.lcd?.token ?? ""} onChange={(value) => onChange({ ...display, lcd: { ...defaultLcdDeviceConfig(), ...(display.lcd ?? {}), token: value } })} />
+          </Field>
+        </>
+      ) : null}
+      {!isWindowOutput && !isNetworkOutput ? (
         <>
           <Field label="USB VID">
             <TextInput disabled={isKnownUsbDisplay} value={usbConfig.vid ?? (usbTarget === "turzx" ? "0x1a86" : "0x0416")} onChange={(value) => updateUsbConfig({ vid: value })} />
@@ -1736,6 +1833,59 @@ function RuntimePanel({
   );
 }
 
+function FirmwarePanel({
+  status,
+  port,
+  onPortChange,
+  onRefresh,
+  onBuild,
+  onUpload,
+}: {
+  status: FirmwareStatus | null;
+  port: string;
+  onPortChange: (port: string) => void;
+  onRefresh: () => void;
+  onBuild: () => void;
+  onUpload: () => void;
+}) {
+  const busyLabel = status?.operation === "upload" ? "Instalando firmware…" : "Compilando firmware…";
+  return (
+    <section id="firmware" className="wide-panel runtime-panel firmware-panel">
+      <div className="section-heading">
+        <Cpu size={20} />
+        <div>
+          <h2>Firmware do e-ink</h2>
+          <p>{status?.busy ? busyLabel : status?.result?.message ?? "Compile e instale atualizações no ESP32 pela USB."}</p>
+        </div>
+      </div>
+      <div className="firmware-controls">
+        <label>
+          <span>Porta USB</span>
+          <select value={port} disabled={Boolean(status?.busy)} onChange={(event) => onPortChange(event.target.value)}>
+            {status?.ports.length ? status.ports.map((item) => <option key={item} value={item}>{item}</option>) : <option value="">Nenhum ESP32 detectado</option>}
+          </select>
+        </label>
+        <div className="runtime-actions">
+          <button className="secondary-button" type="button" disabled={Boolean(status?.busy)} onClick={onRefresh}>
+            <RefreshCw size={16} /> Detectar USB
+          </button>
+          <button className="secondary-button" type="button" disabled={Boolean(status?.busy) || !status?.tool} onClick={onBuild}>
+            <Terminal size={16} /> Compilar
+          </button>
+          <button className="primary-button" type="button" disabled={Boolean(status?.busy) || !port || !status?.tool} onClick={onUpload}>
+            <Upload size={16} /> Instalar atualização
+          </button>
+        </div>
+      </div>
+      <div className={`firmware-result ${status?.result ? (status.result.ok ? "is-success" : "is-error") : ""}`}>
+        <span>{status?.tool ? `Ferramenta: ${status.tool}` : status?.tool_error ?? "Verificando PlatformIO…"}</span>
+        <span>{status ? `${status.firmware_path} · ambiente ${status.environment}` : "firmware/heltec-e213"}</span>
+      </div>
+      <pre className="runtime-log">{status?.logs.length ? status.logs.join("\n") : "O progresso da compilação e instalação aparecerá aqui."}</pre>
+    </section>
+  );
+}
+
 function PluginCard({ plugin, selected, onToggle }: { plugin: DetectedPlugin; selected: boolean; onToggle: () => void }) {
   const Icon = visualPluginIcons[plugin.key] ?? Code2;
   return (
@@ -1807,6 +1957,40 @@ function IntegrationPanel({
   const [kiteResult, setKiteResult] = useState<KiteActionResult | null>(null);
   const [kiteTokenDraft, setKiteTokenDraft] = useState("");
   const [kiteZoomSecretDraft, setKiteZoomSecretDraft] = useState("");
+  const [crossHeroSession, setCrossHeroSession] = useState<CrossHeroSessionResponse | null>(null);
+  const [crossHeroBusy, setCrossHeroBusy] = useState(false);
+
+  useEffect(() => {
+    if (activeKey !== "crosshero") return;
+    const refresh = () => loadCrossHeroSessionStatus().then(setCrossHeroSession).catch((error) => {
+        setCrossHeroSession({ ok: false, configured: false, message: error instanceof Error ? error.message : String(error) });
+      });
+    refresh();
+    const interval = window.setInterval(refresh, 3000);
+    return () => window.clearInterval(interval);
+  }, [activeKey]);
+
+  useEffect(() => {
+    const onCrossHeroResult = (event: MessageEvent) => {
+      if (event.source !== window || !event.data || event.data.type !== "pixel-ops-crosshero-cookie-result") return;
+      const result = event.data.result as { ok?: boolean; message?: string };
+      setCrossHeroBusy(false);
+      setCrossHeroSession({ ok: Boolean(result.ok), configured: Boolean(result.ok), message: String(result.message || "") });
+      if (result.ok) onMutate((draft) => void (draft.integrations.integrations.crosshero.enabled = true));
+    };
+    window.addEventListener("message", onCrossHeroResult);
+    return () => window.removeEventListener("message", onCrossHeroResult);
+  }, [onMutate]);
+
+  function importCrossHeroSession() {
+    setCrossHeroBusy(true);
+    setCrossHeroSession({ ok: true, configured: false, message: "Solicitando a sessão à extensão…" });
+    window.postMessage({ type: "pixel-ops-crosshero-cookie-request" }, window.location.origin);
+    window.setTimeout(() => setCrossHeroBusy((busy) => {
+      if (busy) setCrossHeroSession({ ok: false, configured: false, message: "Extensão Pixel OPs não respondeu. Recarregue a extensão e tente novamente." });
+      return false;
+    }), 5000);
+  }
 
   async function triggerKiteAction(action: "status" | "install" | "secrets" | "deploy") {
     setKiteBusy(action);
@@ -1838,6 +2022,41 @@ function IntegrationPanel({
   if (activeKey === "github") {
     return (
       <GithubIntegrationPanel config={config} onMutate={onMutate} />
+    );
+  }
+
+  if (activeKey === "crosshero") {
+    const crosshero = config.integrations.integrations.crosshero;
+    return (
+      <Panel title="CrossHero" icon={Activity} subtitle="WOD diário e ocupação das aulas">
+        <Field label="Conexão do navegador">
+          <div className="runtime-actions">
+            <button className="secondary-button" type="button" disabled={crossHeroBusy} onClick={importCrossHeroSession}>
+              {crossHeroBusy ? "Importando…" : "Importar sessão do navegador"}
+            </button>
+          </div>
+        </Field>
+        <div className="field field-wide">
+          <span>Status</span>
+          <span className="empty-note">{crossHeroSession?.message || "Verificando sessão…"}</span>
+        </div>
+        <Field label="Dashboard URL">
+          <TextInput value={crosshero.dashboard_url} onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.crosshero.dashboard_url = value))} />
+        </Field>
+        <Field label="Poll seconds">
+          <NumberInput value={crosshero.poll_seconds} onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.crosshero.poll_seconds = clampNumber(value, 60, 3600)))} />
+        </Field>
+        <div className="field field-wide">
+          <span>Privacidade</span>
+          <span className="empty-note">O cookie vai somente para o Config Studio local e fica no .env; o valor nunca aparece nesta tela.</span>
+        </div>
+        {!crossHeroSession?.configured ? (
+          <div className="field field-wide">
+            <span>Como conectar</span>
+            <span className="empty-note">Recarregue a extensão Pixel OPs e abra ou atualize uma aba autenticada do CrossHero. O Studio detectará a sessão automaticamente.</span>
+          </div>
+        ) : null}
+      </Panel>
     );
   }
 
@@ -2056,6 +2275,41 @@ function IntegrationPanel({
             onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.todoist.include_undated = value))}
           />
         </Field>
+      </Panel>
+    );
+  }
+
+  if (activeKey === "capacities") {
+    return (
+      <Panel title="Capacities" icon={Database} subtitle="Structured projects for the Project Radar HUD">
+        <Field label="Token env">
+          <TextInput
+            value={config.integrations.integrations.capacities.token_env}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.capacities.token_env = value))}
+          />
+        </Field>
+        <Field label="Project type names">
+          <TextInput
+            value={config.integrations.integrations.capacities.structure_names.join(", ")}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.capacities.structure_names = commaList(value)))}
+          />
+        </Field>
+        <Field label="Poll seconds">
+          <NumberInput
+            value={config.integrations.integrations.capacities.poll_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.capacities.poll_seconds = clampNumber(value, 30, 3600)))}
+          />
+        </Field>
+        <Field label="Max projects">
+          <NumberInput
+            value={config.integrations.integrations.capacities.max_projects}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.capacities.max_projects = clampNumber(value, 1, 200)))}
+          />
+        </Field>
+        <div className="field field-wide">
+          <span>Personal API token</span>
+          <span className="empty-note">Create a read-only token in Capacities Settings → Capacities API and save it as PIXEL_OPS_CAPACITIES_TOKEN in .env.</span>
+        </div>
       </Panel>
     );
   }
@@ -3634,6 +3888,7 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
   const next = cloneConfig(config);
   const display = next.display.display;
   display.device = display.device ?? {
+    plugin: "pokemon",
     target: "window",
     output: "window",
     window_scale: 2,
@@ -3642,8 +3897,10 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
     preview_sequence: false,
     full_frame: false,
   };
+  display.device.plugin = display.device.plugin ?? "pokemon";
   display.device.thermalright = display.device.thermalright ?? defaultThermalrightDeviceConfig();
   display.device.eink = display.device.eink ?? defaultEinkDeviceConfig();
+  display.device.lcd = display.device.lcd ?? defaultLcdDeviceConfig();
   ensureDisplayOutputs(display);
   display.layout_theme = layoutThemeCatalog[display.layout_theme ?? "default"] ? (display.layout_theme ?? "default") : "default";
   if (!display.layout || typeof display.layout !== "object") {
@@ -3722,7 +3979,7 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
     include_undated: true,
     include_subtasks: true,
     include_closed: false,
-    timeout_seconds: 10,
+    timeout_seconds: 45,
   };
   next.integrations.integrations.clickup.token_env = next.integrations.integrations.clickup.token_env ?? "PIXEL_OPS_CLICKUP_TOKEN";
   next.integrations.integrations.clickup.team_id = next.integrations.integrations.clickup.team_id ?? "";
@@ -3910,6 +4167,11 @@ function applyEquipment(config: RuntimeConfig, target: string) {
     display.fps = 1;
     display.device.eink = display.device.eink ?? defaultEinkDeviceConfig();
   }
+  if (target === "lcd") {
+    display.orientation = "vertical";
+    display.fps = Math.max(display.fps || 10, 10);
+    display.device.lcd = display.device.lcd ?? defaultLcdDeviceConfig();
+  }
 }
 
 function defaultThermalrightDeviceConfig(): NonNullable<DisplayOutputConfig["thermalright"]> {
@@ -3953,11 +4215,30 @@ function defaultEinkDeviceConfig(): NonNullable<DisplayOutputConfig["eink"]> {
     token: "",
     timeout_seconds: 10,
     min_frame_interval_seconds: 15,
-    full_refresh_every: 10,
+    full_refresh_every: 100,
+    white_background: true,
     dither: false,
     threshold: 175,
     invert: false,
     accent_pattern: true,
+    heartbeat_interval_seconds: 3,
+    heartbeat_lease_seconds: 12,
+    standalone_weather_enabled: false,
+    standalone_latitude: 0,
+    standalone_longitude: 0,
+    standalone_utc_offset_minutes: -180,
+    battery_powered: true,
+    deep_sleep_seconds: 300,
+    pull_port: 8765,
+  };
+}
+
+function defaultLcdDeviceConfig(): NonNullable<DisplayOutputConfig["lcd"]> {
+  return {
+    url: "http://pixelops-lcd.local",
+    token: "",
+    timeout_seconds: 5,
+    min_frame_interval_seconds: 0.1,
   };
 }
 
@@ -3984,6 +4265,7 @@ function displayOutputFromConfig(display: RuntimeConfig["display"]["display"], i
     },
     turzx: display.device.turzx ? { ...defaultTurzxDeviceConfig(), ...display.device.turzx } : defaultTurzxDeviceConfig(),
     eink: { ...defaultEinkDeviceConfig(), ...(display.device.eink ?? {}) },
+    lcd: { ...defaultLcdDeviceConfig(), ...(display.device.lcd ?? {}) },
   };
 }
 
@@ -4014,6 +4296,7 @@ function normalizeDisplayOutput(raw: Partial<DisplayOutputConfig>, index: number
     thermalright: syncThermalrightSize({ ...defaultThermalrightDeviceConfig(), ...(raw.thermalright ?? {}) }, resolution.width, resolution.height),
     turzx: { ...defaultTurzxDeviceConfig(), ...(raw.turzx ?? {}) },
     eink: { ...defaultEinkDeviceConfig(), ...(raw.eink ?? {}) },
+    lcd: { ...defaultLcdDeviceConfig(), ...(raw.lcd ?? {}) },
   };
 }
 
@@ -4030,7 +4313,7 @@ function newDisplayOutput(index: number, displays: DisplayOutputConfig[], reques
   const rightEdge = displays.length ? Math.max(...displays.map((item) => item.x + item.width)) : 0;
   return {
     id: `display-${Date.now().toString(36)}-${index}`,
-    label: output === "eink" ? "Heltec E213" : `Display ${index}`,
+    label: output === "eink" ? "Heltec E213" : output === "lcd" ? "ESP32-C6 LCD 1.47" : `Display ${index}`,
     enabled: true,
     target: output,
     output,
@@ -4045,6 +4328,9 @@ function newDisplayOutput(index: number, displays: DisplayOutputConfig[], reques
     eink: requestedOutput === "eink"
       ? defaultEinkDeviceConfig()
       : { ...defaultEinkDeviceConfig(), ...(previous?.eink ?? {}) },
+    lcd: requestedOutput === "lcd"
+      ? defaultLcdDeviceConfig()
+      : { ...defaultLcdDeviceConfig(), ...(previous?.lcd ?? {}) },
   };
 }
 
@@ -4070,8 +4356,8 @@ function newDisplayOutputFromUsbDevice(index: number, displays: DisplayOutputCon
     vid: device.vid,
     pid: device.pid,
     serial_number: device.serial_number || "",
-    bus: device.bus ?? null,
-    address: device.address ?? null,
+    bus: device.serial_number ? null : device.bus ?? null,
+    address: device.serial_number ? null : device.address ?? null,
   };
   if (target === "thermalright") {
     base.thermalright = syncThermalrightSize({ ...defaultThermalrightDeviceConfig(), ...usbFields }, resolution.width, resolution.height);
@@ -4085,9 +4371,10 @@ function normalizeUsbTarget(value: string | undefined): "thermalright" | "turzx"
   return value === "turzx" ? "turzx" : "thermalright";
 }
 
-function normalizeOutputTarget(value: string): "thermalright" | "turzx" | "eink" | "window" | "preview" | "gif" {
+function normalizeOutputTarget(value: string): "thermalright" | "turzx" | "eink" | "lcd" | "window" | "preview" | "gif" {
   if (value === "display") return "turzx";
-  if (value === "turzx" || value === "eink" || value === "e-ink" || value === "eink_http" || value === "window" || value === "preview" || value === "gif") {
+  if (value === "turzx" || value === "eink" || value === "e-ink" || value === "eink_http" || value === "lcd" || value === "lcd_http" || value === "tft" || value === "window" || value === "preview" || value === "gif") {
+    if (value === "lcd_http" || value === "tft") return "lcd";
     return value === "e-ink" || value === "eink_http" ? "eink" : value;
   }
   return "thermalright";
@@ -4101,7 +4388,7 @@ function lockedDisplayResolution(output: string, rotation: unknown = 0, fallback
       height: Math.max(1, Number(fallbackHeight ?? 480)),
     };
   }
-  const native = target === "thermalright" ? { width: 1920, height: 462 } : target === "eink" ? { width: 250, height: 122 } : { width: 320, height: 480 };
+  const native = target === "thermalright" ? { width: 1920, height: 462 } : target === "eink" ? { width: 250, height: 122 } : target === "lcd" ? { width: 172, height: 320 } : { width: 320, height: 480 };
   const displayRotation = normalizeDisplayRotation(rotation);
   if (displayRotation === 90 || displayRotation === 270) {
     return { width: native.height, height: native.width };
@@ -4368,7 +4655,7 @@ function layoutBoxForNewWindow(
   layout: Record<LayoutKey, LayoutBox>,
 ): LayoutBox {
   const defaults = defaultLayoutFor(frameWidth, frameHeight);
-  const base = kind === "clock" ? defaultClockLayoutBox(frameWidth, frameHeight) : kind === "media_asset" ? defaultMediaAssetLayoutBox(frameWidth, frameHeight) : defaults[kind] ?? {
+  const base = kind === "clock" ? defaultClockLayoutBox(frameWidth, frameHeight) : kind === "media_asset" ? defaultMediaAssetLayoutBox(frameWidth, frameHeight) : kind.startsWith("eink_") ? defaultEinkTelemetryLayoutBox(kind, frameWidth, frameHeight) : defaults[kind] ?? {
     x: 8,
     y: 8,
     width: Math.max(40, Math.round(frameWidth * 0.35)),
@@ -4385,6 +4672,18 @@ function layoutBoxForNewWindow(
     frameWidth,
     frameHeight,
   );
+}
+
+function defaultEinkTelemetryLayoutBox(kind: string, frameWidth: number, frameHeight: number): LayoutBox {
+  const index = kind === "eink_battery" ? 0 : kind === "eink_wireless" ? 1 : 2;
+  const width = Math.min(82, Math.max(54, Math.floor((frameWidth - 24) / 3)));
+  return {
+    x: 6 + index * (width + 6),
+    y: Math.max(4, frameHeight - 34),
+    width,
+    height: 28,
+    kind,
+  };
 }
 
 function defaultClockLayoutBox(frameWidth: number, frameHeight: number): LayoutBox {

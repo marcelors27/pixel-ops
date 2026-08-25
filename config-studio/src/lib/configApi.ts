@@ -1,8 +1,10 @@
 import type {
   ConfigManifest,
+  CrossHeroSessionResponse,
   DiscordOAuthStartResponse,
   DiscordOAuthStatusResponse,
   DiscordProfileResponse,
+  FirmwareStatus,
   GitHubDevicePollResponse,
   GitHubDeviceStartResponse,
   GitHubReposResponse,
@@ -13,6 +15,31 @@ import type {
   RuntimeStatus,
   UsbValidationResult,
 } from "../types";
+
+export async function loadCrossHeroSessionStatus(): Promise<CrossHeroSessionResponse> {
+  const response = await fetch("/api/crosshero/session-status");
+  const payload = await response.json() as CrossHeroSessionResponse & { error?: string };
+  if (!response.ok) throw new Error(payload.error || "Falha ao verificar a sessão do CrossHero.");
+  return payload;
+}
+
+async function firmwareResponse(response: Response): Promise<FirmwareStatus> {
+  const payload = await response.json() as FirmwareStatus & { error?: string };
+  if (!response.ok) throw new Error(payload.error || "Falha na operação de firmware.");
+  return payload;
+}
+
+export async function loadFirmwareStatus(): Promise<FirmwareStatus> {
+  return firmwareResponse(await fetch("/api/firmware/status"));
+}
+
+export async function runFirmwareAction(action: "build" | "upload", port?: string): Promise<FirmwareStatus> {
+  return firmwareResponse(await fetch(`/api/firmware/${action}`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(port ? { port } : {}),
+  }));
+}
 
 export async function loadConfig(plugins: string[] = []): Promise<RuntimeConfig> {
   const params = new URLSearchParams();

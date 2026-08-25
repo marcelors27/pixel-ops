@@ -27,8 +27,10 @@ class TURZXOutput(DisplayOutput):
         output.pid = _parse_int(cfg.get("pid", output.pid))
         output.timeout_ms = int(cfg.get("timeout_ms", output.timeout_ms))
         output.serial_number = str(cfg.get("serial_number") or "")
-        output.bus = _optional_int(cfg.get("bus"))
-        output.address = _optional_int(cfg.get("address"))
+        # USB addresses are assigned dynamically on every reconnect. A serial
+        # number is stable and must take precedence when the device exposes one.
+        output.bus = None if output.serial_number else _optional_int(cfg.get("bus"))
+        output.address = None if output.serial_number else _optional_int(cfg.get("address"))
         return output
 
     def start(self) -> None:

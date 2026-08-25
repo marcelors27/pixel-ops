@@ -14,6 +14,13 @@ const execFileAsync = promisify(execFile);
 const pythonCmd = resolvePythonCommand();
 let runtimeProcess: ChildProcessWithoutNullStreams | null = null;
 const runtimeLogs: string[] = [];
+let firmwareProcess: ChildProcessWithoutNullStreams | null = null;
+const firmwareLogs: string[] = [];
+let firmwareOperation: "build" | "upload" | null = null;
+let firmwareResult: { ok: boolean; message: string } | null = null;
+let firmwareStartedAt: string | null = null;
+let firmwareFinishedAt: string | null = null;
+let platformioCommand: { command: string; prefix: string[]; label: string } | null | undefined;
 const npcSpritePreviewFormatVersion = 2;
 
 type RuntimeProcessSource = "managed" | "external";
@@ -145,7 +152,12 @@ const integrationLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
     { kind: "tasks", label: "Tasks", tone: "#b58cff" },
     { kind: "tasks_board", label: "Tasks Board", tone: "#f0a35d" },
   ],
+  capacities: [{ kind: "project_radar", label: "Project Radar", tone: "#b58cff" }],
   media: [{ kind: "media", label: "Now Playing", tone: "#6ee7b7" }],
+  crosshero: [
+    { kind: "crosshero_wod", label: "CrossHero WOD", tone: "#f58236" },
+    { kind: "crosshero_classes", label: "CrossHero Classes", tone: "#4ac29a" },
+  ],
 };
 
 const visualPluginLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
@@ -656,6 +668,110 @@ function pushRuntimeLog(value: string) {
   }
 }
 
+function pushFirmwareLog(value: string) {
+  const clean = value.replace(/\r\n/g, "\n").trimEnd();
+  if (!clean) return;
+  firmwareLogs.push(...clean.split("\n"));
+  while (firmwareLogs.length > 300) firmwareLogs.shift();
+}
+
+function resolvePlatformioCommand(): { command: string; prefix: string[]; label: string } {
+  if (platformioCommand) return platformioCommand;
+  if (platformioCommand === null) throw new Error("PlatformIO não encontrado. Instale 'pio' ou o gerenciador 'uv'.");
+  for (const command of ["pio", "platformio"]) {
+    try {
+      execFileSync(command, ["--version"], { stdio: "ignore" });
+      platformioCommand = { command, prefix: [], label: command };
+      return platformioCommand;
+    } catch {
+      // Try the next locally installed command.
+    }
+  }
+  try {
+    execFileSync("uvx", ["platformio", "--version"], { stdio: "ignore" });
+    platformioCommand = { command: "uvx", prefix: ["platformio"], label: "uvx platformio" };
+    return platformioCommand;
+  } catch {
+    platformioCommand = null;
+    throw new Error("PlatformIO não encontrado. Instale 'pio' ou o gerenciador 'uv'.");
+  }
+}
+
+async function discoverFirmwarePorts(): Promise<string[]> {
+  const patterns = process.platform === "darwin"
+    ? [/^cu\.usbmodem/i, /^cu\.usbserial/i, /^cu\.SLAB_USBtoUART/i, /^cu\.wchusbserial/i]
+    : [/^ttyACM\d+$/i, /^ttyUSB\d+$/i];
+  if (process.platform === "win32") return [];
+  try {
+    const entries = await fs.readdir("/dev");
+    return entries.filter((entry) => patterns.some((pattern) => pattern.test(entry))).map((entry) => `/dev/${entry}`).sort();
+  } catch {
+    return [];
+  }
+}
+
+async function firmwareStatus() {
+  let tool: string | null = null;
+  let toolError: string | null = null;
+  try {
+    tool = resolvePlatformioCommand().label;
+  } catch (error) {
+    toolError = error instanceof Error ? error.message : String(error);
+  }
+  return {
+    busy: firmwareProcess !== null,
+    operation: firmwareOperation,
+    result: firmwareResult,
+    started_at: firmwareStartedAt,
+    finished_at: firmwareFinishedAt,
+    ports: await discoverFirmwarePorts(),
+    environment: "e213",
+    firmware_path: "firmware/heltec-e213",
+    tool,
+    tool_error: toolError,
+    logs: firmwareLogs.slice(-120),
+  };
+}
+
+async function startFirmwareOperation(operation: "build" | "upload", port?: string) {
+  if (firmwareProcess) throw new Error("Já existe uma operação de firmware em andamento.");
+  const ports = await discoverFirmwarePorts();
+  if (operation === "upload" && (!port || !ports.includes(port))) {
+    throw new Error("Selecione uma porta USB detectada antes de instalar o firmware.");
+  }
+  const platformio = resolvePlatformioCommand();
+  const args = [...platformio.prefix, "run", "--environment", "e213"];
+  if (operation === "upload") args.push("--target", "upload", "--upload-port", port as string);
+  firmwareLogs.length = 0;
+  firmwareOperation = operation;
+  firmwareResult = null;
+  firmwareStartedAt = new Date().toISOString();
+  firmwareFinishedAt = null;
+  pushFirmwareLog(`${platformio.label} ${args.slice(platformio.prefix.length).join(" ")}`);
+  firmwareProcess = spawn(platformio.command, args, {
+    cwd: path.join(repoRoot, "firmware/heltec-e213"),
+    env: process.env,
+  });
+  firmwareProcess.stdout.on("data", (chunk) => pushFirmwareLog(String(chunk)));
+  firmwareProcess.stderr.on("data", (chunk) => pushFirmwareLog(String(chunk)));
+  firmwareProcess.on("error", (error) => {
+    pushFirmwareLog(error.message);
+    firmwareResult = { ok: false, message: `Falha ao iniciar: ${error.message}` };
+  });
+  firmwareProcess.on("exit", (code, signal) => {
+    const ok = code === 0;
+    firmwareResult = {
+      ok,
+      message: ok
+        ? operation === "upload" ? "Firmware instalado. O painel está reiniciando." : "Firmware compilado com sucesso."
+        : `Operação falhou (código ${code ?? "-"}, sinal ${signal ?? "-"}).`,
+    };
+    firmwareFinishedAt = new Date().toISOString();
+    firmwareProcess = null;
+  });
+  return firmwareStatus();
+}
+
 function runtimePidPath() {
   return path.join(repoRoot, "pixel_ops/output/runtime.pid");
 }
@@ -672,7 +788,7 @@ async function runtimeStatus() {
 }
 
 function runtimeCommandArgs(mode: "configured" | "window" = "configured"): string[] {
-  const args = ["pixel_ops/main.py", "--plugin", "pokemon", "--forever"];
+  const args = ["pixel_ops/main.py", "--forever"];
   if (mode === "window") {
     args.push("--output", "window", "--offline");
   }
@@ -1151,14 +1267,14 @@ set -euo pipefail
 cd ${shellQuote(repoRoot)}
 mkdir -p pixel_ops/output
 echo $$ > pixel_ops/output/runtime.pid
-exec "\${PIXEL_OPS_PYTHON:-${pythonCmd}}" pixel_ops/main.py --plugin pokemon --forever >> pixel_ops/output/runtime.log 2>&1
+exec "\${PIXEL_OPS_PYTHON:-${pythonCmd}}" pixel_ops/main.py --forever >> pixel_ops/output/runtime.log 2>&1
 `;
   const windowsContent = `@echo off
 cd /d "${repoRoot}"
 if not exist pixel_ops\\output mkdir pixel_ops\\output
 set PYTHON_CMD=%PIXEL_OPS_PYTHON%
 if "%PYTHON_CMD%"=="" set PYTHON_CMD=${pythonCmd}
-"%PYTHON_CMD%" pixel_ops/main.py --plugin pokemon --forever >> pixel_ops\\output\\runtime.log 2>&1
+"%PYTHON_CMD%" pixel_ops/main.py --forever >> pixel_ops\\output\\runtime.log 2>&1
 `;
   await fs.writeFile(unixLauncher, unixContent, "utf8");
   await fs.chmod(unixLauncher, 0o755);
@@ -1175,7 +1291,7 @@ set -euo pipefail
 cd ${shellQuote(repoRoot)}
 mkdir -p pixel_ops/output
 echo $$ > pixel_ops/output/runtime.pid
-exec "\${PIXEL_OPS_PYTHON:-${pythonCmd}}" pixel_ops/main.py --plugin pokemon --forever >> ${shellQuote(path.join(logDir, "runtime.log"))} 2>&1
+exec "\${PIXEL_OPS_PYTHON:-${pythonCmd}}" pixel_ops/main.py --forever >> ${shellQuote(path.join(logDir, "runtime.log"))} 2>&1
 `;
     await fs.writeFile(macLauncher, macContent, "utf8");
     await fs.chmod(macLauncher, 0o755);
@@ -1561,6 +1677,39 @@ function runtimeConfigApi(): Plugin {
           sendJson(res, 500, { error: error instanceof Error ? error.message : String(error) });
         }
       });
+      server.middlewares.use("/api/crosshero", async (req, res) => {
+        try {
+          const url = new URL(req.url || "/", "http://localhost");
+          if (req.method === "GET" && url.pathname === "/session-status") {
+            const env = await readDotEnv();
+            const configured = Boolean(process.env.PIXEL_OPS_CROSSHERO_SESSION_COOKIE || env.PIXEL_OPS_CROSSHERO_SESSION_COOKIE);
+            sendJson(res, 200, {
+              ok: true,
+              configured,
+              message: configured ? "Sessão do CrossHero configurada." : "Sessão do CrossHero ainda não importada.",
+            });
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/browser-session") {
+            const body = JSON.parse(await readBody(req)) as { cookie?: string };
+            const cookie = String(body.cookie || "").trim();
+            if (!cookie || cookie.length > 16384 || !cookie.includes("=")) {
+              sendJson(res, 400, { error: "Cookie do CrossHero inválido." });
+              return;
+            }
+            await writeDotEnvValue("PIXEL_OPS_CROSSHERO_SESSION_COOKIE", cookie);
+            sendJson(res, 200, {
+              ok: true,
+              configured: true,
+              message: "Sessão do CrossHero importada com segurança para o .env.",
+            });
+            return;
+          }
+          sendJson(res, 404, { error: "CrossHero endpoint not found." });
+        } catch (error) {
+          sendJson(res, 500, { error: error instanceof Error ? error.message : String(error) });
+        }
+      });
       server.middlewares.use("/api/kite", async (req, res) => {
         try {
           const url = new URL(req.url || "/", "http://localhost");
@@ -1599,7 +1748,7 @@ function runtimeConfigApi(): Plugin {
             return;
           }
           if (req.method === "POST" && url.pathname === "/preview") {
-            sendJson(res, 200, await runRuntimeCommand(["pixel_ops/main.py", "--plugin", "pokemon", "--output", "preview", "--offline"]));
+            sendJson(res, 200, await runRuntimeCommand(["pixel_ops/main.py", "--output", "preview", "--offline"]));
             return;
           }
           if (req.method === "POST" && url.pathname === "/run/start") {
@@ -1633,6 +1782,27 @@ function runtimeConfigApi(): Plugin {
           sendJson(res, 404, { error: "Runtime endpoint not found." });
         } catch (error) {
           sendJson(res, 500, { error: error instanceof Error ? error.message : String(error), ...(await runtimeStatus()) });
+        }
+      });
+      server.middlewares.use("/api/firmware", async (req, res) => {
+        try {
+          const url = new URL(req.url || "/", "http://localhost");
+          if (req.method === "GET" && url.pathname === "/status") {
+            sendJson(res, 200, await firmwareStatus());
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/build") {
+            sendJson(res, 202, await startFirmwareOperation("build"));
+            return;
+          }
+          if (req.method === "POST" && url.pathname === "/upload") {
+            const body = JSON.parse(await readBody(req)) as { port?: string };
+            sendJson(res, 202, await startFirmwareOperation("upload", body.port));
+            return;
+          }
+          sendJson(res, 404, { error: "Firmware endpoint not found." });
+        } catch (error) {
+          sendJson(res, 400, { error: error instanceof Error ? error.message : String(error), ...(await firmwareStatus()) });
         }
       });
       server.middlewares.use("/api/usb", async (req, res) => {

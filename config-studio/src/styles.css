@@ -580,6 +580,38 @@ textarea:focus {
   white-space: pre-wrap;
 }
 
+.firmware-controls {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.firmware-controls label {
+  display: grid;
+  flex: 1;
+  max-width: 430px;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.firmware-controls select {
+  width: 100%;
+}
+
+.firmware-result {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.firmware-result.is-success { color: #9ad18b; }
+.firmware-result.is-error { color: #ef846d; }
+
 .pluginmaps-main {
   padding-top: var(--space-6);
 }
@@ -1995,5 +2027,11 @@ textarea:focus-visible,
 
   .runtime-autostart .runtime-actions {
     width: 100%;
+  }
+
+  .firmware-controls,
+  .firmware-result {
+    align-items: stretch;
+    flex-direction: column;
   }
 }

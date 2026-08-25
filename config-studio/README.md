@@ -58,3 +58,18 @@ The Vite plugin exposes local endpoints:
 - `GET /api/npc-sprites`: generated Pokemon NPC sprite preview manifest and GIFs.
 
 The API intentionally writes only known config descriptors. It does not accept arbitrary paths.
+
+## E-ink firmware updates
+
+The **Firmware do e-ink** panel detects compatible ESP32 serial ports and exposes two operations:
+
+- **Compilar** validates and builds the `e213` PlatformIO environment without touching the device.
+- **Instalar atualização** builds, uploads through the selected USB port, and streams progress to the UI.
+
+The local backend uses an installed `pio`/`platformio` executable or falls back to `uvx platformio`. Upload ports must come from the server-side USB scan; arbitrary commands and paths are not accepted.
+
+Firmware endpoints:
+
+- `GET /api/firmware/status`: tool availability, detected ports, operation state, result, and recent logs.
+- `POST /api/firmware/build`: starts an asynchronous firmware build.
+- `POST /api/firmware/upload` with `{ "port": "/dev/cu.usbmodem..." }`: starts an asynchronous USB upload.
