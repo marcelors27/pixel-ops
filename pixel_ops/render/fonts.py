@@ -4,10 +4,11 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from contextvars import ContextVar
 from functools import lru_cache
+from io import BytesIO
 from math import sqrt
 from pathlib import Path
 
-from PIL import ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
 APP_DIR = Path(__file__).resolve().parents[1]
 PIXEL_FONT = APP_DIR / "assets/fonts/BoutiqueBitmap9x9/BoutiqueBitmap9x9_Bold_1.92.ttf"
@@ -25,6 +26,61 @@ def font(size: int) -> ImageFont.ImageFont:
 
 def icon_font(size: int) -> ImageFont.ImageFont:
     return _load_font(_scaled_font_size(size), icon=True)
+
+
+@lru_cache(maxsize=512)
+def emoji_image(value: str, height: int) -> Image.Image | None:
+    target_height = max(6, _scaled_font_size(height))
+    rendered = _macos_emoji_image(value) or _pillow_emoji_image(value)
+    if rendered is None:
+        return None
+    bounds = rendered.getbbox()
+    if bounds:
+        rendered = rendered.crop(bounds)
+    if rendered.height <= 0:
+        return None
+    target_width = max(1, round(rendered.width * target_height / rendered.height))
+    return rendered.resize((target_width, target_height), Image.Resampling.LANCZOS)
+
+
+def _macos_emoji_image(value: str) -> Image.Image | None:
+    try:
+        from AppKit import NSAttributedString, NSBitmapImageFileTypePNG, NSBitmapImageRep, NSFont, NSFontAttributeName, NSImage
+        from Foundation import NSMakePoint
+
+        text = NSAttributedString.alloc().initWithString_attributes_(
+            value,
+            {NSFontAttributeName: NSFont.fontWithName_size_("Apple Color Emoji", 32)},
+        )
+        size = text.size()
+        image = NSImage.alloc().initWithSize_(size)
+        image.lockFocus()
+        text.drawAtPoint_(NSMakePoint(0, 0))
+        image.unlockFocus()
+        representation = NSBitmapImageRep.imageRepWithData_(image.TIFFRepresentation())
+        data = representation.representationUsingType_properties_(NSBitmapImageFileTypePNG, {})
+        return Image.open(BytesIO(bytes(data))).convert("RGBA")
+    except (ImportError, OSError, TypeError, ValueError, AttributeError):
+        return None
+
+
+def _pillow_emoji_image(value: str) -> Image.Image | None:
+    candidates = (
+        "/System/Library/Fonts/Apple Color Emoji.ttc",
+        "/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf",
+        "C:/Windows/Fonts/seguiemj.ttf",
+    )
+    for path in candidates:
+        try:
+            emoji_font = ImageFont.truetype(path, 20)
+            bounds = emoji_font.getbbox(value)
+            width = max(20, bounds[2] - bounds[0])
+            canvas = Image.new("RGBA", (width + 4, 24), (0, 0, 0, 0))
+            ImageDraw.Draw(canvas).text((2, 1), value, font=emoji_font, embedded_color=True)
+            return canvas
+        except (OSError, TypeError, ValueError):
+            continue
+    return None
 
 
 def scaled_px(value: int | float, *, minimum: int = 1) -> int:

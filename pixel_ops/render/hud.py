@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -10,15 +11,17 @@ from PIL import Image, ImageDraw, ImageSequence
 from pixel_ops.data_sources.ai_usage import AIUsageSnapshot
 from pixel_ops.data_sources.availability import status_for
 from pixel_ops.data_sources.calendar import CalendarEvent
+from pixel_ops.data_sources.crosshero import CrossHeroDaySnapshot, CrossHeroWorkoutLine, workout_display_tokens
 from pixel_ops.data_sources.gamification import GamificationSnapshot
 from pixel_ops.data_sources.media import MediaNowPlaying
 from pixel_ops.data_sources.pc_stats import PCStatsSnapshot
+from pixel_ops.data_sources.projects import ProjectItem, ProjectSnapshot, project_age_days, project_radar, project_radar_scores
 from pixel_ops.data_sources.tasks import TaskItem, TaskSnapshot
 from pixel_ops.data_sources.timezones import PersonTime
 from pixel_ops.data_sources.weather import WeatherForecastDay, WeatherState
 from pixel_ops.events.base import EventCategory, WorkEvent
 from pixel_ops.events.github_events import PullRequestSummary
-from pixel_ops.render.fonts import font, icon_font, scaled_px
+from pixel_ops.render.fonts import emoji_image, font, icon_font, scaled_px
 from pixel_ops.render.renderer import PixelRenderer
 
 
@@ -39,11 +42,17 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "tasks": (126, 196, 122),
         "clickup_tasks": (126, 196, 122),
         "tasks_board": (223, 122, 122),
+        "project_radar": (190, 119, 246),
         "media": (247, 169, 64),
         "now_playing": (247, 169, 64),
         "media_asset": (149, 215, 255),
         "gamification": (235, 86, 96),
         "pokemon_captures": (235, 86, 96),
+        "eink_battery": (126, 224, 189),
+        "eink_wireless": (93, 169, 233),
+        "eink_status": (240, 163, 93),
+        "crosshero_wod": (245, 130, 54),
+        "crosshero_classes": (74, 194, 154),
     },
     "terminal": {
         "timezones": (98, 220, 142),
@@ -61,6 +70,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "tasks": (122, 240, 164),
         "clickup_tasks": (122, 240, 164),
         "tasks_board": (255, 160, 128),
+        "project_radar": (196, 181, 253),
         "media": (188, 255, 128),
         "now_playing": (188, 255, 128),
         "media_asset": (96, 204, 255),
@@ -83,6 +93,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "tasks": (123, 225, 188),
         "clickup_tasks": (123, 225, 188),
         "tasks_board": (102, 190, 235),
+        "project_radar": (129, 140, 248),
         "media": (140, 210, 255),
         "now_playing": (140, 210, 255),
         "media_asset": (91, 204, 189),
@@ -105,6 +116,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "tasks": (255, 161, 96),
         "clickup_tasks": (255, 161, 96),
         "tasks_board": (255, 112, 112),
+        "project_radar": (192, 132, 252),
         "media": (255, 196, 92),
         "now_playing": (255, 196, 92),
         "media_asset": (255, 177, 93),
@@ -123,7 +135,18 @@ class _ThemePalette:
         return getattr(self._base, name)
 
 
-def hud_palette_for_kind(pal, layout_theme: str | None, kind: str):
+def hud_palette_for_kind(pal, layout_theme: str | None, kind: str, *, monochrome: bool = False):
+    if monochrome:
+        return _ThemePalette(
+            pal,
+            panel=(255, 255, 255),
+            panel_shadow=(255, 255, 255),
+            ink=(0, 0, 0),
+            blue=(0, 0, 0),
+            red=(0, 0, 0),
+            yellow=(0, 0, 0),
+            green=(0, 0, 0),
+        )
     theme_tones = HUD_THEME_TONES.get(str(layout_theme or "default"))
     if not theme_tones:
         return pal
@@ -300,11 +323,13 @@ def draw_hud(
     work_events: list[WorkEvent] | None = None,
     pc_stats: PCStatsSnapshot | None = None,
     task_snapshot: TaskSnapshot | None = None,
+    project_snapshot: ProjectSnapshot | None = None,
     media: MediaNowPlaying | None = None,
     today_events: list[CalendarEvent] | None = None,
     gamification: GamificationSnapshot | None = None,
     layout: dict | None = None,
     layout_theme: str | None = None,
+    crosshero: CrossHeroDaySnapshot | None = None,
 ) -> None:
     if layout:
         _draw_configured_hud(
@@ -319,11 +344,13 @@ def draw_hud(
             work_events or [],
             pc_stats,
             task_snapshot,
+            project_snapshot,
             media,
             today_events or [],
             gamification,
             layout,
             layout_theme,
+            crosshero,
         )
         return
 
@@ -371,69 +398,147 @@ def _draw_configured_hud(
     work_events: list[WorkEvent],
     pc_stats: PCStatsSnapshot | None,
     task_snapshot: TaskSnapshot | None,
+    project_snapshot: ProjectSnapshot | None,
     media: MediaNowPlaying | None,
     today_events: list[CalendarEvent],
     gamification: GamificationSnapshot | None,
     layout: dict,
     layout_theme: str | None,
+    crosshero: CrossHeroDaySnapshot | None,
 ) -> None:
     small_font = font(11)
     chip_font = font(9)
     zone_font = font(8)
     name_font = font(7)
-    for timezones_box in _layout_boxes(layout, "timezones"):
-        hud_pal = hud_palette_for_kind(pal, layout_theme, "timezones")
+    item_palette = lambda raw, kind: hud_palette_for_kind(
+        pal,
+        layout_theme,
+        kind,
+        monochrome=bool(raw.get("monochrome", False)),
+    )
+
+    for raw, timezones_box in _layout_items(layout, "timezones"):
+        hud_pal = item_palette(raw, "timezones")
         PixelRenderer.draw_panel(draw, timezones_box, hud_pal.panel, hud_pal.panel_shadow, hud_pal.ink)
         inner_box = _draw_panel_title(draw, timezones_box, "TIMEZONES", hud_pal)
         _draw_timezone_flex_grid(draw, people, inner_box, chip_font, zone_font, name_font, hud_pal)
 
-    for timezones_box in _layout_boxes(layout, "timezones_clock"):
-        hud_pal = hud_palette_for_kind(pal, layout_theme, "timezones_clock")
+    for raw, timezones_box in _layout_items(layout, "timezones_clock"):
+        hud_pal = item_palette(raw, "timezones_clock")
         PixelRenderer.draw_panel(draw, timezones_box, hud_pal.panel, hud_pal.panel_shadow, hud_pal.ink)
         inner_box = _draw_panel_title(draw, timezones_box, "TIMEZONES", hud_pal)
         _draw_timezone_clock_grid(draw, people, inner_box, chip_font, zone_font, name_font, hud_pal)
 
-    for clock_item, clock_box in _layout_items(layout, "clock"):
-        _draw_clock_panel(draw, now, clock_box, hud_palette_for_kind(pal, layout_theme, "clock"), clock_item)
+    for raw, clock_box in _layout_items(layout, "clock"):
+        _draw_clock_panel(draw, now, clock_box, item_palette(raw, "clock"), raw)
 
-    for activity_box in _layout_boxes(layout, "activity"):
-        _draw_activity_panel(draw, event, pull_requests, now, activity_box, hud_palette_for_kind(pal, layout_theme, "activity"))
+    for raw, activity_box in _layout_items(layout, "activity"):
+        _draw_activity_panel(draw, event, pull_requests, now, activity_box, item_palette(raw, "activity"))
 
-    for meetings_box in [*_layout_boxes(layout, "meetings_day"), *_layout_boxes(layout, "calendar_day")]:
-        _draw_meetings_day_panel(draw, today_events, now, meetings_box, hud_palette_for_kind(pal, layout_theme, "meetings_day"))
+    for raw, meetings_box in [*_layout_items(layout, "meetings_day"), *_layout_items(layout, "calendar_day")]:
+        _draw_meetings_day_panel(draw, today_events, now, meetings_box, item_palette(raw, "meetings_day"))
 
-    for route_box in _layout_boxes(layout, "route_signal"):
-        _draw_route_signal_panel(draw, event, pull_requests, ai_usage, work_events, now, route_box, hud_palette_for_kind(pal, layout_theme, "route_signal"))
+    for raw, route_box in _layout_items(layout, "route_signal"):
+        _draw_route_signal_panel(draw, event, pull_requests, ai_usage, work_events, now, route_box, item_palette(raw, "route_signal"))
 
-    for gauges_box in _layout_boxes(layout, "gauges"):
-        _draw_ai_usage_panel(draw, ai_usage, now, gauges_box, hud_palette_for_kind(pal, layout_theme, "gauges"))
+    for raw, gauges_box in _layout_items(layout, "gauges"):
+        _draw_ai_usage_panel(draw, ai_usage, now, gauges_box, item_palette(raw, "gauges"))
 
-    for mana_box in [*_layout_boxes(layout, "mana"), *_layout_boxes(layout, "mp")]:
-        _draw_mana_panel(draw, ai_usage, now, mana_box, hud_palette_for_kind(pal, layout_theme, "mana"))
+    for raw, mana_box in [*_layout_items(layout, "mana"), *_layout_items(layout, "mp")]:
+        _draw_mana_panel(draw, ai_usage, now, mana_box, item_palette(raw, "mana"))
 
-    for weather_box in _layout_boxes(layout, "weather"):
-        _draw_weather_compact(draw, weather, weather_box, hud_palette_for_kind(pal, layout_theme, "weather"))
+    for raw, weather_box in _layout_items(layout, "weather"):
+        _draw_weather_compact(draw, weather, weather_box, item_palette(raw, "weather"))
 
-    for weather_box in _layout_boxes(layout, "weather_forecast"):
-        _draw_weather_forecast_panel(draw, weather, weather_box, hud_palette_for_kind(pal, layout_theme, "weather_forecast"))
+    for raw, weather_box in _layout_items(layout, "weather_forecast"):
+        _draw_weather_forecast_panel(draw, weather, weather_box, item_palette(raw, "weather_forecast"))
 
-    for pc_box in _layout_boxes(layout, "pc_stats"):
-        _draw_pc_stats_panel(draw, pc_stats, pc_box, hud_palette_for_kind(pal, layout_theme, "pc_stats"))
+    for raw, pc_box in _layout_items(layout, "pc_stats"):
+        _draw_pc_stats_panel(draw, pc_stats, pc_box, item_palette(raw, "pc_stats"))
 
-    for task_box in [*_layout_boxes(layout, "tasks"), *_layout_boxes(layout, "clickup_tasks")]:
-        _draw_tasks_panel(draw, task_snapshot, now, task_box, hud_palette_for_kind(pal, layout_theme, "tasks"))
+    for raw, task_box in [*_layout_items(layout, "tasks"), *_layout_items(layout, "clickup_tasks")]:
+        _draw_tasks_panel(draw, task_snapshot, now, task_box, item_palette(raw, "tasks"))
 
-    for task_board_box in _layout_boxes(layout, "tasks_board"):
-        _draw_tasks_board_panel(draw, task_snapshot, now, task_board_box, hud_palette_for_kind(pal, layout_theme, "tasks_board"))
+    for raw, task_board_box in _layout_items(layout, "tasks_board"):
+        _draw_tasks_board_panel(draw, task_snapshot, now, task_board_box, item_palette(raw, "tasks_board"))
 
-    for media_box in [*_layout_boxes(layout, "media"), *_layout_boxes(layout, "now_playing")]:
-        _draw_media_panel(draw, media, now, media_box, hud_palette_for_kind(pal, layout_theme, "media"))
+    for raw, radar_box in _layout_items(layout, "project_radar"):
+        _draw_project_radar_panel(draw, project_snapshot, now, radar_box, item_palette(raw, "project_radar"))
 
-    for asset_item, asset_box in _layout_items(layout, "media_asset"):
-        _draw_media_asset_panel(draw, now, asset_box, hud_palette_for_kind(pal, layout_theme, "media_asset"), asset_item)
+    for raw, wod_box in _layout_items(layout, "crosshero_wod"):
+        _draw_crosshero_wod_panel(draw, crosshero, now, wod_box, item_palette(raw, "crosshero_wod"))
 
-    for game_box in [*_layout_boxes(layout, "gamification"), *_layout_boxes(layout, "hp")]:
-        _draw_gamification_panel(draw, gamification, game_box, hud_palette_for_kind(pal, layout_theme, "gamification"))
+    for raw, classes_box in _layout_items(layout, "crosshero_classes"):
+        _draw_crosshero_classes_panel(draw, crosshero, classes_box, item_palette(raw, "crosshero_classes"))
+
+    for raw, media_box in [*_layout_items(layout, "media"), *_layout_items(layout, "now_playing")]:
+        _draw_media_panel(draw, media, now, media_box, item_palette(raw, "media"))
+
+    for raw, asset_box in _layout_items(layout, "media_asset"):
+        _draw_media_asset_panel(draw, now, asset_box, item_palette(raw, "media_asset"), raw)
+
+    for raw, game_box in [*_layout_items(layout, "gamification"), *_layout_items(layout, "hp")]:
+        _draw_gamification_panel(draw, gamification, game_box, item_palette(raw, "gamification"))
+
+    for kind in ("eink_battery", "eink_wireless", "eink_status"):
+        for raw, box in _layout_items(layout, kind):
+            _draw_eink_telemetry_panel(draw, box, item_palette(raw, kind), kind, None)
+
+
+def draw_eink_telemetry_huds(image: Image.Image, layout: dict, telemetry: dict | None) -> Image.Image:
+    """Overlay device-owned E213 telemetry using regular configured HUD boxes."""
+    if not layout:
+        return image
+    rendered = image.copy()
+    draw = ImageDraw.Draw(rendered)
+    class MonochromePalette:
+        panel = (255, 255, 255)
+        panel_shadow = (255, 255, 255)
+        ink = (0, 0, 0)
+        blue = (0, 0, 0)
+        green = (0, 0, 0)
+        yellow = (0, 0, 0)
+        red = (0, 0, 0)
+    for kind in ("eink_battery", "eink_wireless", "eink_status"):
+        for _raw, box in _layout_items(layout, kind):
+            _draw_eink_telemetry_panel(draw, box, MonochromePalette, kind, telemetry)
+    return rendered
+
+
+def _draw_eink_telemetry_panel(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], pal, kind: str, telemetry: dict | None) -> None:
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    x0, y0, x1, y1 = box
+    width = max(1, x1 - x0)
+    height = max(1, y1 - y0)
+    tiny = font(6)
+    value_font = font(9 if height >= 26 else 7)
+    data = telemetry or {}
+    if kind == "eink_battery":
+        title = "BAT"
+        percent = data.get("battery_percent")
+        value = f"{int(percent)}%" if isinstance(percent, (int, float)) else "--%"
+        if width >= 54:
+            bx, by = x0 + 5, y0 + max(12, height // 2)
+            bw, bh = min(24, width // 3), 8
+            draw.rectangle((bx, by, bx + bw, by + bh), outline=pal.ink)
+            draw.rectangle((bx + bw + 1, by + 2, bx + bw + 3, by + bh - 2), fill=pal.ink)
+            fill = max(0, min(bw - 2, round((bw - 2) * float(percent or 0) / 100)))
+            if fill: draw.rectangle((bx + 1, by + 1, bx + fill, by + bh - 1), fill=pal.ink)
+    elif kind == "eink_wireless":
+        title = "WIRELESS"
+        rssi = data.get("rssi")
+        pc = bool(data.get("pc_available", False))
+        value = f"PC {'ON' if pc else 'OFF'}"
+        if isinstance(rssi, (int, float)) and width >= 66:
+            value += f" {int(rssi)}"
+    else:
+        title = "STATUS"
+        mode = str(data.get("mode") or "aguardando")
+        value = {"pc": "PC", "standalone_online": "ONLINE", "standalone_local": "OFFLINE"}.get(mode, mode.upper())
+    draw.text((x0 + 5, y0 + 3), _fit_text(draw, title, width - 10, tiny), font=tiny, fill=pal.ink)
+    value_y = y0 + max(10, (height - 9) // 2 + 4)
+    value_x = x0 + (35 if kind == "eink_battery" and width >= 54 else 5)
+    draw.text((value_x, value_y), _fit_text(draw, value, max(1, x1 - value_x - 4), value_font), font=value_font, fill=pal.ink)
 
 
 def _layout_boxes(layout: dict, key: str) -> list[tuple[int, int, int, int]]:
@@ -472,6 +577,137 @@ def _layout_raw_box(raw: dict, fallback: tuple[int, int, int, int]) -> tuple[int
     except (TypeError, ValueError):
         return fallback
     return x, y, x + max(1, width), y + max(1, height)
+
+
+def _draw_crosshero_wod_panel(draw: ImageDraw.ImageDraw, snapshot: CrossHeroDaySnapshot | None, now: datetime, box: tuple[int, int, int, int], pal) -> None:
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    inner = _draw_panel_title(draw, box, "WOD DO DIA", pal)
+    workout = snapshot.workout if snapshot else None
+    if workout is None:
+        draw.text((inner[0] + 8, inner[1] + 9), "Aguardando CrossHero", font=font(9), fill=pal.panel_shadow)
+        return
+    x0, y0, x1, y1 = inner
+    width = max(1, x1 - x0 - 16)
+    y = y0 + 6
+    title = workout.program or (workout.title if workout.title.upper() not in {"WOD", "WOD DO DIA"} else "")
+    if title:
+        draw.text((x0 + 8, y), _fit_text(draw, title, width, font(12)), font=font(12), fill=pal.blue)
+        y += 18
+
+    logical_lines = list(workout.structured_lines)
+    if not logical_lines:
+        for value in (*workout.sections, workout.description):
+            for index, line in enumerate(value.replace("\r", "").splitlines()):
+                if line.strip():
+                    logical_lines.append(CrossHeroWorkoutLine(line.strip(), False, index == 0 and bool(logical_lines)))
+
+    pages = _crosshero_wod_pages(draw, logical_lines, width, max(1, y1 - y - 6))
+    page_index = int(now.timestamp() // 8) % len(pages) if pages else 0
+    if len(pages) > 1:
+        marker = f"{page_index + 1}/{len(pages)}"
+        marker_width = _text_width(draw, marker, font(7))
+        draw.text((x1 - marker_width - 8, y0 - 10), marker, font=font(7), fill=pal.blue)
+    for text, emphasized, gap_before in pages[page_index] if pages else ():
+        if gap_before:
+            y += 5
+        text_font = font(10 if emphasized else 9)
+        _draw_crosshero_text(draw, text, x0 + 8, y, text_font, pal.blue if emphasized else pal.ink, 11 if emphasized else 10)
+        y += 14 if emphasized else 12
+
+
+def _crosshero_wod_pages(
+    draw: ImageDraw.ImageDraw,
+    logical_lines: list[CrossHeroWorkoutLine],
+    width: int,
+    available_height: int,
+) -> list[list[tuple[str, bool, bool]]]:
+    rendered: list[tuple[str, bool, bool]] = []
+    for logical in logical_lines:
+        text_font = font(10 if logical.emphasized else 9)
+        wrapped = _wrap_crosshero_text(draw, logical.text, width, text_font, 11 if logical.emphasized else 10)
+        for index, line in enumerate(wrapped):
+            rendered.append((line, logical.emphasized, logical.gap_before and index == 0))
+    pages: list[list[tuple[str, bool, bool]]] = []
+    page: list[tuple[str, bool, bool]] = []
+    used = 0
+    for line in rendered:
+        height = (14 if line[1] else 12) + (5 if line[2] and page else 0)
+        if page and used + height > available_height:
+            pages.append(page)
+            page = []
+            used = 0
+            line = (line[0], line[1], False)
+            height = 14 if line[1] else 12
+        page.append(line)
+        used += height
+    if page:
+        pages.append(page)
+    return pages
+
+
+def _wrap_crosshero_text(draw: ImageDraw.ImageDraw, value: str, width: int, text_font, emoji_height: int) -> list[str]:
+    words = re.findall(r"\S+\s*", value)
+    lines: list[str] = []
+    current = ""
+    for word in words:
+        candidate = current + word
+        if current and _crosshero_text_width(draw, candidate.rstrip(), text_font, emoji_height) > width:
+            lines.append(current.rstrip())
+            current = word.lstrip()
+        else:
+            current = candidate
+    if current.strip():
+        lines.append(current.rstrip())
+    return lines or [""]
+
+
+def _crosshero_text_width(draw: ImageDraw.ImageDraw, value: str, text_font, emoji_height: int) -> int:
+    width = 0
+    for token, is_emoji in workout_display_tokens(value):
+        if is_emoji:
+            rendered = emoji_image(token, emoji_height)
+            width += (rendered.width if rendered else emoji_height) + 1
+        else:
+            width += _text_width(draw, token, text_font)
+    return width
+
+
+def _draw_crosshero_text(draw: ImageDraw.ImageDraw, value: str, x: int, y: int, text_font, fill, emoji_height: int) -> None:
+    cursor = x
+    for token, is_emoji in workout_display_tokens(value):
+        if not is_emoji:
+            draw.text((cursor, y), token, font=text_font, fill=fill)
+            cursor += _text_width(draw, token, text_font)
+            continue
+        rendered = emoji_image(token, emoji_height)
+        if rendered is None:
+            draw.text((cursor, y), "?", font=text_font, fill=fill)
+            cursor += _text_width(draw, "?", text_font)
+            continue
+        draw._image.paste(rendered, (cursor, y), rendered)
+        cursor += rendered.width + 1
+
+
+def _draw_crosshero_classes_panel(draw: ImageDraw.ImageDraw, snapshot: CrossHeroDaySnapshot | None, box: tuple[int, int, int, int], pal) -> None:
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    inner = _draw_panel_title(draw, box, "AULAS DE HOJE", pal)
+    classes = snapshot.classes if snapshot else ()
+    if not classes:
+        draw.text((inner[0] + 8, inner[1] + 9), "Nenhum horario recebido", font=font(9), fill=pal.panel_shadow)
+        return
+    x0, y0, x1, y1 = inner
+    row_height = 20
+    visible = classes[: max(1, (y1 - y0 - 8) // row_height)]
+    for index, class_item in enumerate(visible):
+        y = y0 + 5 + index * row_height
+        time_label = class_item.starts_at.strftime("%H:%M")
+        count_label = str(class_item.reservations) if class_item.capacity is None else f"{class_item.reservations}/{class_item.capacity}"
+        count_width = _text_width(draw, count_label, font(10))
+        draw.text((x0 + 8, y), time_label, font=font(10), fill=pal.blue)
+        draw.text((x0 + 55, y), _fit_text(draw, class_item.name, max(1, x1 - x0 - count_width - 88), font(10)), font=font(10), fill=pal.ink)
+        draw.text((x1 - count_width - 9, y), count_label, font=font(10), fill=pal.green if class_item.capacity is None or class_item.reservations < class_item.capacity else pal.red)
+        if index < len(visible) - 1:
+            draw.line((x0 + 8, y + 16, x1 - 8, y + 16), fill=pal.panel_shadow)
 
 
 def _draw_panel_title(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], title: str, pal) -> tuple[int, int, int, int]:
@@ -1406,6 +1642,118 @@ def _draw_tasks_board_panel(
             if card_h >= 24:
                 meta = _task_board_meta(task, now)
                 draw.text((cx + 6, cy + 12), _fit_text(draw, meta, column_w - 12, meta_font), font=meta_font, fill=pal.blue)
+
+
+def _draw_project_radar_panel(
+    draw: ImageDraw.ImageDraw,
+    snapshot: ProjectSnapshot | None,
+    now: datetime,
+    box: tuple[int, int, int, int],
+    pal,
+) -> None:
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    title_font = font(8)
+    action_font = font(7)
+    meta_font = font(6)
+    x0, y0, x1, y1 = _draw_panel_title(draw, box, "PROJECT RADAR", pal)
+    content_x = x0 + 7
+    content_w = max(1, x1 - x0 - 14)
+    content_h = max(1, y1 - y0 - 8)
+    if snapshot and snapshot.status == "missing_project_type":
+        draw.text((content_x, y0 + 7), _fit_text(draw, "Create a Projeto type", content_w, title_font), font=title_font, fill=pal.ink)
+        return
+    if not snapshot or not snapshot.projects:
+        message = "Radar unavailable" if snapshot and snapshot.status == "unavailable" else "No projects yet"
+        draw.text((content_x, y0 + 7), message, font=title_font, fill=pal.ink)
+        return
+
+    radar = project_radar(snapshot, now)
+    chart_h = min(content_h - 76, max(86, int(content_h * 0.56))) if content_h >= 150 else 0
+    if radar.focus and chart_h:
+        _draw_project_radar_chart(draw, radar.focus, now, (content_x, y0 + 3, x1 - 7, y0 + 3 + chart_h), pal)
+    cards_y = y0 + 8 + chart_h
+    cards = [("FOCUS", radar.focus), ("NEXT", radar.resurfacing)]
+    visible = [(label, project) for label, project in cards if project]
+    card_gap = 6
+    card_w = max(1, (content_w - card_gap * max(0, len(visible) - 1)) // max(1, len(visible)))
+    card_h = max(36, y1 - 22 - cards_y)
+    for index, (label, project) in enumerate(visible):
+        _draw_project_card(draw, project, now, content_x + index * (card_w + card_gap), cards_y, card_w, card_h, pal, label, title_font, action_font, meta_font)
+    footer = f"INBOX {radar.inbox_count:02d}   REVIEW {radar.review_count:02d}"
+    draw.line((content_x, y1 - 19, x1 - 7, y1 - 19), fill=pal.blue)
+    draw.text((content_x, y1 - 16), _fit_text(draw, footer, content_w, action_font), font=action_font, fill=pal.blue)
+
+
+def _draw_project_radar_chart(draw, project: ProjectItem, now: datetime, box: tuple[int, int, int, int], pal) -> None:
+    x0, y0, x1, y1 = box
+    labels = ("CLARITY", "PLAN", "EXEC", "HEALTH", "IMPACT")
+    scores = project_radar_scores(project, now)
+    cx = x0 + (x1 - x0) // 2
+    cy = y0 + (y1 - y0) // 2 + 2
+    radius = max(18, min((x1 - x0) // 3, (y1 - y0) // 2 - 12))
+    angles = [-math.pi / 2 + index * math.tau / len(labels) for index in range(len(labels))]
+    rings = (0.33, 0.66, 1.0)
+    for scale in rings:
+        points = [(cx + int(math.cos(angle) * radius * scale), cy + int(math.sin(angle) * radius * scale)) for angle in angles]
+        draw.line(points + [points[0]], fill=pal.panel_shadow, width=1)
+    outer = [(cx + int(math.cos(angle) * radius), cy + int(math.sin(angle) * radius)) for angle in angles]
+    for point in outer:
+        draw.line((cx, cy, point[0], point[1]), fill=pal.panel_shadow)
+    values = [(cx + int(math.cos(angle) * radius * score / 100), cy + int(math.sin(angle) * radius * score / 100)) for angle, score in zip(angles, scores)]
+    draw.polygon(values, fill=_mix_color(pal.blue, pal.panel, 0.28), outline=pal.blue)
+    for vx, vy in values:
+        draw.rectangle((vx - 1, vy - 1, vx + 1, vy + 1), fill=pal.blue)
+    label_font = font(6)
+    for label, angle, point in zip(labels, angles, outer):
+        tw = _text_width(draw, label, label_font)
+        lx = point[0] - tw // 2 + int(math.cos(angle) * 9)
+        ly = point[1] - 3 + int(math.sin(angle) * 7)
+        draw.text((lx, ly), label, font=label_font, fill=pal.ink)
+    draw.text((x0 + 2, y0 + 1), _fit_text(draw, project.title, max(1, x1 - x0 - 4), font(7)), font=font(7), fill=pal.blue)
+
+
+def _draw_project_card(draw, project: ProjectItem, now: datetime, x: int, y: int, width: int, height: int, pal, label: str, title_font, action_font, meta_font) -> None:
+    age = project_age_days(project, now)
+    overdue = bool(project.review_at and project.review_at <= now)
+    health_key = " ".join(project.health.lower().replace("_", " ").split())
+    color = pal.red if overdue or health_key in {"bloqueado", "blocked"} else pal.yellow if health_key in {"atencao", "atenção", "attention"} or not project.next_action else pal.green
+    draw.rectangle((x, y, x + width - 1, y + height - 1), fill=pal.panel_shadow, outline=color)
+    draw.rectangle((x, y, x + 4, y + height - 1), fill=color)
+    draw.text((x + 8, y + 3), label, font=meta_font, fill=color)
+    draw.text((x + 8, y + 12), _fit_text(draw, project.title, width - 14, title_font), font=title_font, fill=pal.ink)
+    if height >= 52:
+        draw.text((x + 8, y + 25), _fit_text(draw, project.next_action or "needs next action", width - 14, action_font), font=action_font, fill=pal.blue)
+    meta = " · ".join(bit for bit in (project.phase or project.state, project.priority, f"{project.progress}%" if project.progress else "", f"{age}d" if age else "") if bit)
+    if height >= 66 and meta:
+        draw.text((x + 8, y + height - 12), _fit_text(draw, meta, width - 14, meta_font), font=meta_font, fill=color)
+
+
+def _draw_project_radar_row(
+    draw: ImageDraw.ImageDraw,
+    project: ProjectItem,
+    now: datetime,
+    x: int,
+    y: int,
+    width: int,
+    height: int,
+    pal,
+    label: str,
+    title_font,
+    action_font,
+    meta_font,
+) -> None:
+    age = project_age_days(project, now)
+    overdue = bool(project.review_at and project.review_at <= now)
+    color = pal.red if overdue else pal.yellow if age >= 7 or not project.next_action else pal.green
+    draw.rectangle((x, y + 2, x + 4, y + 7), fill=color, outline=pal.ink)
+    draw.text((x + 8, y - 1), _fit_text(draw, f"{label}  {project.title}", width - 8, title_font), font=title_font, fill=pal.ink)
+    action = project.next_action or "needs next action"
+    if height >= 34:
+        draw.text((x + 8, y + 10), _fit_text(draw, action, width - 8, action_font), font=action_font, fill=pal.blue)
+        meta = f"{project.state or 'inbox'}"
+        if age:
+            meta += f" · {age}d"
+        draw.text((x + 8, y + 20), _fit_text(draw, meta, width - 8, meta_font), font=meta_font, fill=color)
 
 
 def _task_board_columns(tasks: tuple[TaskItem, ...]) -> list[tuple[str, list[TaskItem]]]:

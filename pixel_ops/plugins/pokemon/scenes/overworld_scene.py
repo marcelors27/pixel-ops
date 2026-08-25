@@ -16,6 +16,7 @@ from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.companions import CompanionSnapshot
 from pixel_ops.data_sources.media import MediaNowPlaying
 from pixel_ops.data_sources.pc_stats import PCStatsSnapshot
+from pixel_ops.data_sources.projects import ProjectSnapshot
 from pixel_ops.data_sources.tasks import TaskSnapshot
 from pixel_ops.data_sources.weather import WeatherState
 from pixel_ops.plugins.pokemon.pokemon_api import PokeApiClient
@@ -283,11 +284,13 @@ class OverworldScene:
         ai_usage: AIUsageSnapshot | None = None,
         pc_stats: PCStatsSnapshot | None = None,
         task_snapshot: TaskSnapshot | None = None,
+        project_snapshot: ProjectSnapshot | None = None,
         media: MediaNowPlaying | None = None,
         companion_snapshot: CompanionSnapshot | None = None,
         today_events: list[CalendarEvent] | None = None,
         gamification=None,
         work_events: list[WorkEvent] | None = None,
+        crosshero=None,
     ):
         with font_scale_for_canvas(self.renderer.width, self.renderer.height):
             base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
@@ -304,11 +307,13 @@ class OverworldScene:
                 ai_usage=ai_usage,
                 pc_stats=pc_stats,
                 task_snapshot=task_snapshot,
+                project_snapshot=project_snapshot,
                 media=media,
                 companion_snapshot=companion_snapshot,
                 today_events=today_events,
                 gamification=gamification,
                 work_events=recent_events,
+                crosshero=crosshero,
             )
 
     def render_full(
@@ -322,11 +327,13 @@ class OverworldScene:
         ai_usage: AIUsageSnapshot | None = None,
         pc_stats: PCStatsSnapshot | None = None,
         task_snapshot: TaskSnapshot | None = None,
+        project_snapshot: ProjectSnapshot | None = None,
         media: MediaNowPlaying | None = None,
         companion_snapshot: CompanionSnapshot | None = None,
         today_events: list[CalendarEvent] | None = None,
         gamification=None,
         work_events: list[WorkEvent] | None = None,
+        crosshero=None,
     ) -> Image.Image:
         with font_scale_for_canvas(self.renderer.width, self.renderer.height):
             phase = phase or self.state.phase
@@ -343,10 +350,12 @@ class OverworldScene:
                 ai_usage=ai_usage,
                 pc_stats=pc_stats,
                 task_snapshot=task_snapshot,
+                project_snapshot=project_snapshot,
                 media=media,
                 today_events=today_events,
                 gamification=gamification,
                 work_events=work_events,
+                crosshero=crosshero,
             )
             if self._is_battle_phase(phase):
                 self._draw_battle_scene(img, phase, pal)
@@ -368,10 +377,12 @@ class OverworldScene:
         ai_usage: AIUsageSnapshot | None = None,
         pc_stats: PCStatsSnapshot | None = None,
         task_snapshot: TaskSnapshot | None = None,
+        project_snapshot: ProjectSnapshot | None = None,
         media: MediaNowPlaying | None = None,
         today_events: list[CalendarEvent] | None = None,
         gamification=None,
         work_events: list[WorkEvent] | None = None,
+        crosshero=None,
     ) -> Image.Image:
         with font_scale_for_canvas(self.renderer.width, self.renderer.height):
             base_now = now or datetime.now(ZoneInfo(self.primary_timezone))
@@ -396,13 +407,15 @@ class OverworldScene:
                 work_events=work_events,
                 pc_stats=pc_stats,
                 task_snapshot=task_snapshot,
+                project_snapshot=project_snapshot,
                 media=media,
                 today_events=today_events,
                 gamification=gamification,
                 layout=self.display_layout,
                 layout_theme=self.layout_theme,
+                crosshero=crosshero,
             )
-            self._draw_pokemon_capture_huds(draw, hud_palette_for_kind(pal, self.layout_theme, "pokemon_captures"))
+            self._draw_pokemon_capture_huds(draw, pal)
             return img
 
     def _record_capture(self, now: datetime) -> None:
@@ -447,8 +460,21 @@ class OverworldScene:
             )
 
     def _draw_pokemon_capture_huds(self, draw: ImageDraw.ImageDraw, pal) -> None:
-        for box in self._layout_boxes("pokemon_captures"):
-            self._draw_pokemon_capture_hud(draw, box, pal)
+        if not isinstance(self.display_layout, dict):
+            return
+        for item_key, raw in self.display_layout.items():
+            if not isinstance(raw, dict) or str(raw.get("kind") or item_key) != "pokemon_captures":
+                continue
+            box = self._layout_box(item_key, (0, 0, 1, 1))
+            if box[2] - box[0] < 8 or box[3] - box[1] < 8:
+                continue
+            hud_pal = hud_palette_for_kind(
+                pal,
+                self.layout_theme,
+                "pokemon_captures",
+                monochrome=bool(raw.get("monochrome", False)),
+            )
+            self._draw_pokemon_capture_hud(draw, box, hud_pal)
 
     def _draw_pokemon_capture_hud(self, draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int], pal) -> None:
         PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
