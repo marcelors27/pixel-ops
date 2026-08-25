@@ -1,0 +1,140 @@
+{
+  "provider": "pixellab",
+  "purpose": "Runtime assets selected by the Spaceship renderer",
+  "runtime_asset_count": 87,
+  "assets": [
+    {
+      "key": "asteroids",
+      "tool": "create_image_pixflux",
+      "files": {
+        "iron": "asteroids/asteroid-iron.png",
+        "crystal": "asteroids/asteroid-crystal.png",
+        "cobalt": "asteroids/asteroid-cobalt.png"
+      },
+      "status": "selected"
+    },
+    {
+      "key": "refined_rooms",
+      "tool": "edit_image",
+      "job_ids": {
+        "bridge": "06ca2f72-aa4e-4508-b6e3-3201cc2473e9",
+        "reactor": "7888fe3c-4b74-43e4-8d47-5457709f6341",
+        "lab": "01ddc2d6-740b-4806-9347-f3cb7f4071ee",
+        "cargo": "423c066b-5b3d-4fb3-93e1-692b30ebd1a5"
+      },
+      "size": [160, 128],
+      "files": "isometric-pro/rooms/*-refined.png",
+      "status": "selected"
+    },
+    {
+      "key": "hull_module_kit",
+      "tool": "create_image_pixflux",
+      "job_ids": {
+        "prow_east": "d6c47dbb-8e53-4c13-a4af-0eb9d8ff4f3b",
+        "prow_west": "2cf8096f-0d06-48da-a415-746fec88853a",
+        "engine_east": "2b61c1ed-ebc0-48db-89c1-bd003ce3c9bb",
+        "engine_west": "ab0a211d-9749-44b6-8a09-b9014d017882"
+      },
+      "size": [160, 128],
+      "files": "isometric-pro/hull-kit/*.png",
+      "status": "selected"
+    },
+    {
+      "key": "bay_02_upgrade_module",
+      "tool": "create_image_pixflux",
+      "job_id": "d5cc4d89-9a85-45b9-9090-8199700630d9",
+      "seed": 260805,
+      "size": [160, 128],
+      "files": "upgrades/bay-02-module.png",
+      "status": "selected"
+    },
+    {
+      "key": "mining_progress_hud",
+      "tool": "create_image_pixen",
+      "job_ids": {
+        "frame": "4e19b261-5f99-418b-afab-8e24255a1eb4",
+        "fill": "ad631f69-5c3b-4581-a34c-50e4da8acabf"
+      },
+      "seeds": {
+        "frame": 260803,
+        "fill": 260804
+      },
+      "size": [256, 48],
+      "files": {
+        "frame": "hud/mining-progress-frame.png",
+        "fill": "hud/mining-progress-fill.png"
+      },
+      "status": "selected"
+    },
+    {
+      "key": "mining_drone",
+      "tool": "create_image_pixflux + animate_image",
+      "job_ids": {
+        "idle": "ea8a3ffb-e2ac-4795-bb6c-1a45ab6c17f7",
+        "work_loop": "88b6a7cb-a1d3-442b-9b1f-f30b796afeeb"
+      },
+      "size": [128, 128],
+      "frames": 5,
+      "files": {
+        "idle": "mining/drone/idle.png",
+        "work_loop": "mining/drone/work/*.png"
+      },
+      "status": "selected"
+    },
+    {
+      "key": "operations_officer_working_on_computer_state",
+      "tool": "create_character_state (authored in PixelLab UI)",
+      "character_id": "856bcf8b-addf-4972-b6b7-2ab8a8abd6e9",
+      "source_character_id": "0f8563d3-df1c-4957-a582-1a6376c92b29",
+      "state_name": "working on computer",
+      "size": [88, 88],
+      "directions": 8,
+      "animation": {
+        "name": "typing",
+        "group_id": "a9368d73-6606-47f3-8154-16862ed01da0",
+        "directions": ["south"],
+        "frames": 7
+      },
+      "files": "crew/operations-officer-character/working_on_computer/",
+      "status": "selected"
+    },
+    {
+      "key": "operations_officer_walk_cycles",
+      "tool": "animate_character",
+      "character_id": "0f8563d3-df1c-4957-a582-1a6376c92b29",
+      "state_name": "Idle",
+      "animation_name": "walk",
+      "animation_group_id": "c580e901-731e-4d1a-a8ed-d0a0e139bbe6",
+      "size": [88, 88],
+      "directions": 8,
+      "frames_per_direction": 4,
+      "files": "crew/operations-officer-character/Idle/",
+      "status": "selected"
+    },
+    {
+      "key": "crew_work_actions",
+      "tool": "animate_image",
+      "job_ids": {
+        "maintenance_repair": "6bbcebdf-1fd6-4e67-bdb7-4f66f5f644cc"
+      },
+      "seeds": {
+        "maintenance_repair": 261201
+      },
+      "size": [128, 128],
+      "frames_per_action": 7,
+      "files": "crew/*-128-final/actions/*/*.png",
+      "status": "selected"
+    },
+    {
+      "key": "crew_idle_loops",
+      "tool": "animate_image",
+      "job_ids": {
+        "maintenance_engineer": "eeb834c3-0a0f-4c47-a802-436e8781158b"
+      },
+      "size": [128, 128],
+      "frames_per_character": 5,
+      "files": "crew/*-128-final/idle/*.png",
+      "status": "selected"
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import importlib
 
 PLUGIN_MODULES = {
     "pokemon": "pixel_ops.plugins.pokemon.plugin",
+    "spaceship": "pixel_ops.plugins.spaceship.plugin",
 }
 
 

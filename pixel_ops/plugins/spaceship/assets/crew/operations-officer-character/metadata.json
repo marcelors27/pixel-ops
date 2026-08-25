@@ -1,0 +1,133 @@
+{
+  "group_id": "9a4bcb9a-ed2f-41de-8888-ddeb7ce23e6b",
+  "states": [
+    {
+      "character": {
+        "id": "0f8563d3-df1c-4957-a582-1a6376c92b29",
+        "name": "Idle",
+        "prompt": "Preserve this exact chibi spaceship operations officer identity: oversized head, very short compact body, navy uniform, cyan headset and amber badge. Rotate consistently for an isometric spaceship management game; no weapon; crisp premium pixel art.",
+        "size": {
+          "width": 88,
+          "height": 88
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "high top-down",
+        "created_at": "2026-08-03T04:44:36.224298+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {
+          "walk": {
+            "north": [
+              "Idle/animations/walk/north/frame_000.png",
+              "Idle/animations/walk/north/frame_001.png",
+              "Idle/animations/walk/north/frame_002.png",
+              "Idle/animations/walk/north/frame_003.png"
+            ],
+            "north-east": [
+              "Idle/animations/walk/north-east/frame_000.png",
+              "Idle/animations/walk/north-east/frame_001.png",
+              "Idle/animations/walk/north-east/frame_002.png",
+              "Idle/animations/walk/north-east/frame_003.png"
+            ],
+            "west": [
+              "Idle/animations/walk/west/frame_000.png",
+              "Idle/animations/walk/west/frame_001.png",
+              "Idle/animations/walk/west/frame_002.png",
+              "Idle/animations/walk/west/frame_003.png"
+            ],
+            "north-west": [
+              "Idle/animations/walk/north-west/frame_000.png",
+              "Idle/animations/walk/north-west/frame_001.png",
+              "Idle/animations/walk/north-west/frame_002.png",
+              "Idle/animations/walk/north-west/frame_003.png"
+            ],
+            "east": [
+              "Idle/animations/walk/east/frame_000.png",
+              "Idle/animations/walk/east/frame_001.png",
+              "Idle/animations/walk/east/frame_002.png",
+              "Idle/animations/walk/east/frame_003.png"
+            ],
+            "south-east": [
+              "Idle/animations/walk/south-east/frame_000.png",
+              "Idle/animations/walk/south-east/frame_001.png",
+              "Idle/animations/walk/south-east/frame_002.png",
+              "Idle/animations/walk/south-east/frame_003.png"
+            ],
+            "south": [
+              "Idle/animations/walk/south/frame_000.png",
+              "Idle/animations/walk/south/frame_001.png",
+              "Idle/animations/walk/south/frame_002.png",
+              "Idle/animations/walk/south/frame_003.png"
+            ],
+            "south-west": [
+              "Idle/animations/walk/south-west/frame_000.png",
+              "Idle/animations/walk/south-west/frame_001.png",
+              "Idle/animations/walk/south-west/frame_002.png",
+              "Idle/animations/walk/south-west/frame_003.png"
+            ]
+          }
+        }
+      },
+      "portrait": {
+        "path": "Idle/portrait.png",
+        "size": 128,
+        "generated_at": "2026-08-03T18:57:08.388295"
+      }
+    },
+    {
+      "character": {
+        "id": "856bcf8b-addf-4972-b6b7-2ab8a8abd6e9",
+        "name": "working on computer",
+        "prompt": "Preserve this exact chibi spaceship operations officer identity: oversized head, very short compact body, navy uniform, cyan headset and amber badge. Rotate consistently for an isometric spaceship management game; no weapon; crisp premium pixel art.",
+        "size": {
+          "width": 88,
+          "height": 88
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "high top-down",
+        "created_at": "2026-08-03T18:53:11.917586+00:00"
+      },
+      "folder": "working_on_computer",
+      "frames": {
+        "rotations": {
+          "south": "working_on_computer/rotations/south.png",
+          "south-east": "working_on_computer/rotations/south-east.png",
+          "east": "working_on_computer/rotations/east.png",
+          "north-east": "working_on_computer/rotations/north-east.png",
+          "north": "working_on_computer/rotations/north.png",
+          "north-west": "working_on_computer/rotations/north-west.png",
+          "west": "working_on_computer/rotations/west.png",
+          "south-west": "working_on_computer/rotations/south-west.png"
+        },
+        "animations": {
+          "typing": {
+            "south": [
+              "working_on_computer/animations/typing/south/frame_000.png",
+              "working_on_computer/animations/typing/south/frame_001.png",
+              "working_on_computer/animations/typing/south/frame_002.png",
+              "working_on_computer/animations/typing/south/frame_003.png",
+              "working_on_computer/animations/typing/south/frame_004.png",
+              "working_on_computer/animations/typing/south/frame_005.png",
+              "working_on_computer/animations/typing/south/frame_006.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-08-03T19:13:11.941651"
+}

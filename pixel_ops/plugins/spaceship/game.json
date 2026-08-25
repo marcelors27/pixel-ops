@@ -1,0 +1,761 @@
+{
+  "game": {
+    "fps": 10,
+    "static_background": true,
+    "require_ash_sprite": false,
+    "ash_sprite_source": "https://www.spriters-resource.com/game_boy_advance/pokemonfireredleafgreen/asset/52432/",
+    "ash_sprite_file": "pixel_ops/plugins/pokemon/assets/sprites/ash/ash_overworld.png",
+    "world_speed_px": 0,
+    "map_switch_seconds": 60,
+    "ash_x": 118,
+    "ash_y": 292,
+    "walk_start_x": 28,
+    "encounter_x": 132,
+    "walk_exit_x": 258,
+    "route_speed_px": 6.4,
+    "vertical_wander_px": 42,
+    "vertical_wander_seconds": 1.4,
+    "movement": {
+      "debug_overlay": false,
+      "walkable": {
+        "source_rects": [
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 80,
+            "y": 32,
+            "w": 64,
+            "h": 80
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 64,
+            "y": 48,
+            "w": 16,
+            "h": 64
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 144,
+            "y": 48,
+            "w": 16,
+            "h": 64
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 160,
+            "y": 96,
+            "w": 144,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 272,
+            "y": 176,
+            "w": 96,
+            "h": 112
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 272,
+            "y": 128,
+            "w": 32,
+            "h": 48
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 240,
+            "y": 208,
+            "w": 32,
+            "h": 144
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 256,
+            "y": 192,
+            "w": 16,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 272,
+            "y": 288,
+            "w": 80,
+            "h": 48
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 272,
+            "y": 336,
+            "w": 64,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 96,
+            "y": 256,
+            "w": 144,
+            "h": 48
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 224,
+            "y": 304,
+            "w": 16,
+            "h": 48
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 32,
+            "y": 160,
+            "w": 64,
+            "h": 128
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 96,
+            "y": 176,
+            "w": 64,
+            "h": 80
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 16,
+            "y": 176,
+            "w": 16,
+            "h": 112
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-altering-cave__map",
+            "x": 160,
+            "y": 240,
+            "w": 16,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-berry-forest__map",
+            "x": 48,
+            "y": 80,
+            "w": 96,
+            "h": 80
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-berry-forest__map",
+            "x": 144,
+            "y": 240,
+            "w": 176,
+            "h": 64
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-berry-forest__map",
+            "x": 48,
+            "y": 160,
+            "w": 48,
+            "h": 320
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-berry-forest__map",
+            "x": 96,
+            "y": 432,
+            "w": 48,
+            "h": 80
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-berry-forest__map",
+            "x": 144,
+            "y": 464,
+            "w": 192,
+            "h": 48
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-berry-forest__map",
+            "x": 144,
+            "y": 304,
+            "w": 32,
+            "h": 112
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-berry-forest__map",
+            "x": 176,
+            "y": 352,
+            "w": 48,
+            "h": 64
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-berry-forest__map",
+            "x": 224,
+            "y": 368,
+            "w": 80,
+            "h": 48
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-berry-forest__map",
+            "x": 96,
+            "y": 608,
+            "w": 96,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-berry-forest__map",
+            "x": 192,
+            "y": 624,
+            "w": 144,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-berry-forest__map",
+            "x": 288,
+            "y": 640,
+            "w": 48,
+            "h": 64
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-berry-forest__map",
+            "x": 192,
+            "y": 688,
+            "w": 96,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-birth-island__map",
+            "x": 192,
+            "y": 96,
+            "w": 112,
+            "h": 176
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-birth-island__map",
+            "x": 176,
+            "y": 112,
+            "w": 144,
+            "h": 160
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-birth-island__map",
+            "x": 144,
+            "y": 144,
+            "w": 208,
+            "h": 80
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-birth-island__map",
+            "x": 128,
+            "y": 176,
+            "w": 240,
+            "h": 48
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-birth-island__map",
+            "x": 96,
+            "y": 208,
+            "w": 32,
+            "h": 64
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-birth-island__map",
+            "x": 160,
+            "y": 224,
+            "w": 176,
+            "h": 48
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-birth-island__map",
+            "x": 368,
+            "y": 224,
+            "w": 32,
+            "h": 48
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-birth-island__map",
+            "x": 240,
+            "y": 272,
+            "w": 16,
+            "h": 48
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-birth-island__map",
+            "x": 224,
+            "y": 320,
+            "w": 48,
+            "h": 80
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-towns-buildings-etc-four-island__map-02",
+            "x": 16,
+            "y": 32,
+            "w": 176,
+            "h": 96
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-02",
+            "x": 0,
+            "y": 16,
+            "w": 176,
+            "h": 112
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 112,
+            "y": 0,
+            "w": 48,
+            "h": 256
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 80,
+            "y": 64,
+            "w": 128,
+            "h": 48
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 80,
+            "y": 112,
+            "w": 32,
+            "h": 144
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 160,
+            "y": 224,
+            "w": 48,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 176,
+            "y": 160,
+            "w": 96,
+            "h": 48
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 176,
+            "y": 208,
+            "w": 32,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 224,
+            "y": 208,
+            "w": 48,
+            "h": 96
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 160,
+            "y": 256,
+            "w": 64,
+            "h": 48
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 240,
+            "y": 304,
+            "w": 32,
+            "h": 96
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 96,
+            "y": 256,
+            "w": 64,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 176,
+            "y": 320,
+            "w": 64,
+            "h": 80
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 128,
+            "y": 384,
+            "w": 48,
+            "h": 80
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 160,
+            "y": 400,
+            "w": 48,
+            "h": 112
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 208,
+            "y": 480,
+            "w": 48,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 224,
+            "y": 400,
+            "w": 64,
+            "h": 64
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 64,
+            "y": 336,
+            "w": 48,
+            "h": 176
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 64,
+            "y": 304,
+            "w": 32,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 112,
+            "y": 336,
+            "w": 48,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 128,
+            "y": 368,
+            "w": 32,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 112,
+            "y": 464,
+            "w": 32,
+            "h": 48
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 48,
+            "y": 528,
+            "w": 64,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 96,
+            "y": 512,
+            "w": 32,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 288,
+            "y": 496,
+            "w": 80,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 272,
+            "y": 432,
+            "w": 48,
+            "h": 80
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 336,
+            "y": 448,
+            "w": 48,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 336,
+            "y": 480,
+            "w": 32,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-01",
+            "x": 96,
+            "y": 208,
+            "w": 80,
+            "h": 96
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-01",
+            "x": 176,
+            "y": 272,
+            "w": 96,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-01",
+            "x": 240,
+            "y": 304,
+            "w": 32,
+            "h": 64
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-01",
+            "x": 224,
+            "y": 352,
+            "w": 16,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-01",
+            "x": 144,
+            "y": 304,
+            "w": 16,
+            "h": 64
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-01",
+            "x": 160,
+            "y": 352,
+            "w": 16,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-01",
+            "x": 96,
+            "y": 304,
+            "w": 32,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-01",
+            "x": 80,
+            "y": 320,
+            "w": 48,
+            "h": 64
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-01",
+            "x": 96,
+            "y": 384,
+            "w": 32,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-01",
+            "x": 96,
+            "y": 400,
+            "w": 48,
+            "h": 64
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-01",
+            "x": 112,
+            "y": 464,
+            "w": 32,
+            "h": 160
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-01",
+            "x": 144,
+            "y": 560,
+            "w": 128,
+            "h": 64
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-01",
+            "x": 192,
+            "y": 624,
+            "w": 80,
+            "h": 16
+          }
+        ],
+        "avoid_source_rects": []
+      },
+      "blocked": {
+        "source_rects": [
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-towns-buildings-etc-four-island__map-02",
+            "x": 128,
+            "y": 64,
+            "w": 32,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-towns-buildings-etc-four-island__map-02",
+            "x": 0,
+            "y": 48,
+            "w": 80,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-towns-buildings-etc-four-island__map-02",
+            "x": 64,
+            "y": 16,
+            "w": 16,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-02",
+            "x": 128,
+            "y": 16,
+            "w": 32,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-02",
+            "x": 0,
+            "y": 16,
+            "w": 64,
+            "h": 16
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-02",
+            "x": 0,
+            "y": 48,
+            "w": 16,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-02",
+            "x": 0,
+            "y": 96,
+            "w": 16,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-cape-brink__map-02",
+            "x": 80,
+            "y": 64,
+            "w": 32,
+            "h": 32
+          },
+          {
+            "map": "game-boy-advance-pokemon-firered-leafgreen-maps-caves-forests-oceans-etc-canyon-entrance__map",
+            "x": 77,
+            "y": 253,
+            "w": 135,
+            "h": 4
+          }
+        ]
+      }
+    },
+    "pokemon_x": 220,
+    "pokemon_y": 280,
+    "hud_height": 212,
+    "text_box_height": 96,
+    "encounter": {
+      "walking_seconds": 2,
+      "start_seconds": 3,
+      "appears_seconds": 10,
+      "throw_seconds": 1.4,
+      "shake_seconds": 3,
+      "caught_seconds": 5
+    },
+    "events": {
+      "mock_events": false,
+      "queue_limit": 6,
+      "knowledge_path": "pixel_ops/plugins/pokemon/assets/knowledge/gen1_lore.json",
+      "ai_selector": {
+        "enabled": true,
+        "async": true,
+        "ambient": false,
+        "candidate_limit": 8,
+        "throttle": {
+          "enabled": true,
+          "cooldown_seconds": 90,
+          "window_seconds": 900,
+          "max_requests_per_window": 4,
+          "max_pending": 1,
+          "skip_sources": [
+            "slack",
+            "discord",
+            "ai_usage"
+          ],
+          "skip_categories": [
+            "ambient",
+            "ai_usage"
+          ]
+        }
+      },
+      "repo_biomes": {
+        "backend": [
+          "rock",
+          "steel",
+          "ground"
+        ],
+        "frontend": [
+          "electric",
+          "psychic",
+          "fairy"
+        ],
+        "infra": [
+          "dragon",
+          "ghost",
+          "dark"
+        ]
+      },
+      "event_pokemon_types": {
+        "pull_request": [
+          "bug",
+          "electric",
+          "fighting"
+        ],
+        "meeting": [
+          "psychic",
+          "fairy"
+        ],
+        "build_broken": [
+          "ghost",
+          "electric"
+        ],
+        "deploy_started": [
+          "dragon",
+          "fire"
+        ],
+        "deploy_completed": [
+          "fire",
+          "normal"
+        ],
+        "review_requested": [
+          "psychic",
+          "fighting"
+        ],
+        "message_important": [
+          "electric",
+          "normal"
+        ],
+        "incident": [
+          "ghost",
+          "dark",
+          "legendary"
+        ],
+        "merge": [
+          "dragon",
+          "normal"
+        ],
+        "pr_closed": [
+          "ghost",
+          "normal"
+        ],
+        "pr_approved": [
+          "electric",
+          "fairy"
+        ],
+        "social_activity": [
+          "electric",
+          "fire",
+          "normal"
+        ],
+        "social_presence": [
+          "normal",
+          "fairy"
+        ],
+        "social_quiet": [
+          "grass",
+          "normal"
+        ],
+        "ai_usage": [
+          "electric",
+          "psychic"
+        ]
+      }
+    }
+  }
+}
