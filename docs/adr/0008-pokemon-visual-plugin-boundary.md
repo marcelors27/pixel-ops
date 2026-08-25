@@ -1,6 +1,6 @@
 # 0008 - Pokemon Is A Visual Plugin, Not The Integration Model
 
-Status: Accepted
+Status: Superseded by [ADR 0026](0026-all-game-inputs-are-platform-events.md)
 
 ## Context
 
@@ -30,4 +30,3 @@ Future visual plugins can reuse the same integration runtime and event vocabular
 If an integration needs new semantic information, add it to `AmbientSignal`, `WorkEvent`, or metadata in a provider-neutral form.
 
 Do not add Pokemon imports to `pixel_ops/integrations/`.
-

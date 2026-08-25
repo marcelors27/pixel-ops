@@ -34,11 +34,11 @@ The graph is an aid, not a replacement for reading source files. After identifyi
 
 ## Architecture
 
-The runtime is split into three layers:
+The runtime is split into three replaceable layers:
 
-- `pixel_ops/core/`: display app contracts and hardware-neutral rendering loop.
-- `pixel_ops/integration_plugins/` and `pixel_ops/integrations/`: optional external providers.
-- `pixel_ops/plugins/<name>/`: visual interface plugins. The default is `pokemon`.
+- `pixel_ops/integrations/`: optional external providers that only produce platform events.
+- `pixel_ops/core/` and `pixel_ops/events/`: the event pump, neutral envelopes, and game contract.
+- `pixel_ops/plugins/<name>/`: game engines that own projections, rules, and rendering. The default is `pokemon`.
 
 Integration providers should stop at Pixel OPs core events. They must not import Pokemon-specific modules or encode Pokemon rules.
 
@@ -47,24 +47,35 @@ The normal event path is:
 ```text
 Provider transport
   -> provider classifier
-  -> AmbientSignal
-  -> WorkEvent
-  -> visual plugin interpretation
+  -> WorkEvent or PixelOpsEvent
+  -> selected GameEngine projection
   -> renderer/output
 ```
+
+There are no provider-specific snapshot channels from integrations to games. Weather, calendars, PR summaries, AI usage, PC stats, tasks, media, and companions must all enter through event sources. Do not add fields such as `weather_source`, `task_source`, or `companion_source` to `IntegrationContribution` or `PixelOpsApp`.
+
+Use `WorkEvent` for discrete operational facts. Use `PixelOpsEvent` and `ObservationEventSource` for current-state observations. `PixelOpsApp` only delivers events, emits `runtime.tick`, and asks the selected engine to render. Each engine owns its projections and may interpret or ignore events independently.
 
 Key files:
 
 - `pixel_ops/events/ambient_signals.py`: provider-neutral social/meeting vocabulary.
 - `pixel_ops/events/event_bus.py`: bounded in-process event queue.
+- `pixel_ops/events/platform.py`: versioned observation/lifecycle/clock envelope.
+- `pixel_ops/events/observation_sources.py`: snapshot-to-event adapters.
+- `pixel_ops/core/game.py`: replaceable `GameEngine` contract.
+- `pixel_ops/core/app.py`: provider-neutral event pump.
 - `pixel_ops/events/github_events.py`: GitHub polling, PR HUD summaries, and GitHub work events.
 - `pixel_ops/integration_plugins/base.py`: integration plugin contract.
 - `pixel_ops/integration_plugins/registry.py`: enable-driven runtime loader.
 - `pixel_ops/main.py`: CLI, config loading, hot reload, runtime rebuild.
 - `pixel_ops/plugins/pokemon/plugin.py`: Pokemon interface plugin boundary.
+- `pixel_ops/plugins/pokemon/engine.py`: Pokemon-owned event projections.
 - `pixel_ops/plugins/pokemon/scenes/overworld_scene.py`: current main scene.
 - `pixel_ops/plugins/pokemon/game/social_weather.py`: social weather/world mood logic.
 - `pixel_ops/plugins/pokemon/game/ai_selector.py`: Pokemon-specific AI selection and throttling.
+- `pixel_ops/plugins/spaceship/engine.py`: spaceship-owned event projection and active-time economy.
+- `pixel_ops/plugins/spaceship/persistence.py`: durable profiles, cargo, asteroids, and event receipts.
+- `pixel_ops/plugins/spaceship/scene.py`: PixelLab-backed ship interior and asteroid field renderer.
 - `config-studio/`: local React UI for editing JSON config and runtime layout.
 
 ## Configuration
@@ -78,6 +89,7 @@ JSON is the primary runtime config format:
 - `pixel_ops/plugins/pokemon/game.json`: Pokemon scene, encounters, event mappings, AI selector throttle.
 - `pixel_ops/plugins/pokemon/pokemon.json`: PokeAPI/cache/sprite settings.
 - `pixel_ops/plugins/pokemon/companions.json`: Pokemon visual mapping for provider-owned companion state.
+- `pixel_ops/plugins/spaceship/game.json`: spaceship progression, persistence cadence, and visual palette.
 
 YAML is only a fallback when the matching JSON file does not exist.
 
@@ -92,6 +104,9 @@ YAML is only a fallback when the matching JSON file does not exist.
 - `PIXEL_OPS_ZOOM_CLIENT_SECRET`
 - `PIXEL_OPS_GITHUB_TOKEN`
 - `PIXEL_OPS_CLICKUP_TOKEN`
+- `PIXEL_OPS_CROSSHERO_BOX`
+- `PIXEL_OPS_CROSSHERO_ACCESS_TOKEN`
+- `PIXEL_OPS_CROSSHERO_SESSION_COOKIE`
 - `OPENWEATHERMAP_API_KEY`
 - `OPENAI_API_KEY`
 - `OPENAI_ADMIN_KEY`
@@ -135,6 +150,7 @@ Current plugin module map:
 - `ai_usage` -> `pixel_ops.integrations.ai_usage.plugin`
 - `pc_stats` -> `pixel_ops.integrations.pc_stats.plugin`
 - `clickup` -> `pixel_ops.integrations.clickup.plugin`
+- `crosshero` -> `pixel_ops.integrations.crosshero.plugin`
 
 PixelOpsKite is the Cloudflare Worker relay for providers that require public webhooks. Local Pixel OPs connects to Kite over outbound WebSocket. Keep webhook receivers in Kite and keep provider state normalized before it reaches visual plugins.
 
@@ -150,7 +166,7 @@ PC stats are local runtime metrics. They expose compact gauges such as CPU, RAM,
 
 ClickUp tasks are work planning state. Keep API polling in `pixel_ops/data_sources/clickup.py` and the `clickup` integration; visual plugins should consume snapshots and render compact task pressure, due dates, and remaining time rather than raw comments or activity feeds.
 
-GitHub exposes both `pull_request_source` for compact HUD summaries and an event source for encounters/mood. These paths must stay independent from layout visibility: hiding PR/activity/route windows cannot stop PR opened, merged, closed, build, or deploy events from entering the event queue.
+GitHub emits both discrete `WorkEvent` facts and `github.pull_requests_updated` observations. Hiding PR/activity/route windows cannot stop either stream from reaching the selected game engine.
 
 ## AI Calls
 
@@ -183,6 +199,7 @@ Common commands:
 
 ```bash
 python pixel_ops/main.py --plugin pokemon --output preview
+python pixel_ops/main.py --plugin spaceship --output preview
 python pixel_ops/main.py --plugin pokemon --output window --forever
 python pixel_ops/main.py --plugin pokemon --output gif --seconds 8
 python pixel_ops/main.py --plugin pokemon --output turzx --forever --fps 10 --offline

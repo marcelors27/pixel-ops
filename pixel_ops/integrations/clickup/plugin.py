@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pixel_ops.data_sources.clickup import ClickUpTaskSource
+from pixel_ops.events.observation_sources import ObservationEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext, IntegrationContribution
 
 
@@ -28,7 +29,7 @@ class ClickUpIntegrationPlugin:
             include_closed=bool(cfg.get("include_closed", False)),
             timeout_seconds=int(cfg.get("timeout_seconds", ctx.env_int("PIXEL_OPS_CLICKUP_TIMEOUT_SECONDS", 10))),
         )
-        return IntegrationContribution(task_source=source)
+        return IntegrationContribution(event_sources=[ObservationEventSource("tasks.snapshot_updated", "clickup", source)])
 
 
 def plugin() -> ClickUpIntegrationPlugin:

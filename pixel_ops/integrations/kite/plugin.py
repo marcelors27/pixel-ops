@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pixel_ops.events.event_bus import EventBus
+from pixel_ops.events.observation_sources import ObservationEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext, IntegrationContribution
 from pixel_ops.integrations.kite.source import PixelOpsKiteClient, PixelOpsKiteEventSource
 from pixel_ops.integrations.zoom.participants import ZoomCompanionSource, ZoomParticipantTracker
@@ -29,9 +30,12 @@ class PixelOpsKiteIntegrationPlugin:
             enabled=True,
             zoom_tracker=zoom_tracker,
         )
+        companion_source = ZoomCompanionSource(zoom_tracker)
         return IntegrationContribution(
-            event_sources=[PixelOpsKiteEventSource(bus, enabled=True)],
-            companion_source=ZoomCompanionSource(zoom_tracker),
+            event_sources=[
+                PixelOpsKiteEventSource(bus, enabled=True),
+                ObservationEventSource("social.companions_updated", "kite", companion_source),
+            ],
             starters=[client.start],
             closers=[client.stop],
         )

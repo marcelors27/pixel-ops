@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pixel_ops.events.github_events import GitHubEventSource
+from pixel_ops.events.observation_sources import ObservationEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext, IntegrationContribution
 
 
@@ -27,7 +28,10 @@ class GitHubIntegrationPlugin:
             ),
             timeout_seconds=int(cfg.get("timeout_seconds", ctx.env_int("PIXEL_OPS_GITHUB_TIMEOUT_SECONDS", 20))),
         )
-        return IntegrationContribution(event_sources=[source], warmers=[source.warm], pull_request_source=source)
+        return IntegrationContribution(
+            event_sources=[source, ObservationEventSource("github.pull_requests_updated", "github", source, "open_pull_requests")],
+            warmers=[source.warm],
+        )
 
 
 def plugin() -> GitHubIntegrationPlugin:

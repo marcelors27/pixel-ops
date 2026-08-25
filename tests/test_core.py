@@ -6,16 +6,21 @@ import time
 import unittest
 from datetime import datetime, timedelta
 from pathlib import Path
+from types import SimpleNamespace
 from zoneinfo import ZoneInfo
 
-from PIL import Image
+from PIL import Image, ImageDraw
 
 from pixel_ops.config_loader import ConfigWatcher, load_config_prefer_json
 from pixel_ops.core.app import PixelOpsApp
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.companions import CompanionMember, CompanionSnapshot
 from pixel_ops.events.event_bus import EventBus
-from pixel_ops.main import runtime_display_config, virtual_display_config
+from pixel_ops.events.observation_sources import CallableObservationSource
+from pixel_ops.events.platform import PixelOpsEvent
+from pixel_ops.main import runtime_display_config, runtime_plugin_name, virtual_display_config
+from pixel_ops.render.hud import hud_palette_for_kind
+from pixel_ops.render.renderer import PixelRenderer
 
 
 class DummyScene:
@@ -91,77 +96,45 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(bus.drain(), ["three"])
         self.assertEqual(len(bus), 0)
 
-    def test_pixel_ops_app_passes_built_runtime_state_to_scene(self):
-        scene = DummyScene()
+    def test_pixel_ops_app_delivers_source_events_and_tick_to_engine(self):
+        class Engine:
+            name = "test"
+
+            def __init__(self):
+                self.events = []
+
+            def consume(self, event):
+                self.events.append(event)
+
+            def render(self):
+                return Image.new("RGB", (2, 2), "black")
+
+            def close(self):
+                pass
+
+        engine = Engine()
         now = datetime(2026, 1, 1, 12, 0)
         app = PixelOpsApp(
-            scene=scene,
-            people_config=[
-                {
-                    "key": "BRT",
-                    "name": "Team",
-                    "country": "BR",
-                    "timezone": "America/Sao_Paulo",
-                    "timezone_label": "Brazil",
-                    "work_start": "09:00",
-                    "work_end": "18:00",
-                }
-            ],
-            next_event=lambda _: "meeting",
-            today_events=lambda _: ["meeting-a", "meeting-b"],
-            pull_request_source=DummyPullRequests(),
-            weather_source=DummyWeather(),
-            ai_usage_source=DummyAiUsage(),
-            pc_stats_source=DummyPCStats(),
-            task_source=DummyTaskSource(),
-            media_source=DummyMediaSource(),
-            companion_source=DummyCompanionSource(),
+            engine=engine,
+            event_sources=[CallableObservationSource("weather.conditions_updated", "weather", lambda _: {"weather": "clear"})],
         )
 
         frame = app.render_frame(now)
 
         self.assertEqual(frame.size, (2, 2))
-        self.assertEqual(scene.last["next_event"], "meeting")
-        self.assertEqual(scene.last["pull_requests"], [{"title": "PR"}])
-        self.assertEqual(scene.last["weather"], {"weather": "clear"})
-        self.assertEqual(scene.last["ai_usage"], {"usage": "low"})
-        self.assertEqual(scene.last["pc_stats"], {"cpu": "10%"})
-        self.assertEqual(scene.last["task_snapshot"], {"tasks": 2})
-        self.assertEqual(scene.last["media"], {"title": "Track"})
-        self.assertEqual(scene.last["companion_snapshot"], {"members": 1})
-        self.assertEqual(scene.last["today_events"], ["meeting-a", "meeting-b"])
-        self.assertEqual(scene.last["people_times"][0].timezone, "America/Sao_Paulo")
+        self.assertEqual([event.type for event in engine.events], ["weather.conditions_updated", "runtime.tick"])
+        self.assertEqual(engine.events[0].payload["value"], {"weather": "clear"})
+        self.assertEqual(engine.events[1].occurred_at, now)
 
-    def test_pixel_ops_app_adds_calendar_companions_only_during_meeting_time(self):
-        scene = DummyScene()
+    def test_platform_event_has_versioned_neutral_envelope(self):
         now = datetime(2026, 6, 13, 10, 15, tzinfo=ZoneInfo("America/Sao_Paulo"))
-        meeting = CalendarEvent(
-            "Planning",
-            now.replace(hour=10, minute=0),
-            ends_at=now.replace(hour=10, minute=30),
-            attendees=("Bia", "Caio"),
-        )
-        app = PixelOpsApp(
-            scene=scene,
-            people_config=[],
-            next_event=lambda _: meeting,
-            today_events=lambda _: [meeting],
-            pull_request_source=DummyPullRequests(),
-            companion_source=DummySnapshotCompanionSource(),
-        )
+        event = PixelOpsEvent.observation("calendar.today_updated", "calendar", ["meeting"], now)
 
-        app.render_frame(now)
-
-        snapshot = scene.last["companion_snapshot"]
-        self.assertIsInstance(snapshot, CompanionSnapshot)
-        self.assertEqual([member.user_id.split(":", 1)[0] for member in snapshot.members], ["discord", "calendar", "calendar"])
-        self.assertEqual([member.name for member in snapshot.members], ["Ana", "Bia", "Caio"])
-        self.assertIn("calendar:", snapshot.group_id)
-
-        app.render_frame(now + timedelta(minutes=30))
-
-        snapshot = scene.last["companion_snapshot"]
-        self.assertEqual([member.user_id for member in snapshot.members], ["discord:u1"])
+        self.assertEqual(event.type, "calendar.today_updated")
+        self.assertEqual(event.source, "calendar")
+        self.assertEqual(event.payload["value"], ["meeting"])
+        self.assertEqual(event.schema_version, 1)
+        self.assertTrue(event.id)
 
     def test_config_loader_prefers_json_over_yaml(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -183,6 +156,15 @@ class CoreTests(unittest.TestCase):
 
             self.assertTrue(watcher.changed())
             self.assertFalse(watcher.changed())
+
+    def test_runtime_plugin_uses_studio_config(self):
+        args = SimpleNamespace(plugin=None)
+        self.assertEqual(runtime_plugin_name(args, {"device": {"plugin": "pokemon"}}), "pokemon")
+        self.assertEqual(runtime_plugin_name(args, {"device": {"plugin": "spaceship"}}), "spaceship")
+
+    def test_runtime_plugin_cli_override_wins(self):
+        args = SimpleNamespace(plugin="spaceship")
+        self.assertEqual(runtime_plugin_name(args, {"device": {"plugin": "pokemon"}}), "spaceship")
 
     def test_runtime_display_config_applies_horizontal_profile(self):
         args = type("Args", (), {"orientation": None})()
@@ -227,12 +209,15 @@ class CoreTests(unittest.TestCase):
             "width": 2650,
             "height": 462,
             "orientation": "horizontal",
-            "layout": {"weather_forecast": {"x": 2408, "y": 8, "width": 152, "height": 40}},
+            "layout": {
+                "weather_forecast": {"x": 2408, "y": 8, "width": 152, "height": 40},
+                "pc_stats": {"x": 100, "y": 8, "width": 152, "height": 40},
+            },
             "orientations": {"horizontal": {"width": 480, "height": 320, "layout": {}}},
             "device": {
                 "displays": [
-                    {"enabled": True, "x": 0, "y": 0, "width": 1920, "height": 462},
-                    {"enabled": True, "x": 2400, "y": 0, "width": 250, "height": 122},
+                    {"enabled": True, "output": "thermalright", "x": 0, "y": 0, "width": 1920, "height": 462},
+                    {"enabled": True, "output": "eink", "x": 2400, "y": 0, "width": 250, "height": 122},
                 ]
             },
         }
@@ -241,6 +226,44 @@ class CoreTests(unittest.TestCase):
 
         self.assertEqual((active["width"], active["height"]), (2650, 462))
         self.assertIn("weather_forecast", active["layout"])
+        self.assertTrue(active["layout"]["weather_forecast"]["monochrome"])
+        self.assertNotIn("monochrome", active["layout"]["pc_stats"])
+
+    def test_hud_palettes_always_use_a_white_panel(self):
+        palette = SimpleNamespace(
+            panel=(216, 224, 240),
+            panel_shadow=(72, 88, 112),
+            ink=(16, 24, 40),
+            blue=(48, 104, 184),
+            red=(216, 56, 56),
+            yellow=(248, 200, 48),
+            green=(72, 184, 96),
+        )
+
+        themed = hud_palette_for_kind(palette, "pokemon", "weather")
+        default = hud_palette_for_kind(palette, "default", "weather")
+        monochrome = hud_palette_for_kind(palette, "pokemon", "weather", monochrome=True)
+
+        self.assertEqual(themed.panel, palette.panel)
+        self.assertEqual(default.panel, palette.panel)
+        self.assertEqual(monochrome.panel, (255, 255, 255))
+        self.assertEqual(monochrome.panel_shadow, (255, 255, 255))
+        self.assertEqual(monochrome.ink, (0, 0, 0))
+
+    def test_white_hud_panels_use_flat_monochrome_borders(self):
+        image = Image.new("RGB", (20, 20), "white")
+
+        PixelRenderer.draw_panel(
+            ImageDraw.Draw(image),
+            (2, 2, 10, 10),
+            (255, 255, 255),
+            (255, 255, 255),
+            (0, 0, 0),
+        )
+
+        self.assertEqual(image.getpixel((2, 2)), (0, 0, 0))
+        self.assertEqual(image.getpixel((3, 3)), (255, 255, 255))
+        self.assertEqual(image.getpixel((12, 12)), (255, 255, 255))
 
 
 if __name__ == "__main__":

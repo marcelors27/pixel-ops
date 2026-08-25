@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pixel_ops.data_sources.pc_stats import DEFAULT_FIELDS, PCStatsSource
+from pixel_ops.events.observation_sources import ObservationEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext, IntegrationContribution
 
 
@@ -22,7 +23,7 @@ class PCStatsIntegrationPlugin:
             top_process_count=int(cfg.get("top_process_count", 1)),
             disk_path=str(cfg.get("disk_path") or "/"),
         )
-        return IntegrationContribution(pc_stats_source=source)
+        return IntegrationContribution(event_sources=[ObservationEventSource("system.metrics_updated", "pc_stats", source)])
 
 
 def plugin() -> PCStatsIntegrationPlugin:

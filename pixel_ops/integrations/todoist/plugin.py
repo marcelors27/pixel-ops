@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pixel_ops.data_sources.todoist import TodoistTaskSource
+from pixel_ops.events.observation_sources import ObservationEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext, IntegrationContribution
 
 
@@ -25,7 +26,7 @@ class TodoistIntegrationPlugin:
             filter=str(cfg.get("filter") or ctx.env_value("PIXEL_OPS_TODOIST_FILTER", "") or ""),
             timeout_seconds=int(cfg.get("timeout_seconds", ctx.env_int("PIXEL_OPS_TODOIST_TIMEOUT_SECONDS", 10))),
         )
-        return IntegrationContribution(task_source=source)
+        return IntegrationContribution(event_sources=[ObservationEventSource("tasks.snapshot_updated", "todoist", source)])
 
 
 def plugin() -> TodoistIntegrationPlugin:

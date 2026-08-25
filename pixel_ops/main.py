@@ -17,9 +17,10 @@ if str(ROOT_DIR) not in sys.path:
 from pixel_ops.data_sources.calendar import CalendarEvent, next_ics_event, next_mock_event, today_ics_events
 from pixel_ops.config_loader import ConfigWatcher, load_config_prefer_json
 from pixel_ops.events.mock_events import MockEventSource
+from pixel_ops.events.observation_sources import CallableObservationSource
 from pixel_ops.integration_plugins.base import IntegrationContext
 from pixel_ops.integration_plugins.registry import build_integration_runtime
-from pixel_ops.outputs import EInkHttpOutput, GifOutput, PreviewOutput, TURZXOutput, ThermalrightOutput, WindowOutput
+from pixel_ops.outputs import EInkHttpOutput, GifOutput, LcdHttpOutput, PreviewOutput, TURZXOutput, ThermalrightOutput, WindowOutput
 from pixel_ops.outputs.base import CroppedOutput, DisplayOutput
 from pixel_ops.plugins.ai.plugin import build_ai_plugin
 from pixel_ops.plugins.registry import available_plugins, get_plugin
@@ -98,8 +99,8 @@ def env_value(name: str, default: str | None = None) -> str | None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Pixel OPs timezone dashboard renderer.")
     plugin_names = sorted(available_plugins())
-    parser.add_argument("--plugin", choices=plugin_names, default="pokemon", help="Interface plugin to render.")
-    parser.add_argument("--output", choices=("preview", "gif", "turzx", "thermalright", "eink", "window"), help="Frame output target.")
+    parser.add_argument("--plugin", choices=plugin_names, help="Interface plugin to render. Defaults to display.device.plugin.")
+    parser.add_argument("--output", choices=("preview", "gif", "turzx", "thermalright", "eink", "lcd", "window"), help="Frame output target.")
     parser.add_argument("--display", action="store_true", help="Send frames to UsbMonitor via USB bulk.")
     parser.add_argument("--window", action="store_true", help="Render frames in a desktop window.")
     parser.add_argument("--window-scale", type=int, help="Desktop window pixel scale.")
@@ -168,6 +169,13 @@ def runtime_device_config(display_cfg: dict) -> dict:
     return cfg if isinstance(cfg, dict) else {}
 
 
+def runtime_plugin_name(args: argparse.Namespace, display_cfg: dict) -> str:
+    requested = getattr(args, "plugin", None)
+    configured = runtime_device_config(display_cfg).get("plugin")
+    name = str(requested or configured or "pokemon").strip().lower()
+    return name if name in available_plugins() else "pokemon"
+
+
 def runtime_orientation(args: argparse.Namespace, display_cfg: dict) -> str:
     orientation = args.orientation or display_cfg.get("orientation") or "vertical"
     orientation = str(orientation).strip().lower()
@@ -205,7 +213,7 @@ def runtime_display_configs(args: argparse.Namespace, display_cfg: dict) -> list
         for item in displays
         if isinstance(item, dict)
         and bool(item.get("enabled", True))
-        and _normalize_output_name(item.get("output") or item.get("target") or device_cfg.get("output") or device_cfg.get("target")) in ("thermalright", "turzx", "eink")
+        and _normalize_output_name(item.get("output") or item.get("target") or device_cfg.get("output") or device_cfg.get("target")) in ("thermalright", "turzx", "eink", "lcd")
     ]
     return configs or [runtime_display_config(args, display_cfg)]
 
@@ -225,7 +233,42 @@ def virtual_display_config(display_cfg: dict) -> dict:
     if enabled:
         active["width"] = max(int(active.get("width", 1)), max(int(item.get("x", 0)) + int(item.get("width", 1)) for item in enabled))
         active["height"] = max(int(active.get("height", 1)), max(int(item.get("y", 0)) + int(item.get("height", 1)) for item in enabled))
+        active["layout"] = _mark_eink_layout_regions(active.get("layout"), enabled)
     return active
+
+
+def _mark_eink_layout_regions(layout, displays: list[dict]) -> dict:
+    if not isinstance(layout, dict):
+        return {}
+    eink_displays = [
+        item
+        for item in displays
+        if _normalize_output_name(item.get("output") or item.get("target")) == "eink"
+    ]
+    marked: dict = {}
+    for key, raw in layout.items():
+        if not isinstance(raw, dict):
+            marked[key] = raw
+            continue
+        item = dict(raw)
+        try:
+            x = int(item.get("x", 0))
+            y = int(item.get("y", 0))
+            x1 = x + max(1, int(item.get("width", 0)))
+            y1 = y + max(1, int(item.get("height", 0)))
+        except (TypeError, ValueError):
+            marked[key] = item
+            continue
+        for display in eink_displays:
+            dx = int(display.get("x", 0))
+            dy = int(display.get("y", 0))
+            dx1 = dx + max(1, int(display.get("width", 0)))
+            dy1 = dy + max(1, int(display.get("height", 0)))
+            if x >= dx and y >= dy and x1 <= dx1 and y1 <= dy1:
+                item["monochrome"] = True
+                break
+        marked[key] = item
+    return marked
 
 
 def _display_runtime_config(display_cfg: dict, display: dict) -> dict:
@@ -240,6 +283,8 @@ def _display_runtime_config(display_cfg: dict, display: dict) -> dict:
         device_cfg["turzx"] = _merged_device_config(device_cfg.get("turzx"), display.get("turzx"))
     elif output_name == "eink":
         device_cfg["eink"] = _merged_device_config(device_cfg.get("eink"), display.get("eink"))
+    elif output_name == "lcd":
+        device_cfg["lcd"] = _merged_device_config(device_cfg.get("lcd"), display.get("lcd"))
     active["device"] = device_cfg
     if display is not None:
         rotation = _normalize_rotation(display.get("rotation", 0))
@@ -252,13 +297,16 @@ def _display_runtime_config(display_cfg: dict, display: dict) -> dict:
             "rotation": rotation,
         }
         if isinstance(display.get("layout"), dict):
-            active["layout"] = display["layout"]
+            active["layout"] = {
+                key: ({**raw, "monochrome": True} if output_name == "eink" and isinstance(raw, dict) else raw)
+                for key, raw in display["layout"].items()
+            }
         elif isinstance(active.get("layout"), dict):
-            active["layout"] = _layout_for_display(active["layout"], display)
+            active["layout"] = _layout_for_display(active["layout"], display, monochrome=output_name == "eink")
     return active
 
 
-def _layout_for_display(layout: dict, display: dict) -> dict:
+def _layout_for_display(layout: dict, display: dict, *, monochrome: bool = False) -> dict:
     try:
         dx = int(display.get("x", 0))
         dy = int(display.get("y", 0))
@@ -296,6 +344,8 @@ def _layout_for_display(layout: dict, display: dict) -> dict:
         item["y"] = iy0 - dy
         item["width"] = ix1 - ix0
         item["height"] = iy1 - iy0
+        if monochrome:
+            item["monochrome"] = True
         scoped[key] = item
     return scoped
 
@@ -309,7 +359,7 @@ def _runtime_output_name(args: argparse.Namespace, display_cfg: dict) -> str:
         return selected_output(args)
     device_cfg = runtime_device_config(display_cfg)
     output = _normalize_output_name(device_cfg.get("output") or device_cfg.get("target") or "preview")
-    if output in ("preview", "gif", "turzx", "thermalright", "eink", "window"):
+    if output in ("preview", "gif", "turzx", "thermalright", "eink", "lcd", "window"):
         return output
     return "preview"
 
@@ -374,14 +424,20 @@ def build_output(
     if output_name == "eink":
         display = None if "display_region" in display_cfg else _configured_display_for_output(display_cfg, output_name)
         eink_cfg = _merged_device_config(runtime_device_config(display_cfg).get("eink"), display.get("eink") if display else None)
+        eink_cfg["layout"] = display_cfg.get("layout", {})
+        eink_cfg["layout_theme"] = display_cfg.get("layout_theme", "default")
         return EInkHttpOutput.from_config(width, height, eink_cfg)
+    if output_name == "lcd":
+        display = None if "display_region" in display_cfg else _configured_display_for_output(display_cfg, output_name)
+        lcd_cfg = _merged_device_config(runtime_device_config(display_cfg).get("lcd"), display.get("lcd") if display else None)
+        return LcdHttpOutput.from_config(width, height, lcd_cfg)
     if output_name == "window":
         return WindowOutput(width=width, height=height, scale=runtime_window_scale(args, display_cfg))
     raise ValueError(f"Unsupported output: {output_name}")
 
 
 def _configured_display_for_output(display_cfg: dict, output_name: str) -> dict | None:
-    if output_name not in ("thermalright", "turzx", "eink"):
+    if output_name not in ("thermalright", "turzx", "eink", "lcd"):
         return None
     device_cfg = runtime_device_config(display_cfg)
     displays = device_cfg.get("displays", [])
@@ -436,6 +492,8 @@ def _normalize_output_name(value) -> str:
         return "turzx"
     if output in ("e-ink", "eink_http"):
         return "eink"
+    if output in ("tft", "lcd_http"):
+        return "lcd"
     return output
 
 
@@ -452,6 +510,8 @@ def _display_region_size(output_name: str, rotation: int, display: dict, fallbac
         width, height = 1920, 462
     elif output_name == "turzx":
         width, height = 320, 480
+    elif output_name == "lcd":
+        width, height = 172, 320
     else:
         width = int(display.get("width", fallback.get("width", 320)))
         height = int(display.get("height", fallback.get("height", 480)))
@@ -476,10 +536,10 @@ def parse_optional_int(value) -> int | None:
 def main() -> int:
     args = build_parser().parse_args()
     load_env(ROOT_DIR / ".env")
-    plugin = get_plugin(args.plugin)
-    plugin_dir = APP_DIR / "plugins" / plugin.name
     runtime_config = load_runtime_config()
     raw_display_cfg = load_config(APP_DIR / "config/display.json")["display"]
+    plugin = get_plugin(runtime_plugin_name(args, raw_display_cfg))
+    plugin_dir = APP_DIR / "plugins" / plugin.name
     use_virtual_displays = not _args_selects_output(args)
     display_cfg = virtual_display_config(raw_display_cfg) if use_virtual_displays else runtime_display_config(args, raw_display_cfg)
     people_cfg = load_config(APP_DIR / "config/people.json")["people"]
@@ -527,10 +587,6 @@ def main() -> int:
         current_plugin_cfg = plugin.load_config(plugin_dir, load_config)
         current_events_cfg = plugin.event_config(current_plugin_cfg)
         current_calendar_enabled = any(name in integration_runtime.loaded_plugins for name in ("ics", "google_calendar"))
-        current_event_sources = [
-            MockEventSource(enabled=env_bool("PIXEL_OPS_MOCK_EVENTS", bool(current_events_cfg.get("mock_events", False)))),
-            *integration_runtime.event_sources,
-        ]
         calendar_cache = {
             "next_checked_at": None,
             "next_value": None,
@@ -552,6 +608,13 @@ def main() -> int:
                 calendar_cache["today_value"] = today_events(now, integration_runtime.calendar_paths, current_calendar_enabled)
             return calendar_cache["today_value"]
 
+        current_event_sources = [
+            MockEventSource(enabled=env_bool("PIXEL_OPS_MOCK_EVENTS", bool(current_events_cfg.get("mock_events", False)))),
+            *integration_runtime.event_sources,
+            CallableObservationSource("calendar.next_updated", "calendar", cached_next_event),
+            CallableObservationSource("calendar.today_updated", "calendar", cached_today_events),
+        ]
+
         return plugin.build_app(
             args=args,
             root_dir=ROOT_DIR,
@@ -561,15 +624,6 @@ def main() -> int:
             height=target_height,
             fps=fps,
             people_config=current_people_cfg,
-            next_event=cached_next_event,
-            today_events=cached_today_events,
-            pull_request_source=integration_runtime.pull_request_source,
-            weather_source=integration_runtime.weather_source,
-            ai_usage_source=integration_runtime.ai_usage_source,
-            pc_stats_source=integration_runtime.pc_stats_source,
-            task_source=integration_runtime.task_source,
-            media_source=integration_runtime.media_source,
-            companion_source=integration_runtime.companion_source,
             ai_plugin=build_ai_plugin(current_display_cfg.get("ai", {})),
             event_sources=current_event_sources,
         )
@@ -626,6 +680,7 @@ def main() -> int:
                 if target.started:
                     target.output.stop()
             next_state = build_runtime_state()
+            current_state.app.close()
             for target in next_state.targets:
                 start_target(target)
             return next_state
@@ -734,6 +789,7 @@ def main() -> int:
         return 1
     finally:
         integration_runtime.close()
+        runtime_state.app.close()
         for target in runtime_state.targets:
             if target.started:
                 target.output.stop()

@@ -5,6 +5,8 @@ from datetime import datetime
 from enum import Enum
 from typing import Protocol
 
+from pixel_ops.events.platform import PixelOpsEvent
+
 
 class EventCategory(str, Enum):
     PULL_REQUEST = "pull_request"
@@ -47,5 +49,5 @@ class WorkEvent:
 
 
 class EventSource(Protocol):
-    def poll(self, now: datetime) -> list[WorkEvent]:
+    def poll(self, now: datetime) -> list[WorkEvent | PixelOpsEvent]:
         """Return new events since the last poll."""

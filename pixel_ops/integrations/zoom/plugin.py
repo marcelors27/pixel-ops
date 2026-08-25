@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pixel_ops.events.event_bus import EventBus
+from pixel_ops.events.observation_sources import ObservationEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext, IntegrationContribution
 from pixel_ops.integrations.zoom.client import ZoomApiClient, ZoomPollingRunner
 from pixel_ops.integrations.zoom.gateway import ZoomBusEventSource
@@ -35,9 +36,12 @@ class ZoomIntegrationPlugin:
             bus,
             poll_seconds=int(cfg.get("poll_seconds", ctx.env_int("PIXEL_OPS_ZOOM_POLL_SECONDS", 30))),
         )
+        companion_source = ZoomCompanionSource(tracker)
         return IntegrationContribution(
-            event_sources=[ZoomBusEventSource(bus, enabled=True)],
-            companion_source=ZoomCompanionSource(tracker),
+            event_sources=[
+                ZoomBusEventSource(bus, enabled=True),
+                ObservationEventSource("social.companions_updated", "zoom", companion_source),
+            ],
             starters=[runner.start],
             closers=[runner.stop],
         )

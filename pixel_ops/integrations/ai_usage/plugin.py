@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from pixel_ops.data_sources.ai_usage import AIUsageSource
+from pixel_ops.events.observation_sources import ObservationEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext, IntegrationContribution
 
 
@@ -32,7 +33,9 @@ class AIUsageIntegrationPlugin:
             thresholds=tuple(float(item) for item in thresholds),
             timeout_seconds=int(cfg.get("timeout_seconds", 15)),
         )
-        return IntegrationContribution(event_sources=[source], ai_usage_source=source)
+        return IntegrationContribution(
+            event_sources=[source, ObservationEventSource("ai.usage_updated", "ai_usage", source)]
+        )
 
 
 def plugin() -> AIUsageIntegrationPlugin:

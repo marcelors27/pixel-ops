@@ -4,19 +4,10 @@ import importlib
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from pixel_ops.data_sources.companions import MergedCompanionSource
-from pixel_ops.data_sources.tasks import MergedTaskSource
-from pixel_ops.integration_plugins.async_sources import AsyncCurrentSource, AsyncEventSource, AsyncPullRequestSource, run_background
+from pixel_ops.integration_plugins.async_sources import AsyncEventSource, run_background
 from pixel_ops.integration_plugins.base import (
     IntegrationContext,
     IntegrationContribution,
-    NullAIUsageSource,
-    NullCompanionSource,
-    NullMediaSource,
-    NullPCStatsSource,
-    NullPullRequestSource,
-    NullTaskSource,
-    NullWeatherSource,
 )
 
 
@@ -33,7 +24,9 @@ PLUGIN_MODULES = {
     "pc_stats": "pixel_ops.integrations.pc_stats.plugin",
     "clickup": "pixel_ops.integrations.clickup.plugin",
     "todoist": "pixel_ops.integrations.todoist.plugin",
+    "capacities": "pixel_ops.integrations.capacities.plugin",
     "media": "pixel_ops.integrations.media.plugin",
+    "crosshero": "pixel_ops.integrations.crosshero.plugin",
 }
 
 PLUGIN_ENABLES = {
@@ -49,7 +42,9 @@ PLUGIN_ENABLES = {
     "pc_stats": "PIXEL_OPS_PC_STATS_ENABLED",
     "clickup": "PIXEL_OPS_CLICKUP_ENABLED",
     "todoist": "PIXEL_OPS_TODOIST_ENABLED",
+    "capacities": "PIXEL_OPS_CAPACITIES_ENABLED",
     "media": "PIXEL_OPS_MEDIA_ENABLED",
+    "crosshero": "PIXEL_OPS_CROSSHERO_ENABLED",
 }
 
 
@@ -60,13 +55,6 @@ class IntegrationRuntime:
     starters: list = field(default_factory=list)
     warmers: list = field(default_factory=list)
     closers: list = field(default_factory=list)
-    pull_request_source: object = field(default_factory=NullPullRequestSource)
-    weather_source: object = field(default_factory=NullWeatherSource)
-    ai_usage_source: object = field(default_factory=NullAIUsageSource)
-    pc_stats_source: object = field(default_factory=NullPCStatsSource)
-    task_source: object = field(default_factory=NullTaskSource)
-    media_source: object = field(default_factory=NullMediaSource)
-    companion_source: object = field(default_factory=NullCompanionSource)
     loaded_plugins: list[str] = field(default_factory=list)
 
     def start(self) -> None:
@@ -91,7 +79,6 @@ def build_integration_runtime(ctx: IntegrationContext) -> IntegrationRuntime:
         contribution = plugin.build(ctx)
         _merge(runtime, contribution)
         runtime.loaded_plugins.append(plugin.name)
-    _wrap_runtime_sources(runtime)
     return runtime
 
 
@@ -117,42 +104,3 @@ def _merge(runtime: IntegrationRuntime, contribution: IntegrationContribution) -
     runtime.starters.extend(contribution.starters)
     runtime.warmers.extend(run_background(warmer, f"{warmer}") for warmer in contribution.warmers)
     runtime.closers.extend(contribution.closers)
-    if contribution.pull_request_source is not None:
-        runtime.pull_request_source = contribution.pull_request_source
-    if contribution.weather_source is not None:
-        runtime.weather_source = contribution.weather_source
-    if contribution.ai_usage_source is not None:
-        runtime.ai_usage_source = contribution.ai_usage_source
-    if contribution.pc_stats_source is not None:
-        runtime.pc_stats_source = contribution.pc_stats_source
-    if contribution.task_source is not None:
-        if isinstance(runtime.task_source, NullTaskSource):
-            runtime.task_source = contribution.task_source
-        elif isinstance(runtime.task_source, MergedTaskSource):
-            runtime.task_source.add(contribution.task_source)
-        else:
-            runtime.task_source = MergedTaskSource([runtime.task_source, contribution.task_source])
-    if contribution.media_source is not None:
-        runtime.media_source = contribution.media_source
-    if contribution.companion_source is not None:
-        if isinstance(runtime.companion_source, NullCompanionSource):
-            runtime.companion_source = contribution.companion_source
-        elif isinstance(runtime.companion_source, MergedCompanionSource):
-            runtime.companion_source.add(contribution.companion_source)
-        else:
-            runtime.companion_source = MergedCompanionSource([runtime.companion_source, contribution.companion_source])
-
-
-def _wrap_runtime_sources(runtime: IntegrationRuntime) -> None:
-    if not isinstance(runtime.pull_request_source, NullPullRequestSource):
-        runtime.pull_request_source = AsyncPullRequestSource(runtime.pull_request_source)
-    if not isinstance(runtime.weather_source, NullWeatherSource):
-        runtime.weather_source = AsyncCurrentSource(runtime.weather_source)
-    if not isinstance(runtime.ai_usage_source, NullAIUsageSource):
-        runtime.ai_usage_source = AsyncCurrentSource(runtime.ai_usage_source)
-    if not isinstance(runtime.pc_stats_source, NullPCStatsSource):
-        runtime.pc_stats_source = AsyncCurrentSource(runtime.pc_stats_source)
-    if not isinstance(runtime.task_source, NullTaskSource):
-        runtime.task_source = AsyncCurrentSource(runtime.task_source)
-    if not isinstance(runtime.media_source, NullMediaSource):
-        runtime.media_source = AsyncCurrentSource(runtime.media_source)

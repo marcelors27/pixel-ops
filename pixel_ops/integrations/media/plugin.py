@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pixel_ops.data_sources.media import LocalMediaSource
+from pixel_ops.events.observation_sources import ObservationEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext, IntegrationContribution
 
 
@@ -28,7 +29,11 @@ class MediaIntegrationPlugin:
             browser_extension_token=str(browser_extension.get("token", "")),
             browser_extension_stale_seconds=int(browser_extension.get("stale_seconds", 15)),
         )
-        return IntegrationContribution(media_source=source, starters=[source.start], closers=[source.close])
+        return IntegrationContribution(
+            event_sources=[ObservationEventSource("media.playback_updated", "media", source)],
+            starters=[source.start],
+            closers=[source.close],
+        )
 
 
 def plugin() -> MediaIntegrationPlugin:

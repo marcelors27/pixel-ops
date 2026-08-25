@@ -1,6 +1,6 @@
 # 0010 - Weather, Calendar, GitHub, Slack, Discord Share The Same Runtime Boundary
 
-Status: Accepted
+Status: Superseded by [ADR 0026](0026-all-game-inputs-are-platform-events.md)
 
 ## Context
 

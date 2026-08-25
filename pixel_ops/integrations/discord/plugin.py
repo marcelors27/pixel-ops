@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pixel_ops.events.event_bus import EventBus
+from pixel_ops.events.observation_sources import ObservationEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext, IntegrationContribution
 from pixel_ops.integrations.discord.client import DiscordGatewayClient
 from pixel_ops.integrations.discord.companions import DiscordCompanionStore
@@ -41,9 +42,12 @@ class DiscordIntegrationPlugin:
             bot_user_lookup_timeout_seconds=int(cfg.get("bot_user_lookup_timeout_seconds", ctx.env_int("PIXEL_OPS_DISCORD_BOT_USER_LOOKUP_TIMEOUT_SECONDS", 1))),
             enabled=True,
         )
+        companion_source = DiscordCompanionSource(tracker)
         return IntegrationContribution(
-            event_sources=[DiscordBusEventSource(bus, enabled=True, tracker=tracker)],
-            companion_source=DiscordCompanionSource(tracker),
+            event_sources=[
+                DiscordBusEventSource(bus, enabled=True, tracker=tracker),
+                ObservationEventSource("social.companions_updated", "discord", companion_source),
+            ],
             starters=[client.start],
             closers=[client.stop],
         )

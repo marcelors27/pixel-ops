@@ -5,10 +5,11 @@ from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
 
-from pixel_ops.core import AIUsageSource, CompanionSource, GamificationSource, MediaSource, PCStatsSource, PixelOpsApp, PullRequestSource, TaskSource, WeatherSource
+from pixel_ops.core import PixelOpsApp
 from pixel_ops.data_sources.calendar import CalendarEvent
-from pixel_ops.events.base import EventSource
+from pixel_ops.data_sources.gamification import GamificationSource
 from pixel_ops.plugins.ai.plugin import AiDecisionPlugin
+from pixel_ops.plugins.pokemon.engine import PokemonEngine
 from pixel_ops.plugins.pokemon.pokemon_api import PokeApiClient
 from pixel_ops.plugins.pokemon.scenes.overworld_scene import OverworldScene
 from pixel_ops.state import PixelOpsStateStore
@@ -55,17 +56,8 @@ class PokemonPlugin:
         height: int,
         fps: int,
         people_config: list[dict],
-        next_event: Callable[[datetime], CalendarEvent | None],
-        today_events: Callable[[datetime], list[CalendarEvent]] | None,
-        pull_request_source: PullRequestSource,
-        weather_source: WeatherSource | None,
-        ai_usage_source: AIUsageSource | None,
-        pc_stats_source: PCStatsSource | None,
-        task_source: TaskSource | None,
-        media_source: MediaSource | None,
-        companion_source: CompanionSource | None,
         ai_plugin: AiDecisionPlugin | None,
-        event_sources: list[EventSource],
+        event_sources: list,
     ) -> PixelOpsApp:
         pokemon_cfg = config["pokemon"]
         pokemon_api = self._pokemon_api(args, root_dir, pokemon_cfg)
@@ -82,24 +74,16 @@ class PokemonPlugin:
             companion_config=_flatten_companion_config(config.get("companions", {})),
             display_layout=display_cfg.get("layout", {}),
             layout_theme=display_cfg.get("layout_theme", "default"),
-            event_sources=event_sources,
+            event_sources=[],
             ai_plugin=ai_plugin,
             capture_store=state_store,
         )
-        return PixelOpsApp(
-            scene=scene,
-            people_config=people_config,
-            next_event=next_event,
-            today_events=today_events,
-            pull_request_source=pull_request_source,
-            weather_source=weather_source,
-            ai_usage_source=ai_usage_source,
-            pc_stats_source=pc_stats_source,
-            task_source=task_source,
-            media_source=media_source,
-            companion_source=companion_source,
-            gamification_source=_gamification_source(display_cfg.get("gamification", {})),
+        engine = PokemonEngine(
+            scene,
+            people_config,
+            gamification=_gamification_source(display_cfg.get("gamification", {})),
         )
+        return PixelOpsApp(engine=engine, event_sources=event_sources)
 
     def _pokemon_api(self, args: argparse.Namespace, root_dir: Path, pokemon_cfg: dict) -> PokeApiClient:
         return PokeApiClient(

@@ -42,13 +42,6 @@ class IntegrationContribution:
     calendar_paths: list[Path] = field(default_factory=list)
     starters: list[Callable[[], None]] = field(default_factory=list)
     warmers: list[Callable[[], None]] = field(default_factory=list)
-    pull_request_source: Any | None = None
-    weather_source: Any | None = None
-    ai_usage_source: Any | None = None
-    pc_stats_source: Any | None = None
-    task_source: Any | None = None
-    media_source: Any | None = None
-    companion_source: Any | None = None
     closers: list[Callable[[], None]] = field(default_factory=list)
 
 

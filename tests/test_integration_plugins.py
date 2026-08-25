@@ -6,10 +6,13 @@ import unittest
 from pathlib import Path
 
 from pixel_ops.data_sources.companions import CompanionMember, CompanionSnapshot, MergedCompanionSource
+from pixel_ops.events.observation_sources import ObservationEventSource
 from pixel_ops.integration_plugins.base import IntegrationContext
 from pixel_ops.integration_plugins.registry import build_integration_runtime
 from pixel_ops.integrations.ai_usage.plugin import plugin as ai_usage_plugin
 from pixel_ops.integrations.clickup.plugin import plugin as clickup_plugin
+from pixel_ops.integrations.capacities.plugin import plugin as capacities_plugin
+from pixel_ops.integrations.crosshero.plugin import plugin as crosshero_plugin
 from pixel_ops.integrations.discord.plugin import plugin as discord_plugin
 from pixel_ops.integrations.github.plugin import plugin as github_plugin
 from pixel_ops.integrations.google_calendar.plugin import plugin as google_calendar_plugin
@@ -48,6 +51,8 @@ class IntegrationPluginTests(unittest.TestCase):
         factories = {
             "ai_usage": ai_usage_plugin,
             "clickup": clickup_plugin,
+            "capacities": capacities_plugin,
+            "crosshero": crosshero_plugin,
             "discord": discord_plugin,
             "github": github_plugin,
             "google_calendar": google_calendar_plugin,
@@ -84,6 +89,7 @@ class IntegrationPluginTests(unittest.TestCase):
                     "pc_stats": {"enabled": True, "fields": ["cpu", "ram"], "poll_seconds": 5},
                     "clickup": {"enabled": True, "team_id": "123", "assignee_id": "456"},
                     "todoist": {"enabled": True, "project_ids": ["789"]},
+                    "capacities": {"enabled": True, "structure_names": ["Projeto"]},
                     "media": {"enabled": True, "providers": ["spotify"]},
                 }
             }
@@ -92,18 +98,23 @@ class IntegrationPluginTests(unittest.TestCase):
 
             self.assertEqual(
                 runtime.loaded_plugins,
-                ["kite", "slack", "discord", "zoom", "github", "google_calendar", "ics", "weather", "ai_usage", "pc_stats", "clickup", "todoist", "media"],
+                ["kite", "slack", "discord", "zoom", "github", "google_calendar", "ics", "weather", "ai_usage", "pc_stats", "clickup", "todoist", "capacities", "media"],
             )
             self.assertGreaterEqual(len(runtime.event_sources), 5)
             self.assertIn(ics_path, runtime.calendar_paths)
-            self.assertIsNotNone(runtime.pull_request_source)
-            self.assertIsNotNone(runtime.weather_source)
-            self.assertIsNotNone(runtime.ai_usage_source)
-            self.assertIsNotNone(runtime.pc_stats_source)
-            self.assertIsNotNone(runtime.task_source)
-            self.assertIsNotNone(runtime.media_source)
-            self.assertIsNotNone(runtime.companion_source)
-            self.assertIsInstance(runtime.companion_source, MergedCompanionSource)
+            observation_types = {
+                source._source.event_type
+                for source in runtime.event_sources
+                if isinstance(getattr(source, "_source", None), ObservationEventSource)
+            }
+            self.assertIn("github.pull_requests_updated", observation_types)
+            self.assertIn("weather.conditions_updated", observation_types)
+            self.assertIn("ai.usage_updated", observation_types)
+            self.assertIn("system.metrics_updated", observation_types)
+            self.assertIn("tasks.snapshot_updated", observation_types)
+            self.assertIn("projects.snapshot_updated", observation_types)
+            self.assertIn("media.playback_updated", observation_types)
+            self.assertIn("social.companions_updated", observation_types)
             self.assertGreaterEqual(len(runtime.starters), 3)
             self.assertGreaterEqual(len(runtime.closers), 2)
 
