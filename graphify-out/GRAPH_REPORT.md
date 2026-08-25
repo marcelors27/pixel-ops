@@ -1,16 +1,16 @@
-# Graph Report - turing-smart-screen-python  (2026-07-25)
+# Graph Report - turing-smart-screen-python  (2026-08-24)
 
 ## Corpus Check
-- 544 files · ~614,167 words
+- 844 files · ~1,614,425 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 5200 nodes · 8884 edges · 528 communities (481 shown, 47 thin omitted)
-- Extraction: 83% EXTRACTED · 17% INFERRED · 0% AMBIGUOUS · INFERRED: 1469 edges (avg confidence: 0.68)
+- 8660 nodes · 14769 edges · 739 communities (666 shown, 73 thin omitted)
+- Extraction: 88% EXTRACTED · 12% INFERRED · 0% AMBIGUOUS · INFERRED: 1777 edges (avg confidence: 0.67)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6142e951`
+- Built from commit: `f7d65ab3`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -192,6 +192,7 @@
 - [[_COMMUNITY_Community 188|Community 188]]
 - [[_COMMUNITY_Community 189|Community 189]]
 - [[_COMMUNITY_Community 190|Community 190]]
+- [[_COMMUNITY_Community 191|Community 191]]
 - [[_COMMUNITY_Community 192|Community 192]]
 - [[_COMMUNITY_Community 193|Community 193]]
 - [[_COMMUNITY_Community 194|Community 194]]
@@ -224,7 +225,6 @@
 - [[_COMMUNITY_Community 222|Community 222]]
 - [[_COMMUNITY_Community 223|Community 223]]
 - [[_COMMUNITY_Community 224|Community 224]]
-- [[_COMMUNITY_Community 225|Community 225]]
 - [[_COMMUNITY_Community 226|Community 226]]
 - [[_COMMUNITY_Community 227|Community 227]]
 - [[_COMMUNITY_Community 228|Community 228]]
@@ -258,7 +258,6 @@
 - [[_COMMUNITY_Community 257|Community 257]]
 - [[_COMMUNITY_Community 258|Community 258]]
 - [[_COMMUNITY_Community 259|Community 259]]
-- [[_COMMUNITY_Community 260|Community 260]]
 - [[_COMMUNITY_Community 261|Community 261]]
 - [[_COMMUNITY_Community 262|Community 262]]
 - [[_COMMUNITY_Community 263|Community 263]]
@@ -270,8 +269,8 @@
 - [[_COMMUNITY_Community 269|Community 269]]
 - [[_COMMUNITY_Community 270|Community 270]]
 - [[_COMMUNITY_Community 271|Community 271]]
+- [[_COMMUNITY_Community 272|Community 272]]
 - [[_COMMUNITY_Community 273|Community 273]]
-- [[_COMMUNITY_Community 274|Community 274]]
 - [[_COMMUNITY_Community 275|Community 275]]
 - [[_COMMUNITY_Community 276|Community 276]]
 - [[_COMMUNITY_Community 277|Community 277]]
@@ -286,16 +285,18 @@
 - [[_COMMUNITY_Community 287|Community 287]]
 - [[_COMMUNITY_Community 288|Community 288]]
 - [[_COMMUNITY_Community 289|Community 289]]
-- [[_COMMUNITY_Community 290|Community 290]]
 - [[_COMMUNITY_Community 291|Community 291]]
 - [[_COMMUNITY_Community 292|Community 292]]
 - [[_COMMUNITY_Community 293|Community 293]]
+- [[_COMMUNITY_Community 294|Community 294]]
+- [[_COMMUNITY_Community 295|Community 295]]
 - [[_COMMUNITY_Community 296|Community 296]]
 - [[_COMMUNITY_Community 297|Community 297]]
 - [[_COMMUNITY_Community 298|Community 298]]
 - [[_COMMUNITY_Community 299|Community 299]]
 - [[_COMMUNITY_Community 300|Community 300]]
 - [[_COMMUNITY_Community 301|Community 301]]
+- [[_COMMUNITY_Community 302|Community 302]]
 - [[_COMMUNITY_Community 303|Community 303]]
 - [[_COMMUNITY_Community 304|Community 304]]
 - [[_COMMUNITY_Community 305|Community 305]]
@@ -318,7 +319,10 @@
 - [[_COMMUNITY_Community 322|Community 322]]
 - [[_COMMUNITY_Community 323|Community 323]]
 - [[_COMMUNITY_Community 324|Community 324]]
+- [[_COMMUNITY_Community 326|Community 326]]
+- [[_COMMUNITY_Community 327|Community 327]]
 - [[_COMMUNITY_Community 328|Community 328]]
+- [[_COMMUNITY_Community 329|Community 329]]
 - [[_COMMUNITY_Community 330|Community 330]]
 - [[_COMMUNITY_Community 331|Community 331]]
 - [[_COMMUNITY_Community 332|Community 332]]
@@ -395,23 +399,204 @@
 - [[_COMMUNITY_Community 403|Community 403]]
 - [[_COMMUNITY_Community 404|Community 404]]
 - [[_COMMUNITY_Community 405|Community 405]]
+- [[_COMMUNITY_Community 406|Community 406]]
+- [[_COMMUNITY_Community 409|Community 409]]
 - [[_COMMUNITY_Community 413|Community 413]]
 - [[_COMMUNITY_Community 414|Community 414]]
+- [[_COMMUNITY_Community 422|Community 422]]
+- [[_COMMUNITY_Community 423|Community 423]]
 - [[_COMMUNITY_Community 427|Community 427]]
 - [[_COMMUNITY_Community 428|Community 428]]
 - [[_COMMUNITY_Community 429|Community 429]]
+- [[_COMMUNITY_Community 531|Community 531]]
+- [[_COMMUNITY_Community 532|Community 532]]
+- [[_COMMUNITY_Community 533|Community 533]]
+- [[_COMMUNITY_Community 534|Community 534]]
+- [[_COMMUNITY_Community 535|Community 535]]
+- [[_COMMUNITY_Community 536|Community 536]]
+- [[_COMMUNITY_Community 537|Community 537]]
+- [[_COMMUNITY_Community 538|Community 538]]
+- [[_COMMUNITY_Community 539|Community 539]]
+- [[_COMMUNITY_Community 540|Community 540]]
+- [[_COMMUNITY_Community 541|Community 541]]
+- [[_COMMUNITY_Community 543|Community 543]]
+- [[_COMMUNITY_Community 544|Community 544]]
+- [[_COMMUNITY_Community 545|Community 545]]
+- [[_COMMUNITY_Community 546|Community 546]]
+- [[_COMMUNITY_Community 547|Community 547]]
+- [[_COMMUNITY_Community 548|Community 548]]
+- [[_COMMUNITY_Community 549|Community 549]]
+- [[_COMMUNITY_Community 551|Community 551]]
+- [[_COMMUNITY_Community 552|Community 552]]
+- [[_COMMUNITY_Community 553|Community 553]]
+- [[_COMMUNITY_Community 554|Community 554]]
+- [[_COMMUNITY_Community 555|Community 555]]
+- [[_COMMUNITY_Community 556|Community 556]]
+- [[_COMMUNITY_Community 557|Community 557]]
+- [[_COMMUNITY_Community 558|Community 558]]
+- [[_COMMUNITY_Community 559|Community 559]]
+- [[_COMMUNITY_Community 560|Community 560]]
+- [[_COMMUNITY_Community 561|Community 561]]
+- [[_COMMUNITY_Community 562|Community 562]]
+- [[_COMMUNITY_Community 563|Community 563]]
+- [[_COMMUNITY_Community 564|Community 564]]
+- [[_COMMUNITY_Community 565|Community 565]]
+- [[_COMMUNITY_Community 566|Community 566]]
+- [[_COMMUNITY_Community 567|Community 567]]
+- [[_COMMUNITY_Community 568|Community 568]]
+- [[_COMMUNITY_Community 570|Community 570]]
+- [[_COMMUNITY_Community 571|Community 571]]
+- [[_COMMUNITY_Community 572|Community 572]]
+- [[_COMMUNITY_Community 573|Community 573]]
+- [[_COMMUNITY_Community 574|Community 574]]
+- [[_COMMUNITY_Community 575|Community 575]]
+- [[_COMMUNITY_Community 576|Community 576]]
+- [[_COMMUNITY_Community 577|Community 577]]
+- [[_COMMUNITY_Community 578|Community 578]]
+- [[_COMMUNITY_Community 579|Community 579]]
+- [[_COMMUNITY_Community 580|Community 580]]
+- [[_COMMUNITY_Community 581|Community 581]]
+- [[_COMMUNITY_Community 582|Community 582]]
+- [[_COMMUNITY_Community 583|Community 583]]
+- [[_COMMUNITY_Community 584|Community 584]]
+- [[_COMMUNITY_Community 585|Community 585]]
+- [[_COMMUNITY_Community 586|Community 586]]
+- [[_COMMUNITY_Community 587|Community 587]]
+- [[_COMMUNITY_Community 588|Community 588]]
+- [[_COMMUNITY_Community 589|Community 589]]
+- [[_COMMUNITY_Community 590|Community 590]]
+- [[_COMMUNITY_Community 591|Community 591]]
+- [[_COMMUNITY_Community 592|Community 592]]
+- [[_COMMUNITY_Community 593|Community 593]]
+- [[_COMMUNITY_Community 594|Community 594]]
+- [[_COMMUNITY_Community 595|Community 595]]
+- [[_COMMUNITY_Community 596|Community 596]]
+- [[_COMMUNITY_Community 597|Community 597]]
+- [[_COMMUNITY_Community 598|Community 598]]
+- [[_COMMUNITY_Community 599|Community 599]]
+- [[_COMMUNITY_Community 600|Community 600]]
+- [[_COMMUNITY_Community 601|Community 601]]
+- [[_COMMUNITY_Community 602|Community 602]]
+- [[_COMMUNITY_Community 603|Community 603]]
+- [[_COMMUNITY_Community 605|Community 605]]
+- [[_COMMUNITY_Community 606|Community 606]]
+- [[_COMMUNITY_Community 607|Community 607]]
+- [[_COMMUNITY_Community 608|Community 608]]
+- [[_COMMUNITY_Community 610|Community 610]]
+- [[_COMMUNITY_Community 611|Community 611]]
+- [[_COMMUNITY_Community 612|Community 612]]
+- [[_COMMUNITY_Community 613|Community 613]]
+- [[_COMMUNITY_Community 614|Community 614]]
+- [[_COMMUNITY_Community 615|Community 615]]
+- [[_COMMUNITY_Community 616|Community 616]]
+- [[_COMMUNITY_Community 617|Community 617]]
+- [[_COMMUNITY_Community 618|Community 618]]
+- [[_COMMUNITY_Community 619|Community 619]]
+- [[_COMMUNITY_Community 620|Community 620]]
+- [[_COMMUNITY_Community 621|Community 621]]
+- [[_COMMUNITY_Community 622|Community 622]]
+- [[_COMMUNITY_Community 623|Community 623]]
+- [[_COMMUNITY_Community 624|Community 624]]
+- [[_COMMUNITY_Community 625|Community 625]]
+- [[_COMMUNITY_Community 626|Community 626]]
+- [[_COMMUNITY_Community 627|Community 627]]
+- [[_COMMUNITY_Community 628|Community 628]]
+- [[_COMMUNITY_Community 629|Community 629]]
+- [[_COMMUNITY_Community 630|Community 630]]
+- [[_COMMUNITY_Community 631|Community 631]]
+- [[_COMMUNITY_Community 632|Community 632]]
+- [[_COMMUNITY_Community 633|Community 633]]
+- [[_COMMUNITY_Community 634|Community 634]]
+- [[_COMMUNITY_Community 635|Community 635]]
+- [[_COMMUNITY_Community 636|Community 636]]
+- [[_COMMUNITY_Community 637|Community 637]]
+- [[_COMMUNITY_Community 638|Community 638]]
+- [[_COMMUNITY_Community 639|Community 639]]
+- [[_COMMUNITY_Community 640|Community 640]]
+- [[_COMMUNITY_Community 641|Community 641]]
+- [[_COMMUNITY_Community 642|Community 642]]
+- [[_COMMUNITY_Community 643|Community 643]]
+- [[_COMMUNITY_Community 644|Community 644]]
+- [[_COMMUNITY_Community 645|Community 645]]
+- [[_COMMUNITY_Community 646|Community 646]]
+- [[_COMMUNITY_Community 647|Community 647]]
+- [[_COMMUNITY_Community 648|Community 648]]
+- [[_COMMUNITY_Community 649|Community 649]]
+- [[_COMMUNITY_Community 650|Community 650]]
+- [[_COMMUNITY_Community 651|Community 651]]
+- [[_COMMUNITY_Community 652|Community 652]]
+- [[_COMMUNITY_Community 653|Community 653]]
+- [[_COMMUNITY_Community 654|Community 654]]
+- [[_COMMUNITY_Community 655|Community 655]]
+- [[_COMMUNITY_Community 656|Community 656]]
+- [[_COMMUNITY_Community 657|Community 657]]
+- [[_COMMUNITY_Community 658|Community 658]]
+- [[_COMMUNITY_Community 659|Community 659]]
+- [[_COMMUNITY_Community 660|Community 660]]
+- [[_COMMUNITY_Community 661|Community 661]]
+- [[_COMMUNITY_Community 662|Community 662]]
+- [[_COMMUNITY_Community 663|Community 663]]
+- [[_COMMUNITY_Community 664|Community 664]]
+- [[_COMMUNITY_Community 665|Community 665]]
+- [[_COMMUNITY_Community 666|Community 666]]
+- [[_COMMUNITY_Community 667|Community 667]]
+- [[_COMMUNITY_Community 668|Community 668]]
+- [[_COMMUNITY_Community 669|Community 669]]
+- [[_COMMUNITY_Community 670|Community 670]]
+- [[_COMMUNITY_Community 671|Community 671]]
+- [[_COMMUNITY_Community 672|Community 672]]
+- [[_COMMUNITY_Community 673|Community 673]]
+- [[_COMMUNITY_Community 674|Community 674]]
+- [[_COMMUNITY_Community 675|Community 675]]
+- [[_COMMUNITY_Community 676|Community 676]]
+- [[_COMMUNITY_Community 677|Community 677]]
+- [[_COMMUNITY_Community 679|Community 679]]
+- [[_COMMUNITY_Community 680|Community 680]]
+- [[_COMMUNITY_Community 681|Community 681]]
+- [[_COMMUNITY_Community 682|Community 682]]
+- [[_COMMUNITY_Community 683|Community 683]]
+- [[_COMMUNITY_Community 686|Community 686]]
+- [[_COMMUNITY_Community 687|Community 687]]
+- [[_COMMUNITY_Community 689|Community 689]]
+- [[_COMMUNITY_Community 692|Community 692]]
+- [[_COMMUNITY_Community 693|Community 693]]
+- [[_COMMUNITY_Community 694|Community 694]]
+- [[_COMMUNITY_Community 696|Community 696]]
+- [[_COMMUNITY_Community 697|Community 697]]
+- [[_COMMUNITY_Community 698|Community 698]]
+- [[_COMMUNITY_Community 699|Community 699]]
+- [[_COMMUNITY_Community 700|Community 700]]
+- [[_COMMUNITY_Community 702|Community 702]]
+- [[_COMMUNITY_Community 709|Community 709]]
+- [[_COMMUNITY_Community 719|Community 719]]
+- [[_COMMUNITY_Community 720|Community 720]]
+- [[_COMMUNITY_Community 721|Community 721]]
+- [[_COMMUNITY_Community 722|Community 722]]
+- [[_COMMUNITY_Community 723|Community 723]]
+- [[_COMMUNITY_Community 724|Community 724]]
+- [[_COMMUNITY_Community 725|Community 725]]
+- [[_COMMUNITY_Community 726|Community 726]]
+- [[_COMMUNITY_Community 728|Community 728]]
+- [[_COMMUNITY_Community 730|Community 730]]
+- [[_COMMUNITY_Community 732|Community 732]]
+- [[_COMMUNITY_Community 733|Community 733]]
+- [[_COMMUNITY_Community 734|Community 734]]
+- [[_COMMUNITY_Community 735|Community 735]]
+- [[_COMMUNITY_Community 736|Community 736]]
+- [[_COMMUNITY_Community 737|Community 737]]
+- [[_COMMUNITY_Community 738|Community 738]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `OverworldScene` - 139 edges
+1. `OverworldScene` - 141 edges
 2. `Methods` - 77 edges
-3. `VisualAndAiPluginTests` - 62 edges
-4. `WorkEvent` - 49 edges
-5. `EventBus` - 46 edges
-6. `sendCommand()` - 45 edges
-7. `font()` - 45 edges
-8. `CompanionSnapshot` - 43 edges
-9. `sendData()` - 39 edges
-10. `ThermalrightOutput` - 39 edges
+3. `WorkEvent` - 62 edges
+4. `VisualAndAiPluginTests` - 62 edges
+5. `DEBUG_WM()` - 59 edges
+6. `font()` - 53 edges
+7. `EventBus` - 46 edges
+8. `sendCommand()` - 45 edges
+9. `CompanionSnapshot` - 44 edges
+10. `EventCategory` - 44 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `ThermalrightUsbTests` --uses--> `UsbEndpointInfo`  [INFERRED]
@@ -425,47 +610,47 @@
 - `ThermalrightUsbTests` --uses--> `FrameBufferOptions`  [INFERRED]
   tests/test_thermalright_usb.py → pixel_ops/hardware/thermalright_usb.py
 
-## Communities (528 total, 47 thin omitted)
+## Communities (739 total, 73 thin omitted)
 
 ### Community 0 - "AI Usage Telemetry"
-Cohesion: 0.22
-Nodes (9): api_key_env, cache_dir, cache_enabled, enabled, model, provider, reasoning_effort, timeout_seconds (+1 more)
+Cohesion: 0.11
+Nodes (4): _blend_map_region(), _move_toward(), OverworldScene, _point_in_rects()
 
 ### Community 1 - "Pokemon Ambience Rendering"
-Cohesion: 0.1
-Nodes (32): _active_codex_limit_percent(), AIUsageGauge, AIUsageSource, _aware(), _claude_row(), _codex_rate_limit_status(), _codex_row(), _compact_number() (+24 more)
+Cohesion: 0.11
+Nodes (31): _active_codex_limit_percent(), AIUsageSource, _aware(), _claude_row(), _codex_rate_limit_status(), _codex_row(), _compact_number(), _find_first_string() (+23 more)
 
 ### Community 2 - "AI Decision Plugin"
-Cohesion: 0.18
-Nodes (12): AiDecisionRequest, AiPokemonChoice, AiThrottle, _compact_metadata(), _enrich_generic_message(), _ensure_message_terms(), _env_bool(), _event_keyword() (+4 more)
+Cohesion: 0.04
+Nodes (43): ambient_signal_to_work_event(), AmbientProvider, AmbientSignal, AmbientSignalKind, classify_text_kind(), _event_shape(), BusEnvelope, EventBus (+35 more)
 
 ### Community 3 - "Core App Runtime"
-Cohesion: 0.08
-Nodes (26): battle_box(), _blend_map_region(), _calendar_companion_sprite(), _capture_cause_label(), _capture_timestamp_label(), _compact_capture_context(), _companion_color(), _draw_cloud_icon() (+18 more)
+Cohesion: 0.06
+Nodes (80): charBounds(), color565(), draw16bitBeRGBBitmap(), draw16bitBeRGBBitmapR1(), draw16bitRGBBitmap(), draw16bitRGBBitmapWithMask(), draw16bitRGBBitmapWithTranColor(), draw24bitRGBBitmap() (+72 more)
 
 ### Community 4 - "AI Usage Config"
 Cohesion: 0.14
 Nodes (12): enabled, paths, poll_seconds, integrations, ics, pc_stats, social_bus_limit, disk_path (+4 more)
 
 ### Community 5 - "Pokemon World Loop"
-Cohesion: 0.05
-Nodes (33): biome(), World, AnimationClock, first_frame(), SpriteAnimation, palette_for_hour(), _apply_transparency(), ash_direction_frame() (+25 more)
+Cohesion: 0.12
+Nodes (22): SpriteAnimation, _apply_transparency(), ash_direction_frame(), ash_frame(), AshSpriteSet, battle_ash_frame(), _clear_connected_background(), _load_battle_ash_frames() (+14 more)
 
 ### Community 6 - "Display Outputs"
-Cohesion: 0.11
-Nodes (4): _boxes_overlap(), _is_battle_phase(), _union_boxes(), _union_many()
+Cohesion: 0.13
+Nodes (9): _areas_by_map_key(), _classify_area(), _crop_box(), _direction_for_delta(), _indoor_kind(), _is_light(), _is_walkable(), MapRouteManager (+1 more)
 
 ### Community 7 - "Social Signal Classification"
-Cohesion: 0.05
-Nodes (52): cloneConfig(), configureKiteSecrets(), identifyUsbDisplay(), loadConfig(), loadConfigManifest(), loadDiscordProfile(), loadGithubRepos(), loadKiteStatus() (+44 more)
+Cohesion: 0.04
+Nodes (58): cloneConfig(), configureKiteSecrets(), firmwareResponse(), identifyUsbDisplay(), loadConfig(), loadConfigManifest(), loadCrossHeroSessionStatus(), loadDiscordProfile() (+50 more)
 
 ### Community 8 - "Pokemon Event Config"
 Cohesion: 0.12
 Nodes (16): ai_usage, build_broken, deploy_completed, deploy_started, incident, meeting, merge, message_important (+8 more)
 
 ### Community 9 - "Pokemon Encounters"
-Cohesion: 0.05
-Nodes (40): baseClock(), begin(), cardAcmd(), cardACMD13(), cardACMD51(), cardCMD6(), cardCommand(), enableDmaIrs() (+32 more)
+Cohesion: 0.19
+Nodes (19): _crosshero_text_width(), _crosshero_wod_pages(), _draw_activity_panel(), _draw_configured_hud(), _draw_crosshero_classes_panel(), _draw_crosshero_text(), _draw_crosshero_wod_panel(), _draw_gamification_panel() (+11 more)
 
 ### Community 10 - "Weather Data Source"
 Cohesion: 0.15
@@ -477,27 +662,27 @@ Nodes (33): CompanionSpriteRow(), discordSpriteVariants, equipmentOptions, fallb
 
 ### Community 12 - "JSON Config Loader"
 Cohesion: 0.06
-Nodes (31): PixelOpsApp, Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin. (+23 more)
+Nodes (41): PixelOpsApp, Hardware-neutral event pump for a selected game engine., Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin. (+33 more)
 
 ### Community 13 - "Encounter Timing Config"
 Cohesion: 0.09
 Nodes (20): game, ash_sprite_file, ash_sprite_source, ash_x, ash_y, encounter_x, fps, hud_height (+12 more)
 
 ### Community 14 - "Pokemon Map Routing"
-Cohesion: 0.06
-Nodes (44): _areas_by_map_key(), _classify_area(), _crop_box(), _direction_for_delta(), _indoor_kind(), _is_light(), _is_walkable(), MapRouteManager (+36 more)
+Cohesion: 0.08
+Nodes (23): isBusy(), isBusyCMD13(), isBusyTransferComplete(), printRegs(), rdWrSectors(), readData(), readSector(), readSectors() (+15 more)
 
 ### Community 15 - "Display AI Config"
-Cohesion: 0.11
-Nodes (16): display, backend, fps, gif_output, height, layout_theme, orientation, preview_output (+8 more)
+Cohesion: 0.07
+Nodes (25): api_key_env, cache_dir, cache_enabled, enabled, model, provider, reasoning_effort, timeout_seconds (+17 more)
 
 ### Community 16 - "Community 16"
 Cohesion: 0.5
 Nodes (4): display_name, last_seen_at, nicknames, 135844077781516289
 
 ### Community 17 - "Integration Plugin Core"
-Cohesion: 0.08
-Nodes (14): AsyncCurrentSource, AsyncEventSource, AsyncPullRequestSource, Polls event sources in the background and drains completed events per frame., Returns the latest snapshot while refreshing a source off the render loop., run_background(), _source_interval(), build_integration_runtime() (+6 more)
+Cohesion: 0.15
+Nodes (16): parse_hhmm(), status_for(), build_people_times(), PersonTime, _compact_hour_label(), _draw_segment_clock(), _draw_segment_digit(), _draw_timezone_flex_grid() (+8 more)
 
 ### Community 18 - "Community 18"
 Cohesion: 0.15
@@ -505,19 +690,19 @@ Nodes (13): devDependencies, electron, electron-builder, eslint, eslint-config-p
 
 ### Community 19 - "Event Bus"
 Cohesion: 0.1
-Nodes (39): _cache_asset_frames(), _clickup_due_label(), _clickup_task_color(), _draw_clickup_tasks_panel(), _draw_current_weather_metrics(), _draw_media_asset_empty(), _draw_media_asset_panel(), _draw_media_panel() (+31 more)
+Nodes (38): _cache_asset_frames(), _clickup_due_label(), _clickup_task_color(), _draw_clickup_tasks_panel(), _draw_current_weather_metrics(), _draw_media_asset_empty(), _draw_media_asset_panel(), _draw_media_panel() (+30 more)
 
 ### Community 20 - "USB Display Hardware"
 Cohesion: 0.12
 Nodes (13): image_to_rgb565(), Command, _device_selector_suffix(), _find_usb_device(), Minimal USB bulk transport for TURZX/Turing Rev. A style displays., Minimal USB bulk transport for TURZX/Turing Rev. A style displays., Minimal USB bulk transport for TURZX/Turing Rev. A style displays., _safe_usb_string() (+5 more)
 
 ### Community 21 - "Calendar Event Sources"
-Cohesion: 0.06
-Nodes (33): printSdErrorSymbol(), begin(), cardBegin(), errorHalt(), errorPrint(), freeClusterCount(), hasDedicatedSpi(), initErrorHalt() (+25 more)
+Cohesion: 0.05
+Nodes (6): size(), attrib(), available(), available64(), available(), cacheDir()
 
 ### Community 22 - "Discord Integration"
 Cohesion: 0.08
-Nodes (45): AI Decision Plugins, AI Usage, Architecture Records, Calendars, ClickUp, code:bash (python pixel_ops/main.py --plugin pokemon --output preview), code:json ({), code:json ({) (+37 more)
+Nodes (51): AI Decision Plugins, AI Usage, Architecture Records, Calendars, Capacities Project Radar, ClickUp, code:bash (python pixel_ops/main.py --plugin pokemon --output preview), code:json ({) (+43 more)
 
 ### Community 23 - "Provider Plugins"
 Cohesion: 0.05
@@ -528,8 +713,8 @@ Cohesion: 0.11
 Nodes (17): Agent Guide, AI Calls, Architecture, code:bash (python -m graphify update .), code:text (Provider transport), code:json ({), code:bash (python pixel_ops/main.py --plugin pokemon --output preview), code:bash (python pixel_ops/main.py --plugin pokemon --warm-cache) (+9 more)
 
 ### Community 25 - "HUD Rendering"
-Cohesion: 0.18
-Nodes (10): _active_calendar_event(), calendar_companion_snapshot(), _calendar_event_key(), _calendar_person_name(), _contains_time(), merge_companion_snapshots(), MergedCompanionSource, _stable_person_key() (+2 more)
+Cohesion: 0.17
+Nodes (5): _env_bool(), _metadata_types(), PokemonSelector, _priority_index(), rarity_for_priority()
 
 ### Community 26 - "Social Visual Effects"
 Cohesion: 0.53
@@ -541,27 +726,27 @@ Nodes (6): component_is_map(), connected_components(), is_background(), main(), 
 
 ### Community 28 - "Slack Integration"
 Cohesion: 0.08
-Nodes (21): BaseWeatherSource, build_weather_source(), _effects(), _list_value(), OpenMeteoWeatherSource, _openweathermap_to_wmo(), OpenWeatherMapWeatherSource, _optional_float() (+13 more)
+Nodes (22): BaseWeatherSource, build_weather_source(), _effects(), _list_value(), OpenMeteoWeatherSource, _openweathermap_to_wmo(), OpenWeatherMapWeatherSource, _optional_float() (+14 more)
 
 ### Community 29 - "Google Calendar"
 Cohesion: 0.13
 Nodes (14): code:env (PIXEL_OPS_MOCK_EVENTS=true), code:yaml (game:), code:text (PokemonPlugin -> OverworldScene -> PIL.Image -> DisplayOutpu), code:text (pixel_ops/config/display.json), code:yaml (display:), code:yaml (people:), Credits, Display Config (+6 more)
 
 ### Community 30 - "ICS Integration"
-Cohesion: 0.17
-Nodes (23): font(), _clock_skin_color(), _draw_activity_panel(), _draw_ai_usage_panel(), _draw_analog_clock(), _draw_clock_hand(), _draw_clock_panel(), _draw_configured_hud() (+15 more)
+Cohesion: 0.1
+Nodes (20): clock_mode, clock_skin, height, kind, show_seconds, use_24_hour, width, x (+12 more)
 
 ### Community 54 - "Community 54"
-Cohesion: 0.08
-Nodes (12): BrowserMediaSnapshotReceiver, _clean_lines(), _clean_youtube_title(), _infer_music(), LocalMediaSource, _sanitize_browser_media_payload(), _youtube_browser_script(), _youtube_thumbnail_url() (+4 more)
+Cohesion: 0.09
+Nodes (11): BrowserMediaSnapshotReceiver, _clean_lines(), _clean_youtube_title(), _infer_music(), LocalMediaSource, MediaNowPlaying, _sanitize_browser_media_payload(), _youtube_browser_script() (+3 more)
 
 ### Community 55 - "Community 55"
 Cohesion: 0.2
 Nodes (10): claude_projects_path, codex_home, enabled, openai_admin_key_env, openai_api_monthly_budget_usd, poll_seconds, providers, thresholds (+2 more)
 
 ### Community 56 - "Community 56"
-Cohesion: 0.14
-Nodes (10): _encode_meeting_id(), _find_participant(), _meeting_id(), _participant(), _participant_key(), _participant_signal(), Future Zoom integration boundary.      Zoom can use polling for upcoming/recent, _zoom_user_id() (+2 more)
+Cohesion: 0.12
+Nodes (12): _active_calendar_event(), calendar_companion_snapshot(), _calendar_event_key(), _calendar_person_name(), _contains_time(), merge_companion_snapshots(), MergedCompanionSource, _stable_person_key() (+4 more)
 
 ### Community 57 - "Community 57"
 Cohesion: 0.07
@@ -589,7 +774,7 @@ Nodes (8): weather, api_key_env, city, country_code, enabled, poll_seconds, prov
 
 ### Community 63 - "Community 63"
 Cohesion: 0.05
-Nodes (37): ConfigDescriptor, configFiles, configStudioOrigin(), coreConfigFiles, DiscordGuildDescriptor, DiscordOAuthSession, discordOAuthSessions, discordRedirectUri() (+29 more)
+Nodes (31): ConfigDescriptor, configFiles, configStudioOrigin(), coreConfigFiles, DiscordGuildDescriptor, DiscordOAuthSession, discordOAuthSessions, discordRedirectUri() (+23 more)
 
 ### Community 64 - "Community 64"
 Cohesion: 0.33
@@ -600,16 +785,16 @@ Cohesion: 0.5
 Nodes (4): display_name, last_seen_at, nicknames, 135406909233692673
 
 ### Community 66 - "Community 66"
-Cohesion: 0.11
-Nodes (13): Encounter, EncounterSpawner, PokeApiClient, get_pokemon(), pokemon, api_base_url, cache_dir, generation_limit (+5 more)
+Cohesion: 0.19
+Nodes (30): readCSD(), begin(), cardCMD6(), cardCommand(), CRC7(), CRC_CCITT(), end(), erase() (+22 more)
 
 ### Community 67 - "Community 67"
-Cohesion: 0.1
-Nodes (20): clock_mode, clock_skin, height, kind, show_seconds, use_24_hour, width, x (+12 more)
+Cohesion: 0.05
+Nodes (61): arc_create(), arc_thick_cb(), arc_think_cb(), benchmark_init(), border_cb(), border_circle_cb(), border_left_cb(), border_left_right_cb() (+53 more)
 
 ### Community 68 - "Community 68"
-Cohesion: 0.25
-Nodes (8): throttle, cooldown_seconds, enabled, max_pending, max_requests_per_window, skip_categories, skip_sources, window_seconds
+Cohesion: 0.15
+Nodes (13): ambient, async, candidate_limit, enabled, throttle, ai_selector, cooldown_seconds, enabled (+5 more)
 
 ### Community 69 - "Community 69"
 Cohesion: 0.25
@@ -620,32 +805,32 @@ Cohesion: 0.25
 Nodes (8): code:bash (python pixel_ops/main.py --plugin pokemon --output preview -), code:bash (python pixel_ops/main.py --plugin pokemon --output gif --sec), code:bash (python pixel_ops/main.py --plugin pokemon --output turzx --f), code:yaml (game:), code:yaml (game:), code:yaml (display:), code:yaml (pokemon:), Common Recipes
 
 ### Community 71 - "Community 71"
-Cohesion: 0.08
-Nodes (32): addCluster(), addDirCluster(), attrib(), available(), cacheDir(), cacheDirEntry(), close(), createContiguous() (+24 more)
+Cohesion: 0.1
+Nodes (40): isWriteMode(), isFatFileOrSubdir(), isFatLongName(), addCluster(), addDirCluster(), attrib(), cacheDirEntry(), close() (+32 more)
 
 ### Community 72 - "Community 72"
 Cohesion: 0.09
 Nodes (29): sendCommand(), sendData(), configPartial(), configPingPong(), configPartial(), configPingPong(), configFull(), configPartial() (+21 more)
 
 ### Community 73 - "Community 73"
-Cohesion: 0.2
-Nodes (9): Build, code:bash (cd config-studio), code:bash (npm run build), code:bash (npm run app:build), Files Edited, Local API, Pixel OPs Config Studio, Run (+1 more)
+Cohesion: 0.18
+Nodes (10): Build, code:bash (cd config-studio), code:bash (npm run build), code:bash (npm run app:build), E-ink firmware updates, Files Edited, Local API, Pixel OPs Config Studio (+2 more)
 
 ### Community 74 - "Community 74"
 Cohesion: 0.29
 Nodes (7): appears_seconds, caught_seconds, shake_seconds, start_seconds, throw_seconds, walking_seconds, encounter
 
 ### Community 75 - "Community 75"
-Cohesion: 0.24
-Nodes (14): clear(), clearAllMemories(), customPowerOn(), endImageTxQuiet(), reset(), sendBlankImageData(), sendImageData(), setMemoryArea() (+6 more)
+Cohesion: 0.23
+Nodes (9): instantiateBounds(), Bounds(), FullBounds(), bottom(), getWindowBounds(), left(), right(), top() (+1 more)
 
 ### Community 76 - "Community 76"
 Cohesion: 0.18
 Nodes (11): MoodEngine, Compatibility name for the global world mood engine., _event_weight(), _is_friday(), _metadata_types(), Turns operational/social events into ambient world pressure., _sleepy_or_calm(), SocialWeatherSystem (+3 more)
 
 ### Community 77 - "Community 77"
-Cohesion: 0.16
-Nodes (35): _args_selects_output(), build_output(), _configured_display_for_output(), _configured_display_outputs(), _display_box(), _display_output_from_config(), _display_region_size(), _display_runtime_config() (+27 more)
+Cohesion: 0.0
+Nodes (500): 1F004, 1F0CF, 1F170, 1F170-FE0F, 1F171, 1F171-FE0F, 1F17E, 1F17E-FE0F (+492 more)
 
 ### Community 78 - "Community 78"
 Cohesion: 0.33
@@ -708,8 +893,8 @@ Cohesion: 0.11
 Nodes (19): activity_threshold, dominant_types, label, tone, weight, activity_threshold, dominant_types, label (+11 more)
 
 ### Community 93 - "Community 93"
-Cohesion: 0.1
-Nodes (21): AIUsageSource, ClickUpTasksSource, MediaSource, PCStatsSource, PixelOpsScene, PullRequestSource, WeatherSource, CalendarEvent (+13 more)
+Cohesion: 0.06
+Nodes (28): AiDecisionPlugin, AIUsageSource, ClickUpTasksSource, MediaSource, PCStatsSource, PixelOpsScene, PullRequestSource, WeatherSource (+20 more)
 
 ### Community 94 - "Community 94"
 Cohesion: 0.5
@@ -728,8 +913,8 @@ Cohesion: 0.5
 Nodes (4): display_name, last_seen_at, nicknames, 242829666488942593
 
 ### Community 98 - "Community 98"
-Cohesion: 0.11
-Nodes (27): calculatePixelPageOffset(), clearMemory(), drawPixel(), invert(), supportsColor(), charBounds(), drawBitmap(), drawChar() (+19 more)
+Cohesion: 0.13
+Nodes (23): drawPixel(), charBounds(), drawBitmap(), drawChar(), drawCircle(), drawCircleHelper(), drawGrayscaleBitmap(), drawLine() (+15 more)
 
 ### Community 99 - "Community 99"
 Cohesion: 0.4
@@ -805,11 +990,11 @@ Nodes (9): buildConfigManifest(), configDescriptorsFor(), detectIntegrationPlugi
 
 ### Community 126 - "Community 126"
 Cohesion: 0.22
-Nodes (20): applyEquipment(), defaultEinkDeviceConfig(), defaultLayoutFor(), defaultThermalrightDeviceConfig(), defaultTurzxDeviceConfig(), defaultWideLayoutFor(), displayOutputFromConfig(), DisplayOutputRow() (+12 more)
+Nodes (21): applyEquipment(), defaultEinkDeviceConfig(), defaultLayoutFor(), defaultLcdDeviceConfig(), defaultThermalrightDeviceConfig(), defaultTurzxDeviceConfig(), defaultWideLayoutFor(), displayOutputFromConfig() (+13 more)
 
 ### Community 128 - "Community 128"
-Cohesion: 0.13
-Nodes (14): _bytes_label(), _duration_label(), _linux_temperature_c(), _normalize_disk_path(), _parse_tasklist_top_memory(), PCMetric, PCStatsSource, _percent_status() (+6 more)
+Cohesion: 0.11
+Nodes (17): _bytes_label(), _duration_label(), _linux_temperature_c(), _normalize_disk_path(), _parse_tasklist_top_memory(), PCMetric, PCStatsSource, _percent_status() (+9 more)
 
 ### Community 129 - "Community 129"
 Cohesion: 0.5
@@ -832,8 +1017,8 @@ Cohesion: 0.5
 Nodes (4): display_name, last_seen_at, nicknames, 533459625341616148
 
 ### Community 134 - "Community 134"
-Cohesion: 0.07
-Nodes (25): ambient_signal_to_work_event(), AmbientSignal, AmbientSignalKind, classify_text_kind(), _event_shape(), PixelOpsKiteIntegrationPlugin, plugin(), PixelOpsKiteClient (+17 more)
+Cohesion: 0.18
+Nodes (11): AiPokemonChoice, AiThrottle, _compact_metadata(), _enrich_generic_message(), _ensure_message_terms(), _env_bool(), _event_keyword(), PokemonAiPromptBuilder (+3 more)
 
 ### Community 135 - "Community 135"
 Cohesion: 0.5
@@ -848,16 +1033,16 @@ Cohesion: 0.33
 Nodes (5): 0021 - Local Runtime State Uses SQLite, code:text (pixel_ops/state/pixel_ops.sqlite), Consequences, Context, Decision
 
 ### Community 138 - "Community 138"
-Cohesion: 0.29
-Nodes (8): completeDiscordOAuth(), discordProfileFromToken(), discordToken(), envValue(), loadDiscordProfile(), pollGithubDeviceLogin(), quoteEnvValue(), writeDotEnvValue()
+Cohesion: 0.17
+Nodes (13): completeDiscordOAuth(), discordProfileFromToken(), discordToken(), envValue(), githubToken(), kiteStatus(), listGithubRepos(), loadDiscordProfile() (+5 more)
 
 ### Community 139 - "Community 139"
-Cohesion: 0.1
-Nodes (16): DiscordCompanionProfile, DiscordCompanionStore, _int(), _optional_int(), _datetime_iso(), _discord_person_from_row(), DiscordPersonRecord, _json() (+8 more)
+Cohesion: 0.15
+Nodes (12): _datetime_iso(), _discord_person_from_row(), DiscordPersonRecord, _json(), _layout_profile_from_row(), LayoutProfileRecord, _loads(), _now_iso() (+4 more)
 
 ### Community 140 - "Community 140"
-Cohesion: 0.06
-Nodes (18): type, _env_bool(), GitHubEventSource, label(), _parse_github_datetime(), Polls GitHub for open pull requests and keeps a compact HUD list., Polls GitHub for open pull requests and keeps a compact HUD list., Polls GitHub for open pull requests and keeps a compact HUD list. (+10 more)
+Cohesion: 0.12
+Nodes (11): type, _env_bool(), GitHubEventSource, label(), _parse_github_datetime(), Polls GitHub for open pull requests and keeps a compact HUD list., Polls GitHub for open pull requests and keeps a compact HUD list., Polls GitHub for open pull requests and keeps a compact HUD list. (+3 more)
 
 ### Community 141 - "Community 141"
 Cohesion: 0.4
@@ -872,40 +1057,40 @@ Cohesion: 0.4
 Nodes (4): 0015 - Timezone Config Is Derived From IANA Selection, Consequences, Context, Decision
 
 ### Community 144 - "Community 144"
-Cohesion: 0.31
-Nodes (5): frame_in_phase(), from_seconds(), GameStateMachine, _next_phase(), progress()
+Cohesion: 0.08
+Nodes (18): compose_eink_white_background(), EInkDirtyRegion, EInkFrame, encode_eink_frame(), find_eink_dirty_region(), _PullFrameHandler, Encode a PIL frame as row-aligned, MSB-first monochrome pixels.      A set bit r, Encode a PIL frame as row-aligned, MSB-first monochrome pixels.      A set bit r (+10 more)
 
 ### Community 145 - "Community 145"
-Cohesion: 0.18
-Nodes (22): _activity_label(), _ai_mana_color(), _ai_mana_percent(), _ai_usage_gauge_short_label(), _ai_usage_gauge_value(), _ai_usage_label(), _ai_usage_percent(), _ai_usage_reset_countdown() (+14 more)
+Cohesion: 0.16
+Nodes (7): from_config(), _optional_int(), _parse_int(), USB output for TURZX/Turing Smart Screen displays., TURZXOutput, TestCase, TurzxOutputTests
 
 ### Community 146 - "Community 146"
-Cohesion: 0.06
-Nodes (15): CompanionMember, DiscordBusEventSource, DiscordGatewayAdapter, Gateway dispatch adapter.      The project intentionally avoids a runtime websoc, Gateway dispatch adapter.      The project intentionally avoids a runtime websoc, DiscordIntegrationPlugin, plugin(), DiscordCompanionSource (+7 more)
+Cohesion: 0.13
+Nodes (9): AsteroidRecord, _normalize_layout_seed(), _profile(), Plugin-owned durable state with transactional event receipts., Plugin-owned durable state with transactional event receipts., ShipProfile, SpaceshipStateStore, RecordingScene (+1 more)
 
 ### Community 148 - "Community 148"
 Cohesion: 0.25
 Nodes (12): scaled_px(), draw_text_box(), _load_text_box_frame(), scroll_line_start(), _scroll_lines(), text_box_bottom_padding(), text_box_cursor_height(), text_box_line_height() (+4 more)
 
 ### Community 149 - "Community 149"
-Cohesion: 0.1
-Nodes (5): _ash_linked_to_discord(), _direction_toward(), _move_toward(), OverworldScene, _point_in_rects()
+Cohesion: 0.16
+Nodes (6): encode_lcd_frame(), LcdFrame, LcdHttpOutput, Resize a PIL frame and encode it as big-endian RGB565 pixels., Color Wi-Fi output for the Waveshare ESP32-C6-LCD-1.47 firmware., LcdHttpOutputTests
 
 ### Community 150 - "Community 150"
-Cohesion: 0.12
-Nodes (9): ABC, CompositeOutput, CroppedOutput, DisplayOutput, Output wrapper that sends a display-sized crop from a virtual frame., Fan-out output for multiple configured displays., Transport boundary for rendered frames.      The core renderer always produces P, RegionOutput (+1 more)
+Cohesion: 0.1
+Nodes (10): ABC, CompositeOutput, CroppedOutput, DisplayOutput, Output wrapper that sends a display-sized crop from a virtual frame., Fan-out output for multiple configured displays., Transport boundary for rendered frames.      The core renderer always produces P, RegionOutput (+2 more)
 
 ### Community 151 - "Community 151"
-Cohesion: 0.12
-Nodes (5): DiscordGatewayClient, Minimal local Discord Gateway client for ambient voice state.      It intentiona, classify_discord_dispatch(), _discord_actor(), _discord_timestamp()
+Cohesion: 0.11
+Nodes (7): DiscordGatewayClient, Minimal local Discord Gateway client for ambient voice state.      It intentiona, classify_discord_dispatch(), _discord_actor(), _discord_timestamp(), classify_text_signal(), signal_to_work_event()
 
 ### Community 152 - "Community 152"
-Cohesion: 0.16
-Nodes (16): parse_hhmm(), status_for(), build_people_times(), PersonTime, _compact_hour_label(), _draw_segment_clock(), _draw_segment_digit(), _draw_timezone_flex_grid() (+8 more)
+Cohesion: 0.04
+Nodes (9): getWiFiIsSaved(), init(), setConfigPortalTimeout(), setTimeout(), setValue(), WiFi_hasAutoConnect(), WiFi_scanComplete(), WiFiEvent() (+1 more)
 
 ### Community 153 - "Community 153"
 Cohesion: 0.12
-Nodes (8): DisplayOutput, from_config(), _optional_int(), _parse_int(), USB output for TURZX/Turing Smart Screen displays., TURZXOutput, Renders frames into a desktop window for local monitoring., WindowOutput
+Nodes (16): prepare(), sync(), exFatChecksum(), isFatFile(), lfnReservedChar(), setLe64(), sfnReservedChar(), format() (+8 more)
 
 ### Community 154 - "Community 154"
 Cohesion: 0.06
@@ -928,8 +1113,8 @@ Cohesion: 0.1
 Nodes (20): thermalright, debug, frame_retries, handshake_on_first_frame, hard_reset_on_start, hard_reset_wait_ms, image_height, image_width (+12 more)
 
 ### Community 159 - "Community 159"
-Cohesion: 0.12
-Nodes (18): displays, eink, forever, full_frame, output, preview_sequence, seconds, target (+10 more)
+Cohesion: 0.14
+Nodes (16): displays, forever, full_frame, lcd, output, plugin, preview_sequence, seconds (+8 more)
 
 ### Community 160 - "Community 160"
 Cohesion: 0.5
@@ -944,12 +1129,12 @@ Cohesion: 0.16
 Nodes (18): close(), contiguousRange(), dirCache(), fgets(), firstSector(), getAccessDateTime(), getCreateDateTime(), getModifyDateTime() (+10 more)
 
 ### Community 163 - "Community 163"
-Cohesion: 0.33
-Nodes (6): height, kind, width, x, y, gauges
+Cohesion: 0.06
+Nodes (18): DiscordCompanionProfile, DiscordCompanionStore, _int(), _optional_int(), DiscordBusEventSource, DiscordGatewayAdapter, Gateway dispatch adapter.      The project intentionally avoids a runtime websoc, Gateway dispatch adapter.      The project intentionally avoids a runtime websoc (+10 more)
 
 ### Community 164 - "Community 164"
-Cohesion: 0.2
-Nodes (16): canvas_font_scale(), font_scale_for_canvas(), icon_font(), _load_font(), _scaled_font_size(), _draw_temperature_range(), _draw_weather_compact(), _draw_weather_forecast() (+8 more)
+Cohesion: 0.09
+Nodes (55): Arduino_SWPAR16(), beginWrite(), CS_HIGH(), CS_LOW(), D0_HIGH(), D0_LOW(), D10_HIGH(), D10_LOW() (+47 more)
 
 ### Community 165 - "Community 165"
 Cohesion: 0.4
@@ -960,8 +1145,8 @@ Cohesion: 0.4
 Nodes (4): 0017 - Linux And Windows Are Supported Runtime Targets, Consequences, Context, Decision
 
 ### Community 167 - "Community 167"
-Cohesion: 0.57
-Nodes (5): classify_zoom_event(), _external_id(), _metadata(), _parse_datetime(), _participant()
+Cohesion: 0.14
+Nodes (10): _assignee_label(), _bool_param(), ClickUpTask, ClickUpTaskSnapshot, ClickUpTaskSource, _datetime_from_millis(), _ids_from_config(), _order_parent_tasks_with_subtasks() (+2 more)
 
 ### Community 168 - "Community 168"
 Cohesion: 0.5
@@ -992,16 +1177,16 @@ Cohesion: 0.25
 Nodes (7): parse_image_chunk_header(), Parse the observed Thermalright JPEG chunk header, if present., Parse the observed Thermalright JPEG chunk header, if present., Parse the observed Thermalright JPEG chunk header, if present., Parse the observed Thermalright JPEG chunk header, if present., Parse the observed Thermalright JPEG chunk header, if present., ThermalrightImageChunkInfo
 
 ### Community 176 - "Community 176"
-Cohesion: 0.18
-Nodes (5): _flatten_companion_config(), _gamification_source(), _offline(), plugin(), PokemonPlugin
+Cohesion: 0.13
+Nodes (16): printSdErrorSymbol(), begin(), cardBegin(), errorHalt(), errorPrint(), freeClusterCount(), hasDedicatedSpi(), initErrorHalt() (+8 more)
 
 ### Community 177 - "Community 177"
 Cohesion: 0.11
 Nodes (7): build_thermalright_init_command(), encode_thermalright_jpeg(), USB output for Thermalright LY LCD devices such as 0416:5408., USB output for Thermalright LY LCD devices such as 0416:5408., USB output for Thermalright LY LCD devices such as 0416:5408., ThermalrightOutput, ThermalrightUsbTests
 
 ### Community 178 - "Community 178"
-Cohesion: 0.11
-Nodes (12): ClickUpIntegrationPlugin, plugin(), _assignee_label(), _bool_param(), ClickUpTask, ClickUpTaskSnapshot, ClickUpTaskSource, _datetime_from_millis() (+4 more)
+Cohesion: 0.06
+Nodes (43): _class_text(), _classes_from_payload(), CrossHeroClass, CrossHeroDaySnapshot, CrossHeroDaySource, CrossHeroWorkout, CrossHeroWorkoutLine, _dashboard_class_choices() (+35 more)
 
 ### Community 179 - "Community 179"
 Cohesion: 0.13
@@ -1016,44 +1201,52 @@ Cohesion: 0.14
 Nodes (14): build, appId, asar, extraResources, files, mac, nsis, productName (+6 more)
 
 ### Community 182 - "Community 182"
-Cohesion: 0.47
-Nodes (5): draw_house(), draw_lamp(), draw_tree(), make_tile(), _tile()
+Cohesion: 0.31
+Nodes (5): frame_in_phase(), from_seconds(), GameStateMachine, _next_phase(), progress()
 
 ### Community 183 - "Community 183"
 Cohesion: 0.33
-Nodes (6): now_playing, height, kind, width, x, y
+Nodes (6): height, kind, width, x, y, eink_battery
+
+### Community 184 - "Community 184"
+Cohesion: 0.08
+Nodes (3): Arduino_Canvas_3bit(), Arduino_Canvas_Mono(), Arduino_OLED()
 
 ### Community 185 - "Community 185"
-Cohesion: 0.07
-Nodes (32): height, width, x, y, layout, activity, pc_stats, route_signal (+24 more)
+Cohesion: 0.06
+Nodes (38): height, width, x, y, layout, height, kind, width (+30 more)
 
 ### Community 186 - "Community 186"
 Cohesion: 0.2
 Nodes (10): applyMultiDisplayBounds(), applyPrimaryDisplay(), cloneJson(), DisplayArrangement(), displayBounds(), LayoutPreview(), layoutWindowKind(), removeLayoutWindow() (+2 more)
 
 ### Community 187 - "Community 187"
-Cohesion: 0.08
-Nodes (32): _clean_ics_text(), download_ics(), _event_occurrences_between(), _first_url(), ics_events_between(), _ics_params(), _ics_person_label(), _ics_property_name() (+24 more)
+Cohesion: 0.14
+Nodes (26): CapacitiesProjectSource, _definition_map(), _find_structure(), _key(), _names(), _parse_datetime(), _project_from_object(), _property() (+18 more)
 
 ### Community 188 - "Community 188"
-Cohesion: 0.4
-Nodes (9): dmpDirSector(), dmpFat(), dmpFile(), dmpRootDir(), dmpSector(), getLfnChar(), printFatDir(), printHex() (+1 more)
+Cohesion: 0.1
+Nodes (15): _crew_position(), _door_open_amount(), _drone_progress(), _manual_crew_task(), _movement_direction(), Open before the crew reaches the wall, then close after it has crossed., Find a connected room-only path; black space can never enter the route., Cycle from station to assigned room, work there, then return calmly. (+7 more)
 
 ### Community 189 - "Community 189"
 Cohesion: 0.29
-Nodes (8): _contain_resize(), _cover_resize(), _draw_pixel_grid(), _logo_path(), render_splash(), splash_frame_count(), splash_seconds(), SplashTests
+Nodes (11): _draw_temperature_range(), _draw_weather_compact(), _draw_weather_forecast(), _draw_weather_forecast_day(), _draw_weather_icon(), _draw_weather_icon_sized(), _forecast_condition(), _weather_condition() (+3 more)
 
 ### Community 190 - "Community 190"
 Cohesion: 0.5
 Nodes (4): display_name, last_seen_at, nicknames, 411916947773587456
 
+### Community 191 - "Community 191"
+Cohesion: 0.23
+Nodes (17): baseClock(), begin(), cardAcmd(), cardACMD13(), cardACMD51(), cardCMD6(), cardCommand(), enableDmaIrs() (+9 more)
+
 ### Community 192 - "Community 192"
-Cohesion: 0.06
-Nodes (4): size(), attrib(), available(), available64()
+Cohesion: 0.22
+Nodes (14): _ai_mana_color(), _ai_mana_percent(), _ai_usage_gauge_short_label(), _ai_usage_gauge_value(), _ai_usage_label(), _ai_usage_percent(), _ai_usage_reset_countdown(), _ai_usage_used_label() (+6 more)
 
 ### Community 193 - "Community 193"
-Cohesion: 0.14
-Nodes (10): classify_text_signal(), signal_to_work_event(), _activity_title(), rules_from_config(), SlackAmbientAggregator, SlackChannelRule, _SummaryWindow, _actor() (+2 more)
+Cohesion: 0.12
+Nodes (6): Arduino_ILI9486_18bit(), invertDisplay(), tftInit(), Arduino_ILI9486(), invertDisplay(), tftInit()
 
 ### Community 194 - "Community 194"
 Cohesion: 0.5
@@ -1072,16 +1265,20 @@ Cohesion: 0.17
 Nodes (12): todoist, due_within_days, enabled, filter, include_overdue, include_undated, max_tasks, poll_seconds (+4 more)
 
 ### Community 198 - "Community 198"
-Cohesion: 0.5
-Nodes (4): clampBox(), defaultClockLayoutBox(), defaultMediaAssetLayoutBox(), layoutBoxForNewWindow()
+Cohesion: 0.4
+Nodes (5): clampBox(), defaultClockLayoutBox(), defaultEinkTelemetryLayoutBox(), defaultMediaAssetLayoutBox(), layoutBoxForNewWindow()
 
 ### Community 199 - "Community 199"
 Cohesion: 0.13
 Nodes (15): assignee_id, assignee_ids, due_within_days, enabled, include_closed, include_overdue, include_subtasks, include_undated (+7 more)
 
+### Community 200 - "Community 200"
+Cohesion: 0.08
+Nodes (3): storeDrawingConfig(), getCursorX(), getCursorY()
+
 ### Community 201 - "Community 201"
-Cohesion: 0.33
-Nodes (6): mana, height, kind, width, x, y
+Cohesion: 0.04
+Nodes (48): 3 LVGL demo in Library Examples, And Simple Usage, Arduino_GFX, Canvas Class [[Wiki](https://github.com/moononournation/Arduino_GFX/wiki/Canvas-Class)], [Chill-Bitmap v2.400](https://github.com/Warren2060/Chill-Bitmap), code:C (#include <Arduino_GFX_Library.h>), code:console (./bdfconv -v -f 1 -b 1 -m "0-4294967295" quan.bdf -o u8g2_fo), code:console (bdfconv -v -f 1 -b 1 -m "32-127,11904-12351,19968-40959,6374) (+40 more)
 
 ### Community 202 - "Community 202"
 Cohesion: 0.4
@@ -1092,20 +1289,16 @@ Cohesion: 0.07
 Nodes (7): flush(), rewind(), rewindDirectory(), seek(), seekCur(), seekSet(), sync()
 
 ### Community 204 - "Community 204"
-Cohesion: 0.33
-Nodes (6): weather_forecast, height, kind, width, x, y
+Cohesion: 0.1
+Nodes (37): beginWrite(), CS_HIGH(), CS_LOW(), D0_HIGH(), D0_LOW(), D1_HIGH(), D1_LOW(), D2_HIGH() (+29 more)
 
 ### Community 205 - "Community 205"
-Cohesion: 0.09
-Nodes (31): AiDecisionPlugin, AIUsageSnapshot, _CodexRateLimitStatus, NullAIUsageSource, MediaNowPlaying, PCStatsSnapshot, WeatherState, Enum (+23 more)
+Cohesion: 0.05
+Nodes (40): AIUsageGauge, AIUsageSnapshot, _CodexRateLimitStatus, NullAIUsageSource, PCStatsSnapshot, Enum, EventCategory, EventPriority (+32 more)
 
 ### Community 206 - "Community 206"
 Cohesion: 0.2
 Nodes (10): scripts, app:build, app:build:linux, app:build:mac, app:build:win, app:dev, build, dev (+2 more)
-
-### Community 207 - "Community 207"
-Cohesion: 0.48
-Nodes (4): build_parser(), available_plugins(), get_plugin(), _load_plugin()
 
 ### Community 208 - "Community 208"
 Cohesion: 0.18
@@ -1119,13 +1312,17 @@ Nodes (11): host, port, stale_seconds, token, media, browser_extension, enabled,
 Cohesion: 0.4
 Nodes (4): 0018 - ClickUp Tasks Are Planning Snapshots, Consequences, Context, Decision
 
+### Community 211 - "Community 211"
+Cohesion: 0.25
+Nodes (15): lbaToMbrChs(), setLe16(), setLe32(), format(), initFatDir(), initPbs(), makeFat16(), makeFat32() (+7 more)
+
 ### Community 212 - "Community 212"
 Cohesion: 0.22
 Nodes (8): fetch(), hex(), hmacHex(), json(), parseJson(), PixelOpsKiteHub, unauthorized(), utf8()
 
 ### Community 213 - "Community 213"
-Cohesion: 0.15
-Nodes (24): isWriteMode(), isFatFile(), isFatFileOrSubdir(), isFatLongName(), lfnReservedChar(), sfnReservedChar(), lfnChecksum(), openCachedEntry() (+16 more)
+Cohesion: 0.09
+Nodes (17): compileMonth(), compileMonthIs(), FS_DATE(), FS_TIME(), addCluster(), addDirCluster(), exFatDirChecksum(), mkdir() (+9 more)
 
 ### Community 215 - "Community 215"
 Cohesion: 0.33
@@ -1133,31 +1330,23 @@ Nodes (5): 0020 - Tasks HUDs Share Provider-Neutral Board State, Consequences, C
 
 ### Community 216 - "Community 216"
 Cohesion: 0.33
-Nodes (6): tasks_board, height, kind, width, x, y
+Nodes (6): height, kind, width, x, y, crosshero_wod
 
 ### Community 218 - "Community 218"
 Cohesion: 0.29
 Nodes (7): dependencies, lucide-react, react, react-dom, typescript, vite, @vitejs/plugin-react
 
-### Community 219 - "Community 219"
-Cohesion: 0.33
-Nodes (6): pokemon_captures, height, kind, width, x, y
-
 ### Community 220 - "Community 220"
-Cohesion: 0.33
-Nodes (6): meetings_day, height, kind, width, x, y
+Cohesion: 0.11
+Nodes (7): AsyncCurrentSource, AsyncEventSource, AsyncPullRequestSource, Polls event sources in the background and drains completed events per frame., Returns the latest snapshot while refreshing a source off the render loop., run_background(), _source_interval()
 
 ### Community 223 - "Community 223"
-Cohesion: 0.29
-Nodes (6): engines, node, main, name, private, version
+Cohesion: 0.27
+Nodes (21): _clean_ics_text(), _event_occurrences_between(), _first_url(), ics_events_between(), _ics_params(), _ics_person_label(), _ics_property_name(), _IcsEventComponent (+13 more)
 
 ### Community 224 - "Community 224"
-Cohesion: 0.06
-Nodes (19): AIUsageIntegrationPlugin, plugin(), IntegrationContext, IntegrationContribution, IntegrationPlugin, NullAIUsageSource, NullClickUpTasksSource, NullCompanionSource (+11 more)
-
-### Community 225 - "Community 225"
-Cohesion: 0.15
-Nodes (7): _due_datetime(), _ids_from_config(), _task_from_payload(), TodoistTaskSource, TodoistTaskSourceTests, plugin(), TodoistIntegrationPlugin
+Cohesion: 0.17
+Nodes (6): _active_mining_asteroid(), _crew_assignment_room(), _diegetic_event_label(), _paste_frame(), Translate the current PR lifecycle into a diegetic work destination., SpaceshipScene
 
 ### Community 226 - "Community 226"
 Cohesion: 0.07
@@ -1188,56 +1377,64 @@ Cohesion: 0.18
 Nodes (10): devDependencies, wrangler, name, private, scripts, deploy, dev, tail (+2 more)
 
 ### Community 233 - "Community 233"
-Cohesion: 0.25
-Nodes (9): configureKiteSecrets(), kiteDeploy(), kiteInstall(), kitePutSecret(), kiteUrlsFromOutput(), npmCommand(), npxCommand(), runKiteCommand() (+1 more)
+Cohesion: 0.12
+Nodes (17): BMPColorInverted(), BMPHeight(), BMPReportedSize(), BMPStart(), BMPWidth(), exists(), fileSize(), openFile() (+9 more)
 
 ### Community 234 - "Community 234"
-Cohesion: 0.13
-Nodes (17): FS_DATE(), FS_TIME(), setLe64(), addCluster(), addDirCluster(), exFatDirChecksum(), mkdir(), preAllocate() (+9 more)
+Cohesion: 0.16
+Nodes (5): palette_for_hour(), AshCharacter, PokemonEncounter, position(), MainScene
 
 ### Community 235 - "Community 235"
-Cohesion: 0.14
-Nodes (7): repo_types(), time_types(), _env_bool(), _metadata_types(), PokemonSelector, _priority_index(), rarity_for_priority()
+Cohesion: 0.11
+Nodes (13): Encounter, EncounterSpawner, PokeApiClient, get_pokemon(), pokemon, api_base_url, cache_dir, generation_limit (+5 more)
 
 ### Community 236 - "Community 236"
-Cohesion: 0.17
-Nodes (24): getLe16(), getLe32(), getLe64(), checkUpcase(), dmpBitmap(), dmpCluster(), dmpDirData(), dmpFat() (+16 more)
+Cohesion: 0.12
+Nodes (33): getLe16(), getLe32(), getLe64(), checkUpcase(), dmpBitmap(), dmpCluster(), dmpDirData(), dmpFat() (+25 more)
 
 ### Community 237 - "Community 237"
-Cohesion: 0.29
-Nodes (7): gamification, base_recovery_per_hour, companion_recovery_per_hour, max_companion_bonus, max_hp, meeting_cost, task_delivered_cost
+Cohesion: 0.13
+Nodes (35): autoConnect(), _begin(), configPortalHasTimeout(), connectWifi(), DEBUG_WM(), debugSoftAPConfig(), disconnect(), getDefaultAPName() (+27 more)
 
 ### Community 238 - "Community 238"
 Cohesion: 0.11
 Nodes (14): getWriteError(), ifstream(), ofstream(), open(), seekpos(), setmode(), tellpos(), tellg() (+6 more)
 
 ### Community 239 - "Community 239"
+Cohesion: 0.31
+Nodes (10): autostartPaths(), ensureRuntimeLaunchers(), fileExists(), installRuntimeAutostart(), macAutostartLogDir(), macAutostartSupportDir(), removeRuntimeAutostart(), runtimeAutostartStatus() (+2 more)
+
+### Community 240 - "Community 240"
 Cohesion: 0.18
-Nodes (18): autostartPaths(), ensureRuntimeLaunchers(), execFileAsync, fileExists(), friendlyUsbError(), identifyThermalrightDisplay(), installRuntimeAutostart(), macAutostartLogDir() (+10 more)
+Nodes (5): _flatten_companion_config(), _gamification_source(), _offline(), plugin(), PokemonPlugin
+
+### Community 241 - "Community 241"
+Cohesion: 0.13
+Nodes (7): download_ics(), CalendarEventSource, Polls an ICS calendar and emits meeting encounters., GoogleCalendarIntegrationPlugin, plugin(), IcsIntegrationPlugin, plugin()
 
 ### Community 242 - "Community 242"
-Cohesion: 0.67
-Nodes (3): linux, category, target
+Cohesion: 0.21
+Nodes (6): _asteroid_state(), _event_effect(), _fallback_event_key(), material_for_pr(), _pr_key(), SpaceshipEngine
 
 ### Community 243 - "Community 243"
-Cohesion: 0.33
-Nodes (6): height, kind, width, x, y, gamification
+Cohesion: 0.22
+Nodes (5): AiDecisionRequest, build_ai_plugin(), _env_bool(), OpenAiChatGptPlugin, Generic Pixel OPs AI decision plugin backed by the OpenAI Responses API.
 
 ### Community 244 - "Community 244"
-Cohesion: 0.31
-Nodes (7): postSnapshot(), providerForUrl(), publishBestSnapshot(), sanitize(), selectBest(), snapshot, snapshots
+Cohesion: 0.21
+Nodes (9): CROSSHERO_STUDIO_ENDPOINTS, domain, postSnapshot(), providerForUrl(), publishBestSnapshot(), sanitize(), selectBest(), snapshot (+1 more)
 
 ### Community 245 - "Community 245"
 Cohesion: 0.62
 Nodes (6): channelName(), cleanText(), cleanTitle(), publish(), readMediaState(), sourceName()
 
 ### Community 246 - "Community 246"
-Cohesion: 0.73
-Nodes (4): _actor(), classify_teams_event(), _external_id(), _parse_datetime()
+Cohesion: 0.21
+Nodes (5): _due_datetime(), _ids_from_config(), _task_from_payload(), TodoistTaskSource, TodoistTaskSourceTests
 
 ### Community 247 - "Community 247"
-Cohesion: 0.29
-Nodes (7): layout_profiles, onlythermal, height, label, layout_theme, saved_at, width
+Cohesion: 0.09
+Nodes (15): IntegrationPlugin, NullAIUsageSource, NullClickUpTasksSource, NullCompanionSource, NullMediaSource, NullPCStatsSource, NullPullRequestSource, NullTaskSource (+7 more)
 
 ### Community 248 - "Community 248"
 Cohesion: 0.4
@@ -1255,45 +1452,41 @@ Nodes (4): 0024 - Gamification HUD Uses Provider-Neutral State, Consequences, Co
 Cohesion: 0.4
 Nodes (4): code:bash (cd infra/cloudflare/pixelops-kite), Deploy, Endpoints, PixelOpsKite
 
-### Community 252 - "Community 252"
-Cohesion: 0.4
-Nodes (5): ambient, async, candidate_limit, enabled, ai_selector
-
 ### Community 255 - "Community 255"
-Cohesion: 0.15
-Nodes (18): fullscreen(), landscape(), setFlip(), setRotation(), setWindow(), draw24bitBMP(), drawMonoBMP(), fullscreenBMPValid() (+10 more)
+Cohesion: 0.16
+Nodes (17): fullscreen(), landscape(), setFlip(), setRotation(), setWindow(), draw24bitBMP(), drawMonoBMP(), fullscreenBMPValid() (+9 more)
+
+### Community 256 - "Community 256"
+Cohesion: 0.33
+Nodes (6): height, kind, width, x, y, eink_wireless
 
 ### Community 257 - "Community 257"
-Cohesion: 0.4
-Nodes (4): code:text (http://127.0.0.1:47832/media/now-playing), Data sent, Install, Pixel OPs Browser Media Extension
+Cohesion: 0.43
+Nodes (6): code:text (http://127.0.0.1:47832/media/now-playing), CrossHero session, Data sent, Install, Pixel OPs Browser Bridge Extension, Pixel OPs Browser Media Extension
 
 ### Community 258 - "Community 258"
-Cohesion: 0.29
-Nodes (7): calendar_id, credentials_path, enabled, ics_urls, poll_seconds, token_path, google_calendar
+Cohesion: 0.11
+Nodes (19): mbToCp(), mbToU16(), searchPair16(), toUpcase(), upcaseChecksum(), cmpName(), exFatHash(), getName7() (+11 more)
 
 ### Community 259 - "Community 259"
-Cohesion: 0.18
-Nodes (15): exFatChecksum(), searchPair16(), toUpcase(), upcaseChecksum(), format(), syncUpcase(), writeUpcase(), writeUpcaseByte() (+7 more)
-
-### Community 260 - "Community 260"
-Cohesion: 0.25
-Nodes (15): lbaToMbrChs(), setLe16(), setLe32(), format(), initFatDir(), initPbs(), makeFat16(), makeFat32() (+7 more)
+Cohesion: 0.07
+Nodes (28): game, ash_sprite_file, ash_sprite_source, ash_x, ash_y, distance_per_active_second, encounter_x, energy_per_active_second (+20 more)
 
 ### Community 261 - "Community 261"
-Cohesion: 0.19
-Nodes (15): fclose(), fflush(), fgets(), fillBuf(), fillGet(), flushBuf(), flushPut(), fputs() (+7 more)
+Cohesion: 0.11
+Nodes (20): close(), MjpegClass(), readMjpegBuf(), MjpegClass(), fclose(), fflush(), fgets(), fillBuf() (+12 more)
 
 ### Community 262 - "Community 262"
-Cohesion: 0.14
-Nodes (8): EInkFrame, EInkHttpOutput, encode_eink_frame(), Encode a PIL frame as row-aligned, MSB-first monochrome pixels.      A set bit r, Encode a PIL frame as row-aligned, MSB-first monochrome pixels.      A set bit r, Wi-Fi output for the Pixel OPs firmware running on a Heltec E213., Wi-Fi output for the Pixel OPs firmware running on a Heltec E213., EInkHttpOutputTests
+Cohesion: 0.09
+Nodes (10): EInkHttpOutput, Wi-Fi output for the Pixel OPs firmware running on a Heltec E213., Wi-Fi output for the Pixel OPs firmware running on a Heltec E213., Wi-Fi output for the Pixel OPs firmware running on a Heltec E213., Wi-Fi output for the Pixel OPs firmware running on a Heltec E213., Wi-Fi output for the Pixel OPs firmware running on a Heltec E213., Wi-Fi output for the Pixel OPs firmware running on a Heltec E213., Wi-Fi output for the Pixel OPs firmware running on a Heltec E213. (+2 more)
 
 ### Community 263 - "Community 263"
 Cohesion: 0.24
 Nodes (14): isDigit(), isSpace(), getpos(), setpos(), getBool(), getch(), getChar(), getDouble() (+6 more)
 
 ### Community 264 - "Community 264"
-Cohesion: 0.26
-Nodes (11): mbToCp(), mbToU16(), getLfnChar(), getName(), getName7(), getName8(), getSFN(), printName() (+3 more)
+Cohesion: 0.53
+Nodes (9): getLfnChar(), getName(), getName7(), getName8(), getSFN(), printName(), printName7(), printName8() (+1 more)
 
 ### Community 265 - "Community 265"
 Cohesion: 0.12
@@ -1303,12 +1496,12 @@ Nodes (16): code:cpp (display.setBackgroundColor( BLACK )), code:cpp (display.se
 Cohesion: 0.12
 Nodes (15): code:cpp (#include <heltec-eink-modules.h>), code:cpp (#include <heltec-eink-modules.h>), code:cpp (DEPG0290BNS75A display(2, 4, 5);), code:cpp (DEPG0290BNS75A display(2, 4, 5);), code:cpp (DEPG0290BNS75A display(2, 4, 5);), code:cpp (DEPG0290BNS75A display(2, 4, 5);), code:cpp (DEPG0290BNS75A display(2, 4, 5);), Composing with .bmp (+7 more)
 
-### Community 268 - "Community 268"
-Cohesion: 0.25
-Nodes (4): build_ai_plugin(), _env_bool(), OpenAiChatGptPlugin, Generic Pixel OPs AI decision plugin backed by the OpenAI Responses API.
+### Community 267 - "Community 267"
+Cohesion: 0.4
+Nodes (4): 0026 - All Game Inputs Are Platform Events, Consequences, Context, Decision
 
 ### Community 269 - "Community 269"
-Cohesion: 0.22
+Cohesion: 0.18
 Nodes (10): chdir(), ExFatPartition(), exists(), ls(), open(), remove(), rename(), rmdir() (+2 more)
 
 ### Community 270 - "Community 270"
@@ -1319,17 +1512,21 @@ Nodes (5): activate(), reset(), sendBlankImageData(), sendImageData(), wait()
 Cohesion: 0.27
 Nodes (11): begin(), dmac_channel_disable(), dmac_channel_enable(), dmac_channel_transfer_done(), dmac_disable(), dmac_enable(), receive(), send() (+3 more)
 
+### Community 272 - "Community 272"
+Cohesion: 0.25
+Nodes (3): Arduino_ILI9488_18bit(), invertDisplay(), tftInit()
+
 ### Community 273 - "Community 273"
 Cohesion: 0.34
 Nodes (10): adjustCount(), advance(), is_aligned(), memcpyBuf(), minSize(), read(), readIn(), sync() (+2 more)
 
 ### Community 275 - "Community 275"
-Cohesion: 0.32
-Nodes (9): from_path(), _generated_lore(), _generated_records(), PokemonKnowledge, PokemonKnowledgeBase, _query_terms(), _record_terms(), _score() (+1 more)
+Cohesion: 0.33
+Nodes (6): mana, height, kind, width, x, y
 
 ### Community 276 - "Community 276"
-Cohesion: 0.43
-Nodes (6): bottom(), getWindowBounds(), left(), right(), top(), WindowBounds()
+Cohesion: 0.19
+Nodes (16): emoji_image(), font(), icon_font(), _load_font(), _macos_emoji_image(), _pillow_emoji_image(), _scaled_font_size(), _clock_skin_color() (+8 more)
 
 ### Community 277 - "Community 277"
 Cohesion: 0.28
@@ -1348,8 +1545,8 @@ Cohesion: 0.15
 Nodes (12): Change to "Indexed Color Mode", code:c++ (#include "parrot_black.h"), code:c++ (panel.fillScreen(panel.WHITE);), Define a Color Palette, Drawing the XBitmaps, Export as XBitmap, Importing and Modifying, Install GIMP (+4 more)
 
 ### Community 281 - "Community 281"
-Cohesion: 0.29
-Nodes (10): authorized(), connectWifi(), deviceSuffix(), handleFrame(), handleStatus(), sendJson(), setup(), showMessage() (+2 more)
+Cohesion: 0.08
+Nodes (57): authorized(), batteryPercent(), batteryStateLabel(), batteryStateName(), classifyBattery(), connectWifi(), decodeHex(), desiredRuntimeMode() (+49 more)
 
 ### Community 282 - "Community 282"
 Cohesion: 0.27
@@ -1364,8 +1561,8 @@ Cohesion: 0.47
 Nodes (9): do_fill(), fill_not_left(), ostream(), putBool(), putChar(), putDouble(), putNum(), putPgm() (+1 more)
 
 ### Community 286 - "Community 286"
-Cohesion: 0.22
-Nodes (6): AmbientIntegration, AmbientSignalClassifier, PollingAmbientIntegration, Start long-running integration work if needed., Turn provider-specific payloads into normalized ambient signals., Return normalized ambient signals for polling-based providers.
+Cohesion: 0.33
+Nodes (6): tasks_board, height, kind, width, x, y
 
 ### Community 287 - "Community 287"
 Cohesion: 0.2
@@ -1379,10 +1576,6 @@ Nodes (9): Change to "Indexed Color Mode", code:c++ (#include "chess.h"), code:c
 Cohesion: 0.31
 Nodes (8): close(), FsBaseFile(), mkdir(), open(), openCwd(), openNext(), openRoot(), remove()
 
-### Community 290 - "Community 290"
-Cohesion: 0.09
-Nodes (17): BaseDisplay(), setBackgroundColor(), freePageMemory(), grabPageMemory(), calculating(), clearPage(), clearPageWindow(), restoreDrawingConfig() (+9 more)
-
 ### Community 291 - "Community 291"
 Cohesion: 0.36
 Nodes (8): fmtBase10(), fmtDouble(), fmtHex(), fmtSigned(), fmtUnsigned(), scale10(), scanFloat(), printDec()
@@ -1390,6 +1583,22 @@ Nodes (8): fmtBase10(), fmtDouble(), fmtHex(), fmtSigned(), fmtUnsigned(), scale
 ### Community 292 - "Community 292"
 Cohesion: 0.22
 Nodes (9): code:cpp (#include <heltec-eink-modules.h>), code:cpp (#include <heltec-eink-modules.h>), Display Constructors, `EInkDisplay_VisionMasterE213`, `EInkDisplay_VisionMasterE213V1_1`, Example, Example, Parameters (+1 more)
+
+### Community 293 - "Community 293"
+Cohesion: 0.18
+Nodes (3): Arduino_ILI9488_3bit(), draw3bitRGBBitmap(), writeAddrWindow()
+
+### Community 294 - "Community 294"
+Cohesion: 0.32
+Nodes (9): from_path(), _generated_lore(), _generated_records(), PokemonKnowledge, PokemonKnowledgeBase, _query_terms(), _record_terms(), _score() (+1 more)
+
+### Community 295 - "Community 295"
+Cohesion: 0.16
+Nodes (4): write(), writeBytes(), writeCommand(), writeCommandBytes()
+
+### Community 296 - "Community 296"
+Cohesion: 0.16
+Nodes (3): _PcHealthServer, _PullFrameServer, _PullFrameState
 
 ### Community 297 - "Community 297"
 Cohesion: 0.25
@@ -1410,6 +1619,22 @@ Nodes (7): code:cpp (DISPLAY_CLASS(DC_PIN, CS_PIN, BUSY_PIN, SDI_PIN, CLK_PIN);)
 ### Community 301 - "Community 301"
 Cohesion: 0.43
 Nodes (5): flush(), printField(), println(), sync(), write()
+
+### Community 302 - "Community 302"
+Cohesion: 0.33
+Nodes (6): height, kind, width, x, y, eink_forecast
+
+### Community 303 - "Community 303"
+Cohesion: 0.1
+Nodes (31): BaseDisplay(), calculatePixelPageOffset(), clearMemory(), invert(), setBackgroundColor(), supportsColor(), clear(), clearAllMemories() (+23 more)
+
+### Community 305 - "Community 305"
+Cohesion: 0.29
+Nodes (8): _contain_resize(), _cover_resize(), _draw_pixel_grid(), _logo_path(), render_splash(), splash_frame_count(), splash_seconds(), SplashTests
+
+### Community 306 - "Community 306"
+Cohesion: 0.25
+Nodes (3): Arduino_ILI9488(), invertDisplay(), tftInit()
 
 ### Community 307 - "Community 307"
 Cohesion: 0.29
@@ -1479,17 +1704,33 @@ Nodes (6): code:cpp (void setup() {), Heltec E-ink Modules, (Optional) Additiona
 Cohesion: 0.57
 Nodes (4): FillStack(), stackBegin(), stackPointer(), UnusedStack()
 
+### Community 324 - "Community 324"
+Cohesion: 0.24
+Nodes (3): Arduino_ILI9481_18bit(), invertDisplay(), tftInit()
+
+### Community 326 - "Community 326"
+Cohesion: 0.17
+Nodes (32): _args_selects_output(), build_output(), _configured_display_for_output(), _configured_display_outputs(), _display_box(), _display_output_from_config(), _display_region_size(), _display_runtime_config() (+24 more)
+
+### Community 327 - "Community 327"
+Cohesion: 0.17
+Nodes (12): Route between rooms through the explicit doorway instead of the baked wall., Route between rooms through the explicit doorway instead of the baked wall., Return durable bay tier and progress within its long-term PR milestone., Route between rooms through the explicit doorway instead of the baked wall., Route between rooms through the explicit doorway instead of the baked wall., Route between rooms through the explicit doorway instead of the baked wall., Route between rooms through the explicit doorway instead of the baked wall., Route between rooms through the explicit doorway instead of the baked wall. (+4 more)
+
 ### Community 328 - "Community 328"
-Cohesion: 0.5
-Nodes (4): code:cpp (display.useCustomPowerSwitch(pin, type)), Parameters, Syntax, `useCustomPowerSwitch()`
+Cohesion: 0.21
+Nodes (26): Arduino_ESP32SPI(), begin(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite() (+18 more)
+
+### Community 329 - "Community 329"
+Cohesion: 0.24
+Nodes (26): Arduino_ESP32SPIDMA(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), flush_data_buf() (+18 more)
 
 ### Community 330 - "Community 330"
-Cohesion: 0.38
-Nodes (3): apply_scanlines(), draw_panel(), PixelRenderer
+Cohesion: 0.15
+Nodes (12): height, kind, width, x, y, height, kind, width (+4 more)
 
 ### Community 331 - "Community 331"
-Cohesion: 0.33
-Nodes (5): ADR 0025: E-ink displays are network output terminals, Consequences, Context, Decision, Status
+Cohesion: 0.48
+Nodes (6): ADR 0025: E-ink displays are hybrid network outputs, ADR 0025: E-ink displays are network output terminals, Consequences, Context, Decision, Status
 
 ### Community 332 - "Community 332"
 Cohesion: 0.33
@@ -1748,8 +1989,12 @@ Cohesion: 0.4
 Nodes (4): code:cpp (void setup() {), Heltec E-ink Modules, (Optional) MicroSD card module, Suggested Wiring: Vision Master E290
 
 ### Community 397 - "Community 397"
-Cohesion: 0.4
-Nodes (4): code:bash (cd firmware/heltec-e213), Gravar, Pixel OPs — Heltec Vision Master E213, Protocolo
+Cohesion: 0.29
+Nodes (6): code:bash (cd firmware/heltec-e213), Energia e diagnóstico, Gravar, Modos autônomos, Pixel OPs — Heltec Vision Master E213, Protocolo
+
+### Community 398 - "Community 398"
+Cohesion: 0.28
+Nodes (25): Arduino_ESP32QSPI(), batchOperation(), beginWrite(), CS_HIGH(), CS_LOW(), endWrite(), POLL_END(), POLL_START() (+17 more)
 
 ### Community 399 - "Community 399"
 Cohesion: 0.5
@@ -1776,28 +2021,604 @@ Cohesion: 0.5
 Nodes (4): code:cpp (#include <heltec-eink-modules.h>), `EInkDisplay_WirelessPaperV1_2`, Example, Parameters
 
 ### Community 405 - "Community 405"
+Cohesion: 0.33
+Nodes (6): height, kind, width, x, y, gauges
+
+### Community 409 - "Community 409"
+Cohesion: 0.08
+Nodes (10): SlackEventSource, plugin(), SlackIntegrationPlugin, _ack(), _on_close(), _on_error(), Slack Socket Mode receiver for local ambient displays.      Socket Mode avoids e, SlackSocketModeClient (+2 more)
+
+### Community 531 - "Community 531"
+Cohesion: 0.12
+Nodes (15): Arduino_Canvas(), draw16bitRGBBitmap(), flush(), flushQuad(), writeFastHLine(), writeFastHLineCore(), writeFastVLine(), writeFastVLineCore() (+7 more)
+
+### Community 532 - "Community 532"
+Cohesion: 0.2
+Nodes (10): clock_mode, clock_skin, height, kind, show_seconds, use_24_hour, width, x (+2 more)
+
+### Community 534 - "Community 534"
+Cohesion: 0.2
+Nodes (21): beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), SPI_MOSI_HIGH(), SPI_MOSI_LOW() (+13 more)
+
+### Community 535 - "Community 535"
+Cohesion: 0.32
+Nodes (3): walkable, avoid_source_rects, source_rects
+
+### Community 536 - "Community 536"
+Cohesion: 0.11
+Nodes (19): eink, battery_powered, deep_sleep_seconds, dither, full_refresh_every, heartbeat_interval_seconds, heartbeat_lease_seconds, invert (+11 more)
+
+### Community 537 - "Community 537"
+Cohesion: 0.27
+Nodes (10): ensureSpritePreviews(), execFileAsync, friendlyUsbError(), identifyThermalrightDisplay(), macLaunchAgentDomain(), macLaunchAgentStatus(), npcSpriteSourceMtimeMs(), reloadMacLaunchAgent() (+2 more)
+
+### Community 538 - "Community 538"
+Cohesion: 0.6
+Nodes (5): discoverFirmwarePorts(), firmwareStatus(), pushFirmwareLog(), resolvePlatformioCommand(), startFirmwareOperation()
+
+### Community 539 - "Community 539"
+Cohesion: 0.24
+Nodes (5): next_mock_event(), today_ics_events(), next_event(), today_events(), CalendarDataTests
+
+### Community 540 - "Community 540"
+Cohesion: 0.36
+Nodes (11): _activity_label(), _draw_ai_usage_gauges(), _draw_flag(), draw_hud(), _draw_project_radar_panel(), _draw_project_radar_row(), _draw_timezone_card(), _draw_timezone_chip() (+3 more)
+
+### Community 541 - "Community 541"
+Cohesion: 0.18
+Nodes (24): Arduino_DUEPAR16(), begin(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite() (+16 more)
+
+### Community 543 - "Community 543"
+Cohesion: 0.06
+Nodes (22): AIUsageIntegrationPlugin, plugin(), CapacitiesIntegrationPlugin, plugin(), ClickUpIntegrationPlugin, plugin(), CrossHeroIntegrationPlugin, plugin() (+14 more)
+
+### Community 544 - "Community 544"
+Cohesion: 0.15
+Nodes (13): _mining_bay_progress(), _mining_bay_tier(), Return durable bay tier and progress within its long-term PR milestone., Return durable bay tier and progress within its long-term PR milestone., Return durable bay tier and progress within its long-term PR milestone., Alternate calm idle and diegetic work loops without external timers., Return durable bay tier and progress within its long-term PR milestone., Return durable bay tier and progress within its long-term PR milestone. (+5 more)
+
+### Community 545 - "Community 545"
+Cohesion: 0.14
+Nodes (3): Arduino_TFT_18bit(), drawIndexedBitmap(), writeIndexedPixels()
+
+### Community 546 - "Community 546"
+Cohesion: 0.22
+Nodes (8): Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., _shared_alpha_bounds()
+
+### Community 547 - "Community 547"
+Cohesion: 0.17
+Nodes (25): doParamSave(), erase(), getHTTPHead(), getInfoData(), getIpForm(), getStaticOut(), getWiFiSSID(), handleClose() (+17 more)
+
+### Community 548 - "Community 548"
+Cohesion: 0.17
+Nodes (11): assets, project, provider, purpose, runtime_asset_count, seed, style, outline (+3 more)
+
+### Community 549 - "Community 549"
+Cohesion: 0.12
+Nodes (15): Compose only PixelLab-authored hull pieces around the seeded rooms., Compose only PixelLab-authored hull pieces around the seeded rooms., Compose only PixelLab-authored hull pieces around the seeded rooms., Compose only PixelLab-authored hull pieces around the seeded rooms., Compose only PixelLab-authored hull pieces around the seeded rooms., Compose only PixelLab-authored hull pieces around the seeded rooms., Compose only PixelLab-authored hull pieces around the seeded rooms., Compose only PixelLab-authored hull pieces around the seeded rooms. (+7 more)
+
+### Community 551 - "Community 551"
+Cohesion: 0.13
+Nodes (14): _crew_is_working(), Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers. (+6 more)
+
+### Community 552 - "Community 552"
+Cohesion: 0.4
+Nodes (4): export_date, export_version, group_id, states
+
+### Community 553 - "Community 553"
+Cohesion: 0.29
+Nodes (5): build_parser(), runtime_plugin_name(), available_plugins(), get_plugin(), _load_plugin()
+
+### Community 555 - "Community 555"
+Cohesion: 0.15
+Nodes (19): Arduino_ESP32LCD16(), beginWrite(), CS_HIGH(), CS_LOW(), endWrite(), write(), write16(), WRITE32() (+11 more)
+
+### Community 556 - "Community 556"
+Cohesion: 0.4
+Nodes (4): export_date, export_version, group_id, states
+
+### Community 557 - "Community 557"
+Cohesion: 0.4
+Nodes (4): export_date, export_version, group_id, states
+
+### Community 558 - "Community 558"
+Cohesion: 0.25
+Nodes (9): configureKiteSecrets(), kiteDeploy(), kiteInstall(), kitePutSecret(), kiteUrlsFromOutput(), npmCommand(), npxCommand(), runKiteCommand() (+1 more)
+
+### Community 559 - "Community 559"
+Cohesion: 0.2
+Nodes (19): Arduino_ESP32PAR16(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
+
+### Community 560 - "Community 560"
+Cohesion: 0.4
+Nodes (4): export_date, export_version, group_id, states
+
+### Community 561 - "Community 561"
+Cohesion: 0.4
+Nodes (4): export_date, export_version, group_id, states
+
+### Community 563 - "Community 563"
+Cohesion: 0.4
+Nodes (4): export_date, export_version, group_id, states
+
+### Community 564 - "Community 564"
+Cohesion: 0.25
+Nodes (7): Assets, code:bash (python pixel_ops/main.py --plugin spaceship --output preview), code:bash (python pixel_ops/main.py --plugin spaceship --output window ), code:json ({), Persistence, Procedural layout, Spaceship game
+
+### Community 565 - "Community 565"
+Cohesion: 0.4
+Nodes (4): 0027 - Spaceship Progress Is Active-Time And Game-Owned, Consequences, Context, Decision
+
+### Community 566 - "Community 566"
+Cohesion: 0.4
+Nodes (4): export_date, export_version, group_id, states
+
+### Community 567 - "Community 567"
+Cohesion: 0.4
+Nodes (4): export_date, export_version, group_id, states
+
+### Community 568 - "Community 568"
+Cohesion: 0.2
+Nodes (19): Arduino_ESP32PAR16Q(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
+
+### Community 570 - "Community 570"
+Cohesion: 0.2
+Nodes (19): Arduino_ESP32PAR16QQ(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
+
+### Community 571 - "Community 571"
+Cohesion: 0.42
+Nodes (5): draw_house(), draw_lamp(), draw_tree(), make_tile(), _tile()
+
+### Community 572 - "Community 572"
+Cohesion: 0.4
+Nodes (4): export_date, export_version, group_id, states
+
+### Community 573 - "Community 573"
+Cohesion: 0.19
+Nodes (20): Arduino_ESP32PAR8(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+12 more)
+
+### Community 575 - "Community 575"
+Cohesion: 0.19
+Nodes (20): Arduino_ESP32PAR8Q(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+12 more)
+
+### Community 576 - "Community 576"
+Cohesion: 0.19
+Nodes (20): Arduino_ESP32PAR8QQ(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+12 more)
+
+### Community 577 - "Community 577"
+Cohesion: 0.19
+Nodes (20): Arduino_ESP32PAR8QQQ(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+12 more)
+
+### Community 578 - "Community 578"
+Cohesion: 0.2
+Nodes (19): Arduino_ESP32S2PAR16(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
+
+### Community 579 - "Community 579"
+Cohesion: 0.36
+Nodes (7): env_bool(), env_int(), env_value(), load_config(), load_env(), load_runtime_config(), split_env_list()
+
+### Community 580 - "Community 580"
+Cohesion: 0.2
+Nodes (19): Arduino_ESP32S2PAR16Q(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
+
+### Community 581 - "Community 581"
+Cohesion: 0.17
+Nodes (17): Arduino_ESP8266SPI(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+9 more)
+
+### Community 582 - "Community 582"
+Cohesion: 0.19
+Nodes (17): Arduino_RPiPicoPAR16(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+9 more)
+
+### Community 583 - "Community 583"
+Cohesion: 0.13
+Nodes (12): beginWrite(), CS_HIGH(), CS_LOW(), endWrite(), flushBuffer(), write(), write16(), writeBytes() (+4 more)
+
+### Community 584 - "Community 584"
+Cohesion: 0.19
+Nodes (19): Arduino_ESP32S2PAR8(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
+
+### Community 585 - "Community 585"
+Cohesion: 0.19
+Nodes (19): Arduino_ESP32S2PAR8Q(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
+
+### Community 586 - "Community 586"
+Cohesion: 0.19
+Nodes (19): Arduino_RPiPicoPAR8(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
+
+### Community 587 - "Community 587"
+Cohesion: 0.18
+Nodes (16): Arduino_RTLPAR8(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+8 more)
+
+### Community 588 - "Community 588"
+Cohesion: 0.19
+Nodes (19): Arduino_STM32PAR8(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
+
+### Community 589 - "Community 589"
+Cohesion: 0.21
+Nodes (18): Arduino_AVRPAR16(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+10 more)
+
+### Community 590 - "Community 590"
+Cohesion: 0.21
+Nodes (19): Arduino_mbedSPI(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
+
+### Community 591 - "Community 591"
+Cohesion: 0.2
+Nodes (19): Arduino_NRFXSPI(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
+
+### Community 592 - "Community 592"
+Cohesion: 0.21
+Nodes (19): Arduino_RPiPicoSPI(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
+
+### Community 593 - "Community 593"
+Cohesion: 0.21
+Nodes (17): Arduino_AVRPAR8(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+9 more)
+
+### Community 594 - "Community 594"
+Cohesion: 0.17
+Nodes (15): Arduino_ESP32RGBPanel(), Cache_WriteBack_Addr(), Arduino_RGB_Display(), begin(), draw16bitBeRGBBitmap(), drawIndexedBitmap(), drawYCbCrBitmap(), flush() (+7 more)
+
+### Community 595 - "Community 595"
+Cohesion: 0.2
+Nodes (16): beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write(), write16() (+8 more)
+
+### Community 596 - "Community 596"
+Cohesion: 0.29
+Nodes (7): gamification, base_recovery_per_hour, companion_recovery_per_hour, max_companion_bonus, max_hp, meeting_cost, task_delivered_cost
+
+### Community 597 - "Community 597"
+Cohesion: 0.14
+Nodes (8): Arduino_ESP32DSIPanel(), Arduino_DSI_Display(), begin(), getFramebuffer(), writeFastHLine(), writeFastHLineCore(), writeFastVLine(), writeFastVLineCore()
+
+### Community 598 - "Community 598"
+Cohesion: 0.18
+Nodes (12): Arduino_XL9535SWSPI(), begin(), beginWrite(), digitalRead(), digitalWrite(), endWrite(), pinMode(), pinMode8() (+4 more)
+
+### Community 599 - "Community 599"
+Cohesion: 0.24
+Nodes (3): biome(), World, _parse_capture_datetime()
+
+### Community 600 - "Community 600"
+Cohesion: 0.19
+Nodes (11): Arduino_XCA9554SWSPI(), begin(), beginWrite(), digitalRead(), digitalWrite(), endWrite(), pinMode(), readRegister() (+3 more)
+
+### Community 601 - "Community 601"
+Cohesion: 0.19
+Nodes (11): Arduino_Canvas_Indexed(), drawIndexedBitmap(), flush(), get_color_index(), raise_mask_level(), writeFastHLine(), writeFastHLineCore(), writeFastVLine() (+3 more)
+
+### Community 602 - "Community 602"
+Cohesion: 0.22
+Nodes (15): Arduino_UNOPAR8(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+7 more)
+
+### Community 603 - "Community 603"
+Cohesion: 0.08
+Nodes (25): _doorway_crew_position(), _local_doorway_position(), Place the crew sprite's feet in the center of the shared door opening., Place the crew sprite's feet in the center of the shared door opening., Place the crew sprite's feet in the center of the shared door opening., Return durable bay tier and progress within its long-term PR milestone., Place the crew sprite's feet in the center of the shared door opening., Place the crew sprite's feet in the center of the shared door opening. (+17 more)
+
+### Community 605 - "Community 605"
+Cohesion: 0.12
+Nodes (16): ai_usage, build_broken, deploy_completed, deploy_started, incident, meeting, merge, message_important (+8 more)
+
+### Community 606 - "Community 606"
+Cohesion: 0.12
+Nodes (16): code:cpp (wifiManager.setConfigPortalTimeout(180);), code:cpp (void loop() {), code:CPP (wifiManager.setClass("invert"); // dark theme), code:cpp (wifiManager.setMinimumSignalQuality(10);), code:cpp (wifiManager.setRemoveDuplicateAPs(false);), code:cpp (wifiManager.setDebugOutput(false);), code:CPP (WiFiManager wifiManager(Serial1);), code:cpp (wifiManager.autoConnect("AutoConnectAP", "password")) (+8 more)
+
+### Community 607 - "Community 607"
+Cohesion: 0.33
+Nodes (6): now_playing, height, kind, width, x, y
+
+### Community 608 - "Community 608"
+Cohesion: 0.33
+Nodes (6): pokemon_captures, height, kind, width, x, y
+
+### Community 610 - "Community 610"
+Cohesion: 0.15
+Nodes (13): ambient, async, candidate_limit, enabled, throttle, ai_selector, cooldown_seconds, enabled (+5 more)
+
+### Community 611 - "Community 611"
+Cohesion: 0.15
+Nodes (13): 0.10, 0.11, 0.12, 1.0.1, Added Public Methods, Changes Overview, Constructors, Contributions and thanks (+5 more)
+
+### Community 612 - "Community 612"
+Cohesion: 0.15
+Nodes (13): Checkout from github, code:cpp (#include <WiFiManager.h>          //https://github.com/tzapu), code:cpp (WiFiManager wifiManager;), code:cpp (//first parameter is name of access point, second is the pas), code:cpp (wifiManager.autoConnect("AP-NAME");), code:cpp (wifiManager.autoConnect();), code:block6 ([env]), code:block7 ([env]) (+5 more)
+
+### Community 618 - "Community 618"
+Cohesion: 0.18
+Nodes (10): authors, description, frameworks, keywords, name, platforms, repository, type (+2 more)
+
+### Community 619 - "Community 619"
+Cohesion: 0.2
+Nodes (10): box_env, classes_url, dashboard_url, enabled, poll_seconds, session_cookie_env, timeout_seconds, token_env (+2 more)
+
+### Community 620 - "Community 620"
+Cohesion: 0.24
+Nodes (3): Arduino_GC9106(), invertDisplay(), tftInit()
+
+### Community 621 - "Community 621"
+Cohesion: 0.24
+Nodes (3): Arduino_GC9107(), invertDisplay(), tftInit()
+
+### Community 622 - "Community 622"
+Cohesion: 0.24
+Nodes (3): Arduino_GC9A01(), invertDisplay(), tftInit()
+
+### Community 623 - "Community 623"
+Cohesion: 0.24
+Nodes (3): Arduino_GC9C01(), invertDisplay(), tftInit()
+
+### Community 624 - "Community 624"
+Cohesion: 0.24
+Nodes (3): Arduino_GC9D01(), invertDisplay(), tftInit()
+
+### Community 625 - "Community 625"
+Cohesion: 0.22
+Nodes (3): Arduino_NT35510(), tftInit(), WriteRegM()
+
+### Community 626 - "Community 626"
+Cohesion: 0.24
+Nodes (3): Arduino_NT39125(), invertDisplay(), tftInit()
+
+### Community 627 - "Community 627"
+Cohesion: 0.24
+Nodes (3): Arduino_NV3023(), invertDisplay(), tftInit()
+
+### Community 628 - "Community 628"
+Cohesion: 0.22
+Nodes (3): Arduino_OTM8009A(), tftInit(), WriteRegM()
+
+### Community 629 - "Community 629"
+Cohesion: 0.22
+Nodes (3): Arduino_RM67162(), invertDisplay(), tftInit()
+
+### Community 630 - "Community 630"
+Cohesion: 0.33
+Nodes (6): weather_forecast, height, kind, width, x, y
+
+### Community 631 - "Community 631"
+Cohesion: 0.2
+Nodes (9): Basic Infos, code:cpp (#BEGIN), code:block2 (messages here), Debug Messages, Description, Hardware, PLEASE TRY Latest Master BRANCH before submitting bugs, in case they were already fixed. ##, Settings in IDE (+1 more)
+
+### Community 632 - "Community 632"
+Cohesion: 0.24
+Nodes (3): Arduino_AXS15231B(), invertDisplay(), tftInit()
+
+### Community 633 - "Community 633"
+Cohesion: 0.24
+Nodes (3): Arduino_HX8347C(), invertDisplay(), setRotation()
+
+### Community 634 - "Community 634"
+Cohesion: 0.24
+Nodes (3): Arduino_HX8347D(), invertDisplay(), tftInit()
+
+### Community 635 - "Community 635"
+Cohesion: 0.24
+Nodes (3): Arduino_HX8352C(), invertDisplay(), setRotation()
+
+### Community 636 - "Community 636"
+Cohesion: 0.24
+Nodes (3): Arduino_HX8357A(), invertDisplay(), tftInit()
+
+### Community 637 - "Community 637"
+Cohesion: 0.24
+Nodes (3): Arduino_HX8357B(), invertDisplay(), tftInit()
+
+### Community 638 - "Community 638"
+Cohesion: 0.24
+Nodes (3): Arduino_HX8369A(), invertDisplay(), tftInit()
+
+### Community 640 - "Community 640"
+Cohesion: 0.24
+Nodes (3): Arduino_ILI9331(), invertDisplay(), tftInit()
+
+### Community 641 - "Community 641"
+Cohesion: 0.24
+Nodes (3): Arduino_ILI9341(), invertDisplay(), tftInit()
+
+### Community 642 - "Community 642"
+Cohesion: 0.24
+Nodes (3): Arduino_ILI9342(), invertDisplay(), tftInit()
+
+### Community 643 - "Community 643"
+Cohesion: 0.24
+Nodes (3): Arduino_ILI9806(), invertDisplay(), tftInit()
+
+### Community 644 - "Community 644"
+Cohesion: 0.24
+Nodes (3): Arduino_JBT6K71(), invertDisplay(), tftInit()
+
+### Community 645 - "Community 645"
+Cohesion: 0.24
+Nodes (3): Arduino_NT35310(), invertDisplay(), tftInit()
+
+### Community 646 - "Community 646"
+Cohesion: 0.24
+Nodes (3): Arduino_NV3007(), invertDisplay(), tftInit()
+
+### Community 647 - "Community 647"
+Cohesion: 0.24
+Nodes (3): Arduino_NV3041A(), invertDisplay(), tftInit()
+
+### Community 650 - "Community 650"
+Cohesion: 0.24
+Nodes (3): Arduino_SPD2010(), invertDisplay(), tftInit()
+
+### Community 655 - "Community 655"
+Cohesion: 0.24
+Nodes (3): Arduino_ST7735(), invertDisplay(), tftInit()
+
+### Community 656 - "Community 656"
+Cohesion: 0.24
+Nodes (3): Arduino_ST7789(), invertDisplay(), tftInit()
+
+### Community 657 - "Community 657"
+Cohesion: 0.24
+Nodes (3): Arduino_ST77916(), invertDisplay(), tftInit()
+
+### Community 658 - "Community 658"
+Cohesion: 0.24
+Nodes (3): Arduino_ST7796(), invertDisplay(), tftInit()
+
+### Community 659 - "Community 659"
+Cohesion: 0.24
+Nodes (3): Arduino_WEA2012(), invertDisplay(), tftInit()
+
+### Community 660 - "Community 660"
+Cohesion: 0.22
+Nodes (8): Contents, Development, How It Looks, How It Works, Known Issues, Troubleshooting, WiFiManager, Wishlist
+
+### Community 662 - "Community 662"
+Cohesion: 0.32
+Nodes (3): jpegOpenHttpStreamWithBuffer(), jpegReadHttpStream(), readStream()
+
+### Community 663 - "Community 663"
+Cohesion: 0.25
+Nodes (8): knowledge_path, mock_events, queue_limit, repo_biomes, events, backend, frontend, infra
+
+### Community 664 - "Community 664"
+Cohesion: 0.25
+Nodes (8): palette, amber, cyan, floor, hull, space, text, warning
+
+### Community 665 - "Community 665"
+Cohesion: 0.25
+Nodes (8): Callbacks, code:cpp (void configModeCallback (WiFiManager *myWiFiManager) {), code:C++ (//if this is set, it will exit after config, even if connect), code:cpp (wifiManager.setSaveConfigCallback(saveConfigCallback);), code:cpp (//flag for saving data), code:cpp (wifiManager.setAPCallback(configModeCallback);), Enter Config mode, Save settings
+
+### Community 666 - "Community 666"
+Cohesion: 0.25
+Nodes (8): addParameter(), getCustomHTML(), getID(), getLabel(), getLabelPlacement(), getParamOut(), getValue(), getValueLength()
+
+### Community 667 - "Community 667"
+Cohesion: 0.12
+Nodes (5): DisplayOutput, GifOutput, Collects frames and writes an animated GIF when stopped., PreviewOutput, Writes preview PNG frames locally without requiring display hardware.
+
+### Community 668 - "Community 668"
+Cohesion: 0.48
+Nodes (5): BmpClass(), drawbmpal(), drawbmRgb565(), drawbmtrue(), getbmpparms()
+
+### Community 669 - "Community 669"
+Cohesion: 0.29
+Nodes (7): layout_profiles, onlythermal, height, label, layout_theme, saved_at, width
+
+### Community 670 - "Community 670"
+Cohesion: 0.29
+Nodes (7): source_rects, movement, blocked, debug_overlay, walkable, avoid_source_rects, source_rects
+
+### Community 671 - "Community 671"
+Cohesion: 0.29
+Nodes (7): appears_seconds, caught_seconds, shake_seconds, start_seconds, throw_seconds, walking_seconds, encounter
+
+### Community 672 - "Community 672"
+Cohesion: 0.33
+Nodes (7): captivePortal(), getMenuOut(), getWiFiHostname(), handleNotFound(), handleRoot(), handleUpdate(), toStringIp()
+
+### Community 673 - "Community 673"
+Cohesion: 0.29
+Nodes (7): debugPlatformInfo(), _end(), setDebugOutput(), setMenu(), setParamsPage(), WiFiManager(), WiFiManagerInit()
+
+### Community 674 - "Community 674"
+Cohesion: 0.29
+Nodes (7): encryptionTypeStr(), getRSSIasQuality(), setupConfigPortal(), setupHTTPServer(), startWebPortal(), WiFi_scanNetworks(), WiFiManager::getScanItemOut()
+
+### Community 675 - "Community 675"
+Cohesion: 0.33
+Nodes (5): ADR 0026: Color LCDs are network output terminals, Consequences, Context, Decision, Status
+
+### Community 677 - "Community 677"
+Cohesion: 0.29
+Nodes (7): enabled, max_projects, poll_seconds, structure_names, timeout_seconds, token_env, capacities
+
+### Community 683 - "Community 683"
+Cohesion: 0.73
+Nodes (4): _actor(), classify_teams_event(), _external_id(), _parse_datetime()
+
+### Community 686 - "Community 686"
+Cohesion: 0.33
+Nodes (6): draw_eink_telemetry_huds(), _draw_eink_telemetry_panel(), Overlay device-owned E213 telemetry using regular configured HUD boxes., Overlay device-owned E213 telemetry using regular configured HUD boxes., Overlay device-owned E213 telemetry using regular configured HUD boxes., Overlay device-owned E213 telemetry using regular configured HUD boxes.
+
+### Community 687 - "Community 687"
+Cohesion: 0.4
+Nodes (5): code:cpp (//set custom ip for portal), code:cpp (wifiManager.setSTAStaticIPConfig(IPAddress(192,168,0,99), IP), Custom Access Point IP Configuration, Custom IP Configuration, Custom Station (client) Static IP Configuration
+
+### Community 689 - "Community 689"
+Cohesion: 0.5
+Nodes (3): Build and upload, code:bash (cd firmware/esp32-c6-lcd-1.47), Pixel OPs firmware for ESP32-C6-LCD-1.47
+
+### Community 692 - "Community 692"
+Cohesion: 0.07
+Nodes (28): _ash_linked_to_discord(), battle_box(), _boxes_overlap(), _calendar_companion_sprite(), _capture_cause_label(), _capture_timestamp_label(), _compact_capture_context(), _companion_color() (+20 more)
+
+### Community 693 - "Community 693"
+Cohesion: 0.5
+Nodes (4): code:cpp (wifiManager.setCustomHeadElement("<style>html{filter: invert), code:cpp (WiFiManagerParameter custom_text("<p>This is just a text par), code:cpp (WiFiManagerParameter custom_mqtt_server("server", "mqtt serv), Custom HTML, CSS, Javascript
+
+### Community 694 - "Community 694"
+Cohesion: 0.5
+Nodes (4): getModeString(), getWiFiPass(), WiFi_psk(), wifiConnectDefault()
+
+### Community 696 - "Community 696"
+Cohesion: 0.29
+Nodes (6): engines, node, main, name, private, version
+
+### Community 699 - "Community 699"
+Cohesion: 0.29
+Nodes (7): calendar_id, credentials_path, enabled, ics_urls, poll_seconds, token_path, google_calendar
+
+### Community 700 - "Community 700"
+Cohesion: 0.67
+Nodes (3): code:cpp (// id/name, placeholder/prompt, default, length), code:cpp (mqtt_server = custom_mqtt_server.getValue();), Custom Parameters
+
+### Community 720 - "Community 720"
+Cohesion: 0.33
+Nodes (5): ADR 0008: CrossHero fitness data enters as a daily observation, Consequences, Context, Decision, Status
+
+### Community 723 - "Community 723"
+Cohesion: 0.33
+Nodes (6): meetings_day, height, kind, width, x, y
+
+### Community 724 - "Community 724"
 Cohesion: 0.5
 Nodes (4): code:cpp (#include <heltec-eink-modules.h>), `DEPG0213BNS800`, Example, Parameters
 
+### Community 725 - "Community 725"
+Cohesion: 0.12
+Nodes (6): apply_battle_ambience(), _draw_arena_marks(), canvas_font_scale(), font_scale_for_canvas(), _is_battle_phase(), _union_many()
+
+### Community 728 - "Community 728"
+Cohesion: 0.33
+Nodes (5): ADR 0028: Project Radar Uses Provider-Neutral Observations, Consequences, Context, Decision, Status
+
+### Community 730 - "Community 730"
+Cohesion: 0.33
+Nodes (6): height, kind, width, x, y, eink_weather
+
+### Community 732 - "Community 732"
+Cohesion: 0.33
+Nodes (6): project_radar, height, kind, width, x, y
+
+### Community 734 - "Community 734"
+Cohesion: 0.5
+Nodes (4): code:cpp (display.useCustomPowerSwitch(pin, type)), Parameters, Syntax, `useCustomPowerSwitch()`
+
+### Community 736 - "Community 736"
+Cohesion: 0.67
+Nodes (3): linux, category, target
+
 ## Knowledge Gaps
-- **1157 isolated node(s):** `m_endTime`, `name`, `private`, `version`, `type` (+1152 more)
+- **1975 isolated node(s):** `m_endTime`, `name`, `version`, `keywords`, `description` (+1970 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **47 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **73 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `begin()` connect `Pokemon Map Routing` to `Pokemon Encounters`, `Community 274`?**
-  _High betweenness centrality (0.084) - this node is a cross-community bridge._
-- **Why does `OverworldScene` connect `Community 149` to `Community 66`, `Core App Runtime`, `Pokemon World Loop`, `Display Outputs`, `Community 330`, `Community 235`, `Community 76`, `Community 205`, `Pokemon Map Routing`, `Community 176`, `Community 144`, `Community 146`, `Community 178`, `Community 148`, `Community 182`, `Community 152`, `Community 93`?**
-  _High betweenness centrality (0.055) - this node is a cross-community bridge._
-- **Why does `spiOptionDedicated()` connect `Community 274` to `Pokemon Map Routing`?**
-  _High betweenness centrality (0.037) - this node is a cross-community bridge._
-- **Are the 48 inferred relationships involving `OverworldScene` (e.g. with `PokemonPlugin` and `AIUsageSnapshot`) actually correct?**
-  _`OverworldScene` has 48 INFERRED edges - model-reasoned connections that need verification._
+- **Why does `begin()` connect `Community 66` to `Community 191`, `Community 562`, `Community 207`?**
+  _High betweenness centrality (0.053) - this node is a cross-community bridge._
+- **Why does `OverworldScene` connect `AI Usage Telemetry` to `Pokemon World Loop`, `Display Outputs`, `JSON Config Loader`, `Integration Plugin Core`, `Community 148`, `HUD Rendering`, `Slack Integration`, `Community 167`, `Community 692`, `Community 54`, `Community 182`, `Community 569`, `Community 187`, `Community 571`, `Community 76`, `Community 205`, `Community 725`, `Community 599`, `Community 93`, `Community 235`, `Community 240`?**
+  _High betweenness centrality (0.029) - this node is a cross-community bridge._
+- **Why does `spiOptionDedicated()` connect `Community 207` to `Community 66`?**
+  _High betweenness centrality (0.023) - this node is a cross-community bridge._
+- **Are the 50 inferred relationships involving `OverworldScene` (e.g. with `PokemonEngine` and `PokemonPlugin`) actually correct?**
+  _`OverworldScene` has 50 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 60 inferred relationships involving `WorkEvent` (e.g. with `GameEngine` and `PokemonEngine`) actually correct?**
+  _`WorkEvent` has 60 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 23 inferred relationships involving `VisualAndAiPluginTests` (e.g. with `AIUsageGauge` and `AIUsageSnapshot`) actually correct?**
   _`VisualAndAiPluginTests` has 23 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 47 inferred relationships involving `WorkEvent` (e.g. with `VoiceCompanionState` and `CapturedPokemonRecord`) actually correct?**
-  _`WorkEvent` has 47 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 39 inferred relationships involving `EventBus` (e.g. with `DiscordGatewayAdapter` and `DiscordBusEventSource`) actually correct?**
-  _`EventBus` has 39 INFERRED edges - model-reasoned connections that need verification._
+- **What connects `m_endTime`, `name`, `version` to the rest of the system?**
+  _2174 weakly-connected nodes found - possible documentation gaps or missing edges._

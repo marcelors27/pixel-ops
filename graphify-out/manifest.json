@@ -1560,8 +1560,1298 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/src/main.cpp": {
-    "mtime": 1784952806.2314596,
-    "ast_hash": "0f56fbaf5e940a0ac55e42efc683e2f8",
+    "mtime": 1787082110.7854183,
+    "ast_hash": "f3b635e37d8b83595234ee20c59bd70c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/wm_strings_en.h": {
+    "mtime": 1709346589.0,
+    "ast_hash": "27ad1a172091f23a4ffd443d17f5bece",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/library.json": {
+    "mtime": 1709346589.0,
+    "ast_hash": "0e9e915bdde3d23927f456defb25e63e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/WiFiManager.cpp": {
+    "mtime": 1709346589.0,
+    "ast_hash": "35358786e8bcaea14b478c68e1a92fc2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/strings_en.h": {
+    "mtime": 1709346589.0,
+    "ast_hash": "c50373d35a79de433608c7749199890c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/wm_consts_en.h": {
+    "mtime": 1709346589.0,
+    "ast_hash": "7f0c8c7ff6b44662b9a46731e3247623",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/WiFiManager.h": {
+    "mtime": 1709346589.0,
+    "ast_hash": "57b41908f99a6ec666f979e980d51617",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/wm_strings_es.h": {
+    "mtime": 1709346589.0,
+    "ast_hash": "0767eb65b6053ea905f7c01d130c46c2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/travis/common.sh": {
+    "mtime": 1709346589.0,
+    "ast_hash": "75dd41648b095cefbf91476166d0c54a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/ImgViewer/ImgViewerPROGMEM/Arduino_UNO_Rev3_Ok.c": {
+    "mtime": 1784346147.0,
+    "ast_hash": "5b370cfe3ea8001949501b02509f3590",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/ImgViewer/ImgViewerMjpeg_JPEGDEC/MjpegClass.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "b101419fe8cb389e1d316aa69d5dc57d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/ImgViewer/ImgViewerMjpeg_ESP32_JPEG/MjpegClass.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "fda4cec849fa967b901305eb5421eb98",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/ImgViewer/ImgViewerMjpeg_ESP32P4/MjpegClass.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "f23821af6cb046aeab598fb4ae698631",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/ImgViewer/ImgViewerAnimatedGIF_GIFDEC/GifClass.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "40f32d5442cb37b89b66dc379493ef7b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/ImgViewer/ImgViewerJpeg/JpegFunc.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "41214ad54d4f9616bd370c3a9348ec24",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/ImgViewer/ImgViewerBmp/BmpClass.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "1320a2fc3b4265f2b6db165fe8214848",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/MultipleDisplay/MultipleAnimatedGIF/GifClass.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "40f32d5442cb37b89b66dc379493ef7b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/TouchCalibration/touch.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "0e1a8536c3044228682314033344e30e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/NeoPixel/FastLED/FastLED_GFX.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e82659f6cded3f92579b378cc710a136",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/NeoPixel/Adafruit_NeoPixel/Adafruit_NeoPixel_GFX.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "dda5213703671f5b857a461dc7bf78d5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/PDQgraphicstest/Arduino_GFX_databus.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "c6b17a7c1ce7023404a52ff54cba79b3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/PDQgraphicstest/Arduino_GFX_dev_device.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "8797b6270ac37cd4bc6d70ce92c02200",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/PDQgraphicstest/Arduino_GFX_display.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "3f4618a296c08bc0a302ad2073cec283",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/PDQgraphicstest/Arduino_GFX_pins.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "13b40356f62585346150c7aa7df626f8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/HelloWorldGfxfont/FreeSerifBoldItalic12pt7b.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "f636a43b58be5826b85f75dc37953e3d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/HelloWorldGfxfont/FreeMono8pt7b.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "64a61d838fc2e08a4ffdc0ccf58c41e0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/HelloWorldGfxfont/FreeSansBold10pt7b.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "a1174541c7adb03a05d31f3ba5f427d4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/Sprite/SpriteGif/IndexedSprite.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "1aee61488afda777fd76f9d7ce4b2914",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/Sprite/SpriteGif/GifClass.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "40f32d5442cb37b89b66dc379493ef7b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/WiFiPhotoFrame/JpegFunc.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "963cb3c6c549b84ad4c40b4fe4fff9ae",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LvglBenchmark/img_benchmark_cogwheel_chroma_keyed.c": {
+    "mtime": 1784346147.0,
+    "ast_hash": "616d6551e70ff69efe794fae0a31dc7b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LvglBenchmark/lv_demo_benchmark.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "dd512939b5e542a1478b56b138c5cf65",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LvglBenchmark/img_benchmark_cogwheel_alpha16.c": {
+    "mtime": 1784346147.0,
+    "ast_hash": "c86d723b9fbedd4bb65e2d863fa54ff5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LvglBenchmark/img_benchmark_cogwheel_indexed16.c": {
+    "mtime": 1784346147.0,
+    "ast_hash": "c05f2bee7f7b04be622bde57c5c37dbe",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LvglBenchmark/touch.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "fce357d949a7c073c05f81b2a7d6063b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LvglBenchmark/lv_font_bechmark_montserrat_28_compr_az.c": {
+    "mtime": 1784346147.0,
+    "ast_hash": "d137e95e1aa7d47f943d102e82e2d89c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LvglBenchmark/lv_font_bechmark_montserrat_12_compr_az.c": {
+    "mtime": 1784346147.0,
+    "ast_hash": "d6c9937a6e44ecfb77219dc0a45c071a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LvglBenchmark/lv_demo_benchmark.c": {
+    "mtime": 1784346147.0,
+    "ast_hash": "0367888353ef600d02d8f4494ec1667a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LvglBenchmark/img_benchmark_cogwheel_rgb.c": {
+    "mtime": 1784346147.0,
+    "ast_hash": "15eb9b105a2d3de22c779f920785a2e0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LvglBenchmark/lv_font_bechmark_montserrat_16_compr_az.c": {
+    "mtime": 1784346147.0,
+    "ast_hash": "94573a21b6c72dbc970778eded7f8e52",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LvglBenchmark/img_benchmark_cogwheel_argb.c": {
+    "mtime": 1784346147.0,
+    "ast_hash": "32278595e4a188c5000361c5a8c6d4e0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LVGL_Arduino_v8/touch.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "fce357d949a7c073c05f81b2a7d6063b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LVGL_Arduino_v9/touch.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "fce357d949a7c073c05f81b2a7d6063b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LvglHelloNeoPixel/ui_font_Chill7.c": {
+    "mtime": 1784346147.0,
+    "ast_hash": "02705760efe4b1e1427965131d52b93a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/LVGL/LvglHelloNeoPixel/Adafruit_NeoPixel_GFX.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "dda5213703671f5b857a461dc7bf78d5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/ArduinoVNC/touch.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "fce357d949a7c073c05f81b2a7d6063b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/ArduinoVNC/keyboard.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "5e817851b0886fdc60842a2079eb2027",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/ArduinoVNC/VNC_GFX.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "cf39784b2b2405251ac6bcfdb1d5ceb3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/Arduino_TFT_18bit.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "a83ab82bde62d9e810507b096b4717ce",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/Arduino_TFT.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "1ad3454195348d182072b8b400099bb8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/gfxfont.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "066fe8e78c46f17fcc0a5b6ff4e821ec",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/Arduino_GFX_Library.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "bda244e2d63f8cec4791b4cdd85a8e7f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/Arduino_G.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "99c831fcac6de7baceb0611e6ea686bf",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/Arduino_DataBus.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "b4b86dab2ba2db9ede5cccf622cc8617",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/Arduino_GFX_Library.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "0215a0aa3d298aa1359e06d92bea5798",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/Arduino_GFX.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "3593e0a7cd43ad35b1393be566ff2bd4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/Arduino_TFT_18bit.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "a03dcb241d4822415ecac32001fae9d2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/YCbCr2RGB.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "08936bc3654015719321100395312926",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/Arduino_GFX.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "d84f528c13b12b3e95fd7153a464090c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/Arduino_OLED.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "49c915a6585ecc0803ce8dad0e345dcd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/Arduino_G.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "a2ea370ff1251f003c88bc69a7c69b2a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/Arduino_TFT.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "af5dfb435996e1b696a8059be2186fc8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/Arduino_DataBus.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "495b2932fe1392cbd5517513f83a0fab",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/Arduino_OLED.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e97137a71c398b224366fbce113c97ff",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/canvas/Arduino_Canvas_Mono.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "f598358e136bc6229b2372ae958c6fb2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/canvas/Arduino_Canvas_3bit.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "b51283a423850d69bda67f0d5fed2c93",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/canvas/Arduino_Canvas_Indexed.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "d8f52857969f304b201e153b88fa70b1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/canvas/Arduino_Canvas_3bit.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "aa940a2659918812b381faded29f0506",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/canvas/Arduino_Canvas.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "2c1adc5f1ff2c0e0253ed23fdb6816b8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/canvas/Arduino_Canvas.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "b1f158240d63ca28d43ce163770028ac",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/canvas/Arduino_Canvas_Mono.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "c889db3ca4764daf142e892516741b3f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/canvas/Arduino_Canvas_Indexed.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "04b204e6151774b57cbef02a05e3878c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_HX8369A.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "81455800366ce1cc1c3dfa084da113df",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SSD1283A.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "04127a1b84a0477db5a5a3b5b763b6c0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_NV3023.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "3facde6a606c91f30e2225f86b626d09",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_HX8357B.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "0fe059b439faa81e596ef037e3fe23f1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_NT35510.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "72febad84e76cdaab658e4b7c0383117",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9486.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "c1ffd6e2d7a4f14ed1ea7fa3b60b4fed",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SSD1283A.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "99840dcdaebe3981e344198971e524ed",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_GC9D01.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "aebecc21f30d37e5329d17081104b990",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_NT39125.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "294405f714a484923844c1dc5f40336e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ST7789.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e578b6ca54caa145566e3b319f02891e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_HX8352C.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "3379969f7410eb2869c7dee75980abfc",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SEPS525.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "d4333af6c91277a5b8840110c185ecab",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9341.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "5d98d821a31fbc75f4fe8b353844fa36",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ST7796.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "29675ec0b2b446b60571f607ee5b567c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_AXS15231B.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "20bed0e77c8acd710e15dfa877d90aec",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_GC9A01.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "64bceb744d9f012502516d6182d0e3c7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SSD1331.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "739d41b2fa71b00a0ed98ba52144512f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_NT35310.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "5ec1019b5b015350ff492576bb24ddfe",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SSD1306.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "01b6123358f6b3bebaf4f6aed647a378",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9331.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "7b215eaf2e53d8d99bbd1a7eeda79f80",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9486_18bit.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "8ef86dc6b08e4b74433431a5f89cf607",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_GC9C01.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "6d521e7fe3a5c57ba7f1f74a2edcf84e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_DSI_Display.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "df10fc9efce8b4469001ba5d57125e1f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_HX8369A.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "c57236d8a15c7535ed59cdc264781334",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_AXS15231B.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "28c51de80434c4bd7040e3942890d87b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_OTM8009A.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "92cb3cc0f1b008dacb39f216a153c18c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_GC9D01.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "d3ca3930875c858b56def9a3b9747852",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_OTM8009A.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "98d608bdf91d7dbb7c757eb94e3443c0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_HX8357A.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "358f9dc93ba637ec49f90147a269c314",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SSD1351.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "37f365a9990d2a514debb7d95b2fd7f8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9481_18bit.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "650e365a56b3bb44d55b9e513b2ce5ba",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_GC9C01.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "6a88e2669fe426999f31b78feb5e441a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9342.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e1048733e9eaac277dd24e81e85c44c7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_CO5300.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "b883ad7f1a10493629caea38edb04840",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SH8601.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "7ebdb2bcbb9ee6924d9b143ca261d28e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_NT39125.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "38eafc2ef5d5c0dc6032a28c699c6e9c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SH1106.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "a9ac1bdf025ce11c6d1b6d1e170d2fa2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_GC9A01.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "92a25149dfd55b7eacf67e7bb57c676a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_RM690B0.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "65f20d5f6a53f164335ab9ff09165bdd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_JBT6K71.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "99a977b1bd70c292249d16490f906b3a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9488_18bit.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "5356362f6712079828f93664d92df8b1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9481_18bit.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "dfe6af2227207f774a117398f0fae670",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_GC9106.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "4fc5e9ac4f7d7954791b78517df84394",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9341.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e5bb35cd97ab8f12b4567a1a7c8d56c4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SSD1357.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "817a2a839fb056528a8470de16d462db",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_JD9613.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "523319f4f71dc3a1da7e39c3537107bd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9806.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "9690008cc1fc9dc21e8ff586ec60bf4f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_WEA2012.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "211c6a0de3c59e4547b7a7a2bbc0c5d4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9225.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "47c7feccb2f9420a48c54936128be7e2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_RM67162.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "5a59d9760a01b4a72738baab2fc84be8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9342.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "28dfeb9daa42b39c996764d691344d2d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_NV3041A.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "32c96b39d2f16d37f3eeaa0780da4969",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_NV3007.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "29ac29ce0f646d89d272a110b028327d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_R61529.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "21e37c08285f58aa83ab1d4027849d8e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ST7735.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "a27737c6a1952a4d14f2f5bd3d45f631",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ST77916.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "ac10dc12b8356b5df0ec0a44a0695b55",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_JD9613.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "c390118da22907673bf9548a651c39bb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SSD1351.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "80c9387181305c511fbfe59138ba4b3c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SSD1331.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "64090e3a793f1f60e64d2a0213aec962",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_JBT6K71.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "4ef37c831c814e794bf936a00016c518",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_NT35310.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "89ef31351fe307560948a64fcc50b52e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_RGB_Display.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "d5b6e95aa8f5702980fbb17eda383e54",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_HX8347D.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "9fd760025fe7321c75b9b7bce3103e40",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_DSI_Display.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "05b2c5e7e98318499442d77001b3c9d9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_NV3041A.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "f6c8c6b98ce41c81c0a4527e1ca862ee",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_GC9107.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "337e176bca8f4f3bdefeab95c4e1b343",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_NV3023.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e4900899600dbdb1aa26a8dd680f1a51",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SH8601.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "8ed484b3a0ec890919da422e7a9f96c8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_HX8357A.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "04a798528a82127f6fbbccd2f03b76f4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9488_3bit.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "7e489649c940a41184016f47966b8156",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_NT35510.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "22d645a140dece066e8f6880ed2dc685",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_R61529.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "8a033a5e02417ddb55701d14de8c4a21",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_HX8357B.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "cb0e4338c236ceb71412c4e660d51af3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9488_3bit.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e8fe99f174c50408559aa1f61f3a0c82",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SPD2010.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "826e8335bf46d82bc9d888f554527cff",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9806.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "a0e99ebfb3948c69e7a2d50b31ebc388",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ST77916.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "d5b97dae9f47ed44d60a3423e81607ba",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9488.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "c0ba3f0b0adff88f5d002c72994625de",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_HX8347D.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "34c8fae300e3d6cd08dba4ccb528f3c7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_HX8347C.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e24e3b422ef6ae87b10eadd3ad1c95dd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_GC9107.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "ba73ad6249c0d8e1f489e846816f9017",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_NV3007.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "bfb4e2eb2f2677b9f5826cc9894aee26",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_GC9106.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "f75c8c1c8c599b94e1ab1455c2107c01",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_CO5300.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "8f18ba5c224379475de96c517fd8a5c8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_RM67162.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "2713b32b57bef901f97d80d1b2ba3ffc",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_RGB_Display.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "9ca05cd2aecf86e6b0e928ad2a8070b9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_WEA2012.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "551c295a634a4e44fc87351607456e48",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9331.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "c767159fe2a18c706a044d9ade3ed5c3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9486_18bit.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "72494e213b874fbdaa6d0ad1ee96f773",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SSD1357.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "ec4a91b4ec4b37e8c4cd864999fe4389",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SEPS525.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "50faf33733bebe32ed2faefa164f714f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9486.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e2f4e2ddee29f655049d3d93b9d1c5d5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_RM690B0.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "cb4e30a8dce8880269f535693f0b8477",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SPD2010.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "9c193ad5063ccd6eada564d2b1ad3b71",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_HX8352C.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "d174ae297e6bad9263b9435aa58f9f79",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_HX8347C.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "f3fa81c150fbbc7005e59fdda8b75e3b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9488_18bit.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "36bb2f7831fa2e1dfdbbf4fd922fca7a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SSD1306.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "f5064906dfab5988dc7b84b8061c1246",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9225.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "84ce48c595a887a13cb945e4c1479f8a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ST7796.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "ac2eab002b5b9c7069e01f759ae4d9ed",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_SH1106.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "7b179927a2d391a2260e1ef49d7cc6e0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ILI9488.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "566c411e2a974142525db54af9d9d707",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ST7735.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "5459be8444a85e8aa40163eb37bebc5d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/display/Arduino_ST7789.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "3b69128c80caa6c9f1020fc55a174bc3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/font/u8g2_font_quan7_h_cjk.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "ceddc961d49d8368bb2db00448dc16f0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/font/u8g2_font_unifont_h_chinese4.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e19ef501adacf0932da953e1e38e66b2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/font/glcdfont.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "d6975c62374ed21637fb5ec4071f0391",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/font/u8g2_font_unifont_h_cjk.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "00016283a52151ccb0a16aee8f26a8d3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/font/u8g2_font_unifont_h_chinese.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "7101d96a555c58dd7e55efbbf7bf4b32",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/font/u8g2_font_cubic11_h_cjk.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "4a4df52a66594ee4964057f47966d296",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/font/u8g2_font_chill7_h_cjk.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "5002c56e3c4b097d40dbd2735253ccc5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/font/u8g2_font_unifont_h_utf8.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "ed449b2aabfefbf1dc9a8a66a54c29a8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_STM32PAR8.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "4bd5dacb67107b04987ea1af8dff925e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_AVRPAR16.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "2bfe815668a7804651c49e7068a71747",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_SWPAR8.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "a45a18d66399d49e6201f65fe1732d8e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32PAR8QQ.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "d9bcff9236ba3d4eb47626ecbcb18b3a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32PAR8QQ.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "6c4551e92e3b600fe184c1f953e9f257",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32SPIDMA.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "8a6a0e3a96881d17b8c0e1e59460874e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32S2PAR16Q.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "bd50c4294a08273ddb5d0ed799879a77",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32S2PAR16Q.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "aca91dc834ad3d7d29256c05da1b3d6f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32S2PAR16.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "4f5ad09f17a540d8b3bca6fc04442436",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32PAR8.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "1801fc6b9e401ef6fc4d8d39d3609732",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32PAR8QQQ.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "f871e9a69147bed349ca7c03cab3431e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32LCD8.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "840ac707e34ae6415c0b4d418b4c5e0a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32RGBPanel.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "525da5ddf996a4c7d879c1459d758c9b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32RGBPanel.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "02c3f764a0e2bf7e0cbe0feb9379a162",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32LCD16.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "88fcad9ca29c19ca99a4042fa760713e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_DUEPAR16.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "602374ff78e7dd6475cff84e6f79c9a2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_SWPAR8.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "a999ea57ef4e88ecd71a79f4dddf62a7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32S2PAR8Q.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "750022aa2b95c4622177b4f12eea630b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32SPI.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "ff45845b6dfa096c4426071612f2ba9f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_XL9535SWSPI.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "76ed85570fb257b9f117ceae10f4ac28",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_Wire.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "946da0a1ad31e909db4f3de89b4e7ef7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_RPiPicoPAR8.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e88ccb0259e8cd95580112d97cec5186",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32PAR16.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "977e98a08b91a631aa8769d8c09ba9e4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32PAR16QQ.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e301f7754bba0ee4ba7af8f11f600f70",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32QSPI.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e8a299ee7e866afb85f28143bc417d0d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32PAR8Q.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "830065e0c3c442562956ded1fbc7318d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32PAR16Q.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "27309801e424246528437593e32cf286",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_HWSPI.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "990f3bc79ce8bc1d2dc47f95daa53003",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32S2PAR8.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "71746404c1c1e89cb55c662d3dda89a9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32PAR8Q.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "1a15a8c3c2fc801cc332007b3208c120",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32SPI.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "950277db8d068c28543d15d85f551f73",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP8266SPI.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "1ccf9a65330ab4f9bd9cd55d6a7b779e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32PAR16Q.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "416cf1f373f9f34878eb76b0547041a4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_Wire.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "c332b0f11a32364e91e435c0fb6f1dbc",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32DSIPanel.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "d3294a7a07aec4dafd313a5337ac9ced",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_RPiPicoPAR16.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "f6cfaa371eae71a5c19efa8dffbf8244",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_SWPAR16.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "a820d06d6ec211bf3d148c0cdc5f5048",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32QSPI.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "4b9cc47a2fb6c97aea9e2db9ccc064d8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32DSIPanel.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "6fae89bc862d11f56a2e1671cc1541de",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32S2PAR8Q.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "b60fc98ce60d18d86a482853ee328ae8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_XL9535SWSPI.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "a0ff16a225cc073fc30b90f2ab707dbf",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_RPiPicoSPI.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "c86dd96fed37885eb1b5557a32a4eea3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_RTLPAR8.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "56d50230eebbda98360cd5b130b6bb9d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_RTLPAR8.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "52ef6e78adcc31b4627254ee940fc8be",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_NRFXSPI.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "55d4adc79cb0da2ae2598f5f360f5538",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32LCD16.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "85c1c910b008e601f43977af5dc2345b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_AVRPAR8.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "462dc66ee434b4353fa340ac833cd55e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_UNOPAR8.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "b8a79c7f7cfca6518de4d368f428ff67",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32PAR8.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "f36a1460ab2b5780909d4e83c7cebef3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_AVRPAR8.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "3e742d04a00e72ab25784f35a3fcfd07",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_STM32PAR8.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "f919467b27649c7e4e773ee690df8286",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32PAR16QQ.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "ae21d97fdbd1a4d15ece1f8d2b776970",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_SWPAR16.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "d62db98b1bcc74446d3722b786c60024",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32PAR8QQQ.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "04ce9e3822ceebbe76ad3d11f1d1b8a9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32PAR16.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "cd351fc1d3a644d38051174e15259272",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_UNOPAR8.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "2b152cef7690ff774cb373901684698e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_SWSPI.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e0f380be38cf5e3ba16e5f29ecd560da",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_AVRPAR16.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "11708a352f3939c1fd46e371e480e153",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_mbedSPI.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "6651293a53bafc69e964de44547fdb30",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32S2PAR16.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "ee4f3b0333f9f4f60924b68854353256",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32SPIDMA.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "e6cd2c48083dbb4e268cf165edb5e259",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_RPiPicoPAR8.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "2976a264322d168a3acdf4ae22c4ba49",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_RPiPicoSPI.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "8f3fe3e2cbf0f2de2df3055878b1553d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_DUEPAR16.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "b1a86d3286cb3daf38c14fe53de71d7b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32S2PAR8.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "efdd1875ff1ecb5c289b3c65a09d783c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_XCA9554SWSPI.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "6b2b181c7efd2644fe47ff6e92b8d145",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP32LCD8.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "d0a4eacdd4467e6d7e97e39c3310f92d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_SWSPI.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "b9115eacc0d14539ffcd63aa1ab64486",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_RPiPicoPAR16.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "921eeaabe391abedf04ff0d1ec05e1b3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_XCA9554SWSPI.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "248d1a468d60cca0d63a00a554b18de2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_HWSPI.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "79988684a925af14fad8ab8df0d24f5a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_ESP8266SPI.h": {
+    "mtime": 1784346147.0,
+    "ast_hash": "eeaf2bb463b942d308db35d8c1580263",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_mbedSPI.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "ea807d55621e74f72efdcbcda8063bd1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/databus/Arduino_NRFXSPI.cpp": {
+    "mtime": 1784346147.0,
+    "ast_hash": "0b02aa849c5d7d2c992f0e91f47b9909",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/src/main.cpp": {
+    "mtime": 1786749343.0580423,
+    "ast_hash": "6a9d876f0e37dd542939a164987d3335",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/infra/cloudflare/pixelops-kite/package.json": {
@@ -1574,14 +2864,29 @@
     "ast_hash": "73e2c4bc619488218d686b6423545aa0",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tools/generate_unicode_emoji_names.py": {
+    "mtime": 1787252317.6982093,
+    "ast_hash": "b301476683351869bb989d796b7681fa",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tools/runtime/start-pixel-ops-runtime.sh": {
-    "mtime": 1781562277.7111409,
-    "ast_hash": "cbb992b79c9413f15ee5307718b5e32f",
+    "mtime": 1787583526.3554256,
+    "ast_hash": "d1ecf7662c46e95a26bcb6c472fe78c8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tools/browser-media-extension/crosshero-bridge.js": {
+    "mtime": 1787158631.2484598,
+    "ast_hash": "df88fdc650f36bcc84996f1dde475183",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tools/browser-media-extension/studio-bridge.js": {
+    "mtime": 1787104241.0706115,
+    "ast_hash": "aec1447624a487c2d4b67b29eb233094",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tools/browser-media-extension/manifest.json": {
-    "mtime": 1782743338.4703155,
-    "ast_hash": "dec6bb6242c6012d6e88b557dc9bb852",
+    "mtime": 1787158631.1515899,
+    "ast_hash": "cd830caf4b467e6dd63bf6089806ad8a",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tools/browser-media-extension/content-script.js": {
@@ -1590,8 +2895,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tools/browser-media-extension/service-worker.js": {
-    "mtime": 1782743338.619883,
-    "ast_hash": "4d491f76401a436a6328e1a2a916e1d3",
+    "mtime": 1787158631.2011187,
+    "ast_hash": "3f39c2e3ea224c2c26c30a80f4d7ce88",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config_loader.py": {
@@ -1605,8 +2910,8 @@
     "semantic_hash": "728dd70ea0c7965cc2b9c68c2049dbdb"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/main.py": {
-    "mtime": 1784951528.6774209,
-    "ast_hash": "1543bd9c91b4221a00a89cfb5d2f1967",
+    "mtime": 1786735287.1905599,
+    "ast_hash": "63c4a956857f3c7176656f6b6c741e11",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/thermalright_cli.py": {
@@ -1634,39 +2939,44 @@
     "ast_hash": "d389c399da6da3c9b7573eee2bd68772",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/core/game.py": {
+    "mtime": 1785714024.3460543,
+    "ast_hash": "a9b52b09df4dd89ef22d33220cff0cc8",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/core/__init__.py": {
-    "mtime": 1780709420.439945,
-    "ast_hash": "5f858b77dfd0938568055fdb9ff32e57",
+    "mtime": 1785714167.7687855,
+    "ast_hash": "c47bbe38599ab43956e4061f40693308",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/core/app.py": {
-    "mtime": 1781384210.105591,
-    "ast_hash": "e42ce3ed01bfb102b42048760cb837bd",
+    "mtime": 1785714167.8526492,
+    "ast_hash": "d562bd1225b29b30fc52e946f14b0055",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/integrations.json": {
-    "mtime": 1784954258.5627007,
-    "ast_hash": "4fe6a3dbc5d9cc6dc0f82e2efff1d557",
+    "mtime": 1787595014.374987,
+    "ast_hash": "209df6205565f2ccfa29a24ef08aac31",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/display.json": {
-    "mtime": 1784954258.562701,
-    "ast_hash": "74619fa294f9098bc0ec4d5feb549d1e",
+    "mtime": 1787595014.4278316,
+    "ast_hash": "ad49a36b7b8ae513e8cc12f863e93b15",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/discord_people.json": {
-    "mtime": 1784954258.5627418,
+    "mtime": 1787593573.7887092,
     "ast_hash": "ad451f389326a555e8f72735c730c9eb",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/people.json": {
-    "mtime": 1784954258.5627377,
+    "mtime": 1787593573.788714,
     "ast_hash": "f7db92a9d1e4ad2bd31f30247f21d97e",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/registry.py": {
-    "mtime": 1780365027.9995394,
-    "ast_hash": "d3e6fa867095e9fc4ed2ec83935d72de",
+    "mtime": 1785720365.2652874,
+    "ast_hash": "4ecd42f9b7201389ee700c38ed6e086d",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/__init__.py": {
@@ -1680,12 +2990,12 @@
     "semantic_hash": "9a8a7318e5ed0fcd20f37096ae20381f"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/companions.json": {
-    "mtime": 1784954258.562726,
+    "mtime": 1787593573.7887845,
     "ast_hash": "ba53346223bd5291b7a005fead013a10",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game.json": {
-    "mtime": 1784954258.5627067,
+    "mtime": 1787593573.7888718,
     "ast_hash": "73bbc2488584dc7cd073b549d1ceb8b6",
     "semantic_hash": ""
   },
@@ -1694,18 +3004,23 @@
     "ast_hash": "34c3e6b60908f9fb2287229d6731d24d",
     "semantic_hash": "34c3e6b60908f9fb2287229d6731d24d"
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/engine.py": {
+    "mtime": 1787594688.9463015,
+    "ast_hash": "8ae3ee7455d599843a2abf11d5dc01f0",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/pokemon.py": {
     "mtime": 1778609511.1985648,
     "ast_hash": "ddcb3f29511e34ac5b84d1020e18c430",
     "semantic_hash": "ddcb3f29511e34ac5b84d1020e18c430"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/plugin.py": {
-    "mtime": 1780709589.8139145,
-    "ast_hash": "a34e8f479823348346a02a03449a89e1",
+    "mtime": 1785714147.6779842,
+    "ast_hash": "e4ead247443b8f2ca86a8342b2209138",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/pokemon.json": {
-    "mtime": 1784954258.5627394,
+    "mtime": 1787593573.7887967,
     "ast_hash": "e7b0d141f87d260f64c1c714b8b534bd",
     "semantic_hash": ""
   },
@@ -1715,8 +3030,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/scenes/overworld_scene.py": {
-    "mtime": 1781384227.6359806,
-    "ast_hash": "9ea2ade7f31671bfc823ab3e50c896cf",
+    "mtime": 1787594688.9976506,
+    "ast_hash": "b8799d91f9382aa45718eaaf1c9157d4",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/scenes/entities.py": {
@@ -1854,9 +3169,49 @@
     "ast_hash": "a9ef09a7253d24b29d22cfee8711f2dc",
     "semantic_hash": "a9ef09a7253d24b29d22cfee8711f2dc"
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/spaceship/persistence.py": {
+    "mtime": 1785721888.572651,
+    "ast_hash": "2ac4405ab29b96bb6c8759a5cba6a89d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/spaceship/game.json": {
+    "mtime": 1787593573.7888536,
+    "ast_hash": "73bbc2488584dc7cd073b549d1ceb8b6",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/spaceship/__init__.py": {
+    "mtime": 1785720364.71869,
+    "ast_hash": "126ca85bf48e22b9c616e1b659cb8848",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/spaceship/scene.py": {
+    "mtime": 1785807571.697094,
+    "ast_hash": "81b99226315f2abf60589c2506b6193c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/spaceship/engine.py": {
+    "mtime": 1785720745.8656898,
+    "ast_hash": "97f32da5d5e0bc9c82c1802906c0fa6d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/spaceship/plugin.py": {
+    "mtime": 1785721864.3079383,
+    "ast_hash": "ce362e8644bce53a567d578af149bc06",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/spaceship/assets/pixellab-manifest.json": {
+    "mtime": 1785796143.3456953,
+    "ast_hash": "bd25c20ebd39b4319e31897eca3cbb0e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/spaceship/assets/crew/operations-officer-character/metadata.json": {
+    "mtime": 1785795190.0,
+    "ast_hash": "46d5877bf1d46ab94998a00a1fcaa427",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/render/renderer.py": {
-    "mtime": 1780974392.978449,
-    "ast_hash": "182c45364ae8a33f8571a424746501ff",
+    "mtime": 1785181177.143078,
+    "ast_hash": "538d02ba6cc77460c58fc21bde767587",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/render/animation.py": {
@@ -1865,13 +3220,13 @@
     "semantic_hash": "6a3edc4bfd1aec9d56174459b0a5be0e"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/render/hud.py": {
-    "mtime": 1781752802.0061793,
-    "ast_hash": "f74c01176026baa13aeca2fe08f64927",
+    "mtime": 1787594689.0485272,
+    "ast_hash": "0d413417e5da3c4c84b97b7da781c58a",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/render/fonts.py": {
-    "mtime": 1780088041.9682972,
-    "ast_hash": "9dc100425683e26d485d97c2421960e2",
+    "mtime": 1787252969.1097047,
+    "ast_hash": "6076abbbafad31a3753caa2f46b71148",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/render/splash.py": {
@@ -1905,8 +3260,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/pc_stats/plugin.py": {
-    "mtime": 1779764500.8994694,
-    "ast_hash": "088c8db868b3571110482694d3bb526a",
+    "mtime": 1785714080.191342,
+    "ast_hash": "5530d7f747f9eb1a618ee95a09b207f7",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/google_calendar/__init__.py": {
@@ -1950,8 +3305,18 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/discord/plugin.py": {
-    "mtime": 1780940814.2408044,
-    "ast_hash": "e55b006c5df96d988f745e81ca560e4a",
+    "mtime": 1785714080.552654,
+    "ast_hash": "c072cf15ec915177c71b76c4d7f97fe6",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/crosshero/__init__.py": {
+    "mtime": 1787097747.3162742,
+    "ast_hash": "59d14549043a37fc283f887660edfd28",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/crosshero/plugin.py": {
+    "mtime": 1787104367.0920248,
+    "ast_hash": "c0b26f00572efae3d949f949c7f43ca8",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/clickup/__init__.py": {
@@ -1960,8 +3325,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/clickup/plugin.py": {
-    "mtime": 1780364278.9933295,
-    "ast_hash": "740207f6b252830d67fcc8aacd67e73e",
+    "mtime": 1785714080.2757504,
+    "ast_hash": "9cc2dd6d1bd21f058a56bdc5196ac855",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/todoist/__init__.py": {
@@ -1970,8 +3335,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/todoist/plugin.py": {
-    "mtime": 1780364268.339633,
-    "ast_hash": "204da31e42c7675a3994f50355c87e06",
+    "mtime": 1785714080.3681629,
+    "ast_hash": "13d99f7d48c0e72269a7ee21d28e423b",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/github/__init__.py": {
@@ -1980,8 +3345,8 @@
     "semantic_hash": "63a4fc4e9cf28ba7fab2b8ade994e7aa"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/github/plugin.py": {
-    "mtime": 1779503352.1012204,
-    "ast_hash": "f8414b16b034caefc46d9b1d45cb84d4",
+    "mtime": 1785714079.932161,
+    "ast_hash": "83fdf1c313f87c0d3eb45795d50a2582",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/teams/classifier.py": {
@@ -2020,8 +3385,8 @@
     "semantic_hash": "77e6362e8ed9a1c21377a2bac8c2b025"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/zoom/plugin.py": {
-    "mtime": 1780617266.3599067,
-    "ast_hash": "a39d85695133cfcb73ce2bbc4de51413",
+    "mtime": 1785714080.6375737,
+    "ast_hash": "64aadd71bf4018987fd393cc57468d3f",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/zoom/participants.py": {
@@ -2035,8 +3400,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/kite/plugin.py": {
-    "mtime": 1780625663.2520866,
-    "ast_hash": "2f102616992d73d36cb335f281f416c3",
+    "mtime": 1785714080.7195287,
+    "ast_hash": "8e8b414b2d19a09c5024b6ca5508d412",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/kite/source.py": {
@@ -2050,8 +3415,8 @@
     "semantic_hash": "4e014ab00076a5aa90bcb2d9a2c0ccdc"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/ai_usage/plugin.py": {
-    "mtime": 1779113644.935738,
-    "ast_hash": "90dab544b90165398f8e5a45a4f04f43",
+    "mtime": 1785714080.1052382,
+    "ast_hash": "2f68a5f0fe5fda7d0cab8cf47c732662",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/slack/classifier.py": {
@@ -2090,8 +3455,18 @@
     "semantic_hash": "44897929e94e3b85bc6876ab619ce7a9"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/weather/plugin.py": {
-    "mtime": 1779500490.8109224,
-    "ast_hash": "d954c582777e49c88e6b982b957874d5",
+    "mtime": 1785714080.0183208,
+    "ast_hash": "bec61a32dacfcc38022c108e68105369",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/capacities/__init__.py": {
+    "mtime": 1787594654.3014977,
+    "ast_hash": "d938016ecf62996373e975c73553f6f9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/capacities/plugin.py": {
+    "mtime": 1787594960.2260876,
+    "ast_hash": "c461b3d68bc6df80e7ca851764fb8724",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/ics/__init__.py": {
@@ -2110,8 +3485,13 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/media/plugin.py": {
-    "mtime": 1782743262.8564534,
-    "ast_hash": "4f32cb3170fa03ff4df1be523db6ce6e",
+    "mtime": 1785714080.4643948,
+    "ast_hash": "d3f4fec600d4e5b316b49145deed7d28",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/unicode_emoji_names.json": {
+    "mtime": 1787252322.8637667,
+    "ast_hash": "bc7f3b1dab0d16d56abc3797b47e7096",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/media.py": {
@@ -2144,6 +3524,11 @@
     "ast_hash": "098c4644802276ca9f15110c8164905b",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/capacities.py": {
+    "mtime": 1787594960.1800342,
+    "ast_hash": "81d23c23d2466c18baa1c6c1c2d785c9",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/todoist.py": {
     "mtime": 1780364255.8781035,
     "ast_hash": "8a5795ac663b4317670e460f0192dae5",
@@ -2154,9 +3539,19 @@
     "ast_hash": "c555c640d228ee1cef44b846be175f79",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/crosshero.py": {
+    "mtime": 1787253028.8421667,
+    "ast_hash": "904f7573cde2391a3f9480b29822e21a",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/clickup.py": {
     "mtime": 1780364220.3032587,
     "ast_hash": "0520cd845fb32a08dd4df2baa067bf90",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/projects.py": {
+    "mtime": 1787594654.1837382,
+    "ast_hash": "8a288d3ad83547a29bd5668085c1dfa9",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/availability.py": {
@@ -2185,9 +3580,9 @@
     "semantic_hash": "3b12d067163eadf7276d549872654e59"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/__init__.py": {
-    "mtime": 1778609753.2242901,
-    "ast_hash": "c160dac2e5908180f38a9b33a19fbcfd",
-    "semantic_hash": "c160dac2e5908180f38a9b33a19fbcfd"
+    "mtime": 1785714024.9260619,
+    "ast_hash": "b1834ecfc25ed0982a77d2ec15298de6",
+    "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/social_events.py": {
     "mtime": 1779049132.4491823,
@@ -2199,10 +3594,20 @@
     "ast_hash": "1246549a3fe773937f07236451cdba4e",
     "semantic_hash": "1246549a3fe773937f07236451cdba4e"
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/platform.py": {
+    "mtime": 1785714024.1829143,
+    "ast_hash": "d3ec67f27e480c2043f6053b2d30cbee",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/event_bus.py": {
     "mtime": 1778994855.6387696,
     "ast_hash": "6c87b6f2931179d218812adbfd56fbfc",
     "semantic_hash": "6c87b6f2931179d218812adbfd56fbfc"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/observation_sources.py": {
+    "mtime": 1785714024.2647095,
+    "ast_hash": "ded4e84f867050eba5051ce9e95d0764",
+    "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/github_events.py": {
     "mtime": 1780342079.928906,
@@ -2215,13 +3620,13 @@
     "semantic_hash": "d670f542ffda9062d26024ba5b60247a"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/events/base.py": {
-    "mtime": 1779065010.5484846,
-    "ast_hash": "397268a845dcb47f9be473c9c5e7f8f7",
-    "semantic_hash": "397268a845dcb47f9be473c9c5e7f8f7"
+    "mtime": 1785714218.4597328,
+    "ast_hash": "a3ac249520933a46125a669d7e4ae406",
+    "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integration_plugins/registry.py": {
-    "mtime": 1781384329.324746,
-    "ast_hash": "ba8c3c6355f53cf20c026d5ae05c26f2",
+    "mtime": 1787594654.393078,
+    "ast_hash": "c9e9f8a866f50e7bf53af732b731c63d",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integration_plugins/__init__.py": {
@@ -2235,8 +3640,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integration_plugins/base.py": {
-    "mtime": 1780364853.563041,
-    "ast_hash": "aaa79d72f1223eb45302027cc86072a3",
+    "mtime": 1785714060.4117205,
+    "ast_hash": "46ccf4140582fb9d7fddb838a1624c03",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/preview.py": {
@@ -2250,13 +3655,18 @@
     "semantic_hash": "f3b4a1b6604a5cb6ee9e7b3eb870d2d3"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/eink_http.py": {
-    "mtime": 1784952698.3039844,
-    "ast_hash": "4ea31051ae375c46c5390df12d77431b",
+    "mtime": 1787082110.8301315,
+    "ast_hash": "53b2addce5f08337946a3c27552656b8",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/__init__.py": {
-    "mtime": 1784951528.586012,
-    "ast_hash": "749a3d8d20701aa22388c1da336b25af",
+    "mtime": 1786728992.7730165,
+    "ast_hash": "88ed8e41ff9e73f2c3e69068b3c37588",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/lcd_http.py": {
+    "mtime": 1786736372.4685364,
+    "ast_hash": "fff98cd06e61a09e3a4484088e82fa03",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/file_gif.py": {
@@ -2275,8 +3685,13 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/turzx_usb.py": {
-    "mtime": 1780971330.2209122,
-    "ast_hash": "85e47fdd3bbf25268abefd0055a1c3d5",
+    "mtime": 1785706771.9236467,
+    "ast_hash": "b318e0ed5ae00fea027463c022a2eb33",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_crosshero.py": {
+    "mtime": 1787252969.247484,
+    "ast_hash": "e29263f4bb89773f0083a8274555ff4d",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_ai_usage.py": {
@@ -2284,14 +3699,29 @@
     "ast_hash": "13754eb04ab4c5702ae193cc21db6b59",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_game_engine.py": {
+    "mtime": 1785716446.6305335,
+    "ast_hash": "86960c365c84e9483a8c8cd2ae17577e",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_state_store.py": {
     "mtime": 1780408780.4599063,
     "ast_hash": "bc2e8c67020640ff476a55e1d1843631",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_capacities.py": {
+    "mtime": 1787594960.3168511,
+    "ast_hash": "266d958182ec5e4dd5970e6c3719e3f8",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_core.py": {
-    "mtime": 1781384243.3649747,
-    "ast_hash": "e6f877cb7e9ed20a6b9d2cdde320d1ff",
+    "mtime": 1786735318.9608023,
+    "ast_hash": "3db519dddc212d6b91c58d33a69a0b37",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_spaceship.py": {
+    "mtime": 1785807589.4507372,
+    "ast_hash": "8095e42dac9397f274ecb58f3b672f40",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_thermalright_usb.py": {
@@ -2314,9 +3744,14 @@
     "ast_hash": "61bdc9efc389706f68cd7d1b8bb51bc9",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_turzx_output.py": {
+    "mtime": 1785706772.2058852,
+    "ast_hash": "15ac91115c6854d46e016ed98a5000c5",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_integration_plugins.py": {
-    "mtime": 1780625718.4035363,
-    "ast_hash": "d57fe38f038ba3e08b7a92376f6a5575",
+    "mtime": 1787594754.723456,
+    "ast_hash": "872f148689f1fada72089c3e06f4465d",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_media.py": {
@@ -2344,9 +3779,14 @@
     "ast_hash": "f187cebb04df442cad33d43b07ca5134",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_lcd_http.py": {
+    "mtime": 1786736372.5549304,
+    "ast_hash": "1c7a61586b7f5d3307177d24382e1f0c",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_eink_http.py": {
-    "mtime": 1784952702.9364934,
-    "ast_hash": "8603e0b63389ee0a7863952d8937de0c",
+    "mtime": 1787082129.508665,
+    "ast_hash": "cc8714a61a5e33250b5a3252c94ea54d",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_clickup.py": {
@@ -2365,8 +3805,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/package.json": {
-    "mtime": 1781562185.5936859,
-    "ast_hash": "9c4d7fc2263a8e363c71decec180ba6a",
+    "mtime": 1785701386.662174,
+    "ast_hash": "faee9a6f52bb8927c9786aeeee9bc38f",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/tsconfig.json": {
@@ -2380,13 +3820,13 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/vite.config.ts": {
-    "mtime": 1781571004.1149855,
-    "ast_hash": "b278577a1d558cbdf18653f40234c09a",
+    "mtime": 1787594710.4885962,
+    "ast_hash": "98373f64badf436883a81e2d7ec0ed78",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/App.tsx": {
-    "mtime": 1784955216.5642846,
-    "ast_hash": "19a0912005d546c1165551e6d6722050",
+    "mtime": 1787594723.522424,
+    "ast_hash": "db54e9a547504c050e1ae09bb4a80b5b",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/main.tsx": {
@@ -2395,8 +3835,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/types.ts": {
-    "mtime": 1784951676.8688774,
-    "ast_hash": "0a56303aaa2f6dfdaa3e812a19d84708",
+    "mtime": 1787594710.5370297,
+    "ast_hash": "9321aa232e9e048531923e46af0747cc",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/components/PixelMascot.tsx": {
@@ -2405,8 +3845,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/lib/configApi.ts": {
-    "mtime": 1780696527.094492,
-    "ast_hash": "a19813b1b065fe1bc97fe511e2823987",
+    "mtime": 1787104248.1440456,
+    "ast_hash": "6af49f490d910e10420122256b86efd3",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/scripts/windows_check.py": {
@@ -2430,13 +3870,13 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/README.md": {
-    "mtime": 1781562217.050045,
-    "ast_hash": "a7adce518501b271dcb10913238c3e34",
+    "mtime": 1787594907.052339,
+    "ast_hash": "4fa291a4e780488d9b6f4ffad79fadf6",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/AGENTS.md": {
-    "mtime": 1780625762.9806511,
-    "ast_hash": "08987c8a2656b8f927e4608a61e5302c",
+    "mtime": 1787103775.567623,
+    "ast_hash": "a81b383d663b79971e12dd23f3b4f94c",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/NOTICE.md": {
@@ -2445,8 +3885,8 @@
     "semantic_hash": "af0bff3ffdb21d7afd07837c6ce73eb5"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/README.md": {
-    "mtime": 1784952698.49619,
-    "ast_hash": "c18c3239ba5a83fbe2d062b6cce00357",
+    "mtime": 1787082055.85902,
+    "ast_hash": "e1f09e0a0812c61f535d55128087244b",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/heltec-e213/.pio/libdeps/e213/heltec-eink-modules/breaking_changes.md": {
@@ -2589,14 +4029,74 @@
     "ast_hash": "1ebbd3e34237af26da5dc08a4e440464",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/README.md": {
+    "mtime": 1786729090.6796854,
+    "ast_hash": "8bef973ee09393b58d96d14ac6c07694",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/CMakeLists.txt": {
+    "mtime": 1709346589.0,
+    "ast_hash": "d4c4a2437b40fc4b9532d8db4a3bc8fd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/keywords.txt": {
+    "mtime": 1709346589.0,
+    "ast_hash": "0ebda82e3a97832fc38a993b84ca82ab",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/README.md": {
+    "mtime": 1709346589.0,
+    "ast_hash": "5c6a034f8f53892f5ba7bac2e75e3276",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/.travis.yml": {
+    "mtime": 1709346589.0,
+    "ast_hash": "0e05f33e3c29f8a0f79cb736b2cf1db6",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/.github/ISSUE_TEMPLATE.md": {
+    "mtime": 1709346589.0,
+    "ast_hash": "4ab13c9c0a899d27ed8c96bc280bf059",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/.github/CONTRIBUTING.md": {
+    "mtime": 1709346589.0,
+    "ast_hash": "d7192bc2b25e3edbe914f268d6559164",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/.github/workflows/compile_library.yml": {
+    "mtime": 1709346589.0,
+    "ast_hash": "2a0f1960cb69faa752aa7264a1982319",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/.github/workflows/compile_examples.yaml": {
+    "mtime": 1709346589.0,
+    "ast_hash": "9af35422081630485e5dade8b68a33ee",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/.github/workflows/cpp_lint.yml": {
+    "mtime": 1709346589.0,
+    "ast_hash": "744438a2472f22b2e7d031f63a089cee",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/README.md": {
+    "mtime": 1784346147.0,
+    "ast_hash": "aa2a886d652ff6e4541c5ae0bccb31b0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/src/canvas/readme.md": {
+    "mtime": 1784346147.0,
+    "ast_hash": "0980ec9cb988d7f17a8fdd0593c68459",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/infra/cloudflare/pixelops-kite/README.md": {
     "mtime": 1780627309.9122798,
     "ast_hash": "909f22b0fdfb01f7090329e1d5d5e769",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tools/browser-media-extension/README.md": {
-    "mtime": 1782743338.9289036,
-    "ast_hash": "98505b0a90730daa3807e8ae4830b18d",
+    "mtime": 1787158631.3458347,
+    "ast_hash": "2ade3934ee4b72e276912e3681429aa1",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/display.yaml": {
@@ -2623,6 +4123,11 @@
     "mtime": 1778609752.9352202,
     "ast_hash": "7a449a50c2be2aa24fd3feaed12c1aea",
     "semantic_hash": "7a449a50c2be2aa24fd3feaed12c1aea"
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/spaceship/README.md": {
+    "mtime": 1785807625.638589,
+    "ast_hash": "fd69a77cf5f8d57d631b219478961074",
+    "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/assets/fonts/jetbrains-mono/OFL.txt": {
     "mtime": 1778604421.5587673,
@@ -2669,6 +4174,11 @@
     "ast_hash": "7a79db600753be7ba35d91a2cc56c2f6",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0028-project-radar-uses-provider-neutral-observations.md": {
+    "mtime": 1787594906.9628406,
+    "ast_hash": "7a577ed6c11915880ff9c3a57a432927",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0022-zoom-meeting-companions-use-provider-neutral-snapshots.md": {
     "mtime": 1780625788.7497895,
     "ast_hash": "4b8f2847bdf902405d82c4fbf3219ba6",
@@ -2694,6 +4204,16 @@
     "ast_hash": "7f9a29b85964e097c9773ce1e03761e6",
     "semantic_hash": "7f9a29b85964e097c9773ce1e03761e6"
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0026-all-game-inputs-are-platform-events.md": {
+    "mtime": 1785714199.991895,
+    "ast_hash": "8b5b24246dfdb97e618060766805d28b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0026-color-lcds-are-network-output-terminals.md": {
+    "mtime": 1786729505.1125498,
+    "ast_hash": "d405818a511c6d34983e82c8f1157730",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0013-config-studio-discovers-plugin-configs.md": {
     "mtime": 1779577258.3697913,
     "ast_hash": "32a6f651fe684720177373b61b5b9e8b",
@@ -2710,8 +4230,8 @@
     "semantic_hash": "bf4417318952d58eebde39df9e4f6ea9"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/README.md": {
-    "mtime": 1780625783.0998847,
-    "ast_hash": "c4b023fe14a6fecddee253a8d92877f6",
+    "mtime": 1787594925.5848954,
+    "ast_hash": "0945b2a068f5db2cafcf084e58f04829",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0014-discord-voice-companions-are-provider-state-with-visual-mapping.md": {
@@ -2735,14 +4255,19 @@
     "semantic_hash": "8ecff83584b483a5619c68ed0b7e1639"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0010-shared-integration-runtime-boundary.md": {
-    "mtime": 1779559519.8588555,
-    "ast_hash": "a87f28e6fd42762073e7d590cc6c3e61",
+    "mtime": 1785714200.1544316,
+    "ast_hash": "95155660bb3e1f825ea421d9cc7210b6",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0008-pokemon-visual-plugin-boundary.md": {
-    "mtime": 1779063816.9583697,
-    "ast_hash": "3999d661b7490409ff8fd8e4cbf4a624",
-    "semantic_hash": "3999d661b7490409ff8fd8e4cbf4a624"
+    "mtime": 1785714200.0734954,
+    "ast_hash": "d4c9c000ab39949b4971d87ae206d72b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0008-crosshero-fitness-observations.md": {
+    "mtime": 1787158631.393719,
+    "ast_hash": "3bbdf9115289fe3d6d836cba79dbd31f",
+    "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0001-ambient-social-observability-not-feeds.md": {
     "mtime": 1779063816.495714,
@@ -2755,8 +4280,8 @@
     "semantic_hash": "fc3154c59c13b77b67e5bd4b8beb4029"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0025-eink-displays-are-network-output-terminals.md": {
-    "mtime": 1784951637.608363,
-    "ast_hash": "e4aa3694b5c2411f4c5478006b8b5072",
+    "mtime": 1787082055.8128407,
+    "ast_hash": "920224d9790f6df36b546881c53bd237",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0020-tasks-huds-share-provider-neutral-board-state.md": {
@@ -2774,14 +4299,19 @@
     "ast_hash": "8a9937aaa3f556298298b790e031a11a",
     "semantic_hash": "8a9937aaa3f556298298b790e031a11a"
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0027-spaceship-progress-is-active-time-and-game-owned.md": {
+    "mtime": 1785720698.8028443,
+    "ast_hash": "06d1422d38cdbef5e95233e87714ab7b",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/index.html": {
     "mtime": 1779227640.6521413,
     "ast_hash": "cc31db6aed48ef6a10e5302aac7005c2",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/README.md": {
-    "mtime": 1781562212.4035795,
-    "ast_hash": "bb671c7529a0284c058fbdf302aabd8f",
+    "mtime": 1785701347.203733,
+    "ast_hash": "d2dc20a2f70498c6a66bb45ca1564e06",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/.github/workflows/windows.yml": {
