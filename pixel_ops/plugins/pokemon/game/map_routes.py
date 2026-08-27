@@ -53,6 +53,13 @@ class MapRouteManager:
         self.areas = self._load_areas()
         self._background_cache: dict[tuple[str, str], Image.Image] = {}
 
+    def set_viewport_size(self, viewport_size: tuple[int, int]) -> None:
+        normalized = (max(1, int(viewport_size[0])), max(1, int(viewport_size[1])))
+        if normalized == self.viewport_size:
+            return
+        self.viewport_size = normalized
+        self._background_cache.clear()
+
     def area_for_timestamp(self, timestamp: float) -> MapArea | None:
         if not self.areas:
             return None

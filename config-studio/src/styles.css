@@ -2035,3 +2035,228 @@ textarea:focus-visible,
     flex-direction: column;
   }
 }
+
+.screen-control-status {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.screen-control-status > div {
+  display: flex;
+  min-height: 72px;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  padding: 12px;
+}
+
+.screen-control-status span,
+.screen-control-status small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.screen-control-status strong {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.screen-control-grid,
+.screen-playlist-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.screen-control-grid button,
+.screen-playlist-list button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  padding: 10px 12px;
+}
+
+.screen-control-grid button.is-active,
+.screen-playlist-list button.is-active {
+  border-color: var(--mint);
+  background: var(--mint-soft);
+}
+
+.screen-control-grid small,
+.screen-playlist-list small {
+  color: var(--muted);
+}
+
+.screen-playlist-settings,
+.screen-playlist-edit {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: end;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.screen-playlist-sync {
+  align-items: center;
+  color: var(--muted);
+  display: inline-flex;
+  font-size: 0.78rem;
+  gap: 0.4rem;
+}
+
+.screen-playlist-settings > label:first-child {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 8px;
+}
+
+.remote-shell {
+  display: flex;
+  width: min(100% - 24px, 430px);
+  min-height: 100vh;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 0 24px;
+}
+
+.remote-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.remote-header div {
+  display: flex;
+  flex-direction: column;
+}
+
+.remote-header span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.remote-header i {
+  border-radius: 999px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  padding: 5px 9px;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.remote-header i.is-online {
+  background: var(--mint-soft);
+  color: var(--mint);
+}
+
+.remote-now {
+  display: flex;
+  min-height: 220px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: linear-gradient(145deg, var(--surface-raised), var(--surface));
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.remote-now span,
+.remote-now small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.remote-now h1 {
+  margin: 8px 12px;
+  font-size: 30px;
+}
+
+.remote-now > strong {
+  color: var(--mint);
+  font-family: var(--font-mono);
+  font-size: 40px;
+}
+
+.remote-screens {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.remote-screens button {
+  display: grid;
+  min-height: 86px;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-raised);
+  color: var(--text);
+  padding: 12px;
+  text-align: left;
+}
+
+.remote-screens button.is-active {
+  border-color: var(--mint);
+  background: var(--mint-soft);
+}
+
+.remote-screens small {
+  grid-column: 2;
+  color: var(--muted);
+}
+
+.remote-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.remote-actions button,
+.remote-studio-link {
+  display: flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+.remote-actions button.resume {
+  border-color: var(--mint);
+  background: var(--mint-soft);
+}
+
+.remote-studio-link {
+  min-height: 38px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media (max-width: 760px) {
+  .screen-control-status,
+  .screen-playlist-settings,
+  .screen-playlist-edit {
+    grid-template-columns: 1fr 1fr;
+  }
+}

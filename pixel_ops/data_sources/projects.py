@@ -38,19 +38,35 @@ class ProjectRadar:
     review_count: int
 
 
+def active_projects(snapshot: ProjectSnapshot | None) -> tuple[ProjectItem, ...]:
+    """Return every active project, with the most recently touched first."""
+    if not snapshot:
+        return ()
+    active_states = {"active", "ativo", "ativa", "focus", "foco", "doing", "em andamento"}
+    projects = [project for project in snapshot.projects if _normalized_state(project.state) in active_states]
+    return tuple(
+        sorted(
+            projects,
+            key=lambda project: (_timestamp(project.touched_at), _importance(project), project.title.lower()),
+            reverse=True,
+        )
+    )
+
+
 def project_radar(snapshot: ProjectSnapshot | None, now: datetime) -> ProjectRadar:
     if not snapshot:
         return ProjectRadar(None, None, 0, 0)
     open_projects = [project for project in snapshot.projects if _normalized_state(project.state) not in {"done", "complete", "completed", "concluido", "concluida"}]
     inbox_count = sum(_normalized_state(project.state) in {"", "inbox", "entrada"} for project in open_projects)
     review_count = sum(bool(project.review_at and _aware(project.review_at) <= _aware(now)) for project in open_projects)
-    active = [project for project in open_projects if _normalized_state(project.state) in {"active", "ativo", "ativa", "focus", "foco", "doing", "em andamento"}]
+    active = list(active_projects(snapshot))
     focus = max(active, key=lambda project: (_importance(project), _timestamp(project.touched_at)), default=None)
     candidates = [project for project in open_projects if project is not focus]
     resurfacing = max(candidates, key=lambda project: _attention_score(project, now), default=None)
     if focus is None and resurfacing is not None:
-        focus, resurfacing = resurfacing, max(
-            (project for project in candidates if project is not focus),
+        selected_focus = resurfacing
+        focus, resurfacing = selected_focus, max(
+            (project for project in candidates if project is not selected_focus),
             key=lambda project: _attention_score(project, now),
             default=None,
         )

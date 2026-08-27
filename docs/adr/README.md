@@ -39,3 +39,4 @@ Current ADRs:
 - [0026 - All Game Inputs Are Platform Events](0026-all-game-inputs-are-platform-events.md)
 - [0027 - Spaceship Progress Is Active-Time And Game-Owned](0027-spaceship-progress-is-active-time-and-game-owned.md)
 - [0028 - Project Radar Uses Provider-Neutral Observations](0028-project-radar-uses-provider-neutral-observations.md)
+- [0029 - Screen Playlists Are Presentation State](0029-screen-playlists-are-presentation-state.md)

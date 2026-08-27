@@ -29,6 +29,31 @@ export type RuntimeStatus = {
   ok?: boolean;
   stdout?: string;
   stderr?: string;
+  screens?: ScreenRuntimeStatus;
+};
+
+export type ScreenRuntimeStatus = {
+  available: boolean;
+  enabled: boolean;
+  mode: "automatic" | "pinned" | "offline";
+  active_screen_id: string | null;
+  active_screen_label: string | null;
+  next_screen_id: string | null;
+  next_screen_label: string | null;
+  activated_at: string | null;
+  changes_at: string | null;
+  remaining_ms: number | null;
+  revision: number;
+  screens: Array<{ id: string; label: string; plugin?: string; duration_seconds: number }>;
+};
+
+export type ScreenConfig = {
+  label: string;
+  plugin?: string;
+  enabled?: boolean;
+  duration_seconds?: number;
+  layout_theme?: string;
+  layout: Record<LayoutKey, LayoutBox>;
 };
 
 export type FirmwareStatus = {
@@ -307,6 +332,16 @@ export type RuntimeConfig = {
       layout: Record<LayoutKey, LayoutBox>;
       layout_theme?: string;
       layout_profiles?: Record<string, LayoutProfileConfig>;
+      screens?: Record<string, ScreenConfig>;
+      screen_rotation?: {
+        enabled: boolean;
+        order: string[];
+        initial_screen?: string;
+        default_duration_seconds: number;
+      };
+      screen_control?: {
+        port?: number;
+      };
       backend: string;
       fps: number;
       preview_output: string;

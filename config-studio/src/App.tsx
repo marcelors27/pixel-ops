@@ -8,6 +8,7 @@ import {
   Code2,
   Cpu,
   Database,
+  ExternalLink,
   Github,
   GripVertical,
   Maximize2,
@@ -17,10 +18,13 @@ import {
   Music2,
   FileImage,
   Play,
+  Pin,
   Plus,
   RefreshCw,
   Save,
   Square,
+  SkipBack,
+  SkipForward,
   Terminal,
   Upload,
   Trash2,
@@ -53,6 +57,7 @@ import {
   runFirmwareAction,
   runRuntimeAutostartAction,
   runRuntimeAction,
+  runScreenAction,
   saveConfig,
   saveDiscordBotToken,
   saveGithubToken,
@@ -84,6 +89,7 @@ import type {
   RuntimeAutostartStatus,
   RuntimeConfig,
   RuntimeStatus,
+  ScreenRuntimeStatus,
   UsbValidationResult,
 } from "./types";
 
@@ -184,6 +190,7 @@ const layoutThemeCatalog: Record<string, LayoutThemeDefinition> = {
       tasks: "#facc15",
       tasks_board: "#f472b6",
       project_radar: "#c4b5fd",
+      project_focus_radar: "#818cf8",
       gamification: "#65f0a1",
     },
   },
@@ -389,6 +396,19 @@ export function App() {
     }
   }
 
+  async function triggerScreenAction(action: "select" | "resume" | "next" | "previous", body: { screen_id?: string; pinned?: boolean } = {}) {
+    setRuntimeBusy(`screens/${action}`);
+    setError(null);
+    try {
+      const screens = await runScreenAction(action, body);
+      setRuntimeStatus((current) => current ? { ...current, screens } : current);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : String(caught));
+    } finally {
+      setRuntimeBusy(null);
+    }
+  }
+
   async function triggerRuntimeAutostartAction(action: "install" | "remove") {
     setRuntimeBusy(`autostart/${action}`);
     setError(null);
@@ -477,6 +497,10 @@ export function App() {
     setPathName(path);
   }
 
+  if (pathName === "/remote") {
+    return <ScreenRemote status={runtimeStatus?.screens ?? null} busy={runtimeBusy} error={error} onAction={triggerScreenAction} onOpenStudio={() => navigate("/")} />;
+  }
+
   if (!config || !manifest) {
     return (
       <main className="loading-shell">
@@ -532,6 +556,7 @@ export function App() {
           {!isPluginMapsRoute ? <a href="#runtime">Runtime</a> : null}
           {!isPluginMapsRoute ? <a href="#plugins">Plugins + Integrations</a> : null}
           {!isPluginMapsRoute ? <a href="#people">People</a> : null}
+          {!isPluginMapsRoute ? <a href="/remote" onClick={(event) => { event.preventDefault(); navigate("/remote"); }}>Remote</a> : null}
           {hasPokemonPlugin ? <a href="/pluginmaps" onClick={(event) => { event.preventDefault(); navigate("/pluginmaps"); }}>Plugin maps</a> : null}
         </nav>
       </header>
@@ -626,6 +651,13 @@ export function App() {
           onRemoveAutostart={() => void triggerRuntimeAutostartAction("remove")}
         />
 
+        <ScreenControlPanel
+          status={runtimeStatus?.screens ?? null}
+          busy={runtimeBusy}
+          onAction={triggerScreenAction}
+          onOpenRemote={() => window.open("/remote", "pixel-ops-remote", "popup=yes,width=390,height=650")}
+        />
+
         <FirmwarePanel
           status={firmwareStatus}
           port={firmwarePort}
@@ -709,6 +741,12 @@ export function App() {
             ) : null}
           </SettingsTabs>
         </section>
+
+        <ScreenPlaylistEditor
+          display={display}
+          onMutate={mutate}
+          onSelectLayout={setSelectedLayout}
+        />
 
         <LayoutPreview
           config={config}
@@ -1738,6 +1776,220 @@ function Metric({ icon: Icon, label, value }: { icon: IconComponent; label: stri
       <strong>{value}</strong>
     </div>
   );
+}
+
+function ScreenControlPanel({
+  status,
+  busy,
+  onAction,
+  onOpenRemote,
+}: {
+  status: ScreenRuntimeStatus | null;
+  busy: string | null;
+  onAction: (action: "select" | "resume" | "next" | "previous", body?: { screen_id?: string; pinned?: boolean }) => void;
+  onOpenRemote: () => void;
+}) {
+  const remaining = useScreenRemaining(status);
+  const online = Boolean(status?.available);
+  return (
+    <section className="screen-control wide-panel" aria-label="Screen control">
+      <div className="section-heading">
+        <Monitor size={20} />
+        <div>
+          <h2>Screen Control</h2>
+          <p>Choose what is visible now, pin it, or let the playlist rotate.</p>
+        </div>
+      </div>
+      <div className="screen-control-status">
+        <div><span>Now</span><strong>{status?.active_screen_label ?? "Runtime offline"}</strong></div>
+        <div><span>Mode</span><strong>{status?.mode === "pinned" ? "FIXED" : status?.mode === "automatic" ? "AUTOMATIC" : "OFFLINE"}</strong></div>
+        <div><span>Remaining</span><strong>{status?.mode === "pinned" ? "FIXED" : formatRemaining(remaining)}</strong></div>
+        <div><span>Next</span><strong>{status?.next_screen_label ?? "—"}</strong></div>
+      </div>
+      <div className="screen-control-grid">
+        {(status?.screens ?? []).map((screen) => (
+          <button
+            className={screen.id === status?.active_screen_id ? "is-active" : ""}
+            disabled={!online || busy !== null}
+            key={screen.id}
+            type="button"
+            onClick={() => onAction("select", { screen_id: screen.id, pinned: true })}
+          >
+            <Pin size={15} />
+            <span>{screen.label}</span>
+            <small>{screen.duration_seconds}s</small>
+          </button>
+        ))}
+      </div>
+      <div className="runtime-actions">
+        <button className="secondary-button" disabled={!online || busy !== null} type="button" onClick={() => onAction("previous")}><SkipBack size={16} />Previous</button>
+        <button className="primary-button" disabled={!online || busy !== null || status?.mode !== "pinned"} type="button" onClick={() => onAction("resume")}><Play size={16} />Resume rotation</button>
+        <button className="secondary-button" disabled={!online || busy !== null} type="button" onClick={() => onAction("next")}><SkipForward size={16} />Next</button>
+        <button className="secondary-button" type="button" onClick={onOpenRemote}><ExternalLink size={16} />Open remote</button>
+      </div>
+    </section>
+  );
+}
+
+function ScreenRemote({
+  status,
+  busy,
+  error,
+  onAction,
+  onOpenStudio,
+}: {
+  status: ScreenRuntimeStatus | null;
+  busy: string | null;
+  error: string | null;
+  onAction: (action: "select" | "resume" | "next" | "previous", body?: { screen_id?: string; pinned?: boolean }) => void;
+  onOpenStudio: () => void;
+}) {
+  const remaining = useScreenRemaining(status);
+  const online = Boolean(status?.available);
+  return (
+    <main className="remote-shell">
+      <header className="remote-header">
+        <div><strong>Pixel OPs</strong><span>Screen Remote</span></div>
+        <i className={online ? "is-online" : ""}>{online ? "CONNECTED" : "OFFLINE"}</i>
+      </header>
+      {error ? <div className="error-banner">{error}</div> : null}
+      <section className="remote-now">
+        <span>{status?.mode === "pinned" ? "FIXED SCREEN" : "NOW SHOWING"}</span>
+        <h1>{status?.active_screen_label ?? "Runtime offline"}</h1>
+        <strong>{status?.mode === "pinned" ? "FIXED" : formatRemaining(remaining)}</strong>
+        <small>{status?.next_screen_label ? `Next: ${status.next_screen_label}` : "Start the runtime to control screens"}</small>
+      </section>
+      <div className="remote-screens">
+        {(status?.screens ?? []).map((screen) => (
+          <button className={screen.id === status?.active_screen_id ? "is-active" : ""} disabled={!online || busy !== null} key={screen.id} type="button" onClick={() => onAction("select", { screen_id: screen.id, pinned: true })}>
+            <Pin size={18} /><strong>{screen.label}</strong><small>Show and fix</small>
+          </button>
+        ))}
+      </div>
+      <div className="remote-actions">
+        <button disabled={!online || busy !== null} type="button" onClick={() => onAction("previous")}><SkipBack size={20} />Previous</button>
+        <button className="resume" disabled={!online || busy !== null || status?.mode !== "pinned"} type="button" onClick={() => onAction("resume")}><Play size={20} />Resume</button>
+        <button disabled={!online || busy !== null} type="button" onClick={() => onAction("next")}><SkipForward size={20} />Next</button>
+      </div>
+      <button className="remote-studio-link" type="button" onClick={onOpenStudio}><ExternalLink size={15} />Open Config Studio</button>
+    </main>
+  );
+}
+
+function ScreenPlaylistEditor({
+  display,
+  onMutate,
+  onSelectLayout,
+}: {
+  display: RuntimeConfig["display"]["display"];
+  onMutate: (mutator: (draft: RuntimeConfig) => void) => void;
+  onSelectLayout: (key: LayoutKey) => void;
+}) {
+  const screens = useMemo(() => display.screens ?? {}, [display.screens]);
+  const rotation = display.screen_rotation ?? { enabled: false, order: Object.keys(screens), default_duration_seconds: 30 };
+  const order = useMemo(
+    () => [...rotation.order.filter((key) => screens[key]), ...Object.keys(screens).filter((key) => !rotation.order.includes(key))],
+    [rotation.order, screens],
+  );
+  const [selected, setSelected] = useState(order[0] ?? "");
+  const [name, setName] = useState("New screen");
+  const active = screens[selected];
+  const editorLayoutSignature = JSON.stringify(display.layout);
+
+  useEffect(() => {
+    if (!screens[selected]) setSelected(order[0] ?? "");
+  }, [order, screens, selected]);
+
+  useEffect(() => {
+    const screen = screens[selected];
+    if (!screen) return;
+    const theme = display.layout_theme ?? "default";
+    if (JSON.stringify(screen.layout) === editorLayoutSignature && (screen.layout_theme ?? "default") === theme) return;
+    onMutate((draft) => {
+      const target = draft.display.display.screens?.[selected];
+      if (!target) return;
+      target.layout = cloneJson(draft.display.display.layout);
+      target.layout_theme = draft.display.display.layout_theme;
+    });
+  }, [display.layout_theme, editorLayoutSignature, selected]);
+
+  function choose(screenId: string) {
+    setSelected(screenId);
+    const screen = screens[screenId];
+    if (!screen) return;
+    onMutate((draft) => {
+      draft.display.display.layout = cloneJson(screen.layout);
+      draft.display.display.layout_theme = screen.layout_theme ?? "default";
+    });
+    onSelectLayout(firstLayoutWindowKey(screen.layout) ?? "game");
+  }
+
+  function move(offset: number) {
+    const index = order.indexOf(selected);
+    const target = index + offset;
+    if (index < 0 || target < 0 || target >= order.length) return;
+    const next = [...order];
+    [next[index], next[target]] = [next[target], next[index]];
+    onMutate((draft) => { if (draft.display.display.screen_rotation) draft.display.display.screen_rotation.order = next; });
+  }
+
+  return (
+    <section className="screen-playlist wide-panel">
+      <div className="section-heading"><Monitor size={20} /><div><h2>Screen Playlist</h2><p>Create layouts that rotate on the same ambient world state.</p></div></div>
+      <div className="screen-playlist-settings">
+        <label><input type="checkbox" checked={rotation.enabled} onChange={(event) => onMutate((draft) => { draft.display.display.screen_rotation!.enabled = event.target.checked; })} />Automatic rotation</label>
+        <Field label="Default seconds"><NumberInput value={rotation.default_duration_seconds} min={1} onChange={(value) => onMutate((draft) => { draft.display.display.screen_rotation!.default_duration_seconds = value; })} /></Field>
+        <Field label="New screen"><TextInput value={name} onChange={setName} /></Field>
+        <button className="primary-button" type="button" onClick={() => {
+          const key = uniqueScreenKey(screens, name);
+          onMutate((draft) => {
+            const target = draft.display.display;
+            target.screens![key] = { label: name.trim() || "Screen", plugin: target.device.plugin, enabled: true, duration_seconds: target.screen_rotation!.default_duration_seconds, layout_theme: target.layout_theme, layout: cloneJson(target.layout) };
+            target.screen_rotation!.order.push(key);
+          });
+          setSelected(key);
+        }}><Plus size={16} />Add current layout</button>
+      </div>
+      <div className="screen-playlist-list">
+        {order.map((screenId) => (
+          <button className={selected === screenId ? "is-active" : ""} key={screenId} type="button" onClick={() => choose(screenId)}><strong>{screens[screenId].label}</strong><small>{screens[screenId].duration_seconds ?? rotation.default_duration_seconds}s</small></button>
+        ))}
+      </div>
+      {active ? <div className="screen-playlist-edit">
+        <Field label="Label"><TextInput value={active.label} onChange={(value) => onMutate((draft) => { draft.display.display.screens![selected].label = value; })} /></Field>
+        <Field label="HUD universe"><Select value={active.plugin ?? display.device.plugin ?? "pokemon"} options={["pokemon", "spaceship"]} onChange={(value) => onMutate((draft) => { draft.display.display.screens![selected].plugin = value; })} /></Field>
+        <Field label="Seconds"><NumberInput value={active.duration_seconds ?? rotation.default_duration_seconds} min={1} onChange={(value) => onMutate((draft) => { draft.display.display.screens![selected].duration_seconds = value; })} /></Field>
+        <span className="screen-playlist-sync"><Save size={16} />Layout synced with editor</span>
+        <button className="secondary-button" disabled={order.indexOf(selected) <= 0} type="button" onClick={() => move(-1)}><SkipBack size={16} />Move left</button>
+        <button className="secondary-button" disabled={order.indexOf(selected) >= order.length - 1} type="button" onClick={() => move(1)}><SkipForward size={16} />Move right</button>
+        <button className="danger-button" type="button" onClick={() => onMutate((draft) => { delete draft.display.display.screens![selected]; draft.display.display.screen_rotation!.order = draft.display.display.screen_rotation!.order.filter((key) => key !== selected); })}><Trash2 size={16} />Delete</button>
+      </div> : null}
+    </section>
+  );
+}
+
+function useScreenRemaining(status: ScreenRuntimeStatus | null): number | null {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const interval = window.setInterval(() => setNow(Date.now()), 250);
+    return () => window.clearInterval(interval);
+  }, []);
+  if (!status?.changes_at) return null;
+  return Math.max(0, new Date(status.changes_at).getTime() - now);
+}
+
+function formatRemaining(milliseconds: number | null): string {
+  if (milliseconds === null) return "—";
+  const total = Math.max(0, Math.ceil(milliseconds / 1000));
+  return `${String(Math.floor(total / 60)).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
+}
+
+function uniqueScreenKey(screens: Record<string, unknown>, label: string): string {
+  const base = slugify(label) || "screen";
+  let key = base;
+  let suffix = 2;
+  while (screens[key]) key = `${base}-${suffix++}`;
+  return key;
 }
 
 function RuntimePanel({
@@ -3280,8 +3532,8 @@ function PasswordInput({ value, onChange }: { value: string; onChange: (value: s
   return <input type="password" value={value} autoComplete="off" onChange={(event) => onChange(event.target.value)} />;
 }
 
-function NumberInput({ value, onChange, disabled = false }: { value: number; onChange: (value: number) => void; disabled?: boolean }) {
-  return <input type="number" value={value} disabled={disabled} onChange={(event) => onChange(Number(event.target.value))} />;
+function NumberInput({ value, onChange, disabled = false, min, max }: { value: number; onChange: (value: number) => void; disabled?: boolean; min?: number; max?: number }) {
+  return <input type="number" value={value} min={min} max={max} disabled={disabled} onChange={(event) => onChange(Number(event.target.value))} />;
 }
 
 function ReadOnlyValue({ value }: { value: string }) {
@@ -3906,6 +4158,25 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
   if (!display.layout || typeof display.layout !== "object") {
     display.layout = defaultLayoutFor(display.width, display.height);
   }
+  display.screens = display.screens ?? {
+    main: {
+      label: "Main",
+      plugin: display.device.plugin,
+      enabled: true,
+      duration_seconds: 30,
+      layout_theme: display.layout_theme,
+      layout: cloneJson(display.layout),
+    },
+  };
+  display.screen_rotation = display.screen_rotation ?? {
+    enabled: false,
+    order: Object.keys(display.screens),
+    initial_screen: Object.keys(display.screens)[0],
+    default_duration_seconds: 30,
+  };
+  display.screen_rotation.order = display.screen_rotation.order ?? Object.keys(display.screens);
+  display.screen_rotation.default_duration_seconds = Math.max(1, display.screen_rotation.default_duration_seconds ?? 30);
+  display.screen_control = display.screen_control ?? { port: 8766 };
   display.gamification = display.gamification ?? {
     max_hp: 100,
     meeting_cost: 8,
@@ -4655,7 +4926,7 @@ function layoutBoxForNewWindow(
   layout: Record<LayoutKey, LayoutBox>,
 ): LayoutBox {
   const defaults = defaultLayoutFor(frameWidth, frameHeight);
-  const base = kind === "clock" ? defaultClockLayoutBox(frameWidth, frameHeight) : kind === "media_asset" ? defaultMediaAssetLayoutBox(frameWidth, frameHeight) : kind.startsWith("eink_") ? defaultEinkTelemetryLayoutBox(kind, frameWidth, frameHeight) : defaults[kind] ?? {
+  const base = kind === "clock" ? defaultClockLayoutBox(frameWidth) : kind === "media_asset" ? defaultMediaAssetLayoutBox(frameWidth, frameHeight) : kind.startsWith("eink_") ? defaultEinkTelemetryLayoutBox(kind, frameWidth, frameHeight) : defaults[kind] ?? {
     x: 8,
     y: 8,
     width: Math.max(40, Math.round(frameWidth * 0.35)),
@@ -4686,7 +4957,7 @@ function defaultEinkTelemetryLayoutBox(kind: string, frameWidth: number, frameHe
   };
 }
 
-function defaultClockLayoutBox(frameWidth: number, frameHeight: number): LayoutBox {
+function defaultClockLayoutBox(frameWidth: number): LayoutBox {
   const compact = frameWidth < 640;
   return {
     x: 8,

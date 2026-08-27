@@ -15,7 +15,7 @@ from pixel_ops.data_sources.crosshero import CrossHeroDaySnapshot, CrossHeroWork
 from pixel_ops.data_sources.gamification import GamificationSnapshot
 from pixel_ops.data_sources.media import MediaNowPlaying
 from pixel_ops.data_sources.pc_stats import PCStatsSnapshot
-from pixel_ops.data_sources.projects import ProjectItem, ProjectSnapshot, project_age_days, project_radar, project_radar_scores
+from pixel_ops.data_sources.projects import ProjectItem, ProjectSnapshot, active_projects, project_age_days, project_radar, project_radar_scores
 from pixel_ops.data_sources.tasks import TaskItem, TaskSnapshot
 from pixel_ops.data_sources.timezones import PersonTime
 from pixel_ops.data_sources.weather import WeatherForecastDay, WeatherState
@@ -43,6 +43,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "clickup_tasks": (126, 196, 122),
         "tasks_board": (223, 122, 122),
         "project_radar": (190, 119, 246),
+        "project_focus_radar": (129, 140, 248),
         "media": (247, 169, 64),
         "now_playing": (247, 169, 64),
         "media_asset": (149, 215, 255),
@@ -71,6 +72,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "clickup_tasks": (122, 240, 164),
         "tasks_board": (255, 160, 128),
         "project_radar": (196, 181, 253),
+        "project_focus_radar": (150, 225, 255),
         "media": (188, 255, 128),
         "now_playing": (188, 255, 128),
         "media_asset": (96, 204, 255),
@@ -94,6 +96,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "clickup_tasks": (123, 225, 188),
         "tasks_board": (102, 190, 235),
         "project_radar": (129, 140, 248),
+        "project_focus_radar": (66, 197, 218),
         "media": (140, 210, 255),
         "now_playing": (140, 210, 255),
         "media_asset": (91, 204, 189),
@@ -117,6 +120,7 @@ HUD_THEME_TONES: dict[str, dict[str, tuple[int, int, int]]] = {
         "clickup_tasks": (255, 161, 96),
         "tasks_board": (255, 112, 112),
         "project_radar": (192, 132, 252),
+        "project_focus_radar": (255, 154, 89),
         "media": (255, 196, 92),
         "now_playing": (255, 196, 92),
         "media_asset": (255, 177, 93),
@@ -464,6 +468,9 @@ def _draw_configured_hud(
 
     for raw, radar_box in _layout_items(layout, "project_radar"):
         _draw_project_radar_panel(draw, project_snapshot, now, radar_box, item_palette(raw, "project_radar"))
+
+    for raw, radar_box in _layout_items(layout, "project_focus_radar"):
+        _draw_project_focus_radar_panel(draw, project_snapshot, now, radar_box, item_palette(raw, "project_focus_radar"))
 
     for raw, wod_box in _layout_items(layout, "crosshero_wod"):
         _draw_crosshero_wod_panel(draw, crosshero, now, wod_box, item_palette(raw, "crosshero_wod"))
@@ -1655,7 +1662,7 @@ def _draw_project_radar_panel(
     title_font = font(8)
     action_font = font(7)
     meta_font = font(6)
-    x0, y0, x1, y1 = _draw_panel_title(draw, box, "PROJECT RADAR", pal)
+    x0, y0, x1, y1 = _draw_panel_title(draw, box, "ACTIVE PROJECTS", pal)
     content_x = x0 + 7
     content_w = max(1, x1 - x0 - 14)
     content_h = max(1, y1 - y0 - 8)
@@ -1667,19 +1674,27 @@ def _draw_project_radar_panel(
         draw.text((content_x, y0 + 7), message, font=title_font, fill=pal.ink)
         return
 
-    radar = project_radar(snapshot, now)
-    chart_h = min(content_h - 76, max(86, int(content_h * 0.56))) if content_h >= 150 else 0
-    if radar.focus and chart_h:
-        _draw_project_radar_chart(draw, radar.focus, now, (content_x, y0 + 3, x1 - 7, y0 + 3 + chart_h), pal)
-    cards_y = y0 + 8 + chart_h
-    cards = [("FOCUS", radar.focus), ("NEXT", radar.resurfacing)]
-    visible = [(label, project) for label, project in cards if project]
-    card_gap = 6
-    card_w = max(1, (content_w - card_gap * max(0, len(visible) - 1)) // max(1, len(visible)))
-    card_h = max(36, y1 - 22 - cards_y)
-    for index, (label, project) in enumerate(visible):
-        _draw_project_card(draw, project, now, content_x + index * (card_w + card_gap), cards_y, card_w, card_h, pal, label, title_font, action_font, meta_font)
-    footer = f"INBOX {radar.inbox_count:02d}   REVIEW {radar.review_count:02d}"
+    active = active_projects(snapshot)
+    if not active:
+        draw.text((content_x, y0 + 7), "No projects in progress", font=title_font, fill=pal.ink)
+        draw.text((content_x, y0 + 20), "Set Status to Em andamento", font=action_font, fill=pal.blue)
+        return
+
+    cards_y = y0 + 5
+    footer_y = y1 - 19
+    available_h = max(1, footer_y - cards_y - 3)
+    card_gap = 4
+    minimum_card_h = 44
+    page_size = max(1, available_h // (minimum_card_h + card_gap))
+    page_count = max(1, math.ceil(len(active) / page_size))
+    page_index = int(now.timestamp() // 8) % page_count
+    visible = active[page_index * page_size : (page_index + 1) * page_size]
+    card_h = min(72, max(minimum_card_h, (available_h - card_gap * max(0, len(visible) - 1)) // len(visible)))
+    for index, project in enumerate(visible):
+        label = "NOW" if page_index == 0 and index == 0 else "ACTIVE"
+        card_y = cards_y + index * (card_h + card_gap)
+        _draw_project_card(draw, project, now, content_x, card_y, content_w, card_h, pal, label, title_font, action_font, meta_font)
+    footer = f"ACTIVE {len(active):02d}   PAGE {page_index + 1}/{page_count}"
     draw.line((content_x, y1 - 19, x1 - 7, y1 - 19), fill=pal.blue)
     draw.text((content_x, y1 - 16), _fit_text(draw, footer, content_w, action_font), font=action_font, fill=pal.blue)
 
@@ -1712,20 +1727,64 @@ def _draw_project_radar_chart(draw, project: ProjectItem, now: datetime, box: tu
     draw.text((x0 + 2, y0 + 1), _fit_text(draw, project.title, max(1, x1 - x0 - 4), font(7)), font=font(7), fill=pal.blue)
 
 
+def _draw_project_focus_radar_panel(
+    draw: ImageDraw.ImageDraw,
+    snapshot: ProjectSnapshot | None,
+    now: datetime,
+    box: tuple[int, int, int, int],
+    pal,
+) -> None:
+    PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
+    title_font = font(8)
+    action_font = font(7)
+    meta_font = font(6)
+    x0, y0, x1, y1 = _draw_panel_title(draw, box, "FOCUS RADAR", pal)
+    content_x = x0 + 7
+    content_w = max(1, x1 - x0 - 14)
+    active = active_projects(snapshot)
+    if not active:
+        message = "Radar unavailable" if snapshot and snapshot.status == "unavailable" else "No active focus"
+        draw.text((content_x, y0 + 7), message, font=title_font, fill=pal.ink)
+        return
+
+    focus = active[0]
+    chart_bottom = min(y1 - 76, y0 + max(112, int((y1 - y0) * 0.68)))
+    _draw_project_radar_chart(draw, focus, now, (content_x, y0 + 3, x1 - 7, chart_bottom), pal)
+    action_y = chart_bottom + 7
+    meta_y = y1 - 13
+    action_lines = max(1, (meta_y - action_y - 3) // 9)
+    action = focus.next_action or "needs next action"
+    for index, line in enumerate(_wrap_text(draw, action, content_w, action_font, action_lines)):
+        draw.text((content_x, action_y + index * 9), line, font=action_font, fill=pal.blue)
+    meta = " · ".join(bit for bit in (focus.phase or focus.state, focus.priority, f"{focus.progress}%" if focus.progress else "") if bit)
+    if meta:
+        draw.text((content_x, meta_y), _fit_text(draw, meta, content_w, meta_font), font=meta_font, fill=pal.green)
+
+
 def _draw_project_card(draw, project: ProjectItem, now: datetime, x: int, y: int, width: int, height: int, pal, label: str, title_font, action_font, meta_font) -> None:
     age = project_age_days(project, now)
     overdue = bool(project.review_at and project.review_at <= now)
     health_key = " ".join(project.health.lower().replace("_", " ").split())
     color = pal.red if overdue or health_key in {"bloqueado", "blocked"} else pal.yellow if health_key in {"atencao", "atenção", "attention"} or not project.next_action else pal.green
-    draw.rectangle((x, y, x + width - 1, y + height - 1), fill=pal.panel_shadow, outline=color)
+    draw.rectangle((x, y, x + width - 1, y + height - 1), fill=pal.panel, outline=color)
     draw.rectangle((x, y, x + 4, y + height - 1), fill=color)
     draw.text((x + 8, y + 3), label, font=meta_font, fill=color)
-    draw.text((x + 8, y + 12), _fit_text(draw, project.title, width - 14, title_font), font=title_font, fill=pal.ink)
-    if height >= 52:
-        draw.text((x + 8, y + 25), _fit_text(draw, project.next_action or "needs next action", width - 14, action_font), font=action_font, fill=pal.blue)
     meta = " · ".join(bit for bit in (project.phase or project.state, project.priority, f"{project.progress}%" if project.progress else "", f"{age}d" if age else "") if bit)
+    text_x = x + 8
+    text_w = width - 14
+    title_y = y + 12
+    title_step = 10
+    action_step = 9
+    footer_y = y + height - 12 if height >= 66 and meta else y + height - 4
+    title_lines = _wrap_text(draw, project.title, text_w, title_font, 2)
+    for line_index, line in enumerate(title_lines):
+        draw.text((text_x, title_y + line_index * title_step), line, font=title_font, fill=pal.ink)
+    action_y = title_y + max(1, len(title_lines)) * title_step + 3
+    action_lines = max(1, (footer_y - action_y - 3) // action_step)
+    for line_index, line in enumerate(_wrap_text(draw, project.next_action or "needs next action", text_w, action_font, action_lines)):
+        draw.text((text_x, action_y + line_index * action_step), line, font=action_font, fill=pal.blue)
     if height >= 66 and meta:
-        draw.text((x + 8, y + height - 12), _fit_text(draw, meta, width - 14, meta_font), font=meta_font, fill=color)
+        draw.text((text_x, footer_y), _fit_text(draw, meta, text_w, meta_font), font=meta_font, fill=color)
 
 
 def _draw_project_radar_row(

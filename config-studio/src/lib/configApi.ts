@@ -13,6 +13,7 @@ import type {
   RuntimeAutostartStatus,
   RuntimeConfig,
   RuntimeStatus,
+  ScreenRuntimeStatus,
   UsbValidationResult,
 } from "../types";
 
@@ -99,6 +100,27 @@ export async function runRuntimeAction(action: "check" | "preview" | "run/start"
     throw new Error(await response.text());
   }
   return response.json() as Promise<RuntimeStatus>;
+}
+
+export async function loadScreenStatus(): Promise<ScreenRuntimeStatus> {
+  const response = await fetch("/api/runtime/screens/status");
+  const payload = await response.json() as ScreenRuntimeStatus & { error?: string };
+  if (!response.ok) throw new Error(payload.error || "Falha ao consultar as telas do runtime.");
+  return payload;
+}
+
+export async function runScreenAction(
+  action: "select" | "resume" | "next" | "previous",
+  body: { screen_id?: string; pinned?: boolean } = {},
+): Promise<ScreenRuntimeStatus> {
+  const response = await fetch(`/api/runtime/screens/${action}`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const payload = await response.json() as ScreenRuntimeStatus & { error?: string };
+  if (!response.ok) throw new Error(payload.error || "Falha ao controlar as telas do runtime.");
+  return payload;
 }
 
 export async function loadRuntimeAutostartStatus(): Promise<RuntimeAutostartStatus> {

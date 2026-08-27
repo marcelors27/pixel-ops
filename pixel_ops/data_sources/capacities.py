@@ -45,6 +45,10 @@ class CapacitiesProjectSource:
         try:
             self._snapshot = self._fetch_snapshot(base_now)
         except (requests.RequestException, ValueError, KeyError, TypeError):
+            # Do not turn a transient API failure into a full polling-period outage.
+            # Keep the last good snapshot when available and allow the wrapper to
+            # retry shortly when startup has not produced data yet.
+            self._last_poll_at = None
             if self._snapshot is None:
                 self._snapshot = ProjectSnapshot((), base_now, provider="capacities", status="unavailable")
         return self._snapshot
@@ -116,7 +120,7 @@ def _project_from_object(item: dict[str, Any], definitions: dict[str, str]) -> P
         next_action=_property_text(properties, definitions, ["next action", "next_action", "proxima acao", "próxima ação"]),
         review_at=_property_date(properties, definitions, ["review at", "review date", "revisit at", "revisitar em", "revisao", "revisão"]),
         touched_at=_property_date(properties, definitions, ["last touched", "last touch", "ultimo toque", "último toque", "last updated at", "lastUpdatedAt"])
-        or _parse_datetime(item.get("lastUpdatedAt") or item.get("updatedAt")),
+        or _parse_datetime(item.get("lastUpdatedAt") or item.get("lastUpdated") or item.get("updatedAt")),
         importance=_property_number(properties, definitions, ["importance", "priority", "importancia", "importância", "prioridade"], 1),
         health=_property_text(properties, definitions, ["health", "saude", "saúde"]),
         priority=_property_text(properties, definitions, ["priority", "prioridade"]),
@@ -141,11 +145,32 @@ def _property_text(properties: dict[str, Any], definitions: dict[str, str], name
     kind = str(value.get("type") or "")
     nested = value.get(kind) if kind else None
     if isinstance(nested, dict):
-        return str(nested.get("value") or nested.get("text") or nested.get("name") or "")
+        raw = nested.get("value") or nested.get("text") or nested.get("name") or ""
+        if isinstance(raw, list):
+            return _rich_text(raw)
+        return str(raw)
     if isinstance(nested, list) and nested:
         first = nested[0]
         return str(first.get("name") or first.get("value") or "") if isinstance(first, dict) else str(first)
     return str(value.get("value") or "")
+
+
+def _rich_text(tokens: list[Any]) -> str:
+    """Flatten Capacities rich-text tokens into calm HUD copy."""
+    parts: list[str] = []
+    for token in tokens:
+        if isinstance(token, str):
+            parts.append(token)
+            continue
+        if not isinstance(token, dict):
+            continue
+        text = token.get("text") or token.get("value") or token.get("name")
+        if isinstance(text, str):
+            parts.append(text)
+        children = token.get("children") or token.get("content")
+        if isinstance(children, list):
+            parts.append(_rich_text(children))
+    return "".join(parts).strip()
 
 
 def _property_date(properties: dict[str, Any], definitions: dict[str, str], names: list[str]) -> datetime | None:

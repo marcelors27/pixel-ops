@@ -62,6 +62,9 @@ class SpaceshipEngine:
             raise RuntimeError("SpaceshipEngine requires runtime.tick before render")
         return self.scene.render(self.snapshot())
 
+    def set_presentation(self, layout: dict, layout_theme: str) -> None:
+        self.scene.set_presentation(layout, layout_theme)
+
     def snapshot(self) -> SpaceshipSnapshot:
         if self.now is None:
             raise RuntimeError("SpaceshipEngine requires runtime.tick before snapshot")

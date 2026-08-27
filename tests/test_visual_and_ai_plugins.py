@@ -42,10 +42,20 @@ from pixel_ops.render.hud import (
     _draw_timezone_timeline_row,
     _future_local_time,
     _timezone_timeline_fill,
+    _wrap_text,
 )
 
 
 class VisualAndAiPluginTests(unittest.TestCase):
+    def test_project_card_copy_wraps_without_losing_words_when_space_is_available(self):
+        draw = ImageDraw.Draw(Image.new("RGB", (240, 120), "white"))
+        copy = "Executar o fluxo completo e registrar cada quebra encontrada durante a validação"
+
+        lines = _wrap_text(draw, copy, 110, font(7), 8)
+
+        self.assertGreater(len(lines), 1)
+        self.assertEqual(" ".join(lines), copy)
+
     def test_visual_plugin_registry_exposes_pokemon(self):
         plugins = available_plugins()
 
@@ -850,6 +860,26 @@ class VisualAndAiPluginTests(unittest.TestCase):
             scene.map_routes.walkable_source_rects["town"],
             ((100, 80, 170, 130),),
         )
+
+    def test_pokemon_scene_resizes_map_viewport_when_presentation_changes(self):
+        scene = OverworldScene(
+            2092,
+            462,
+            "America/Sao_Paulo",
+            scanlines=False,
+            pokemon_api=None,
+            lazy_download=False,
+            display_layout={"spaceship_hud": {"x": 8, "y": 8, "width": 1904, "height": 448}},
+        )
+        scene.map_routes._background_cache[("area", "day")] = Image.new("RGB", (2092, 312))
+
+        scene.set_presentation(
+            {"game": {"x": 1448, "y": 0, "width": 464, "height": 312, "kind": "game"}},
+            "pokemon",
+        )
+
+        self.assertEqual(scene.map_routes.viewport_size, (464, 312))
+        self.assertEqual(scene.map_routes._background_cache, {})
 
     def test_map_route_manager_skips_maps_without_walkable_config(self):
         with tempfile.TemporaryDirectory() as tmp:

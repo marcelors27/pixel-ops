@@ -63,6 +63,8 @@
           "scripts/**",
           "tools/**",
           "firmware/heltec-e213/**",
+          "!firmware/heltec-e213/.pio/**",
+          "!**/.git/**",
           "infra/cloudflare/pixelops-kite/**",
           "!infra/cloudflare/pixelops-kite/node_modules/**",
           "!infra/cloudflare/pixelops-kite/.wrangler/**",

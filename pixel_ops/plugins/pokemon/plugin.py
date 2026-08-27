@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from pixel_ops.core import PixelOpsApp
+from pixel_ops.core.screens import ScreenRotationController
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.gamification import GamificationSource
 from pixel_ops.plugins.ai.plugin import AiDecisionPlugin
@@ -83,7 +84,7 @@ class PokemonPlugin:
             people_config,
             gamification=_gamification_source(display_cfg.get("gamification", {})),
         )
-        return PixelOpsApp(engine=engine, event_sources=event_sources)
+        return PixelOpsApp(engine=engine, event_sources=event_sources, screens=ScreenRotationController(display_cfg))
 
     def _pokemon_api(self, args: argparse.Namespace, root_dir: Path, pokemon_cfg: dict) -> PokeApiClient:
         return PokeApiClient(

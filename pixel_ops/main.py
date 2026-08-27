@@ -16,6 +16,7 @@ if str(ROOT_DIR) not in sys.path:
 
 from pixel_ops.data_sources.calendar import CalendarEvent, next_ics_event, next_mock_event, today_ics_events
 from pixel_ops.config_loader import ConfigWatcher, load_config_prefer_json
+from pixel_ops.core.screen_control import ScreenControlServer
 from pixel_ops.events.mock_events import MockEventSource
 from pixel_ops.events.observation_sources import CallableObservationSource
 from pixel_ops.integration_plugins.base import IntegrationContext
@@ -549,9 +550,9 @@ def main() -> int:
             APP_DIR / "config/display.json",
             APP_DIR / "config/people.json",
             APP_DIR / "config/integrations.json",
-            plugin_dir / "game.json",
-            plugin_dir / "pokemon.json",
-            plugin_dir / "companions.json",
+            *(APP_DIR / "plugins" / name / "game.json" for name in available_plugins()),
+            APP_DIR / "plugins/pokemon/pokemon.json",
+            APP_DIR / "plugins/pokemon/companions.json",
         ]
     )
     config_watcher.reset()
@@ -583,6 +584,12 @@ def main() -> int:
 
     def build_runtime_app(current_display_cfg: dict, target_width: int, target_height: int):
         nonlocal integration_runtime
+        configured_screen_plugins = {
+            str(item.get("plugin") or plugin.name)
+            for item in current_display_cfg.get("screens", {}).values()
+            if isinstance(item, dict) and bool(item.get("enabled", True))
+        }
+        configured_screen_plugins.add(plugin.name)
         current_people_cfg = load_config(APP_DIR / "config/people.json")["people"]
         current_plugin_cfg = plugin.load_config(plugin_dir, load_config)
         current_events_cfg = plugin.event_config(current_plugin_cfg)
@@ -615,7 +622,7 @@ def main() -> int:
             CallableObservationSource("calendar.today_updated", "calendar", cached_today_events),
         ]
 
-        return plugin.build_app(
+        app = plugin.build_app(
             args=args,
             root_dir=ROOT_DIR,
             display_cfg=current_display_cfg,
@@ -627,6 +634,24 @@ def main() -> int:
             ai_plugin=build_ai_plugin(current_display_cfg.get("ai", {})),
             event_sources=current_event_sources,
         )
+        for engine_name in sorted(configured_screen_plugins - {plugin.name}):
+            secondary_plugin = get_plugin(engine_name)
+            secondary_dir = APP_DIR / "plugins" / engine_name
+            secondary_config = secondary_plugin.load_config(secondary_dir, load_config)
+            secondary_app = secondary_plugin.build_app(
+                args=args,
+                root_dir=ROOT_DIR,
+                display_cfg=current_display_cfg,
+                config=secondary_config,
+                width=target_width,
+                height=target_height,
+                fps=fps,
+                people_config=current_people_cfg,
+                ai_plugin=None,
+                event_sources=[],
+            )
+            app.add_engine(secondary_app.engine)
+        return app
 
     def build_runtime_targets(current_raw_display_cfg: dict) -> list[RuntimeTarget]:
         current_display_cfgs = runtime_display_configs(args, current_raw_display_cfg)
@@ -665,6 +690,17 @@ def main() -> int:
         )
 
     runtime_state = build_runtime_state()
+    control_cfg = raw_display_cfg.get("screen_control", {})
+    control_cfg = control_cfg if isinstance(control_cfg, dict) else {}
+    screen_control = ScreenControlServer(
+        lambda: runtime_state.app.screens,
+        port=int(control_cfg.get("port", 8766)),
+    )
+    try:
+        screen_control.start()
+        print(f"[pixel-ops screens] control listening on 127.0.0.1:{screen_control.port}", file=sys.stderr)
+    except OSError as error:
+        print(f"[pixel-ops screens] control unavailable: {error}", file=sys.stderr)
 
     def maybe_reload_runtime(current_state: RuntimeState):
         nonlocal integration_runtime, runtime_config
@@ -680,6 +716,12 @@ def main() -> int:
                 if target.started:
                     target.output.stop()
             next_state = build_runtime_state()
+            if current_state.app.screens is not None and next_state.app.screens is not None:
+                previous_screen = current_state.app.screens.status()
+                previous_id = previous_screen.get("active_screen_id")
+                available_ids = {item["id"] for item in next_state.app.screens.status().get("screens", [])}
+                if previous_id in available_ids:
+                    next_state.app.screens.select(previous_id, pinned=previous_screen.get("mode") == "pinned")
             current_state.app.close()
             for target in next_state.targets:
                 start_target(target)
@@ -788,6 +830,7 @@ def main() -> int:
         print(error, file=sys.stderr)
         return 1
     finally:
+        screen_control.close()
         integration_runtime.close()
         runtime_state.app.close()
         for target in runtime_state.targets:

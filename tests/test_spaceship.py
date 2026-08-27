@@ -13,6 +13,7 @@ from pixel_ops.events.platform import PixelOpsEvent
 from pixel_ops.plugins.spaceship.engine import SpaceshipEngine, material_for_pr
 from pixel_ops.plugins.spaceship.persistence import AsteroidRecord, SpaceshipStateStore
 from pixel_ops.plugins.spaceship.scene import (
+    SpaceshipScene,
     _active_mining_asteroid,
     _crew_assignment_room,
     _drone_progress,
@@ -32,18 +33,47 @@ from pixel_ops.plugins.spaceship.scene import (
     _shortest_room_route,
     _task_route_phase,
 )
+from pixel_ops.render.renderer import PixelRenderer
 
 
 class RecordingScene:
     def __init__(self):
         self.snapshot = None
+        self.presentation = None
 
     def render(self, snapshot):
         self.snapshot = snapshot
         return Image.new("RGB", (4, 3), "black")
 
+    def set_presentation(self, layout, layout_theme):
+        self.presentation = (layout, layout_theme)
+
 
 class SpaceshipTests(unittest.TestCase):
+    def test_spaceship_hud_is_composed_inside_configured_layout_box(self):
+        scene = SpaceshipScene.__new__(SpaceshipScene)
+        scene.renderer = PixelRenderer(100, 50)
+        scene.palette = {}
+        scene.display_layout = {
+            "ship": {"x": 10, "y": 5, "width": 60, "height": 30, "kind": "spaceship_hud"},
+        }
+
+        frame = scene._compose_presentation(Image.new("RGB", (100, 50), "red"))
+
+        self.assertEqual(frame.getpixel((0, 0)), (5, 10, 24))
+        self.assertEqual(frame.getpixel((10, 5)), (255, 0, 0))
+        self.assertEqual(frame.getpixel((69, 34)), (255, 0, 0))
+        self.assertEqual(frame.getpixel((70, 35)), (5, 10, 24))
+
+    def test_presentation_is_forwarded_to_the_spaceship_hud(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            scene = RecordingScene()
+            engine = SpaceshipEngine(scene, SpaceshipStateStore(Path(tmp) / "state.sqlite"))
+
+            engine.set_presentation({"ship": {"width": 640}}, "terminal")
+
+            self.assertEqual(scene.presentation, ({"ship": {"width": 640}}, "terminal"))
+
     def test_active_time_persists_but_offline_gap_does_not(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "state.sqlite"

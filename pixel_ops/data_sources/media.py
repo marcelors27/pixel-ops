@@ -248,7 +248,7 @@ class BrowserMediaSnapshotReceiver:
                 self.send_header("Content-Type", "application/json")
                 self.send_header("Content-Length", str(len(body)))
                 self.end_headers()
-                self.wfile.write(body)
+                _write_http_response_body(self.wfile, body)
 
             def log_message(self, _format: str, *_args) -> None:
                 return
@@ -287,6 +287,14 @@ class BrowserMediaSnapshotReceiver:
             if self._payload.get("is_playing") is False:
                 return None
             return dict(self._payload)
+
+
+def _write_http_response_body(stream, body: bytes) -> None:
+    try:
+        stream.write(body)
+    except (BrokenPipeError, ConnectionResetError):
+        # Browser extensions may abort a request after the snapshot was accepted.
+        return
 
 
 def _sanitize_browser_media_payload(payload: dict) -> dict:

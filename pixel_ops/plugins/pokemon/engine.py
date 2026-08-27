@@ -80,6 +80,9 @@ class PokemonEngine:
             crosshero=self.values.get("fitness.crosshero_day_updated"),
         )
 
+    def set_presentation(self, layout: dict, layout_theme: str) -> None:
+        self.scene.set_presentation(layout, layout_theme)
+
     def close(self) -> None:
         return None
 

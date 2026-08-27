@@ -5,6 +5,7 @@ from collections.abc import Callable
 from pathlib import Path
 
 from pixel_ops.core import PixelOpsApp
+from pixel_ops.core.screens import ScreenRotationController
 from pixel_ops.plugins.spaceship.engine import SpaceshipEngine
 from pixel_ops.plugins.spaceship.persistence import SpaceshipStateStore
 from pixel_ops.plugins.spaceship.scene import SpaceshipScene
@@ -39,7 +40,7 @@ class SpaceshipPlugin:
         )
         scene = SpaceshipScene(width, height, config["game"])
         engine = SpaceshipEngine(scene, store, config["game"])
-        return PixelOpsApp(engine=engine, event_sources=event_sources)
+        return PixelOpsApp(engine=engine, event_sources=event_sources, screens=ScreenRotationController(display_cfg))
 
 
 def plugin() -> SpaceshipPlugin:

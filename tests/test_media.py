@@ -10,10 +10,24 @@ from unittest.mock import Mock, patch
 from PIL import Image
 import requests
 
-from pixel_ops.data_sources.media import BrowserMediaSnapshotReceiver, LocalMediaSource, _youtube_browser_script, _youtube_thumbnail_url
+from pixel_ops.data_sources.media import (
+    BrowserMediaSnapshotReceiver,
+    LocalMediaSource,
+    _write_http_response_body,
+    _youtube_browser_script,
+    _youtube_thumbnail_url,
+)
 
 
 class LocalMediaSourceTests(unittest.TestCase):
+    def test_browser_receiver_ignores_client_disconnect_while_writing_response(self):
+        stream = Mock()
+        stream.write.side_effect = BrokenPipeError(32, "Broken pipe")
+
+        _write_http_response_body(stream, b'{"ok":true}')
+
+        stream.write.assert_called_once_with(b'{"ok":true}')
+
     def test_spotify_now_playing_snapshot(self):
         source = LocalMediaSource(providers=["spotify"], poll_seconds=10)
         source._run_osascript = lambda _script: "Song Name\nArtist Name\nAlbum Name"

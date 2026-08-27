@@ -113,6 +113,7 @@ class OverworldScene:
         self.overworld_walk_frame = 0
         self.current_map_area: MapArea | None = None
         self.current_map_timestamp = 0.0
+
         self.ash_direction = "down"
         self.ash_x = int(cfg.get("ash_x", 118))
         self.ash_y = int(cfg.get("ash_y", 312))
@@ -186,6 +187,23 @@ class OverworldScene:
             walkable_source_rects=self._configured_walkable_source_rects(),
         )
         self._battle_backgrounds: dict[str, Image.Image] = {}
+
+    def set_presentation(self, layout: dict, layout_theme: str) -> None:
+        self.display_layout = dict(layout) if isinstance(layout, dict) else {}
+        self.layout_theme = str(layout_theme or "default")
+        map_box = self.map_box
+        self.map_routes.set_viewport_size((map_box[2] - map_box[0], map_box[3] - map_box[1]))
+        self._previous_sprite_box = None
+        self._previous_battle_sprite_box = None
+        self._previous_text_key = None
+
+    def _presentation_has(self, kind: str) -> bool:
+        if not isinstance(self.display_layout, dict) or not self.display_layout:
+            return True
+        return any(
+            isinstance(raw, dict) and str(raw.get("kind") or key) == kind
+            for key, raw in self.display_layout.items()
+        )
 
     def _configured_walkable_map_keys(self) -> set[str]:
         return set(self._configured_walkable_source_rects())
@@ -357,12 +375,14 @@ class OverworldScene:
                 work_events=work_events,
                 crosshero=crosshero,
             )
-            if self._is_battle_phase(phase):
-                self._draw_battle_scene(img, phase, pal)
-            else:
-                self._draw_sprites(img, phase, pal)
-            message = self._display_message(self.encounter.message_for(phase))
-            draw_text_box(img, self.text_box, message, pal, self._text_frame(message))
+            if self._presentation_has("game"):
+                if self._is_battle_phase(phase):
+                    self._draw_battle_scene(img, phase, pal)
+                else:
+                    self._draw_sprites(img, phase, pal)
+            if self._presentation_has("text_box"):
+                message = self._display_message(self.encounter.message_for(phase))
+                draw_text_box(img, self.text_box, message, pal, self._text_frame(message))
             if self.scanlines:
                 img = self.renderer.apply_scanlines(img)
             return img
@@ -390,11 +410,12 @@ class OverworldScene:
             img = self.renderer.canvas(pal.panel_shadow)
             draw = ImageDraw.Draw(img)
 
-            self._draw_sky(draw, pal)
-            self._draw_world(img, draw, pal, base_now, weather)
             self.current_mood = self.mood_engine.state(base_now, weather=weather, calendar_event=event)
-            draw_social_world_effects(img, self.map_box, self.current_mood, self.frame)
-            self._draw_movement_debug_overlay(draw, pal)
+            if self._presentation_has("game"):
+                self._draw_sky(draw, pal)
+                self._draw_world(img, draw, pal, base_now, weather)
+                draw_social_world_effects(img, self.map_box, self.current_mood, self.frame)
+                self._draw_movement_debug_overlay(draw, pal)
             draw_hud(
                 draw,
                 people,

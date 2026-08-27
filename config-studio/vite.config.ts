@@ -152,7 +152,10 @@ const integrationLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
     { kind: "tasks", label: "Tasks", tone: "#b58cff" },
     { kind: "tasks_board", label: "Tasks Board", tone: "#f0a35d" },
   ],
-  capacities: [{ kind: "project_radar", label: "Project Radar", tone: "#b58cff" }],
+  capacities: [
+    { kind: "project_radar", label: "Active Projects", tone: "#b58cff" },
+    { kind: "project_focus_radar", label: "Focus Radar", tone: "#818cf8" },
+  ],
   media: [{ kind: "media", label: "Now Playing", tone: "#6ee7b7" }],
   crosshero: [
     { kind: "crosshero_wod", label: "CrossHero WOD", tone: "#f58236" },
@@ -778,13 +781,44 @@ function runtimePidPath() {
 
 async function runtimeStatus() {
   const discovered = await discoverRuntimeProcess();
+  const screens = discovered ? await screenControlRequest("/status").catch(() => unavailableScreenStatus()) : unavailableScreenStatus();
   return {
     running: discovered !== null,
     pid: discovered?.pid ?? null,
     source: discovered?.source ?? null,
     command: discovered?.command ?? null,
     logs: runtimeLogs.slice(-80),
+    screens,
   };
+}
+
+function unavailableScreenStatus() {
+  return {
+    available: false,
+    enabled: false,
+    mode: "offline",
+    active_screen_id: null,
+    active_screen_label: null,
+    next_screen_id: null,
+    next_screen_label: null,
+    activated_at: null,
+    changes_at: null,
+    remaining_ms: null,
+    revision: 0,
+    screens: [],
+  };
+}
+
+async function screenControlRequest(pathname: string, body?: Record<string, unknown>) {
+  const response = await fetch(`http://127.0.0.1:8766${pathname}`, {
+    method: body === undefined ? "GET" : "POST",
+    headers: body === undefined ? undefined : { "content-type": "application/json" },
+    body: body === undefined ? undefined : JSON.stringify(body),
+    signal: AbortSignal.timeout(1200),
+  });
+  const payload = await response.json() as Record<string, unknown>;
+  if (!response.ok) throw new Error(String(payload.error || "Screen runtime unavailable."));
+  return payload;
 }
 
 function runtimeCommandArgs(mode: "configured" | "window" = "configured"): string[] {
@@ -1098,7 +1132,7 @@ print(json.dumps({
 }))
 `;
   try {
-    const { stdout, stderr } = await execFileAsync(pythonCmd, ["-c", script], { cwd: repoRoot, maxBuffer: 1024 * 1024 });
+    const { stdout } = await execFileAsync(pythonCmd, ["-c", script], { cwd: repoRoot, maxBuffer: 1024 * 1024 });
     return JSON.parse(stdout || "{}");
   } catch (error) {
     const err = error as Error & { stdout?: string; stderr?: string };
@@ -1738,6 +1772,15 @@ function runtimeConfigApi(): Plugin {
       server.middlewares.use("/api/runtime", async (req, res) => {
         try {
           const url = new URL(req.url || "/", "http://localhost");
+          if (req.method === "GET" && url.pathname === "/screens/status") {
+            sendJson(res, 200, await screenControlRequest("/status"));
+            return;
+          }
+          if (req.method === "POST" && ["/screens/select", "/screens/resume", "/screens/next", "/screens/previous"].includes(url.pathname)) {
+            const body = JSON.parse(await readBody(req) || "{}") as Record<string, unknown>;
+            sendJson(res, 200, await screenControlRequest(url.pathname.replace("/screens", ""), body));
+            return;
+          }
           if (req.method === "GET" && url.pathname === "/status") {
             sendJson(res, 200, await runtimeStatus());
             return;

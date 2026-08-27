@@ -22,6 +22,8 @@ class SpaceshipScene:
         self.renderer = PixelRenderer(width, height)
         self.scene_scale = max(1.0, min(width / 480, height / 320))
         self.config = config or {}
+        self.display_layout: dict = {}
+        self.layout_theme = "terminal"
         self.ship_supersampling = max(1, min(4, int(self.config.get("ship_supersampling", 3))))
         requested_ship_scale = self.scene_scale * max(1.0, float(self.config.get("ship_scale", 2.0)))
         # Preserve the requested zoom whenever the viewport allows it, but avoid
@@ -102,7 +104,46 @@ class SpaceshipScene:
             asteroid_positions = self._draw_asteroids(image, draw, state)
             self._draw_mining_cycle(image, draw, state, asteroid_positions)
             self._draw_hud(image, draw, state)
-            return image
+            return self._compose_presentation(image)
+
+    def set_presentation(self, layout: dict, layout_theme: str) -> None:
+        self.display_layout = dict(layout) if isinstance(layout, dict) else {}
+        self.layout_theme = str(layout_theme or "terminal")
+
+    def _compose_presentation(self, full_frame: Image.Image) -> Image.Image:
+        boxes: list[tuple[int, int, int, int]] = []
+        for key, raw in self.display_layout.items():
+            if not isinstance(raw, dict) or str(raw.get("kind") or key) != "spaceship_hud":
+                continue
+            try:
+                x = int(raw.get("x", 0))
+                y = int(raw.get("y", 0))
+                width = int(raw.get("width", 0))
+                height = int(raw.get("height", 0))
+            except (TypeError, ValueError):
+                continue
+            x0 = max(0, min(self.renderer.width - 1, x))
+            y0 = max(0, min(self.renderer.height - 1, y))
+            x1 = max(x0 + 1, min(self.renderer.width, x0 + max(1, width)))
+            y1 = max(y0 + 1, min(self.renderer.height, y0 + max(1, height)))
+            boxes.append((x0, y0, x1, y1))
+        if not boxes:
+            return full_frame
+
+        result = self.renderer.canvas(self._color("space", (5, 10, 24)))
+        main_box = max(boxes, key=lambda box: (box[2] - box[0]) * (box[3] - box[1]))
+        lcd_source_x = max(1, full_frame.width - 172) if full_frame.width >= 1000 else full_frame.width
+        main_source = full_frame.crop((0, 0, lcd_source_x, full_frame.height))
+        for box in boxes:
+            source = (
+                main_source
+                if box == main_box or lcd_source_x >= full_frame.width
+                else full_frame.crop((lcd_source_x, 0, full_frame.width, full_frame.height))
+            )
+            target_size = (box[2] - box[0], box[3] - box[1])
+            scaled = source.resize(target_size, Image.Resampling.NEAREST)
+            result.paste(scaled, (box[0], box[1]))
+        return result
 
     def _draw_isometric_ship(
         self, image: Image.Image, draw: ImageDraw.ImageDraw, state: SpaceshipSnapshot, scale: float
@@ -426,6 +467,8 @@ class SpaceshipScene:
         text = self._color("text", (226, 236, 238))
         cyan = self._color("cyan", (74, 210, 220))
         amber = self._color("amber", (242, 172, 68))
+        panel = self._color("panel", (8, 20, 38))
+        shadow = self._color("panel_shadow", (2, 7, 16))
         title = font(9)
         tiny = font(7)
         hours = timedelta(seconds=int(state.profile.total_active_seconds))
@@ -433,15 +476,48 @@ class SpaceshipScene:
         alloy = state.resources.get("refined_alloy", 0)
         tier_size = max(1, int(self.config.get("prs_per_bay_tier", 60)))
         mining_tier, tier_progress, tier_target = _mining_bay_progress(state.resources, tier_size)
-        draw.text((8, 5), state.profile.ship_name.upper(), font=title, fill=cyan)
-        draw.text((8, 19), f"SECTOR {state.profile.current_sector:02d}  LV {state.profile.ship_level:02d}", font=tiny, fill=text)
-        draw.text((8, 29), f"ACTIVE {str(hours).split('.')[0]}  DIST {state.profile.distance_travelled:07.1f}", font=tiny, fill=text)
-        cargo = f"ORE {raw:03d} ALLOY {alloy:03d} BAY {mining_tier:02d}"
-        draw.text((max(8, self.renderer.width - 178), 7), cargo, font=tiny, fill=amber)
+        width, height = self.renderer.width, self.renderer.height
+        lcd_width = 172 if width >= 1000 else 0
+        main_right = width - lcd_width - 10
+
+        status_box = (8, 8, min(390, main_right - 8), 126)
+        cargo_box = (max(400, main_right - 420), 8, main_right, 126)
+        ops_box = (8, max(132, height - 116), min(560, main_right - 8), height - 8)
+        for box in (status_box, cargo_box, ops_box):
+            PixelRenderer.draw_panel(draw, box, panel, shadow, cyan)
+
+        draw.text((20, 18), "SHIP STATUS", font=tiny, fill=amber)
+        draw.text((20, 39), state.profile.ship_name.upper(), font=title, fill=cyan)
+        draw.text((20, 65), f"SECTOR {state.profile.current_sector:02d}   LEVEL {state.profile.ship_level:02d}", font=tiny, fill=text)
+        draw.text((20, 87), f"ACTIVE {str(hours).split('.')[0]}   DIST {state.profile.distance_travelled:07.1f}", font=tiny, fill=text)
+
+        cargo_x = cargo_box[0] + 12
+        draw.text((cargo_x, 18), "CARGO & MINING", font=tiny, fill=amber)
+        draw.text((cargo_x, 43), f"RAW ORE {raw:03d}", font=title, fill=text)
+        draw.text((cargo_x + 145, 43), f"ALLOY {alloy:03d}", font=title, fill=text)
+        draw.text((cargo_x, 72), f"BAY {mining_tier:02d}   NEXT UPGRADE {tier_progress:02d}/{tier_target:02d}", font=tiny, fill=cyan)
+
+        active_targets = [item for item in state.asteroids if item.processing_state not in ("refined", "abandoned")]
+        ops_x, ops_y = ops_box[0] + 12, ops_box[1] + 10
+        draw.text((ops_x, ops_y), "MISSION OPS", font=tiny, fill=amber)
+        draw.text((ops_x, ops_y + 24), f"TARGETS {len(active_targets):02d}   SIGNALS {len(state.observations):02d}", font=title, fill=cyan)
         if state.recent_event:
             label = _diegetic_event_label(state.recent_event.category)
-            draw.text((max(8, self.renderer.width - 178), 20), label, font=tiny, fill=text)
-        self._draw_mining_progress_bar(image, tier_progress / tier_target, tier_progress, tier_target)
+            draw.text((ops_x, ops_y + 54), label, font=tiny, fill=text)
+        else:
+            draw.text((ops_x, ops_y + 54), "CRUISE NOMINAL / NO ACTIVE ALERT", font=tiny, fill=text)
+
+        if lcd_width:
+            lcd_box = (width - lcd_width + 8, 8, width - 8, min(height - 8, 312))
+            PixelRenderer.draw_panel(draw, lcd_box, panel, shadow, cyan)
+            lcd_x = lcd_box[0] + 10
+            draw.text((lcd_x, 20), "STARSHIP", font=tiny, fill=amber)
+            draw.text((lcd_x, 48), f"SEC {state.profile.current_sector:02d}", font=title, fill=cyan)
+            draw.text((lcd_x, 82), f"LV {state.profile.ship_level:02d}", font=title, fill=text)
+            draw.text((lcd_x, 116), f"ORE {raw:03d}", font=tiny, fill=text)
+            draw.text((lcd_x, 140), f"ALLOY {alloy:03d}", font=tiny, fill=text)
+            draw.text((lcd_x, 176), f"BAY {mining_tier:02d}", font=tiny, fill=cyan)
+            draw.text((lcd_x, 204), f"{tier_progress:02d}/{tier_target:02d}", font=title, fill=amber)
 
     def _draw_mining_progress_bar(
         self, image: Image.Image, ratio: float, progress: int, target: int

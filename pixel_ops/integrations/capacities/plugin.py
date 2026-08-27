@@ -20,7 +20,11 @@ class CapacitiesIntegrationPlugin:
             max_projects=int(cfg.get("max_projects", 24)),
             timeout_seconds=int(cfg.get("timeout_seconds", 10)),
         )
-        return IntegrationContribution(event_sources=[ObservationEventSource("projects.snapshot_updated", "capacities", source)])
+        # The source keeps its normal API cache, while the adapter checks often
+        # enough to recover quickly if the first request fails during startup.
+        return IntegrationContribution(
+            event_sources=[ObservationEventSource("projects.snapshot_updated", "capacities", source, poll_seconds=min(5, source.poll_seconds))]
+        )
 
 
 def plugin() -> CapacitiesIntegrationPlugin:
