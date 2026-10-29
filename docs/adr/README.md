@@ -40,3 +40,10 @@ Current ADRs:
 - [0027 - Spaceship Progress Is Active-Time And Game-Owned](0027-spaceship-progress-is-active-time-and-game-owned.md)
 - [0028 - Project Radar Uses Provider-Neutral Observations](0028-project-radar-uses-provider-neutral-observations.md)
 - [0029 - Screen Playlists Are Presentation State](0029-screen-playlists-are-presentation-state.md)
+
+- [0030 - Codex activity is a neutral observation](0030-codex-activity-is-a-neutral-observation.md)
+
+- [0031 - Waveshare LCD supports USB frame delivery](0031-waveshare-usb-output.md)
+- [0032 - Waveshare Bluetooth frame transport](0032-waveshare-bluetooth-output.md)
+
+- [0033 — Token history HUD](0033-token-history-hud.md)

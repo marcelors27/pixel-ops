@@ -21,6 +21,8 @@ from pixel_ops.events.mock_events import MockEventSource
 from pixel_ops.events.observation_sources import CallableObservationSource
 from pixel_ops.integration_plugins.base import IntegrationContext
 from pixel_ops.integration_plugins.registry import build_integration_runtime
+from pixel_ops.outputs.lcd_usb import LcdUsbOutput
+from pixel_ops.outputs.lcd_ble import LcdBleOutput
 from pixel_ops.outputs import EInkHttpOutput, GifOutput, LcdHttpOutput, PreviewOutput, TURZXOutput, ThermalrightOutput, WindowOutput
 from pixel_ops.outputs.base import CroppedOutput, DisplayOutput
 from pixel_ops.plugins.ai.plugin import build_ai_plugin
@@ -431,7 +433,8 @@ def build_output(
     if output_name == "lcd":
         display = None if "display_region" in display_cfg else _configured_display_for_output(display_cfg, output_name)
         lcd_cfg = _merged_device_config(runtime_device_config(display_cfg).get("lcd"), display.get("lcd") if display else None)
-        return LcdHttpOutput.from_config(width, height, lcd_cfg)
+        output_class = {"usb": LcdUsbOutput, "bluetooth": LcdBleOutput, "http": LcdHttpOutput}[lcd_cfg.get("transport", "http")]
+        return output_class.from_config(width, height, lcd_cfg)
     if output_name == "window":
         return WindowOutput(width=width, height=height, scale=runtime_window_scale(args, display_cfg))
     raise ValueError(f"Unsupported output: {output_name}")

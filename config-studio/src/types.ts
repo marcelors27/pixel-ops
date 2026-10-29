@@ -177,6 +177,10 @@ export type DisplayOutputConfig = {
     pull_port?: number;
   };
   lcd?: {
+    transport?: "http" | "usb" | "bluetooth";
+    bluetooth_address?: string;
+    bluetooth_frame_interval_seconds?: number;
+    port?: string;
     url: string;
     token?: string;
     timeout_seconds?: number;
@@ -466,6 +470,12 @@ export type RuntimeConfig = {
         openai_admin_key_env: string;
         openai_api_monthly_budget_usd: number;
         thresholds: number[];
+        timeout_seconds: number;
+      };
+      codex_status: IntegrationToggle & {
+        socket_path: string;
+        thread_id: string;
+        poll_seconds: number;
         timeout_seconds: number;
       };
       pc_stats: IntegrationToggle & {

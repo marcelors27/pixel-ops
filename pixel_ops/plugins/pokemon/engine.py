@@ -78,6 +78,7 @@ class PokemonEngine:
             today_events=today_events,
             gamification=gamification,
             crosshero=self.values.get("fitness.crosshero_day_updated"),
+            ai_activity=self.values.get("ai.activity_updated"),
         )
 
     def set_presentation(self, layout: dict, layout_theme: str) -> None:

@@ -33,6 +33,9 @@ class AIUsageGauge:
 class AIUsageSnapshot:
     gauges: list[AIUsageGauge] = field(default_factory=list)
     updated_at: datetime | None = None
+    daily_tokens: dict[str, int] = field(default_factory=dict)
+    history_requests: int = 0
+    favorite_model: str = ""
 
     @property
     def total_tokens(self) -> int:
@@ -91,6 +94,7 @@ class AIUsageSource(EventSource):
         self.openai_api_monthly_budget_usd = max(0.0, float(openai_api_monthly_budget_usd or 0.0))
         self.thresholds = tuple(sorted(thresholds))
         self.timeout_seconds = timeout_seconds
+        self._history_rows: list[_UsageRow] = []
         self._last_poll_at: datetime | None = None
         self._snapshot: AIUsageSnapshot | None = None
         self._announced_thresholds: dict[str, float] = {}
@@ -116,7 +120,8 @@ class AIUsageSource(EventSource):
     def _collect(self, now: datetime) -> AIUsageSnapshot:
         now = _aware(now)
         gauges: list[AIUsageGauge] = []
-        since = now - timedelta(days=29)
+        self._history_rows = []
+        since = now.replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=29)
         if "codex" in self.providers:
             gauges.extend(self._codex_gauges(since, now))
         if "claude" in self.providers:
@@ -125,7 +130,18 @@ class AIUsageSource(EventSource):
             gauge = self._openai_api_gauge(now)
             if gauge:
                 gauges.append(gauge)
-        return AIUsageSnapshot(gauges=gauges, updated_at=now)
+        daily: dict[str, int] = {}
+        models: dict[str, int] = {}
+        rows = [row for row in self._history_rows if since <= row.timestamp <= now]
+        for row in rows:
+            day = row.timestamp.astimezone(now.tzinfo).date().isoformat()
+            daily[day] = daily.get(day, 0) + row.total_tokens
+            models[row.model] = models.get(row.model, 0) + row.total_tokens
+        return AIUsageSnapshot(
+            gauges=gauges, updated_at=now, daily_tokens=daily,
+            history_requests=sum(row.requests for row in rows),
+            favorite_model=max(models, key=models.get) if models else "",
+        )
 
     def _events_for_snapshot(self, snapshot: AIUsageSnapshot, previous: AIUsageSnapshot | None) -> list[WorkEvent]:
         events: list[WorkEvent] = []
@@ -175,6 +191,7 @@ class AIUsageSource(EventSource):
         root = self.codex_home / "sessions"
         roots = [root, self.codex_home / "archived_sessions"]
         rows = _scan_jsonl_roots(roots, since, until, mode="codex")
+        self._history_rows.extend(rows)
         status = _scan_codex_rate_limit_status(roots, since, until)
         primary_percent = _active_codex_limit_percent(
             status.primary_percent if status else None,
@@ -193,11 +210,7 @@ class AIUsageSource(EventSource):
                 "codex",
                 "Codex 5H",
                 primary_rows,
-                used_percent=(
-                    primary_percent
-                    if primary_percent is not None
-                    else 0.0 if primary_rows else None
-                ),
+                used_percent=primary_percent,
                 reset_at=status.primary_reset_at if primary_percent is not None and status else None,
                 detail_suffix="last 5h",
             ),
@@ -205,11 +218,7 @@ class AIUsageSource(EventSource):
                 "codex",
                 "Codex W",
                 secondary_rows,
-                used_percent=(
-                    secondary_percent
-                    if secondary_percent is not None
-                    else 0.0 if secondary_rows else None
-                ),
+                used_percent=secondary_percent,
                 reset_at=status.secondary_reset_at if secondary_percent is not None and status else None,
                 detail_suffix="last 7d",
             ),
@@ -217,6 +226,7 @@ class AIUsageSource(EventSource):
 
     def _claude_gauges(self, since: datetime, until: datetime) -> list[AIUsageGauge]:
         rows = _scan_jsonl_roots([self.claude_projects_path], since, until, mode="claude")
+        self._history_rows.extend(rows)
         return [_tokens_gauge("claude", "Claude", rows)]
 
     def _openai_api_gauge(self, now: datetime) -> AIUsageGauge | None:
@@ -269,6 +279,7 @@ class AIUsageSource(EventSource):
                         cost_usd=0.0,
                     )
                 )
+        self._history_rows.extend(rows)
         gauge = _tokens_gauge("openai_api", "OpenAI", rows)
         used_percent = None
         if self.openai_api_monthly_budget_usd > 0:
@@ -376,8 +387,16 @@ def _scan_codex_rate_limit_file(path: Path, since: datetime, until: datetime) ->
 
 
 def _codex_rate_limit_status(timestamp: datetime, rate_limits: dict[str, Any]) -> _CodexRateLimitStatus | None:
-    primary = rate_limits.get("primary") if isinstance(rate_limits.get("primary"), dict) else {}
-    secondary = rate_limits.get("secondary") if isinstance(rate_limits.get("secondary"), dict) else {}
+    # Primary/secondary are positions, not fixed durations: weekly-only plans
+    # report the weekly quota as primary.
+    windows: dict[int, dict[str, Any]] = {}
+    for key, fallback_minutes in (("primary", 300), ("secondary", 10080)):
+        window = rate_limits.get(key)
+        if isinstance(window, dict):
+            minutes = _optional_float(window.get("window_minutes"))
+            windows[int(minutes) if minutes is not None else fallback_minutes] = window
+    primary = windows.get(300, {})
+    secondary = windows.get(10080, {})
     primary_percent = _optional_float(primary.get("used_percent")) if primary else None
     secondary_percent = _optional_float(secondary.get("used_percent")) if secondary else None
     if primary_percent is None and secondary_percent is None:
@@ -413,13 +432,11 @@ def _scan_jsonl_file(path: Path, since: datetime, until: datetime, mode: str) ->
                 if not isinstance(data, dict):
                     continue
                 timestamp = _parse_timestamp(data.get("timestamp") or data.get("created_at"))
-                if timestamp and (timestamp < since or timestamp > until):
-                    continue
                 if mode == "codex":
                     row, current_model, previous_totals = _codex_row(data, timestamp, current_model, previous_totals)
                 else:
                     row = _claude_row(data, timestamp)
-                if row and row.total_tokens > 0:
+                if row and timestamp and since <= timestamp <= until and row.total_tokens > 0:
                     rows.append(row)
     except OSError:
         return rows
@@ -443,7 +460,7 @@ def _codex_row(
     info = payload.get("info") if isinstance(payload.get("info"), dict) else {}
     current_model = str(info.get("model") or info.get("model_name") or payload.get("model") or current_model or "codex")
     usage = info.get("last_token_usage") if isinstance(info.get("last_token_usage"), dict) else None
-    if usage is None and isinstance(info.get("total_token_usage"), dict):
+    if isinstance(info.get("total_token_usage"), dict):
         total = _usage_tuple(info["total_token_usage"])
         base = previous_totals or (0, 0, 0)
         usage = {
@@ -452,8 +469,6 @@ def _codex_row(
             "output_tokens": max(0, total[2] - base[2]),
         }
         previous_totals = total
-    elif isinstance(info.get("total_token_usage"), dict):
-        previous_totals = _usage_tuple(info["total_token_usage"])
     if not usage:
         return None, current_model, previous_totals
     return (
@@ -548,7 +563,7 @@ def _tokens_gauge(
                 detail=f"Codex status {detail_suffix}",
             )
         return AIUsageGauge(provider=provider, label=label, status="quiet", detail="No recent local usage")
-    if used_percent is None:
+    if used_percent is None and provider != "codex":
         used_percent = max(0.0, min(100.0, total_tokens / 250_000 * 100))
     return AIUsageGauge(
         provider=provider,

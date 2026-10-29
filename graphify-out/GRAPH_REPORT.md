@@ -1,16 +1,16 @@
-# Graph Report - turing-smart-screen-python  (2026-08-26)
+# Graph Report - turing-smart-screen-python  (2026-09-12)
 
 ## Corpus Check
-- 848 files · ~1,620,124 words
+- 1298 files · ~2,229,767 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 9005 nodes · 15281 edges · 736 communities (663 shown, 73 thin omitted)
-- Extraction: 88% EXTRACTED · 12% INFERRED · 0% AMBIGUOUS · INFERRED: 1838 edges (avg confidence: 0.68)
+- 14751 nodes · 31330 edges · 921 communities (839 shown, 82 thin omitted)
+- Extraction: 74% EXTRACTED · 26% INFERRED · 0% AMBIGUOUS · INFERRED: 8015 edges (avg confidence: 0.77)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3fbeda31`
+- Built from commit: `2a076dce`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -225,6 +225,7 @@
 - [[_COMMUNITY_Community 222|Community 222]]
 - [[_COMMUNITY_Community 223|Community 223]]
 - [[_COMMUNITY_Community 224|Community 224]]
+- [[_COMMUNITY_Community 225|Community 225]]
 - [[_COMMUNITY_Community 226|Community 226]]
 - [[_COMMUNITY_Community 227|Community 227]]
 - [[_COMMUNITY_Community 228|Community 228]]
@@ -271,6 +272,7 @@
 - [[_COMMUNITY_Community 271|Community 271]]
 - [[_COMMUNITY_Community 272|Community 272]]
 - [[_COMMUNITY_Community 273|Community 273]]
+- [[_COMMUNITY_Community 274|Community 274]]
 - [[_COMMUNITY_Community 275|Community 275]]
 - [[_COMMUNITY_Community 276|Community 276]]
 - [[_COMMUNITY_Community 277|Community 277]]
@@ -285,6 +287,7 @@
 - [[_COMMUNITY_Community 287|Community 287]]
 - [[_COMMUNITY_Community 288|Community 288]]
 - [[_COMMUNITY_Community 289|Community 289]]
+- [[_COMMUNITY_Community 290|Community 290]]
 - [[_COMMUNITY_Community 291|Community 291]]
 - [[_COMMUNITY_Community 292|Community 292]]
 - [[_COMMUNITY_Community 293|Community 293]]
@@ -319,6 +322,7 @@
 - [[_COMMUNITY_Community 322|Community 322]]
 - [[_COMMUNITY_Community 323|Community 323]]
 - [[_COMMUNITY_Community 324|Community 324]]
+- [[_COMMUNITY_Community 325|Community 325]]
 - [[_COMMUNITY_Community 326|Community 326]]
 - [[_COMMUNITY_Community 327|Community 327]]
 - [[_COMMUNITY_Community 328|Community 328]]
@@ -410,7 +414,6 @@
 - [[_COMMUNITY_Community 429|Community 429]]
 - [[_COMMUNITY_Community 531|Community 531]]
 - [[_COMMUNITY_Community 532|Community 532]]
-- [[_COMMUNITY_Community 533|Community 533]]
 - [[_COMMUNITY_Community 534|Community 534]]
 - [[_COMMUNITY_Community 535|Community 535]]
 - [[_COMMUNITY_Community 536|Community 536]]
@@ -542,6 +545,7 @@
 - [[_COMMUNITY_Community 664|Community 664]]
 - [[_COMMUNITY_Community 665|Community 665]]
 - [[_COMMUNITY_Community 666|Community 666]]
+- [[_COMMUNITY_Community 667|Community 667]]
 - [[_COMMUNITY_Community 668|Community 668]]
 - [[_COMMUNITY_Community 669|Community 669]]
 - [[_COMMUNITY_Community 670|Community 670]]
@@ -572,29 +576,122 @@
 - [[_COMMUNITY_Community 709|Community 709]]
 - [[_COMMUNITY_Community 719|Community 719]]
 - [[_COMMUNITY_Community 720|Community 720]]
+- [[_COMMUNITY_Community 721|Community 721]]
+- [[_COMMUNITY_Community 722|Community 722]]
 - [[_COMMUNITY_Community 723|Community 723]]
 - [[_COMMUNITY_Community 724|Community 724]]
 - [[_COMMUNITY_Community 725|Community 725]]
 - [[_COMMUNITY_Community 726|Community 726]]
 - [[_COMMUNITY_Community 728|Community 728]]
+- [[_COMMUNITY_Community 729|Community 729]]
+- [[_COMMUNITY_Community 730|Community 730]]
 - [[_COMMUNITY_Community 732|Community 732]]
+- [[_COMMUNITY_Community 733|Community 733]]
 - [[_COMMUNITY_Community 734|Community 734]]
 - [[_COMMUNITY_Community 735|Community 735]]
 - [[_COMMUNITY_Community 736|Community 736]]
+- [[_COMMUNITY_Community 737|Community 737]]
 - [[_COMMUNITY_Community 738|Community 738]]
-- [[_COMMUNITY_Community 741|Community 741]]
+- [[_COMMUNITY_Community 739|Community 739]]
+- [[_COMMUNITY_Community 742|Community 742]]
+- [[_COMMUNITY_Community 743|Community 743]]
+- [[_COMMUNITY_Community 744|Community 744]]
+- [[_COMMUNITY_Community 745|Community 745]]
+- [[_COMMUNITY_Community 746|Community 746]]
+- [[_COMMUNITY_Community 747|Community 747]]
+- [[_COMMUNITY_Community 748|Community 748]]
+- [[_COMMUNITY_Community 749|Community 749]]
+- [[_COMMUNITY_Community 750|Community 750]]
+- [[_COMMUNITY_Community 751|Community 751]]
+- [[_COMMUNITY_Community 752|Community 752]]
+- [[_COMMUNITY_Community 753|Community 753]]
+- [[_COMMUNITY_Community 754|Community 754]]
+- [[_COMMUNITY_Community 755|Community 755]]
+- [[_COMMUNITY_Community 756|Community 756]]
+- [[_COMMUNITY_Community 757|Community 757]]
+- [[_COMMUNITY_Community 758|Community 758]]
+- [[_COMMUNITY_Community 759|Community 759]]
+- [[_COMMUNITY_Community 760|Community 760]]
+- [[_COMMUNITY_Community 761|Community 761]]
+- [[_COMMUNITY_Community 762|Community 762]]
+- [[_COMMUNITY_Community 763|Community 763]]
+- [[_COMMUNITY_Community 764|Community 764]]
+- [[_COMMUNITY_Community 765|Community 765]]
+- [[_COMMUNITY_Community 766|Community 766]]
+- [[_COMMUNITY_Community 767|Community 767]]
+- [[_COMMUNITY_Community 768|Community 768]]
+- [[_COMMUNITY_Community 769|Community 769]]
+- [[_COMMUNITY_Community 770|Community 770]]
+- [[_COMMUNITY_Community 771|Community 771]]
+- [[_COMMUNITY_Community 772|Community 772]]
+- [[_COMMUNITY_Community 773|Community 773]]
+- [[_COMMUNITY_Community 774|Community 774]]
+- [[_COMMUNITY_Community 776|Community 776]]
+- [[_COMMUNITY_Community 777|Community 777]]
+- [[_COMMUNITY_Community 778|Community 778]]
+- [[_COMMUNITY_Community 779|Community 779]]
+- [[_COMMUNITY_Community 780|Community 780]]
+- [[_COMMUNITY_Community 781|Community 781]]
+- [[_COMMUNITY_Community 782|Community 782]]
+- [[_COMMUNITY_Community 783|Community 783]]
+- [[_COMMUNITY_Community 784|Community 784]]
+- [[_COMMUNITY_Community 785|Community 785]]
+- [[_COMMUNITY_Community 786|Community 786]]
+- [[_COMMUNITY_Community 788|Community 788]]
+- [[_COMMUNITY_Community 789|Community 789]]
+- [[_COMMUNITY_Community 790|Community 790]]
+- [[_COMMUNITY_Community 791|Community 791]]
+- [[_COMMUNITY_Community 792|Community 792]]
+- [[_COMMUNITY_Community 793|Community 793]]
+- [[_COMMUNITY_Community 794|Community 794]]
+- [[_COMMUNITY_Community 795|Community 795]]
+- [[_COMMUNITY_Community 796|Community 796]]
+- [[_COMMUNITY_Community 797|Community 797]]
+- [[_COMMUNITY_Community 798|Community 798]]
+- [[_COMMUNITY_Community 799|Community 799]]
+- [[_COMMUNITY_Community 800|Community 800]]
+- [[_COMMUNITY_Community 801|Community 801]]
+- [[_COMMUNITY_Community 802|Community 802]]
+- [[_COMMUNITY_Community 804|Community 804]]
+- [[_COMMUNITY_Community 805|Community 805]]
+- [[_COMMUNITY_Community 808|Community 808]]
+- [[_COMMUNITY_Community 809|Community 809]]
+- [[_COMMUNITY_Community 810|Community 810]]
+- [[_COMMUNITY_Community 811|Community 811]]
+- [[_COMMUNITY_Community 812|Community 812]]
+- [[_COMMUNITY_Community 815|Community 815]]
+- [[_COMMUNITY_Community 816|Community 816]]
+- [[_COMMUNITY_Community 817|Community 817]]
+- [[_COMMUNITY_Community 818|Community 818]]
+- [[_COMMUNITY_Community 819|Community 819]]
+- [[_COMMUNITY_Community 820|Community 820]]
+- [[_COMMUNITY_Community 821|Community 821]]
+- [[_COMMUNITY_Community 824|Community 824]]
+- [[_COMMUNITY_Community 825|Community 825]]
+- [[_COMMUNITY_Community 826|Community 826]]
+- [[_COMMUNITY_Community 827|Community 827]]
+- [[_COMMUNITY_Community 828|Community 828]]
+- [[_COMMUNITY_Community 829|Community 829]]
+- [[_COMMUNITY_Community 830|Community 830]]
+- [[_COMMUNITY_Community 831|Community 831]]
+- [[_COMMUNITY_Community 836|Community 836]]
+- [[_COMMUNITY_Community 837|Community 837]]
+- [[_COMMUNITY_Community 838|Community 838]]
+- [[_COMMUNITY_Community 839|Community 839]]
+- [[_COMMUNITY_Community 840|Community 840]]
+- [[_COMMUNITY_Community 841|Community 841]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `OverworldScene` - 143 edges
-2. `Methods` - 77 edges
-3. `VisualAndAiPluginTests` - 63 edges
-4. `WorkEvent` - 62 edges
-5. `DEBUG_WM()` - 59 edges
-6. `font()` - 56 edges
-7. `EventBus` - 46 edges
-8. `sendCommand()` - 45 edges
-9. `CompanionSnapshot` - 44 edges
-10. `EventCategory` - 44 edges
+1. `os_mbuf_free_chain()` - 193 edges
+2. `ble_hs_unlock()` - 183 edges
+3. `ble_hs_lock()` - 182 edges
+4. `ble_ll_assert()` - 153 edges
+5. `OverworldScene` - 144 edges
+6. `ble_hs_hci_cmd_tx()` - 114 edges
+7. `bt_hex()` - 110 edges
+8. `ble_ll_hci_le_cmd_proc()` - 109 edges
+9. `bt_mesh_model_send()` - 82 edges
+10. `bt_mesh_model_msg_init()` - 81 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `ThermalrightUsbTests` --uses--> `UsbEndpointInfo`  [INFERRED]
@@ -608,19 +705,19 @@
 - `ThermalrightUsbTests` --uses--> `FrameBufferOptions`  [INFERRED]
   tests/test_thermalright_usb.py → pixel_ops/hardware/thermalright_usb.py
 
-## Communities (736 total, 73 thin omitted)
+## Communities (921 total, 82 thin omitted)
 
 ### Community 0 - "AI Usage Telemetry"
-Cohesion: 0.09
-Nodes (14): _event_finished(), GamificationSnapshot, GamificationSource, _hp_status(), _meeting_key(), _task_delivered(), MergedTaskSource, TaskItem (+6 more)
+Cohesion: 0.03
+Nodes (209): ble_npl_time_ms_to_ticks(), adv_start(), bt_mesh_adv_start(), ble_gap_accept_master_conn(), ble_gap_accept_slave_conn(), ble_gap_add_dev_to_periodic_adv_list(), ble_gap_adv_active(), ble_gap_adv_active_instance() (+201 more)
 
 ### Community 1 - "Pokemon Ambience Rendering"
-Cohesion: 0.11
-Nodes (31): _active_codex_limit_percent(), AIUsageSource, _aware(), _claude_row(), _codex_rate_limit_status(), _codex_row(), _compact_number(), _find_first_string() (+23 more)
+Cohesion: 0.04
+Nodes (61): ble_adv_gap_mesh_cb(), bt_mesh_adv_send_start(), ble_mesh_ext_adv_event_handler(), bt_mesh_adv_buf_ready(), bt_mesh_adv_start(), bt_mesh_adv_update(), buf_send(), schedule_send() (+53 more)
 
 ### Community 2 - "AI Decision Plugin"
-Cohesion: 0.05
-Nodes (30): AmbientSignal, PixelOpsKiteIntegrationPlugin, plugin(), PixelOpsKiteClient, PixelOpsKiteEventSource, FakeZoomClient, _kite_zoom_envelope(), _encode_meeting_id() (+22 more)
+Cohesion: 0.16
+Nodes (6): PixelOpsKiteClient, classify_zoom_event(), _external_id(), _metadata(), _parse_datetime(), _participant()
 
 ### Community 3 - "Core App Runtime"
 Cohesion: 0.06
@@ -628,15 +725,15 @@ Nodes (80): charBounds(), color565(), draw16bitBeRGBBitmap(), draw16bitBeRGBBitm
 
 ### Community 4 - "AI Usage Config"
 Cohesion: 0.14
-Nodes (12): enabled, paths, poll_seconds, integrations, ics, pc_stats, social_bus_limit, disk_path (+4 more)
+Nodes (12): enabled, poll_seconds, socket_path, thread_id, timeout_seconds, enabled, paths, poll_seconds (+4 more)
 
 ### Community 5 - "Pokemon World Loop"
-Cohesion: 0.09
-Nodes (26): AnimationClock, first_frame(), SpriteAnimation, _apply_transparency(), ash_direction_frame(), ash_frame(), AshSpriteSet, battle_ash_frame() (+18 more)
+Cohesion: 0.05
+Nodes (33): biome(), World, AnimationClock, first_frame(), SpriteAnimation, palette_for_hour(), _apply_transparency(), ash_direction_frame() (+25 more)
 
 ### Community 6 - "Display Outputs"
 Cohesion: 0.08
-Nodes (25): height, kind, width, x, y, height, kind, monochrome (+17 more)
+Nodes (25): height, kind, monochrome, width, x, y, height, kind (+17 more)
 
 ### Community 7 - "Social Signal Classification"
 Cohesion: 0.04
@@ -647,8 +744,8 @@ Cohesion: 0.12
 Nodes (16): ai_usage, build_broken, deploy_completed, deploy_started, incident, meeting, merge, message_important (+8 more)
 
 ### Community 9 - "Pokemon Encounters"
-Cohesion: 0.16
-Nodes (26): font(), _clock_skin_color(), _draw_activity_panel(), _draw_ai_usage_panel(), _draw_analog_clock(), _draw_clock_hand(), _draw_clock_panel(), _draw_configured_hud() (+18 more)
+Cohesion: 0.04
+Nodes (183): k_sem_take(), NET_BUF_SIMPLE(), bt_mesh_model_send(), beacon_status(), bt_mesh_cfg_app_key_add(), bt_mesh_cfg_app_key_del(), bt_mesh_cfg_app_key_get(), bt_mesh_cfg_app_key_update() (+175 more)
 
 ### Community 10 - "Weather Data Source"
 Cohesion: 0.15
@@ -659,48 +756,48 @@ Cohesion: 0.03
 Nodes (34): CompanionSpriteRow(), discordSpriteVariants, equipmentOptions, fallbackDiscordSpriteVariants, fallbackTimezones, hashString(), IconComponent, integrationIcons (+26 more)
 
 ### Community 12 - "JSON Config Loader"
-Cohesion: 0.05
-Nodes (40): PixelOpsApp, Hardware-neutral event pump for a selected game engine., Hardware-neutral event pump for a selected game engine., Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin., Hardware-agnostic frame producer for a Pixel OPs interface plugin. (+32 more)
+Cohesion: 0.04
+Nodes (62): AIUsageSource, ClickUpTasksSource, MediaSource, PCStatsSource, PixelOpsApp, PixelOpsScene, PullRequestSource, Hardware-neutral event pump for a selected game engine. (+54 more)
 
 ### Community 13 - "Encounter Timing Config"
 Cohesion: 0.09
 Nodes (20): game, ash_sprite_file, ash_sprite_source, ash_x, ash_y, encounter_x, fps, hud_height (+12 more)
 
 ### Community 14 - "Pokemon Map Routing"
-Cohesion: 0.05
-Nodes (49): _due_datetime(), _ids_from_config(), _task_from_payload(), TodoistTaskSource, _areas_by_map_key(), _classify_area(), _crop_box(), _direction_for_delta() (+41 more)
+Cohesion: 0.09
+Nodes (12): _areas_by_map_key(), _classify_area(), _crop_box(), _direction_for_delta(), _indoor_kind(), _is_light(), _is_walkable(), MapRouteManager (+4 more)
 
 ### Community 15 - "Display AI Config"
-Cohesion: 0.13
-Nodes (13): display, backend, fps, gif_output, height, layout_theme, orientation, preview_output (+5 more)
+Cohesion: 0.05
+Nodes (39): api_key_env, cache_dir, cache_enabled, enabled, model, provider, reasoning_effort, timeout_seconds (+31 more)
 
 ### Community 16 - "Community 16"
 Cohesion: 0.5
 Nodes (4): display_name, last_seen_at, nicknames, 135844077781516289
 
 ### Community 17 - "Integration Plugin Core"
-Cohesion: 0.27
-Nodes (11): _compact_hour_label(), _draw_segment_clock(), _draw_segment_digit(), _draw_timezone_flex_grid(), _draw_timezone_timeline_header(), _draw_timezone_timeline_row(), _future_local_time(), _mix_color() (+3 more)
+Cohesion: 0.06
+Nodes (68): ble_npl_callout_remaining_ticks(), ble_npl_time_ticks_to_ms32(), bt_mesh_model_pending_store(), bt_mesh_beacon_set(), bt_mesh_cfg_pending_store(), bt_mesh_default_ttl_set(), bt_mesh_fixed_group_match(), bt_mesh_friend_get() (+60 more)
 
 ### Community 18 - "Community 18"
 Cohesion: 0.15
 Nodes (13): devDependencies, electron, electron-builder, eslint, eslint-config-prettier, @eslint/js, eslint-plugin-react-hooks, eslint-plugin-react-refresh (+5 more)
 
 ### Community 19 - "Event Bus"
-Cohesion: 0.1
-Nodes (34): _cache_asset_frames(), _clickup_due_label(), _clickup_task_color(), _draw_clickup_tasks_panel(), _draw_current_weather_metrics(), _draw_media_asset_empty(), _draw_media_asset_panel(), _draw_media_panel() (+26 more)
+Cohesion: 0.4
+Nodes (6): _cache_asset_frames(), _load_gif_asset_frame(), _load_media_asset_frame(), _load_static_asset_frame(), _load_video_asset_frame(), _media_asset_type_from_suffix()
 
 ### Community 20 - "USB Display Hardware"
 Cohesion: 0.12
 Nodes (13): image_to_rgb565(), Command, _device_selector_suffix(), _find_usb_device(), Minimal USB bulk transport for TURZX/Turing Rev. A style displays., Minimal USB bulk transport for TURZX/Turing Rev. A style displays., Minimal USB bulk transport for TURZX/Turing Rev. A style displays., _safe_usb_string() (+5 more)
 
 ### Community 21 - "Calendar Event Sources"
-Cohesion: 0.07
+Cohesion: 0.06
 Nodes (4): size(), attrib(), available(), available64()
 
 ### Community 22 - "Discord Integration"
-Cohesion: 0.08
-Nodes (51): AI Decision Plugins, AI Usage, Architecture Records, Calendars, Capacities Project Radar, ClickUp, code:bash (python pixel_ops/main.py --plugin pokemon --output preview), code:json ({) (+43 more)
+Cohesion: 0.07
+Nodes (52): AI Decision Plugins, AI Usage, Architecture Records, Calendars, Capacities Project Radar, ClickUp, code:bash (python pixel_ops/main.py --plugin pokemon --output preview), code:json ({) (+44 more)
 
 ### Community 23 - "Provider Plugins"
 Cohesion: 0.05
@@ -711,8 +808,8 @@ Cohesion: 0.11
 Nodes (17): Agent Guide, AI Calls, Architecture, code:bash (python -m graphify update .), code:text (Provider transport), code:json ({), code:bash (python pixel_ops/main.py --plugin pokemon --output preview), code:bash (python pixel_ops/main.py --plugin pokemon --warm-cache) (+9 more)
 
 ### Community 25 - "HUD Rendering"
-Cohesion: 0.11
-Nodes (7): DiscordGatewayClient, Minimal local Discord Gateway client for ambient voice state.      It intentiona, classify_discord_dispatch(), _discord_actor(), _discord_timestamp(), classify_text_signal(), signal_to_work_event()
+Cohesion: 0.04
+Nodes (22): DiscordGatewayClient, Minimal local Discord Gateway client for ambient voice state.      It intentiona, DiscordCompanionProfile, DiscordCompanionStore, _int(), _optional_int(), DiscordBusEventSource, DiscordGatewayAdapter (+14 more)
 
 ### Community 26 - "Social Visual Effects"
 Cohesion: 0.53
@@ -723,8 +820,8 @@ Cohesion: 0.61
 Nodes (6): component_is_map(), connected_components(), is_background(), main(), slugify(), split_sheet()
 
 ### Community 28 - "Slack Integration"
-Cohesion: 0.21
-Nodes (11): _effects(), _list_value(), _openweathermap_to_wmo(), _optional_float(), primary_effect(), Polls wttr.in JSON weather for a configured city without an API key., Polls wttr.in JSON weather for a configured city without an API key., WeatherForecastDay (+3 more)
+Cohesion: 0.1
+Nodes (20): BaseWeatherSource, build_weather_source(), _effects(), _list_value(), OpenMeteoWeatherSource, _openweathermap_to_wmo(), OpenWeatherMapWeatherSource, _optional_float() (+12 more)
 
 ### Community 29 - "Google Calendar"
 Cohesion: 0.13
@@ -735,16 +832,16 @@ Cohesion: 0.1
 Nodes (21): clock_mode, clock_skin, height, kind, show_seconds, use_24_hour, width, x (+13 more)
 
 ### Community 54 - "Community 54"
-Cohesion: 0.09
-Nodes (11): BrowserMediaSnapshotReceiver, _clean_lines(), _clean_youtube_title(), _infer_music(), LocalMediaSource, MediaNowPlaying, _sanitize_browser_media_payload(), _youtube_browser_script() (+3 more)
+Cohesion: 0.05
+Nodes (28): BrowserMediaSnapshotReceiver, _clean_lines(), _clean_youtube_title(), _infer_music(), LocalMediaSource, _sanitize_browser_media_payload(), _write_http_response_body(), _youtube_browser_script() (+20 more)
 
 ### Community 55 - "Community 55"
 Cohesion: 0.2
 Nodes (10): claude_projects_path, codex_home, enabled, openai_admin_key_env, openai_api_monthly_budget_usd, poll_seconds, providers, thresholds (+2 more)
 
 ### Community 56 - "Community 56"
-Cohesion: 0.13
-Nodes (11): _active_calendar_event(), calendar_companion_snapshot(), _calendar_event_key(), _calendar_person_name(), _contains_time(), merge_companion_snapshots(), MergedCompanionSource, _stable_person_key() (+3 more)
+Cohesion: 0.1
+Nodes (10): IntegrationPlugin, NullAIUsageSource, NullClickUpTasksSource, NullCompanionSource, NullMediaSource, NullPCStatsSource, NullPullRequestSource, NullTaskSource (+2 more)
 
 ### Community 57 - "Community 57"
 Cohesion: 0.07
@@ -772,7 +869,7 @@ Nodes (8): weather, api_key_env, city, country_code, enabled, poll_seconds, prov
 
 ### Community 63 - "Community 63"
 Cohesion: 0.05
-Nodes (31): ConfigDescriptor, configFiles, configStudioOrigin(), coreConfigFiles, DiscordGuildDescriptor, DiscordOAuthSession, discordOAuthSessions, discordRedirectUri() (+23 more)
+Nodes (32): ConfigDescriptor, configFiles, configStudioOrigin(), coreConfigFiles, DiscordGuildDescriptor, DiscordOAuthSession, discordOAuthSessions, discordRedirectUri() (+24 more)
 
 ### Community 64 - "Community 64"
 Cohesion: 0.33
@@ -783,8 +880,8 @@ Cohesion: 0.5
 Nodes (4): display_name, last_seen_at, nicknames, 135406909233692673
 
 ### Community 66 - "Community 66"
-Cohesion: 0.07
-Nodes (17): _activity_title(), rules_from_config(), SlackAmbientAggregator, SlackChannelRule, _SummaryWindow, _actor(), classify_slack_event(), _slack_datetime() (+9 more)
+Cohesion: 0.1
+Nodes (20): auth_match(), bt_mesh_beacon_create(), bt_mesh_beacon_update(), cache_add(), secure_beacon_send(), subnet_beacon_enable(), subnet_by_id(), subnet_evt() (+12 more)
 
 ### Community 67 - "Community 67"
 Cohesion: 0.05
@@ -804,7 +901,7 @@ Nodes (8): code:bash (python pixel_ops/main.py --plugin pokemon --output preview
 
 ### Community 71 - "Community 71"
 Cohesion: 0.08
-Nodes (36): isFatFileOrSubdir(), addCluster(), addDirCluster(), attrib(), available(), cacheDir(), cacheDirEntry(), close() (+28 more)
+Nodes (35): isFatFileOrSubdir(), addCluster(), addDirCluster(), attrib(), available(), cacheDir(), cacheDirEntry(), close() (+27 more)
 
 ### Community 72 - "Community 72"
 Cohesion: 0.09
@@ -823,8 +920,8 @@ Cohesion: 0.23
 Nodes (9): instantiateBounds(), Bounds(), FullBounds(), bottom(), getWindowBounds(), left(), right(), top() (+1 more)
 
 ### Community 76 - "Community 76"
-Cohesion: 0.26
-Nodes (8): _event_weight(), _is_friday(), _metadata_types(), Turns operational/social events into ambient world pressure., _sleepy_or_calm(), SocialWeatherSystem, _state(), WorldMoodState
+Cohesion: 0.18
+Nodes (11): MoodEngine, Compatibility name for the global world mood engine., _event_weight(), _is_friday(), _metadata_types(), Turns operational/social events into ambient world pressure., _sleepy_or_calm(), SocialWeatherSystem (+3 more)
 
 ### Community 77 - "Community 77"
 Cohesion: 0.0
@@ -891,16 +988,16 @@ Cohesion: 0.11
 Nodes (19): activity_threshold, dominant_types, label, tone, weight, activity_threshold, dominant_types, label (+11 more)
 
 ### Community 93 - "Community 93"
-Cohesion: 0.09
-Nodes (18): AIUsageSource, ClickUpTasksSource, MediaSource, PCStatsSource, PixelOpsScene, PullRequestSource, WeatherSource, GameEngine (+10 more)
+Cohesion: 0.04
+Nodes (108): ble_hs_hci_util_rand(), ble_hs_log_flat_buf(), ble_hs_mbuf_pullup_base(), ble_sm_alg_gen_dhkey(), ble_sm_alg_gen_key_pair(), ble_sm_alg_log_buf(), ble_sm_alg_rand(), ble_sm_alg_xor_128() (+100 more)
 
 ### Community 94 - "Community 94"
 Cohesion: 0.5
 Nodes (4): display_name, last_seen_at, nicknames, 141559772188114944
 
 ### Community 95 - "Community 95"
-Cohesion: 0.11
-Nodes (28): _device_info(), dry_run_replay(), _endpoint_direction(), _endpoint_type(), _find_usb_device(), _hex_or_dash(), _interfaces_for_device(), load_replay_file() (+20 more)
+Cohesion: 0.14
+Nodes (22): _device_info(), _endpoint_direction(), _endpoint_type(), _find_usb_device(), _hex_or_dash(), _interfaces_for_device(), load_replay_file(), load_usbpcap_bulk_packets() (+14 more)
 
 ### Community 96 - "Community 96"
 Cohesion: 0.4
@@ -911,8 +1008,8 @@ Cohesion: 0.5
 Nodes (4): display_name, last_seen_at, nicknames, 242829666488942593
 
 ### Community 98 - "Community 98"
-Cohesion: 0.11
-Nodes (26): calculatePixelPageOffset(), clearMemory(), drawPixel(), invert(), charBounds(), drawBitmap(), drawChar(), drawCircle() (+18 more)
+Cohesion: 0.13
+Nodes (23): drawPixel(), charBounds(), drawBitmap(), drawChar(), drawCircle(), drawCircleHelper(), drawGrayscaleBitmap(), drawLine() (+15 more)
 
 ### Community 99 - "Community 99"
 Cohesion: 0.4
@@ -983,16 +1080,16 @@ Cohesion: 0.5
 Nodes (3): discord_companions, max_recent, people
 
 ### Community 125 - "Community 125"
-Cohesion: 0.31
-Nodes (9): buildConfigManifest(), configDescriptorsFor(), detectIntegrationPlugins(), detectVisualPlugins(), listDirectories(), loadRuntimeConfig(), pathExists(), saveRuntimeConfig() (+1 more)
+Cohesion: 0.08
+Nodes (35): ble_att_chan_mtu(), ble_att_inc_rx_stat(), ble_att_inc_tx_stat(), ble_att_is_att_pdu_op(), ble_att_is_request_op(), ble_att_is_response_op(), ble_att_mtu(), ble_att_rx() (+27 more)
 
 ### Community 126 - "Community 126"
 Cohesion: 0.22
 Nodes (21): applyEquipment(), defaultEinkDeviceConfig(), defaultLayoutFor(), defaultLcdDeviceConfig(), defaultThermalrightDeviceConfig(), defaultTurzxDeviceConfig(), defaultWideLayoutFor(), displayOutputFromConfig() (+13 more)
 
 ### Community 128 - "Community 128"
-Cohesion: 0.11
-Nodes (17): _bytes_label(), _duration_label(), _linux_temperature_c(), _normalize_disk_path(), _parse_tasklist_top_memory(), PCMetric, PCStatsSource, _percent_status() (+9 more)
+Cohesion: 0.04
+Nodes (32): ble_dtm_rx_start(), ble_dtm_stop(), ble_dtm_tx_start(), ble_gap_event_listener_register(), ble_gap_event_listener_unregister(), ble_hs_shutdown(), ble_hs_stop(), ble_hs_stop_begin() (+24 more)
 
 ### Community 129 - "Community 129"
 Cohesion: 0.5
@@ -1015,8 +1112,8 @@ Cohesion: 0.5
 Nodes (4): display_name, last_seen_at, nicknames, 533459625341616148
 
 ### Community 134 - "Community 134"
-Cohesion: 0.18
-Nodes (11): AiPokemonChoice, AiThrottle, _compact_metadata(), _enrich_generic_message(), _ensure_message_terms(), _env_bool(), _event_keyword(), PokemonAiPromptBuilder (+3 more)
+Cohesion: 0.25
+Nodes (10): AiPokemonChoice, _compact_metadata(), _enrich_generic_message(), _ensure_message_terms(), _env_bool(), _event_keyword(), PokemonAiPromptBuilder, Builds Pokemon-specific AI decisions while leaving model calls to Pixel OPs AI p (+2 more)
 
 ### Community 135 - "Community 135"
 Cohesion: 0.5
@@ -1031,16 +1128,16 @@ Cohesion: 0.33
 Nodes (5): 0021 - Local Runtime State Uses SQLite, code:text (pixel_ops/state/pixel_ops.sqlite), Consequences, Context, Decision
 
 ### Community 138 - "Community 138"
-Cohesion: 0.17
-Nodes (13): completeDiscordOAuth(), discordProfileFromToken(), discordToken(), envValue(), githubToken(), kiteStatus(), listGithubRepos(), loadDiscordProfile() (+5 more)
+Cohesion: 0.08
+Nodes (10): Arduino_ILI9488_3bit(), draw16bitRGBBitmap(), draw24bitRGBBitmap(), draw3bitRGBBitmap(), drawBitmap(), drawIndexedBitmap(), writeAddrWindow(), Arduino_DataBus() (+2 more)
 
 ### Community 139 - "Community 139"
 Cohesion: 0.08
-Nodes (17): baseClock(), enableGPIO(), gpioMux(), initClock(), initSDHC(), isBusy(), isBusyCMD13(), isBusyTransferComplete() (+9 more)
+Nodes (40): baseClock(), begin(), cardAcmd(), cardACMD13(), cardACMD51(), cardCMD6(), cardCommand(), enableDmaIrs() (+32 more)
 
 ### Community 140 - "Community 140"
-Cohesion: 0.11
-Nodes (11): type, _env_bool(), GitHubEventSource, label(), _parse_github_datetime(), Polls GitHub for open pull requests and keeps a compact HUD list., Polls GitHub for open pull requests and keeps a compact HUD list., Polls GitHub for open pull requests and keeps a compact HUD list. (+3 more)
+Cohesion: 0.07
+Nodes (16): type, _env_bool(), GitHubEventSource, label(), _parse_github_datetime(), Polls GitHub for open pull requests and keeps a compact HUD list., Polls GitHub for open pull requests and keeps a compact HUD list., Polls GitHub for open pull requests and keeps a compact HUD list. (+8 more)
 
 ### Community 141 - "Community 141"
 Cohesion: 0.4
@@ -1055,44 +1152,48 @@ Cohesion: 0.4
 Nodes (4): 0015 - Timezone Config Is Derived From IANA Selection, Consequences, Context, Decision
 
 ### Community 144 - "Community 144"
-Cohesion: 0.07
-Nodes (19): compose_eink_white_background(), EInkDirtyRegion, EInkFrame, encode_eink_frame(), find_eink_dirty_region(), _PullFrameHandler, _PullFrameState, Encode a PIL frame as row-aligned, MSB-first monochrome pixels.      A set bit r (+11 more)
+Cohesion: 0.04
+Nodes (31): compose_eink_white_background(), EInkDirtyRegion, EInkFrame, EInkHttpOutput, encode_eink_frame(), find_eink_dirty_region(), _PcHealthServer, _PullFrameHandler (+23 more)
 
 ### Community 145 - "Community 145"
-Cohesion: 0.16
-Nodes (7): from_config(), _optional_int(), _parse_int(), USB output for TURZX/Turing Smart Screen displays., TURZXOutput, TestCase, TurzxOutputTests
+Cohesion: 0.08
+Nodes (10): DisplayOutput, GifOutput, Collects frames and writes an animated GIF when stopped., PreviewOutput, Writes preview PNG frames locally without requiring display hardware., from_config(), _optional_int(), _parse_int() (+2 more)
 
 ### Community 146 - "Community 146"
 Cohesion: 0.07
-Nodes (19): PullRequestSummary, _asteroid_state(), _event_effect(), _fallback_event_key(), material_for_pr(), _pr_key(), SpaceshipEngine, SpaceshipSnapshot (+11 more)
+Nodes (17): _asteroid_state(), _event_effect(), _fallback_event_key(), material_for_pr(), _pr_key(), SpaceshipEngine, AsteroidRecord, _normalize_layout_seed() (+9 more)
 
 ### Community 148 - "Community 148"
 Cohesion: 0.25
 Nodes (12): scaled_px(), draw_text_box(), _load_text_box_frame(), scroll_line_start(), _scroll_lines(), text_box_bottom_padding(), text_box_cursor_height(), text_box_line_height() (+4 more)
 
 ### Community 149 - "Community 149"
-Cohesion: 0.1
-Nodes (9): DisplayOutput, GifOutput, Collects frames and writes an animated GIF when stopped., encode_lcd_frame(), LcdFrame, LcdHttpOutput, Resize a PIL frame and encode it as big-endian RGB565 pixels., Color Wi-Fi output for the Waveshare ESP32-C6-LCD-1.47 firmware. (+1 more)
+Cohesion: 0.12
+Nodes (8): encode_lcd_frame(), LcdFrame, LcdHttpOutput, Resize a PIL frame and encode it as big-endian RGB565 pixels., Color Wi-Fi output for the Waveshare ESP32-C6-LCD-1.47 firmware., TestCase, LcdHttpOutputTests, TurzxOutputTests
 
 ### Community 150 - "Community 150"
-Cohesion: 0.1
-Nodes (10): ABC, CompositeOutput, CroppedOutput, DisplayOutput, Output wrapper that sends a display-sized crop from a virtual frame., Fan-out output for multiple configured displays., Transport boundary for rendered frames.      The core renderer always produces P, RegionOutput (+2 more)
+Cohesion: 0.07
+Nodes (12): ABC, CompositeOutput, CroppedOutput, DisplayOutput, Output wrapper that sends a display-sized crop from a virtual frame., Fan-out output for multiple configured displays., Transport boundary for rendered frames.      The core renderer always produces P, RegionOutput (+4 more)
 
 ### Community 151 - "Community 151"
-Cohesion: 0.05
-Nodes (23): AiDecisionPlugin, ClickUpTaskSnapshot, CompanionMember, CompanionSnapshot, PCStatsSnapshot, DiscordBusEventSource, DiscordGatewayAdapter, Gateway dispatch adapter.      The project intentionally avoids a runtime websoc (+15 more)
+Cohesion: 0.08
+Nodes (53): ble_npl_event_is_queued(), ble_ll_adv_event_rmvd_from_sched(), ble_ll_adv_periodic_rmvd_from_sched(), ble_ll_assert(), ble_ll_data_buffer_overflow(), ble_ll_event_add(), ble_transport_to_ll_cmd_impl(), ble_ll_conn_event_halt() (+45 more)
 
 ### Community 152 - "Community 152"
-Cohesion: 0.04
-Nodes (9): getWiFiIsSaved(), init(), setConfigPortalTimeout(), setTimeout(), setValue(), WiFi_hasAutoConnect(), WiFi_scanComplete(), WiFiEvent() (+1 more)
+Cohesion: 0.03
+Nodes (28): addParameter(), encryptionTypeStr(), _end(), getCustomHTML(), getID(), getIpForm(), getLabel(), getLabelPlacement() (+20 more)
+
+### Community 153 - "Community 153"
+Cohesion: 0.16
+Nodes (32): readCSD(), begin(), cardCMD6(), cardCommand(), CRC7(), CRC_CCITT(), end(), erase() (+24 more)
 
 ### Community 154 - "Community 154"
 Cohesion: 0.06
 Nodes (45): badPinCheck(), bool(), ddrReg(), fastBitWriteSafe(), fastDdrWrite(), fastDigitalRead(), fastDigitalToggle(), fastDigitalWrite() (+37 more)
 
 ### Community 155 - "Community 155"
-Cohesion: 0.18
-Nodes (7): Enumerate USB devices and return likely Thermalright bulk candidates., Enumerate USB devices and return likely Thermalright bulk candidates., Enumerate USB devices and return likely Thermalright bulk candidates., Enumerate USB devices and return likely Thermalright bulk candidates., Enumerate USB devices and return likely Thermalright bulk candidates., scan_thermalright_devices(), ThermalrightPlugin
+Cohesion: 0.29
+Nodes (6): Enumerate USB devices and return likely Thermalright bulk candidates., Enumerate USB devices and return likely Thermalright bulk candidates., Enumerate USB devices and return likely Thermalright bulk candidates., Enumerate USB devices and return likely Thermalright bulk candidates., Enumerate USB devices and return likely Thermalright bulk candidates., scan_thermalright_devices()
 
 ### Community 156 - "Community 156"
 Cohesion: 0.12
@@ -1107,8 +1208,8 @@ Cohesion: 0.1
 Nodes (20): thermalright, debug, frame_retries, handshake_on_first_frame, hard_reset_on_start, hard_reset_wait_ms, image_height, image_width (+12 more)
 
 ### Community 159 - "Community 159"
-Cohesion: 0.22
-Nodes (11): displays, forever, full_frame, output, plugin, preview_sequence, seconds, target (+3 more)
+Cohesion: 0.17
+Nodes (7): TaskItem, TaskSnapshot, _due_datetime(), _ids_from_config(), _task_from_payload(), TodoistTaskSource, TodoistTaskSourceTests
 
 ### Community 160 - "Community 160"
 Cohesion: 0.5
@@ -1119,12 +1220,12 @@ Cohesion: 0.12
 Nodes (15): code:powershell (py -m venv .venv), code:powershell (python scripts\windows_check.py), code:powershell (python pixel_ops\main.py --plugin pokemon --output preview -), code:powershell (python pixel_ops\main.py --plugin pokemon --output window --), code:powershell (python pixel_ops\main.py --plugin pokemon --output gif --sec), code:text (1a86:5722), code:powershell (python pixel_ops\main.py --plugin pokemon --output turzx --f), code:powershell (cd config-studio) (+7 more)
 
 ### Community 162 - "Community 162"
-Cohesion: 0.16
-Nodes (18): close(), contiguousRange(), dirCache(), fgets(), firstSector(), getAccessDateTime(), getCreateDateTime(), getModifyDateTime() (+10 more)
+Cohesion: 0.15
+Nodes (20): getLe16(), printDirName(), close(), contiguousRange(), dirCache(), fgets(), firstSector(), getAccessDateTime() (+12 more)
 
 ### Community 163 - "Community 163"
-Cohesion: 0.27
-Nodes (4): DiscordCompanionProfile, DiscordCompanionStore, _int(), _optional_int()
+Cohesion: 0.02
+Nodes (132): settings_load(), bt_mesh_app_key_find(), addr_is_free(), bt_mesh_cdb_app_key_alloc(), bt_mesh_cdb_app_key_del(), bt_mesh_cdb_app_key_get(), bt_mesh_cdb_app_key_store(), bt_mesh_cdb_clear() (+124 more)
 
 ### Community 164 - "Community 164"
 Cohesion: 0.09
@@ -1167,8 +1268,8 @@ Cohesion: 0.5
 Nodes (4): display_name, last_seen_at, nicknames, 409748513598078997
 
 ### Community 175 - "Community 175"
-Cohesion: 0.25
-Nodes (7): parse_image_chunk_header(), Parse the observed Thermalright JPEG chunk header, if present., Parse the observed Thermalright JPEG chunk header, if present., Parse the observed Thermalright JPEG chunk header, if present., Parse the observed Thermalright JPEG chunk header, if present., Parse the observed Thermalright JPEG chunk header, if present., ThermalrightImageChunkInfo
+Cohesion: 0.17
+Nodes (9): inspect_packet(), parse_image_chunk_header(), _possible_command(), Parse the observed Thermalright JPEG chunk header, if present., Parse the observed Thermalright JPEG chunk header, if present., Parse the observed Thermalright JPEG chunk header, if present., Parse the observed Thermalright JPEG chunk header, if present., Parse the observed Thermalright JPEG chunk header, if present. (+1 more)
 
 ### Community 176 - "Community 176"
 Cohesion: 0.11
@@ -1187,56 +1288,60 @@ Cohesion: 0.13
 Nodes (24): drawFsJpg(), drawJpg(), drawSdJpg(), getFsJpgSize(), getJpgSize(), getSdJpgSize(), jd_input(), jd_output() (+16 more)
 
 ### Community 180 - "Community 180"
-Cohesion: 0.17
-Nodes (5): FrameBufferOptions, inspect_packet(), _possible_command(), split_frame_chunks(), ThermalrightProtocol
+Cohesion: 0.15
+Nodes (7): dry_run_replay(), FrameBufferOptions, replay_packets(), ReplayOptions, split_frame_chunks(), ThermalrightPlugin, ThermalrightProtocol
 
 ### Community 181 - "Community 181"
-Cohesion: 0.14
-Nodes (14): build, appId, asar, extraResources, files, mac, nsis, productName (+6 more)
+Cohesion: 0.18
+Nodes (11): build, appId, asar, extraResources, files, linux, productName, win (+3 more)
 
 ### Community 182 - "Community 182"
-Cohesion: 0.15
-Nodes (12): _datetime_iso(), _discord_person_from_row(), DiscordPersonRecord, _json(), _layout_profile_from_row(), LayoutProfileRecord, _loads(), _now_iso() (+4 more)
+Cohesion: 0.02
+Nodes (225): ble_att_clt_parse_find_type_value_hinfo(), ble_att_clt_parse_read_group_type_adata(), ble_att_clt_rx_error(), ble_att_clt_rx_exec_write(), ble_att_clt_rx_find_type_value(), ble_att_clt_rx_indicate(), ble_att_clt_rx_prep_write(), ble_att_clt_rx_read() (+217 more)
 
 ### Community 183 - "Community 183"
-Cohesion: 0.12
+Cohesion: 0.13
 Nodes (15): Arduino_Canvas(), draw16bitRGBBitmap(), flush(), flushQuad(), writeFastHLine(), writeFastHLineCore(), writeFastVLine(), writeFastVLineCore() (+7 more)
 
+### Community 184 - "Community 184"
+Cohesion: 0.06
+Nodes (3): Arduino_Canvas_3bit(), Arduino_Canvas_Mono(), Arduino_OLED()
+
 ### Community 185 - "Community 185"
-Cohesion: 0.08
-Nodes (25): layout, height, kind, width, x, y, height, kind (+17 more)
+Cohesion: 0.04
+Nodes (107): find_msb_set(), sys_memcpy_swap(), bt_ccm_decrypt(), bt_ccm_encrypt(), ccm_auth(), ccm_calculate_X0(), ccm_crypt(), xor16() (+99 more)
 
 ### Community 186 - "Community 186"
 Cohesion: 0.2
 Nodes (10): applyMultiDisplayBounds(), applyPrimaryDisplay(), cloneJson(), DisplayArrangement(), displayBounds(), LayoutPreview(), layoutWindowKind(), removeLayoutWindow() (+2 more)
 
 ### Community 187 - "Community 187"
-Cohesion: 0.11
-Nodes (33): CapacitiesProjectSource, _definition_map(), _find_structure(), _key(), _names(), _parse_datetime(), _project_from_object(), _property() (+25 more)
+Cohesion: 0.15
+Nodes (21): CapacitiesProjectSource, _definition_map(), _find_structure(), _key(), _names(), _parse_datetime(), _project_from_object(), _property() (+13 more)
 
 ### Community 188 - "Community 188"
-Cohesion: 0.1
-Nodes (18): _active_mining_asteroid(), _crew_assignment_room(), _crew_position(), _diegetic_event_label(), _drone_progress(), Translate the current PR lifecycle into a diegetic work destination., Find a connected room-only path; black space can never enter the route., Translate the current PR lifecycle into a diegetic work destination. (+10 more)
+Cohesion: 0.05
+Nodes (88): find_lsb_set(), k_mem_slab_num_free_get(), net_buf_id(), net_buf_simple_restore(), net_buf_simple_save(), bt_mesh_has_addr(), bt_mesh_adv_create_from_pool(), bt_mesh_app_decrypt() (+80 more)
 
 ### Community 189 - "Community 189"
-Cohesion: 0.2
-Nodes (17): emoji_image(), icon_font(), _load_font(), _macos_emoji_image(), _pillow_emoji_image(), _scaled_font_size(), _draw_temperature_range(), _draw_weather_compact() (+9 more)
+Cohesion: 0.05
+Nodes (44): height, kind, width, x, y, height, kind, width (+36 more)
 
 ### Community 190 - "Community 190"
 Cohesion: 0.5
 Nodes (4): display_name, last_seen_at, nicknames, 411916947773587456
 
 ### Community 191 - "Community 191"
-Cohesion: 0.23
-Nodes (3): _manual_crew_task(), _movement_direction(), _with_translucent_walls()
+Cohesion: 0.1
+Nodes (21): AIActivitySnapshot, AIActivityTask, Provider-neutral activity, without conversation content., Opaque task identity and lifecycle only; no conversation content., activity_snapshot(), CodexStatusSource, Read the existing shared daemon over its local WebSocket transport.      Never s, Observe local turn metadata and the existing shared daemon.      Never starts/re (+13 more)
 
 ### Community 192 - "Community 192"
-Cohesion: 0.21
-Nodes (13): _ai_mana_color(), _ai_mana_percent(), _ai_usage_gauge_short_label(), _ai_usage_gauge_value(), _ai_usage_label(), _ai_usage_percent(), _ai_usage_reset_countdown(), _ai_usage_used_label() (+5 more)
+Cohesion: 0.12
+Nodes (23): isWriteMode(), isFatFile(), isFatLongName(), lfnReservedChar(), setLe64(), sfnReservedChar(), lfnChecksum(), cmpName() (+15 more)
 
 ### Community 193 - "Community 193"
-Cohesion: 0.12
-Nodes (6): Arduino_ILI9486_18bit(), invertDisplay(), tftInit(), Arduino_ILI9486(), invertDisplay(), tftInit()
+Cohesion: 0.25
+Nodes (3): Arduino_ILI9486_18bit(), invertDisplay(), tftInit()
 
 ### Community 194 - "Community 194"
 Cohesion: 0.5
@@ -1279,8 +1384,8 @@ Cohesion: 0.1
 Nodes (37): beginWrite(), CS_HIGH(), CS_LOW(), D0_HIGH(), D0_LOW(), D1_HIGH(), D1_LOW(), D2_HIGH() (+29 more)
 
 ### Community 205 - "Community 205"
-Cohesion: 0.08
-Nodes (30): AIUsageGauge, AIUsageSnapshot, _CodexRateLimitStatus, NullAIUsageSource, Enum, ambient_signal_to_work_event(), AmbientProvider, AmbientSignalKind (+22 more)
+Cohesion: 0.04
+Nodes (59): AIUsageGauge, AIUsageSnapshot, _CodexRateLimitStatus, NullAIUsageSource, _UsageRow, MediaNowPlaying, PCStatsSnapshot, Enum (+51 more)
 
 ### Community 206 - "Community 206"
 Cohesion: 0.2
@@ -1299,44 +1404,52 @@ Cohesion: 0.4
 Nodes (4): 0018 - ClickUp Tasks Are Planning Snapshots, Consequences, Context, Decision
 
 ### Community 211 - "Community 211"
-Cohesion: 0.18
-Nodes (15): exFatChecksum(), searchPair16(), toUpcase(), upcaseChecksum(), format(), syncUpcase(), writeUpcase(), writeUpcaseByte() (+7 more)
+Cohesion: 0.05
+Nodes (109): ble_ll_trace_u32(), ble_ll_trace_u32x2(), os_trace_api_u32(), ble_ll_adv_active_chanset_clear(), ble_ll_adv_active_chanset_is_pri(), ble_ll_adv_active_chanset_is_sec(), ble_ll_adv_active_chanset_set_pri(), ble_ll_adv_active_chanset_set_sec() (+101 more)
 
 ### Community 212 - "Community 212"
 Cohesion: 0.22
 Nodes (8): fetch(), hex(), hmacHex(), json(), parseJson(), PixelOpsKiteHub, unauthorized(), utf8()
 
 ### Community 213 - "Community 213"
-Cohesion: 0.13
-Nodes (16): FS_DATE(), FS_TIME(), setLe64(), addCluster(), addDirCluster(), exFatDirChecksum(), mkdir(), preAllocate() (+8 more)
+Cohesion: 0.09
+Nodes (17): compileMonth(), compileMonthIs(), FS_DATE(), FS_TIME(), addCluster(), addDirCluster(), exFatDirChecksum(), mkdir() (+9 more)
 
 ### Community 215 - "Community 215"
 Cohesion: 0.33
 Nodes (5): 0020 - Tasks HUDs Share Provider-Neutral Board State, Consequences, Context, Decision, Status
 
 ### Community 216 - "Community 216"
-Cohesion: 0.07
-Nodes (30): height, kind, width, x, y, crosshero_classes, pc_stats, project_focus_radar (+22 more)
+Cohesion: 0.09
+Nodes (32): _active_codex_limit_percent(), AIUsageSource, _aware(), _claude_row(), _codex_rate_limit_status(), _codex_row(), _compact_number(), _find_first_string() (+24 more)
 
 ### Community 218 - "Community 218"
 Cohesion: 0.29
 Nodes (7): dependencies, lucide-react, react, react-dom, typescript, vite, @vitejs/plugin-react
 
 ### Community 219 - "Community 219"
-Cohesion: 0.11
-Nodes (17): Loopback-only HTTP control surface for Studio, remote UI, and tray., ScreenControlServer, _iso(), _parse_config(), Owns presentation rotation without owning game or integration state., Owns presentation rotation without owning game or integration state., ScreenPresentation, ScreenRotationController (+9 more)
+Cohesion: 0.15
+Nodes (15): _iso(), _parse_config(), Owns presentation rotation without owning game or integration state., Owns presentation rotation without owning game or integration state., ScreenPresentation, ScreenRotationController, _utc(), _config() (+7 more)
 
 ### Community 220 - "Community 220"
-Cohesion: 0.06
-Nodes (33): project_tasks, projects_eink, projects_eink_status, projects_lcd, projects_turzx, height, kind, width (+25 more)
+Cohesion: 0.05
+Nodes (39): project_tasks, projects_eink, projects_eink_status, projects_lcd, projects_turzx, route_signal, height, kind (+31 more)
 
 ### Community 223 - "Community 223"
 Cohesion: 0.08
 Nodes (33): _clean_ics_text(), download_ics(), _event_occurrences_between(), _first_url(), ics_events_between(), _ics_params(), _ics_person_label(), _ics_property_name() (+25 more)
 
+### Community 224 - "Community 224"
+Cohesion: 0.04
+Nodes (59): _mana_usage_gauge(), _visible_ai_usage_gauges(), _active_mining_asteroid(), _crew_assignment_room(), _crew_position(), _diegetic_event_label(), _door_open_amount(), _drone_progress() (+51 more)
+
+### Community 225 - "Community 225"
+Cohesion: 0.1
+Nodes (37): ble_gap_conn_find(), ble_gatts_peer_cl_sup_feat_update(), ble_hs_pvcy_set_default_irk(), ble_sm_incr_our_sign_counter(), ble_sm_incr_peer_sign_counter(), ble_sm_read_bond(), ble_sm_retrieve_ltk(), ble_store_clear() (+29 more)
+
 ### Community 226 - "Community 226"
 Cohesion: 0.07
-Nodes (27): code:cpp (display.setTextWrap(w)), code:cpp (display.drawRoundRect(x, y, w, h, r, color)), code:cpp (display.customPowerOff()), code:cpp (display.customPowerOn()), code:cpp (display.fillCircle(x, y, r, color)), code:cpp (printCenter(str, offset_x, offset_y)), `customPowerOff()`, `customPowerOn()` (+19 more)
+Nodes (27): code:cpp (display.setTextWrap(w)), code:cpp (display.useCustomPowerSwitch(pin, type)), code:cpp (display.drawRoundRect(x, y, w, h, r, color)), code:cpp (display.customPowerOff()), code:cpp (display.customPowerOn()), code:cpp (printCenter(str, offset_x, offset_y)), `customPowerOff()`, `customPowerOn()` (+19 more)
 
 ### Community 227 - "Community 227"
 Cohesion: 0.07
@@ -1363,24 +1476,24 @@ Cohesion: 0.18
 Nodes (10): devDependencies, wrangler, name, private, scripts, deploy, dev, tail (+2 more)
 
 ### Community 233 - "Community 233"
-Cohesion: 0.19
+Cohesion: 0.12
 Nodes (17): BMPColorInverted(), BMPHeight(), BMPReportedSize(), BMPStart(), BMPWidth(), exists(), fileSize(), openFile() (+9 more)
 
 ### Community 234 - "Community 234"
 Cohesion: 0.16
-Nodes (5): palette_for_hour(), AshCharacter, PokemonEncounter, position(), MainScene
+Nodes (4): write(), writeBytes(), writeCommand(), writeCommandBytes()
 
 ### Community 235 - "Community 235"
 Cohesion: 0.05
-Nodes (23): repo_types(), time_types(), Encounter, EncounterSpawner, EncounterContext, EncounterSystem, _env_bool(), _env_bool() (+15 more)
+Nodes (25): AiDecisionPlugin, repo_types(), time_types(), Encounter, EncounterSpawner, EncounterContext, EncounterSystem, _env_bool() (+17 more)
 
 ### Community 236 - "Community 236"
-Cohesion: 0.12
-Nodes (33): getLe16(), getLe32(), getLe64(), checkUpcase(), dmpBitmap(), dmpCluster(), dmpDirData(), dmpFat() (+25 more)
+Cohesion: 0.19
+Nodes (20): getLe32(), getLe64(), checkUpcase(), dmpBitmap(), dmpCluster(), dmpDirData(), dmpFat(), dmpSector() (+12 more)
 
 ### Community 237 - "Community 237"
-Cohesion: 0.13
-Nodes (35): autoConnect(), _begin(), configPortalHasTimeout(), connectWifi(), DEBUG_WM(), debugSoftAPConfig(), disconnect(), getDefaultAPName() (+27 more)
+Cohesion: 0.12
+Nodes (38): autoConnect(), _begin(), configPortalHasTimeout(), connectWifi(), DEBUG_WM(), debugSoftAPConfig(), disconnect(), erase() (+30 more)
 
 ### Community 238 - "Community 238"
 Cohesion: 0.11
@@ -1391,8 +1504,8 @@ Cohesion: 0.18
 Nodes (18): autostartPaths(), ensureRuntimeLaunchers(), ensureSpritePreviews(), execFileAsync, fileExists(), installRuntimeAutostart(), macAutostartLogDir(), macAutostartSupportDir() (+10 more)
 
 ### Community 240 - "Community 240"
-Cohesion: 0.25
-Nodes (9): configureKiteSecrets(), kiteDeploy(), kiteInstall(), kitePutSecret(), kiteUrlsFromOutput(), npmCommand(), npxCommand(), runKiteCommand() (+1 more)
+Cohesion: 0.16
+Nodes (16): exFatChecksum(), searchPair16(), toUpcase(), upcaseChecksum(), hashDir(), format(), syncUpcase(), writeUpcase() (+8 more)
 
 ### Community 241 - "Community 241"
 Cohesion: 0.06
@@ -1403,24 +1516,24 @@ Cohesion: 0.06
 Nodes (33): height, kind, monochrome, width, x, y, height, kind (+25 more)
 
 ### Community 243 - "Community 243"
-Cohesion: 0.06
-Nodes (32): height, kind, width, x, y, height, kind, monochrome (+24 more)
+Cohesion: 0.05
+Nodes (38): height, kind, width, x, y, height, kind, monochrome (+30 more)
 
 ### Community 244 - "Community 244"
-Cohesion: 0.21
-Nodes (9): CROSSHERO_STUDIO_ENDPOINTS, domain, postSnapshot(), providerForUrl(), publishBestSnapshot(), sanitize(), selectBest(), snapshot (+1 more)
+Cohesion: 0.14
+Nodes (17): CROSSHERO_STUDIO_ENDPOINTS, domain, postSnapshot(), providerForUrl(), publishBestSnapshot(), sanitize(), selectBest(), snapshot (+9 more)
 
 ### Community 245 - "Community 245"
 Cohesion: 0.62
 Nodes (6): channelName(), cleanText(), cleanTitle(), publish(), readMediaState(), sourceName()
 
 ### Community 246 - "Community 246"
-Cohesion: 0.16
-Nodes (7): build_weather_source(), OpenMeteoWeatherSource, Polls Open-Meteo current weather for a configured city., Polls Open-Meteo current weather for a configured city., Polls Open-Meteo current weather for a configured city., plugin(), WeatherIntegrationPlugin
+Cohesion: 0.04
+Nodes (90): net_buf_simple_init(), adv_send_start(), ble_gatts_find_svc(), ble_svc_gatt_changed(), bt_conn_get_info(), bt_mesh_pb_gatt_disable(), bt_mesh_pb_gatt_enable(), gatt_connected_pb_gatt() (+82 more)
 
 ### Community 247 - "Community 247"
-Cohesion: 0.05
-Nodes (24): AsyncCurrentSource, AsyncEventSource, AsyncPullRequestSource, Polls event sources in the background and drains completed events per frame., Returns the latest snapshot while refreshing a source off the render loop., run_background(), _source_interval(), IntegrationPlugin (+16 more)
+Cohesion: 0.11
+Nodes (8): AsyncCurrentSource, AsyncEventSource, AsyncPullRequestSource, Polls event sources in the background and drains completed events per frame., Returns the latest snapshot while refreshing a source off the render loop., run_background(), _source_interval(), lock()
 
 ### Community 248 - "Community 248"
 Cohesion: 0.4
@@ -1439,24 +1552,24 @@ Cohesion: 0.4
 Nodes (4): code:bash (cd infra/cloudflare/pixelops-kite), Deploy, Endpoints, PixelOpsKite
 
 ### Community 252 - "Community 252"
-Cohesion: 0.31
-Nodes (5): frame_in_phase(), from_seconds(), GameStateMachine, _next_phase(), progress()
+Cohesion: 0.04
+Nodes (58): _doorway_crew_position(), _local_doorway_position(), _mining_bay_progress(), _mining_bay_tier(), Return durable bay tier and progress within its long-term PR milestone., Return durable bay tier and progress within its long-term PR milestone., Return durable bay tier and progress within its long-term PR milestone., Place the crew sprite's feet in the center of the shared door opening. (+50 more)
 
 ### Community 255 - "Community 255"
-Cohesion: 0.13
-Nodes (21): clear(), fullscreen(), landscape(), setFlip(), setRotation(), setWindow(), fastmodeOff(), fastmodeOn() (+13 more)
+Cohesion: 0.16
+Nodes (17): fullscreen(), landscape(), setFlip(), setRotation(), setWindow(), draw24bitBMP(), drawMonoBMP(), fullscreenBMPValid() (+9 more)
 
 ### Community 256 - "Community 256"
-Cohesion: 0.22
-Nodes (5): AiDecisionRequest, build_ai_plugin(), _env_bool(), OpenAiChatGptPlugin, Generic Pixel OPs AI decision plugin backed by the OpenAI Responses API.
+Cohesion: 0.04
+Nodes (106): ble_ll_conn_rem_feature_check(), ble_ll_adv_read_txpwr(), ble_ll_conn_central_init(), ble_ll_conn_chan_map_update(), ble_ll_conn_css_get_next_slot(), ble_ll_conn_cth_flow_enable(), ble_ll_conn_find_by_handle(), ble_ll_conn_find_by_peer_addr() (+98 more)
 
 ### Community 257 - "Community 257"
 Cohesion: 0.43
 Nodes (6): code:text (http://127.0.0.1:47832/media/now-playing), CrossHero session, Data sent, Install, Pixel OPs Browser Bridge Extension, Pixel OPs Browser Media Extension
 
 ### Community 258 - "Community 258"
-Cohesion: 0.12
-Nodes (30): isWriteMode(), isFatFile(), isFatLongName(), lbaToMbrChs(), lfnReservedChar(), setLe16(), setLe32(), sfnReservedChar() (+22 more)
+Cohesion: 0.07
+Nodes (30): ble_att_svr_security_mode_1_level(), ble_gattc_cache_conn_db_hash_read(), ble_gatts_cafd_access(), ble_gatts_cpfd_access(), ble_gatts_free_svcs(), ble_gatts_security_mode_1_level(), ble_hs_mbuf_to_flat(), ble_svc_gap_access() (+22 more)
 
 ### Community 259 - "Community 259"
 Cohesion: 0.07
@@ -1467,15 +1580,15 @@ Cohesion: 0.19
 Nodes (16): readMjpegBuf(), fclose(), fflush(), fgets(), fillBuf(), fillGet(), flushBuf(), flushPut() (+8 more)
 
 ### Community 262 - "Community 262"
-Cohesion: 0.07
-Nodes (12): EInkHttpOutput, _PcHealthServer, _PullFrameServer, Wi-Fi output for the Pixel OPs firmware running on a Heltec E213., Wi-Fi output for the Pixel OPs firmware running on a Heltec E213., Wi-Fi output for the Pixel OPs firmware running on a Heltec E213., Wi-Fi output for the Pixel OPs firmware running on a Heltec E213., Wi-Fi output for the Pixel OPs firmware running on a Heltec E213. (+4 more)
+Cohesion: 0.02
+Nodes (191): ble_npl_mutex_pend(), ble_npl_mutex_release(), ble_hs_util_ensure_addr(), ble_hs_util_ensure_rand_addr(), ble_hs_util_load_rand_addr(), ble_att_set_default_bearer_using_cid(), ble_gap_authorize_event(), ble_gap_call_conn_event_cb() (+183 more)
 
 ### Community 263 - "Community 263"
 Cohesion: 0.24
 Nodes (14): isDigit(), isSpace(), getpos(), setpos(), getBool(), getch(), getChar(), getDouble() (+6 more)
 
 ### Community 264 - "Community 264"
-Cohesion: 0.18
+Cohesion: 0.26
 Nodes (11): mbToCp(), mbToU16(), getLfnChar(), getName(), getName7(), getName8(), getSFN(), printName() (+3 more)
 
 ### Community 265 - "Community 265"
@@ -1491,11 +1604,11 @@ Cohesion: 0.4
 Nodes (4): 0026 - All Game Inputs Are Platform Events, Consequences, Context, Decision
 
 ### Community 268 - "Community 268"
-Cohesion: 0.32
-Nodes (9): from_path(), _generated_lore(), _generated_records(), PokemonKnowledge, PokemonKnowledgeBase, _query_terms(), _record_terms(), _score() (+1 more)
+Cohesion: 0.16
+Nodes (20): ble_hs_hci_acl_hdr_prepend(), mem_pullup_obj(), os_mbuf_cmpf(), os_mbuf_cmpm(), os_mbuf_copyinto(), _os_mbuf_copypkthdr(), os_mbuf_dup(), os_mbuf_free() (+12 more)
 
 ### Community 269 - "Community 269"
-Cohesion: 0.22
+Cohesion: 0.18
 Nodes (10): chdir(), ExFatPartition(), exists(), ls(), open(), remove(), rename(), rmdir() (+2 more)
 
 ### Community 270 - "Community 270"
@@ -1507,23 +1620,27 @@ Cohesion: 0.27
 Nodes (11): begin(), dmac_channel_disable(), dmac_channel_enable(), dmac_channel_transfer_done(), dmac_disable(), dmac_enable(), receive(), send() (+3 more)
 
 ### Community 272 - "Community 272"
-Cohesion: 0.22
-Nodes (4): close(), MjpegClass(), MjpegClass(), fopen()
+Cohesion: 0.04
+Nodes (139): bt_mesh_comp_register(), bt_mesh_model_foreach(), bt_mesh_model_settings_commit(), bt_mesh_msg_send(), bt_mesh_primary_addr(), bt_mesh_adv_create(), bt_mesh_scan_disable(), bt_mesh_scan_enable() (+131 more)
 
 ### Community 273 - "Community 273"
 Cohesion: 0.34
 Nodes (10): adjustCount(), advance(), is_aligned(), memcpyBuf(), minSize(), read(), readIn(), sync() (+2 more)
 
+### Community 274 - "Community 274"
+Cohesion: 0.06
+Nodes (95): ble_att_conn_chan_find(), ble_att_mtu_by_cid(), ble_att_clt_parse_find_info_entry(), ble_att_clt_rx_find_info(), ble_att_cmd_prepare(), ble_att_fill_database_info(), ble_att_get_database_size(), ble_att_svr_build_find_info_rsp() (+87 more)
+
 ### Community 276 - "Community 276"
-Cohesion: 0.22
-Nodes (8): Cut only the foreground wall; the connected room behind supplies the visible flo, Return the shared corridor center in room-local isometric coordinates., Cut only the foreground wall; the connected room behind supplies the visible flo, Cut only the foreground wall; the connected room behind supplies the visible flo, Cut only the foreground wall; the connected room behind supplies the visible flo, Cut only the foreground wall; the connected room behind supplies the visible flo, Cut only the foreground wall; the connected room behind supplies the visible flo, _should_cut_shared_wall()
+Cohesion: 0.04
+Nodes (101): ble_ll_get_addr_type(), ble_ll_tmr_start(), ble_ll_tmr_stop(), ble_ll_adv_get_local_rpa(), ble_ll_get_our_devaddr(), ble_ll_is_rpa(), ble_ll_state_get(), ble_ll_conn_create_set_params() (+93 more)
 
 ### Community 277 - "Community 277"
 Cohesion: 0.28
 Nodes (11): charBounds(), getTextBounds(), getTextCenterX(), getTextCenterY(), getTextHeight(), getTextWidth(), pgm_read_glyph_ptr(), printCenter() (+3 more)
 
 ### Community 278 - "Community 278"
-Cohesion: 0.23
+Cohesion: 0.27
 Nodes (10): chdir(), exists(), FatPartition(), ls(), open(), remove(), rename(), rmdir() (+2 more)
 
 ### Community 279 - "Community 279"
@@ -1535,8 +1652,8 @@ Cohesion: 0.15
 Nodes (12): Change to "Indexed Color Mode", code:c++ (#include "parrot_black.h"), code:c++ (panel.fillScreen(panel.WHITE);), Define a Color Palette, Drawing the XBitmaps, Export as XBitmap, Importing and Modifying, Install GIMP (+4 more)
 
 ### Community 281 - "Community 281"
-Cohesion: 0.08
-Nodes (57): authorized(), batteryPercent(), batteryStateLabel(), batteryStateName(), classifyBattery(), connectWifi(), decodeHex(), desiredRuntimeMode() (+49 more)
+Cohesion: 0.07
+Nodes (60): authorized(), batteryPercent(), batteryStateLabel(), batteryStateName(), classifyBattery(), connectWifi(), decodeHex(), desiredRuntimeMode() (+52 more)
 
 ### Community 282 - "Community 282"
 Cohesion: 0.27
@@ -1551,8 +1668,8 @@ Cohesion: 0.47
 Nodes (9): do_fill(), fill_not_left(), ostream(), putBool(), putChar(), putDouble(), putNum(), putPgm() (+1 more)
 
 ### Community 286 - "Community 286"
-Cohesion: 0.06
-Nodes (32): tasks, timezones, work_eink_clock, work_lcd, work_turzx, height, kind, width (+24 more)
+Cohesion: 0.05
+Nodes (39): tasks, tasks_board, work_eink_clock, work_eink_weather, work_lcd, work_turzx, height, kind (+31 more)
 
 ### Community 287 - "Community 287"
 Cohesion: 0.2
@@ -1566,29 +1683,25 @@ Nodes (9): Change to "Indexed Color Mode", code:c++ (#include "chess.h"), code:c
 Cohesion: 0.31
 Nodes (8): close(), FsBaseFile(), mkdir(), open(), openCwd(), openNext(), openRoot(), remove()
 
+### Community 290 - "Community 290"
+Cohesion: 0.03
+Nodes (83): ble_ll_resolv_get_idx(), ble_npl_callout_init(), ble_npl_callout_reset(), ble_hs_flow_init(), ble_ll_adv_enabled(), ble_ll_adv_set_adv_params(), ble_ll_acl_data_in(), ble_ll_addr_subtype() (+75 more)
+
 ### Community 291 - "Community 291"
 Cohesion: 0.36
 Nodes (8): fmtBase10(), fmtDouble(), fmtHex(), fmtSigned(), fmtUnsigned(), scale10(), scanFloat(), printDec()
 
 ### Community 292 - "Community 292"
 Cohesion: 0.22
-Nodes (9): code:cpp (#include <heltec-eink-modules.h>), code:cpp (#include <heltec-eink-modules.h>), `DEPG0213BNS800`, Display Constructors, `EInkDisplay_VisionMasterE213`, Example, Example, Parameters (+1 more)
+Nodes (9): code:cpp (#include <heltec-eink-modules.h>), code:cpp (#include <heltec-eink-modules.h>), Display Constructors, `EInkDisplay_VisionMasterE213`, `EInkDisplay_VisionMasterE213V1_1`, Example, Example, Parameters (+1 more)
 
 ### Community 293 - "Community 293"
-Cohesion: 0.07
-Nodes (9): Arduino_ILI9488_18bit(), invertDisplay(), tftInit(), Arduino_ILI9488_3bit(), draw3bitRGBBitmap(), writeAddrWindow(), Arduino_ILI9488(), invertDisplay() (+1 more)
-
-### Community 294 - "Community 294"
-Cohesion: 0.29
-Nodes (12): rdWrSectors(), readData(), readSector(), readSectors(), readStart(), syncDevice(), waitTransferComplete(), writeData() (+4 more)
-
-### Community 295 - "Community 295"
-Cohesion: 0.16
-Nodes (4): write(), writeBytes(), writeCommand(), writeCommandBytes()
+Cohesion: 0.25
+Nodes (3): Arduino_ILI9488(), invertDisplay(), tftInit()
 
 ### Community 296 - "Community 296"
-Cohesion: 0.25
-Nodes (3): storeDrawingConfig(), getCursorX(), getCursorY()
+Cohesion: 0.06
+Nodes (64): ble_att_svr_find_by_uuid(), ble_att_svr_next_id(), ble_att_svr_register(), ble_gap_conn_foreach_handle(), ble_gatts_add_clt_cfg(), ble_gatts_add_dynamic_svcs(), ble_gatts_add_svcs(), ble_gatts_att_flags_from_chr_flags() (+56 more)
 
 ### Community 297 - "Community 297"
 Cohesion: 0.25
@@ -1610,21 +1723,25 @@ Nodes (7): code:cpp (DISPLAY_CLASS(DC_PIN, CS_PIN, BUSY_PIN, SDI_PIN, CLK_PIN);)
 Cohesion: 0.43
 Nodes (5): flush(), printField(), println(), sync(), write()
 
+### Community 302 - "Community 302"
+Cohesion: 0.03
+Nodes (42): AIUsageIntegrationPlugin, plugin(), CapacitiesIntegrationPlugin, plugin(), ClickUpIntegrationPlugin, plugin(), CodexStatusIntegrationPlugin, plugin() (+34 more)
+
 ### Community 303 - "Community 303"
-Cohesion: 0.13
-Nodes (24): BaseDisplay(), setBackgroundColor(), supportsColor(), clearAllMemories(), customPowerOn(), endImageTxQuiet(), freePageMemory(), grabPageMemory() (+16 more)
+Cohesion: 0.1
+Nodes (31): BaseDisplay(), calculatePixelPageOffset(), clearMemory(), invert(), setBackgroundColor(), supportsColor(), clear(), clearAllMemories() (+23 more)
 
 ### Community 304 - "Community 304"
-Cohesion: 0.42
-Nodes (11): begin(), cardAcmd(), cardACMD13(), cardACMD51(), cardCMD6(), cardCommand(), enableDmaIrs(), erase() (+3 more)
+Cohesion: 0.19
+Nodes (4): begin(), c_str(), NimBLEAttValue(), setTimeStamp()
 
 ### Community 305 - "Community 305"
 Cohesion: 0.29
 Nodes (8): _contain_resize(), _cover_resize(), _draw_pixel_grid(), _logo_path(), render_splash(), splash_frame_count(), splash_seconds(), SplashTests
 
 ### Community 306 - "Community 306"
-Cohesion: 0.22
-Nodes (9): api_key_env, cache_dir, cache_enabled, enabled, model, provider, reasoning_effort, timeout_seconds (+1 more)
+Cohesion: 0.08
+Nodes (36): ble_npl_os_started(), ble_npl_time_get(), ble_npl_time_ms_to_ticks32(), ble_att_svr_ticks_until_tmo(), ble_gap_log_update(), ble_gap_slave_set_timer(), ble_gap_update_next_exp(), ble_gap_update_params() (+28 more)
 
 ### Community 307 - "Community 307"
 Cohesion: 0.29
@@ -1694,13 +1811,21 @@ Nodes (6): code:cpp (void setup() {), Heltec E-ink Modules, (Optional) Additiona
 Cohesion: 0.57
 Nodes (4): FillStack(), stackBegin(), stackPointer(), UnusedStack()
 
-### Community 326 - "Community 326"
+### Community 324 - "Community 324"
 Cohesion: 0.13
-Nodes (41): _args_selects_output(), build_output(), build_parser(), _configured_display_for_output(), _configured_display_outputs(), _display_box(), _display_output_from_config(), _display_region_size() (+33 more)
+Nodes (13): ble_transport_ll_deinit(), ble_transport_ll_init(), ble_transport_to_ll_acl_impl(), ble_transport_to_ll_cmd_impl(), hci_transport_controller_acl_tx(), hci_transport_controller_packet_rx(), hci_transport_host_packet_rx(), hci_transport_packet_rx() (+5 more)
+
+### Community 325 - "Community 325"
+Cohesion: 0.14
+Nodes (5): SlackEventSource, plugin(), SlackIntegrationPlugin, SlackBusEventSource, SlackBusEventSource
+
+### Community 326 - "Community 326"
+Cohesion: 0.11
+Nodes (44): _args_selects_output(), build_output(), build_parser(), _configured_display_for_output(), _configured_display_outputs(), _display_box(), _display_output_from_config(), _display_region_size() (+36 more)
 
 ### Community 327 - "Community 327"
-Cohesion: 0.14
-Nodes (14): Route between rooms through the explicit doorway instead of the baked wall., Route between rooms through the explicit doorway instead of the baked wall., Return durable bay tier and progress within its long-term PR milestone., Route between rooms through the explicit doorway instead of the baked wall., Route between rooms through the explicit doorway instead of the baked wall., Route between rooms through the explicit doorway instead of the baked wall., Route between rooms through the explicit doorway instead of the baked wall., Route between rooms through the explicit doorway instead of the baked wall. (+6 more)
+Cohesion: 0.05
+Nodes (70): ble_ll_crypto_h6(), ble_ll_crypto_h7(), add_round_key(), inv_mix_columns(), inv_shift_rows(), inv_sub_bytes(), mult_row_column(), tc_aes128_set_decrypt_key() (+62 more)
 
 ### Community 328 - "Community 328"
 Cohesion: 0.21
@@ -1712,7 +1837,7 @@ Nodes (26): Arduino_ESP32SPIDMA(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(),
 
 ### Community 330 - "Community 330"
 Cohesion: 0.08
-Nodes (25): height, kind, monochrome, width, x, y, height, kind (+17 more)
+Nodes (25): height, kind, width, x, y, height, kind, monochrome (+17 more)
 
 ### Community 331 - "Community 331"
 Cohesion: 0.48
@@ -2007,100 +2132,108 @@ Cohesion: 0.5
 Nodes (4): code:cpp (#include <heltec-eink-modules.h>), `EInkDisplay_WirelessPaperV1_2`, Example, Parameters
 
 ### Community 405 - "Community 405"
-Cohesion: 0.46
-Nodes (4): parse_hhmm(), status_for(), build_people_times(), PersonTime
+Cohesion: 0.18
+Nodes (3): LcdUsbOutput, USB CDC transport for the Waveshare RGB565 output terminal., LcdUsbTests
+
+### Community 406 - "Community 406"
+Cohesion: 0.17
+Nodes (19): emoji_image(), icon_font(), _load_font(), _macos_emoji_image(), _pillow_emoji_image(), _scaled_font_size(), _draw_current_weather_metrics(), _draw_temperature_range() (+11 more)
 
 ### Community 409 - "Community 409"
-Cohesion: 0.24
-Nodes (4): BaseWeatherSource, OpenWeatherMapWeatherSource, Polls OpenWeatherMap current weather using an API key from the environment., Polls OpenWeatherMap current weather using an API key from the environment.
+Cohesion: 0.05
+Nodes (89): ble_npl_callout_stop(), ble_ll_adv_periodic_send_sync_ind(), ble_ll_adv_put_syncinfo(), ble_ll_read_supp_features(), ble_ll_conn_auth_pyld_timer_cb(), ble_ll_conn_auth_pyld_timer_start(), ble_ll_conn_enqueue_pkt(), ble_ll_conn_rx_data_pdu() (+81 more)
+
+### Community 422 - "Community 422"
+Cohesion: 0.06
+Nodes (58): ble_gap_conn_to_snapshot(), ble_gap_fill_conn_desc(), ble_hs_hci_evt_le_conn_complete(), ble_hs_hci_evt_le_enh_conn_complete(), ble_hs_is_rpa(), ble_hs_get_rpa_timeout(), ble_hs_pvcy_add_entry(), ble_hs_pvcy_add_entry_hci() (+50 more)
 
 ### Community 531 - "Community 531"
-Cohesion: 0.07
-Nodes (3): Arduino_Canvas_3bit(), Arduino_Canvas_Mono(), Arduino_DataBus()
+Cohesion: 0.06
+Nodes (44): ble_ll_conn_rem_feature_add(), ble_ll_trace_u32x3(), os_trace_api_u32x3(), ble_ll_rx_end(), ble_ll_rx_pdu_in(), ble_ll_rxpdu_alloc(), ble_ll_wfr_timer_exp(), ble_ll_conn_central_start() (+36 more)
 
 ### Community 532 - "Community 532"
-Cohesion: 0.2
-Nodes (10): clock_mode, clock_skin, height, kind, show_seconds, use_24_hour, width, x (+2 more)
-
-### Community 533 - "Community 533"
-Cohesion: 0.57
-Nodes (5): classify_zoom_event(), _external_id(), _metadata(), _parse_datetime(), _participant()
+Cohesion: 0.12
+Nodes (16): clock_mode, clock_skin, height, kind, show_seconds, use_24_hour, width, x (+8 more)
 
 ### Community 534 - "Community 534"
 Cohesion: 0.2
 Nodes (21): beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), SPI_MOSI_HIGH(), SPI_MOSI_LOW() (+13 more)
 
 ### Community 535 - "Community 535"
-Cohesion: 0.29
-Nodes (7): height, kind, monochrome, width, x, y, eink_wireless
+Cohesion: 0.05
+Nodes (51): ble_npl_sem_get_count(), ble_gap_dtm_enh_rx_start(), ble_gap_dtm_enh_tx_start(), ble_gap_dtm_rx_start(), ble_gap_dtm_stop(), ble_gap_dtm_tx_start(), ble_transport_to_hs_evt_impl(), ble_hs_hci_acl_tx() (+43 more)
 
 ### Community 536 - "Community 536"
 Cohesion: 0.11
 Nodes (19): eink, battery_powered, deep_sleep_seconds, dither, full_refresh_every, heartbeat_interval_seconds, heartbeat_lease_seconds, invert (+11 more)
 
 ### Community 537 - "Community 537"
-Cohesion: 0.39
-Nodes (7): _crosshero_text_width(), _crosshero_wod_pages(), _draw_crosshero_text(), _draw_crosshero_wod_panel(), _text_width(), _wrap_crosshero_text(), _wrap_text()
+Cohesion: 0.06
+Nodes (93): font(), _activity_label(), _ai_mana_color(), _ai_mana_percent(), _ai_usage_gauge_short_label(), _ai_usage_gauge_value(), _ai_usage_label(), _ai_usage_percent() (+85 more)
 
 ### Community 538 - "Community 538"
-Cohesion: 0.6
-Nodes (5): discoverFirmwarePorts(), firmwareStatus(), pushFirmwareLog(), resolvePlatformioCommand(), startFirmwareOperation()
+Cohesion: 0.22
+Nodes (5): AiDecisionRequest, build_ai_plugin(), _env_bool(), OpenAiChatGptPlugin, Generic Pixel OPs AI decision plugin backed by the OpenAI Responses API.
 
 ### Community 539 - "Community 539"
-Cohesion: 0.15
-Nodes (6): MoodEngine, Compatibility name for the global world mood engine., biome(), World, _parse_capture_datetime(), SocialWeatherSystem
+Cohesion: 0.08
+Nodes (65): ble_npl_event_deinit(), ble_npl_event_init(), ble_npl_eventq_put(), bt_mesh_adv_update(), ble_gattc_cache_conn_broken(), ble_gattc_cache_conn_cache_peer(), ble_gattc_cache_conn_chr_add(), ble_gattc_cache_conn_chr_delete() (+57 more)
 
 ### Community 540 - "Community 540"
-Cohesion: 0.31
-Nodes (13): _activity_label(), _draw_ai_usage_compact(), _draw_ai_usage_gauges(), _draw_flag(), draw_hud(), _draw_project_card(), _draw_project_radar_panel(), _draw_project_radar_row() (+5 more)
+Cohesion: 0.08
+Nodes (74): k_sem_give(), bt_mesh_msg_ack_ctx_rx(), bt_mesh_elem_find(), bt_mesh_model_extensions_walk(), bt_mesh_model_find_group(), bt_mesh_model_sub_store(), get_opcode(), bt_mesh_scan_cb() (+66 more)
 
 ### Community 541 - "Community 541"
 Cohesion: 0.18
 Nodes (24): Arduino_DUEPAR16(), begin(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite() (+16 more)
 
 ### Community 542 - "Community 542"
-Cohesion: 0.29
-Nodes (7): work_eink_weather, height, kind, monochrome, width, x, y
+Cohesion: 0.31
+Nodes (15): active_projects(), _attention_score(), _aware(), _importance(), _normalized_state(), project_age_days(), project_radar(), project_radar_scores() (+7 more)
 
 ### Community 543 - "Community 543"
-Cohesion: 0.07
-Nodes (20): AIUsageIntegrationPlugin, plugin(), CapacitiesIntegrationPlugin, plugin(), ClickUpIntegrationPlugin, plugin(), CrossHeroIntegrationPlugin, plugin() (+12 more)
+Cohesion: 0.03
+Nodes (43): ble_npl_event_run(), ble_npl_time_delay(), ble_att_preferred_mtu(), ble_store_config_init(), ble_svc_gap_device_name_set(), k_sleep(), esp_nimble_disable(), esp_nimble_enable() (+35 more)
 
 ### Community 544 - "Community 544"
-Cohesion: 0.14
-Nodes (14): _mining_bay_progress(), _mining_bay_tier(), Return durable bay tier and progress within its long-term PR milestone., Return durable bay tier and progress within its long-term PR milestone., Return durable bay tier and progress within its long-term PR milestone., Alternate calm idle and diegetic work loops without external timers., Return durable bay tier and progress within its long-term PR milestone., Return durable bay tier and progress within its long-term PR milestone. (+6 more)
+Cohesion: 0.08
+Nodes (23): _crew_is_working(), Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers. (+15 more)
 
 ### Community 545 - "Community 545"
-Cohesion: 0.09
-Nodes (6): Arduino_ILI9481_18bit(), invertDisplay(), tftInit(), Arduino_TFT_18bit(), drawIndexedBitmap(), writeIndexedPixels()
+Cohesion: 0.14
+Nodes (3): Arduino_TFT_18bit(), drawIndexedBitmap(), writeIndexedPixels()
 
 ### Community 546 - "Community 546"
-Cohesion: 0.18
-Nodes (10): Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale. (+2 more)
+Cohesion: 0.26
+Nodes (12): ble_ll_rfmgmt_disable(), ble_ll_rfmgmt_enable(), ble_ll_rfmgmt_enable_now(), ble_ll_rfmgmt_is_enabled(), ble_ll_rfmgmt_release(), ble_ll_rfmgmt_release_ev(), ble_ll_rfmgmt_reset(), ble_ll_rfmgmt_scan_changed() (+4 more)
 
 ### Community 547 - "Community 547"
-Cohesion: 0.17
-Nodes (25): doParamSave(), erase(), getHTTPHead(), getInfoData(), getIpForm(), getStaticOut(), getWiFiSSID(), handleClose() (+17 more)
+Cohesion: 0.14
+Nodes (30): captivePortal(), doParamSave(), getHTTPHead(), getInfoData(), getMenuOut(), getWiFiHostname(), getWiFiSSID(), handleClose() (+22 more)
 
 ### Community 548 - "Community 548"
 Cohesion: 0.17
 Nodes (11): assets, project, provider, purpose, runtime_asset_count, seed, style, outline (+3 more)
 
 ### Community 549 - "Community 549"
-Cohesion: 0.12
-Nodes (16): Compose only PixelLab-authored hull pieces around the seeded rooms., Compose only PixelLab-authored hull pieces around the seeded rooms., Compose only PixelLab-authored hull pieces around the seeded rooms., Compose only PixelLab-authored hull pieces around the seeded rooms., Compose only PixelLab-authored hull pieces around the seeded rooms., Compose only PixelLab-authored hull pieces around the seeded rooms., Compose only PixelLab-authored hull pieces around the seeded rooms., Compose only PixelLab-authored hull pieces around the seeded rooms. (+8 more)
+Cohesion: 0.32
+Nodes (9): from_path(), _generated_lore(), _generated_records(), PokemonKnowledge, PokemonKnowledgeBase, _query_terms(), _record_terms(), _score() (+1 more)
+
+### Community 550 - "Community 550"
+Cohesion: 0.15
+Nodes (13): token_usage, tokens, height, kind, width, x, y, duration_seconds (+5 more)
 
 ### Community 551 - "Community 551"
-Cohesion: 0.12
-Nodes (15): _crew_is_working(), Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers., Alternate calm idle and diegetic work loops without external timers. (+7 more)
+Cohesion: 0.17
+Nodes (13): completeDiscordOAuth(), discordProfileFromToken(), discordToken(), envValue(), githubToken(), kiteStatus(), listGithubRepos(), loadDiscordProfile() (+5 more)
 
 ### Community 552 - "Community 552"
 Cohesion: 0.4
 Nodes (4): export_date, export_version, group_id, states
 
 ### Community 553 - "Community 553"
-Cohesion: 0.33
-Nodes (4): runtime_plugin_name(), available_plugins(), get_plugin(), _load_plugin()
+Cohesion: 0.31
+Nodes (6): MergedTaskSource, build_integration_runtime(), _load_plugin(), _merge(), _selected_plugin_names(), _wrap_runtime_sources()
 
 ### Community 555 - "Community 555"
 Cohesion: 0.15
@@ -2115,8 +2248,8 @@ Cohesion: 0.4
 Nodes (4): export_date, export_version, group_id, states
 
 ### Community 558 - "Community 558"
-Cohesion: 0.62
-Nodes (6): allocateCluster(), allocContiguous(), fatGet(), fatPut(), freeChain(), freeClusterCount()
+Cohesion: 0.22
+Nodes (6): AmbientIntegration, AmbientSignalClassifier, PollingAmbientIntegration, Start long-running integration work if needed., Turn provider-specific payloads into normalized ambient signals., Return normalized ambient signals for polling-based providers.
 
 ### Community 559 - "Community 559"
 Cohesion: 0.2
@@ -2131,8 +2264,8 @@ Cohesion: 0.4
 Nodes (4): export_date, export_version, group_id, states
 
 ### Community 562 - "Community 562"
-Cohesion: 0.4
-Nodes (5): lcd, min_frame_interval_seconds, timeout_seconds, token, url
+Cohesion: 0.07
+Nodes (74): ble_ll_tmr_add(), ble_ll_tmr_add_u(), ble_ll_tmr_get(), ble_ll_tmr_init(), ble_ll_tmr_sub(), ble_ll_tmr_t2u(), ble_ll_tmr_u2t(), ble_ll_tmr_u2t_r() (+66 more)
 
 ### Community 563 - "Community 563"
 Cohesion: 0.4
@@ -2159,16 +2292,16 @@ Cohesion: 0.2
 Nodes (19): Arduino_ESP32PAR16Q(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
 
 ### Community 569 - "Community 569"
-Cohesion: 0.5
-Nodes (4): code:cpp (display.useCustomPowerSwitch(pin, type)), Parameters, Syntax, `useCustomPowerSwitch()`
+Cohesion: 0.29
+Nodes (6): 0030 - Codex activity is a neutral observation, Consequences, Context, Decision, Per-task HUD, Status
 
 ### Community 570 - "Community 570"
 Cohesion: 0.2
 Nodes (19): Arduino_ESP32PAR16QQ(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
 
 ### Community 571 - "Community 571"
-Cohesion: 0.42
-Nodes (5): draw_house(), draw_lamp(), draw_tree(), make_tile(), _tile()
+Cohesion: 0.24
+Nodes (3): Arduino_ILI9481_18bit(), invertDisplay(), tftInit()
 
 ### Community 572 - "Community 572"
 Cohesion: 0.4
@@ -2193,6 +2326,10 @@ Nodes (20): Arduino_ESP32PAR8QQQ(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH()
 ### Community 578 - "Community 578"
 Cohesion: 0.2
 Nodes (19): Arduino_ESP32S2PAR16(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+11 more)
+
+### Community 579 - "Community 579"
+Cohesion: 0.4
+Nodes (9): dmpDirSector(), dmpFat(), dmpFile(), dmpRootDir(), dmpSector(), getLfnChar(), printFatDir(), printHex() (+1 more)
 
 ### Community 580 - "Community 580"
 Cohesion: 0.2
@@ -2259,8 +2396,8 @@ Cohesion: 0.2
 Nodes (16): beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write(), write16() (+8 more)
 
 ### Community 596 - "Community 596"
-Cohesion: 0.29
-Nodes (7): gamification, base_recovery_per_hour, companion_recovery_per_hour, max_companion_bonus, max_hp, meeting_cost, task_delivered_cost
+Cohesion: 0.25
+Nodes (3): storeDrawingConfig(), getCursorX(), getCursorY()
 
 ### Community 597 - "Community 597"
 Cohesion: 0.14
@@ -2271,15 +2408,15 @@ Cohesion: 0.18
 Nodes (12): Arduino_XL9535SWSPI(), begin(), beginWrite(), digitalRead(), digitalWrite(), endWrite(), pinMode(), pinMode8() (+4 more)
 
 ### Community 599 - "Community 599"
-Cohesion: 0.4
-Nodes (5): ambient, async, candidate_limit, enabled, ai_selector
+Cohesion: 0.04
+Nodes (13): NimBLEAddress(), NimBLEConnInfo(), isBonded(), NimBLEExtAdvertisement(), NimBLEExtAdvertising(), NimBLEL2CAPServer(), deleteDescriptors(), NimBLERemoteCharacteristic() (+5 more)
 
 ### Community 600 - "Community 600"
 Cohesion: 0.19
 Nodes (11): Arduino_XCA9554SWSPI(), begin(), beginWrite(), digitalRead(), digitalWrite(), endWrite(), pinMode(), readRegister() (+3 more)
 
 ### Community 601 - "Community 601"
-Cohesion: 0.19
+Cohesion: 0.2
 Nodes (11): Arduino_Canvas_Indexed(), drawIndexedBitmap(), flush(), get_color_index(), raise_mask_level(), writeFastHLine(), writeFastHLineCore(), writeFastVLine() (+3 more)
 
 ### Community 602 - "Community 602"
@@ -2287,8 +2424,8 @@ Cohesion: 0.22
 Nodes (15): Arduino_UNOPAR8(), beginWrite(), CS_HIGH(), CS_LOW(), DC_HIGH(), DC_LOW(), endWrite(), write() (+7 more)
 
 ### Community 603 - "Community 603"
-Cohesion: 0.09
-Nodes (23): _doorway_crew_position(), _local_doorway_position(), Place the crew sprite's feet in the center of the shared door opening., Place the crew sprite's feet in the center of the shared door opening., Place the crew sprite's feet in the center of the shared door opening., Return durable bay tier and progress within its long-term PR milestone., Place the crew sprite's feet in the center of the shared door opening., Place the crew sprite's feet in the center of the shared door opening. (+15 more)
+Cohesion: 0.07
+Nodes (30): height, kind, width, x, y, gamification, mana, meetings_day (+22 more)
 
 ### Community 605 - "Community 605"
 Cohesion: 0.12
@@ -2297,10 +2434,6 @@ Nodes (16): ai_usage, build_broken, deploy_completed, deploy_started, incident, 
 ### Community 606 - "Community 606"
 Cohesion: 0.12
 Nodes (16): code:cpp (wifiManager.setConfigPortalTimeout(180);), code:cpp (void loop() {), code:CPP (wifiManager.setClass("invert"); // dark theme), code:cpp (wifiManager.setMinimumSignalQuality(10);), code:cpp (wifiManager.setRemoveDuplicateAPs(false);), code:cpp (wifiManager.setDebugOutput(false);), code:CPP (WiFiManager wifiManager(Serial1);), code:cpp (wifiManager.autoConnect("AutoConnectAP", "password")) (+8 more)
-
-### Community 607 - "Community 607"
-Cohesion: 0.5
-Nodes (4): code:cpp (#include <heltec-eink-modules.h>), `EInkDisplay_VisionMasterE213V1_1`, Example, Parameters
 
 ### Community 610 - "Community 610"
 Cohesion: 0.15
@@ -2313,6 +2446,10 @@ Nodes (13): 0.10, 0.11, 0.12, 1.0.1, Added Public Methods, Changes Overview, Con
 ### Community 612 - "Community 612"
 Cohesion: 0.15
 Nodes (13): Checkout from github, code:cpp (#include <WiFiManager.h>          //https://github.com/tzapu), code:cpp (WiFiManager wifiManager;), code:cpp (//first parameter is name of access point, second is the pas), code:cpp (wifiManager.autoConnect("AP-NAME");), code:cpp (wifiManager.autoConnect();), code:block6 ([env]), code:block7 ([env]) (+5 more)
+
+### Community 613 - "Community 613"
+Cohesion: 0.31
+Nodes (9): buildConfigManifest(), configDescriptorsFor(), detectIntegrationPlugins(), detectVisualPlugins(), listDirectories(), loadRuntimeConfig(), pathExists(), saveRuntimeConfig() (+1 more)
 
 ### Community 618 - "Community 618"
 Cohesion: 0.18
@@ -2363,23 +2500,23 @@ Cohesion: 0.22
 Nodes (3): Arduino_RM67162(), invertDisplay(), tftInit()
 
 ### Community 630 - "Community 630"
-Cohesion: 0.4
-Nodes (5): screen_rotation, default_duration_seconds, enabled, initial_screen, order
+Cohesion: 0.07
+Nodes (68): ble_att_conn_chan_find_by_psm(), ble_att_create_chan(), ble_att_set_preferred_mtu(), ble_gap_rx_l2cap_update_req(), ble_hs_conn_alloc(), ble_hs_conn_chan_exist(), ble_hs_conn_chan_find_by_dcid(), ble_hs_conn_chan_find_by_scid() (+60 more)
 
 ### Community 631 - "Community 631"
 Cohesion: 0.2
 Nodes (9): Basic Infos, code:cpp (#BEGIN), code:block2 (messages here), Debug Messages, Description, Hardware, PLEASE TRY Latest Master BRANCH before submitting bugs, in case they were already fixed. ##, Settings in IDE (+1 more)
 
 ### Community 632 - "Community 632"
-Cohesion: 0.25
+Cohesion: 0.24
 Nodes (3): Arduino_AXS15231B(), invertDisplay(), tftInit()
 
 ### Community 633 - "Community 633"
-Cohesion: 0.25
+Cohesion: 0.24
 Nodes (3): Arduino_HX8347C(), invertDisplay(), setRotation()
 
 ### Community 634 - "Community 634"
-Cohesion: 0.25
+Cohesion: 0.24
 Nodes (3): Arduino_HX8347D(), invertDisplay(), tftInit()
 
 ### Community 635 - "Community 635"
@@ -2415,7 +2552,7 @@ Cohesion: 0.25
 Nodes (3): Arduino_ILI9806(), invertDisplay(), tftInit()
 
 ### Community 644 - "Community 644"
-Cohesion: 0.25
+Cohesion: 0.24
 Nodes (3): Arduino_JBT6K71(), invertDisplay(), tftInit()
 
 ### Community 645 - "Community 645"
@@ -2435,7 +2572,7 @@ Cohesion: 0.25
 Nodes (3): Arduino_SPD2010(), invertDisplay(), tftInit()
 
 ### Community 655 - "Community 655"
-Cohesion: 0.25
+Cohesion: 0.24
 Nodes (3): Arduino_ST7735(), invertDisplay(), tftInit()
 
 ### Community 656 - "Community 656"
@@ -2447,7 +2584,7 @@ Cohesion: 0.25
 Nodes (3): Arduino_ST77916(), invertDisplay(), tftInit()
 
 ### Community 658 - "Community 658"
-Cohesion: 0.25
+Cohesion: 0.24
 Nodes (3): Arduino_ST7796(), invertDisplay(), tftInit()
 
 ### Community 659 - "Community 659"
@@ -2475,16 +2612,16 @@ Cohesion: 0.25
 Nodes (8): Callbacks, code:cpp (void configModeCallback (WiFiManager *myWiFiManager) {), code:C++ (//if this is set, it will exit after config, even if connect), code:cpp (wifiManager.setSaveConfigCallback(saveConfigCallback);), code:cpp (//flag for saving data), code:cpp (wifiManager.setAPCallback(configModeCallback);), Enter Config mode, Save settings
 
 ### Community 666 - "Community 666"
-Cohesion: 0.25
-Nodes (8): addParameter(), getCustomHTML(), getID(), getLabel(), getLabelPlacement(), getParamOut(), getValue(), getValueLength()
+Cohesion: 0.11
+Nodes (49): ble_ll_adv_get_peer_rpa(), ble_ll_adv_send_conn_comp_ev(), ble_ll_conn_chk_csm_flags(), ble_ll_conn_cth_flow_error_fn(), ble_ll_conn_end(), ble_ll_conn_event_end(), ble_ll_conn_subrate_set(), ble_ll_auth_pyld_tmo_event_send() (+41 more)
 
 ### Community 668 - "Community 668"
 Cohesion: 0.48
 Nodes (5): BmpClass(), drawbmpal(), drawbmRgb565(), drawbmtrue(), getbmpparms()
 
 ### Community 669 - "Community 669"
-Cohesion: 0.29
-Nodes (7): layout_profiles, onlythermal, height, label, layout_theme, saved_at, width
+Cohesion: 0.05
+Nodes (68): ble_npl_eventq_remove(), ble_hs_flow_startup(), ble_ll_adv_sync_big_add(), ble_ll_adv_sync_big_remove(), ble_transport_to_ll_iso_impl(), ble_ll_conn_calc_dci_csa1(), ble_ll_hci_iso_rx(), ble_ll_iso_big_calculate_iv() (+60 more)
 
 ### Community 670 - "Community 670"
 Cohesion: 0.29
@@ -2495,16 +2632,16 @@ Cohesion: 0.29
 Nodes (7): appears_seconds, caught_seconds, shake_seconds, start_seconds, throw_seconds, walking_seconds, encounter
 
 ### Community 672 - "Community 672"
-Cohesion: 0.33
-Nodes (7): captivePortal(), getMenuOut(), getWiFiHostname(), handleNotFound(), handleRoot(), handleUpdate(), toStringIp()
+Cohesion: 0.07
+Nodes (35): bt_mesh_model_in_primary(), k_sem_init(), bt_mesh_msg_ack_ctx_init(), ble_npl_callout_set_arg(), bt_mesh_access_init(), bt_mesh_vnd_mod_msg_cid_check(), mod_init(), bt_mesh_app_key_init() (+27 more)
 
 ### Community 673 - "Community 673"
-Cohesion: 0.29
-Nodes (7): debugPlatformInfo(), _end(), setDebugOutput(), setMenu(), setParamsPage(), WiFiManager(), WiFiManagerInit()
+Cohesion: 0.19
+Nodes (19): ble_resolve_adv_data(), adv_set_fields(), ble_hs_adv_find_field(), ble_hs_adv_parse(), ble_hs_adv_parse_fields(), ble_hs_adv_parse_one_field(), ble_hs_adv_parse_uuids128(), ble_hs_adv_parse_uuids16() (+11 more)
 
 ### Community 674 - "Community 674"
-Cohesion: 0.29
-Nodes (7): encryptionTypeStr(), getRSSIasQuality(), setupConfigPortal(), setupHTTPServer(), startWebPortal(), WiFi_scanNetworks(), WiFiManager::getScanItemOut()
+Cohesion: 0.03
+Nodes (62): [1.0.0] - 2020-08-22, [2.1.0] 2024-12-14, [2.1.1] 2024-12-16, [2.1.2] 2024-12-21, [2.1.3] 2025-01-05, [2.2.0] 2025-01-12, [2.2.1] 2025-01-26, [2.2.2] 2025-02-24 (+54 more)
 
 ### Community 675 - "Community 675"
 Cohesion: 0.33
@@ -2515,36 +2652,36 @@ Cohesion: 0.29
 Nodes (7): enabled, max_projects, poll_seconds, structure_names, timeout_seconds, token_env, capacities
 
 ### Community 683 - "Community 683"
-Cohesion: 0.73
-Nodes (4): _actor(), classify_teams_event(), _external_id(), _parse_datetime()
+Cohesion: 0.15
+Nodes (12): Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale., Use one crop for an animation so pose changes never alter sprite scale. (+4 more)
 
 ### Community 686 - "Community 686"
-Cohesion: 0.22
-Nodes (10): draw_eink_telemetry_huds(), _layout_box(), _layout_boxes(), _layout_items(), _layout_raw_box(), Overlay device-owned E213 telemetry using regular configured HUD boxes., Overlay device-owned E213 telemetry using regular configured HUD boxes., Overlay device-owned E213 telemetry using regular configured HUD boxes. (+2 more)
+Cohesion: 0.18
+Nodes (12): draw_eink_telemetry_huds(), _layout_box(), _layout_boxes(), _layout_items(), _layout_raw_box(), Overlay device-owned E213 telemetry using regular configured HUD boxes., Overlay device-owned E213 telemetry using regular configured HUD boxes., Overlay device-owned E213 telemetry using regular configured HUD boxes. (+4 more)
 
 ### Community 687 - "Community 687"
 Cohesion: 0.4
 Nodes (5): code:cpp (//set custom ip for portal), code:cpp (wifiManager.setSTAStaticIPConfig(IPAddress(192,168,0,99), IP), Custom Access Point IP Configuration, Custom IP Configuration, Custom Station (client) Static IP Configuration
 
 ### Community 689 - "Community 689"
-Cohesion: 0.5
-Nodes (3): Build and upload, code:bash (cd firmware/esp32-c6-lcd-1.47), Pixel OPs firmware for ESP32-C6-LCD-1.47
+Cohesion: 0.25
+Nodes (7): Atualizar dados por Bluetooth, Atualizar dados por USB, Build and upload, code:bash (cd firmware/esp32-c6-lcd-1.47), code:json ({"lcd": {"transport": "usb", "port": "", "timeout_seconds": ), code:json ({"lcd": {"transport": "bluetooth", "bluetooth_address": "", ), Pixel OPs firmware for ESP32-C6-LCD-1.47
 
 ### Community 692 - "Community 692"
-Cohesion: 0.04
-Nodes (38): day_night_palette(), DayNightPalette, canvas_font_scale(), font_scale_for_canvas(), _ash_linked_to_discord(), battle_box(), _blend_map_region(), _boxes_overlap() (+30 more)
+Cohesion: 0.03
+Nodes (48): ClickUpTaskSnapshot, day_night_palette(), DayNightPalette, MapArea, canvas_font_scale(), font_scale_for_canvas(), draw_house(), draw_lamp() (+40 more)
 
 ### Community 693 - "Community 693"
 Cohesion: 0.5
 Nodes (4): code:cpp (wifiManager.setCustomHeadElement("<style>html{filter: invert), code:cpp (WiFiManagerParameter custom_text("<p>This is just a text par), code:cpp (WiFiManagerParameter custom_mqtt_server("server", "mqtt serv), Custom HTML, CSS, Javascript
 
 ### Community 694 - "Community 694"
-Cohesion: 0.5
-Nodes (4): getModeString(), getWiFiPass(), WiFi_psk(), wifiConnectDefault()
+Cohesion: 0.13
+Nodes (36): net_buf_simple_reset(), bt_mesh_adv_send(), bt_mesh_fcs_check(), k_uptime_get(), ack_pending(), adv_buf_create(), bearer_ctl_send(), bearer_ctl_send_unacked() (+28 more)
 
 ### Community 696 - "Community 696"
-Cohesion: 0.29
-Nodes (6): engines, node, main, name, private, version
+Cohesion: 0.06
+Nodes (22): parse_hhmm(), status_for(), _active_calendar_event(), calendar_companion_snapshot(), _calendar_event_key(), _calendar_person_name(), _contains_time(), merge_companion_snapshots() (+14 more)
 
 ### Community 699 - "Community 699"
 Cohesion: 0.29
@@ -2555,16 +2692,24 @@ Cohesion: 0.67
 Nodes (3): code:cpp (// id/name, placeholder/prompt, default, length), code:cpp (mqtt_server = custom_mqtt_server.getValue();), Custom Parameters
 
 ### Community 719 - "Community 719"
-Cohesion: 0.4
-Nodes (5): splash, background, enabled, logo_path, seconds
+Cohesion: 0.05
+Nodes (46): ble_npl_callout_deinit(), ble_npl_callout_get_ticks(), ble_npl_callout_is_active(), ble_npl_eventq_get(), ble_npl_eventq_is_empty(), ble_npl_get_current_task_id(), ble_npl_mutex_deinit(), ble_npl_sem_deinit() (+38 more)
 
 ### Community 720 - "Community 720"
 Cohesion: 0.33
 Nodes (5): ADR 0008: CrossHero fitness data enters as a daily observation, Consequences, Context, Decision, Status
 
+### Community 721 - "Community 721"
+Cohesion: 0.05
+Nodes (35): atomic_add(), atomic_and(), atomic_clear(), atomic_clear_bit(), atomic_dec(), atomic_get(), atomic_inc(), atomic_or() (+27 more)
+
+### Community 722 - "Community 722"
+Cohesion: 0.08
+Nodes (27): displays, forever, full_frame, lcd, output, plugin, preview_sequence, seconds (+19 more)
+
 ### Community 723 - "Community 723"
-Cohesion: 0.06
-Nodes (31): height, kind, width, x, y, gamification, mana, meetings_day (+23 more)
+Cohesion: 0.23
+Nodes (16): lbaToMbrChs(), setLe16(), setLe32(), format(), initFatDir(), initPbs(), makeFat16(), makeFat32() (+8 more)
 
 ### Community 724 - "Community 724"
 Cohesion: 0.4
@@ -2574,41 +2719,345 @@ Nodes (4): 0029 - Screen Playlists Are Presentation State, Consequences, Context
 Cohesion: 0.33
 Nodes (5): ADR 0028: Project Radar Uses Provider-Neutral Observations, Consequences, Context, Decision, Status
 
-### Community 732 - "Community 732"
+### Community 729 - "Community 729"
 Cohesion: 0.06
-Nodes (32): specs_activity, specs_eink_weather, specs_lcd_ai, specs_lcd_pc, specs_turzx, height, kind, width (+24 more)
+Nodes (50): ble_npl_eventq_init(), ble_npl_mutex_init(), ble_npl_sem_release(), bt_mesh_adv_init(), bt_mesh_adv_init(), ble_att_init(), ble_att_svr_init(), ble_eatt_init() (+42 more)
+
+### Community 730 - "Community 730"
+Cohesion: 0.33
+Nodes (6): pc_stats, disk_path, enabled, fields, poll_seconds, top_process_count
+
+### Community 732 - "Community 732"
+Cohesion: 0.05
+Nodes (39): height, kind, monochrome, width, x, y, eink_wireless, specs_activity (+31 more)
+
+### Community 733 - "Community 733"
+Cohesion: 0.07
+Nodes (37): begin(), cancelConnect(), completeConnectEstablished(), connectEstablishedTimerCb(), connIntervalToMs(), deleteService(), deleteServices(), discoverAttributes() (+29 more)
 
 ### Community 734 - "Community 734"
-Cohesion: 0.29
-Nodes (6): _door_open_amount(), Open before the crew reaches the wall, then close after it has crossed., Open before the crew reaches the wall, then close after it has crossed., Open before the crew reaches the wall, then close after it has crossed., Return durable bay tier and progress within its long-term PR milestone., Open before the crew reaches the wall, then close after it has crossed.
+Cohesion: 0.06
+Nodes (28): addData(), addServiceUUID(), addTxPower(), getDataLocation(), getDataSize(), handleGapEvent(), onScanRequest(), onStopped() (+20 more)
 
 ### Community 735 - "Community 735"
 Cohesion: 0.67
 Nodes (4): formatRemaining(), ScreenControlPanel(), ScreenRemote(), useScreenRemaining()
 
 ### Community 736 - "Community 736"
+Cohesion: 0.13
+Nodes (49): apply_z(), cond_set(), uECC_make_key(), uECC_make_key_with_d(), uECC_shared_secret(), double_jacobian_default(), bits2int(), smax() (+41 more)
+
+### Community 737 - "Community 737"
+Cohesion: 0.29
+Nodes (6): engines, node, main, name, private, version
+
+### Community 739 - "Community 739"
+Cohesion: 0.06
+Nodes (57): bt_mesh_comp_get(), bt_mesh_comp_provision(), bt_mesh_comp_unprovision(), bt_mesh_elem_count(), bt_mesh_elem_find_group(), bt_mesh_model_bind_store(), bt_mesh_model_data_store(), bt_mesh_model_elem() (+49 more)
+
+### Community 743 - "Community 743"
+Cohesion: 0.25
+Nodes (9): configureKiteSecrets(), kiteDeploy(), kiteInstall(), kitePutSecret(), kiteUrlsFromOutput(), npmCommand(), npxCommand(), runKiteCommand() (+1 more)
+
+### Community 744 - "Community 744"
+Cohesion: 0.5
+Nodes (4): code:cpp (#include <heltec-eink-modules.h>), `DEPG0213BNS800`, Example, Parameters
+
+### Community 745 - "Community 745"
+Cohesion: 0.08
+Nodes (22): ble_transport_to_hs_iso_impl(), ble_hci_rx_acl(), ble_hci_trans_hs_acl_tx(), ble_hci_trans_hs_cmd_tx(), ble_hci_trans_ll_acl_tx(), ble_hci_trans_ll_evt_tx(), bt_record_hci_data(), esp_vhci_host_send_packet_wrapper() (+14 more)
+
+### Community 746 - "Community 746"
+Cohesion: 0.09
+Nodes (50): app_get(), app_key_alloc(), app_key_del(), app_key_evt(), app_key_revoke(), app_key_set(), app_key_update_find(), bt_mesh_app_key_add() (+42 more)
+
+### Community 747 - "Community 747"
+Cohesion: 0.4
+Nodes (4): 0031 - Waveshare LCD supports USB frame delivery, Consequences, Context, Decision
+
+### Community 748 - "Community 748"
+Cohesion: 0.08
+Nodes (37): end(), findAdvField(), findServiceData(), getAdvFlags(), getAdvInterval(), getAppearance(), getManufacturerData(), getManufacturerDataCount() (+29 more)
+
+### Community 749 - "Community 749"
+Cohesion: 0.73
+Nodes (4): _actor(), classify_teams_event(), _external_id(), _parse_datetime()
+
+### Community 750 - "Community 750"
+Cohesion: 0.08
+Nodes (48): ble_att_error_rsp_parse(), ble_att_error_rsp_write(), ble_att_exec_write_req_parse(), ble_att_exec_write_req_write(), ble_att_exec_write_rsp_parse(), ble_att_exec_write_rsp_write(), ble_att_find_info_req_parse(), ble_att_find_info_req_write() (+40 more)
+
+### Community 751 - "Community 751"
+Cohesion: 0.11
+Nodes (37): ble_att_svr_free_start_mem(), ble_att_svr_start(), ble_att_svr_stop(), ble_gattc_add_chr_from_cache(), ble_gattc_add_dsc_from_cache(), ble_gattc_add_inc_from_cache(), ble_gattc_add_svc_from_cache(), ble_gattc_cache_addr_save() (+29 more)
+
+### Community 752 - "Community 752"
+Cohesion: 0.1
+Nodes (44): ble_phy_trace_u32x2(), ble_ll_pdu_syncword_us(), ble_phy_access_addr_get(), ble_phy_chan_get(), ble_phy_disable(), ble_phy_disable_irq_and_ppi(), ble_phy_encrypt_counter_set(), ble_phy_encrypt_disable() (+36 more)
+
+### Community 753 - "Community 753"
+Cohesion: 0.08
+Nodes (29): addService(), createService(), getAdvertising(), getClient(), getConnectedCount(), getPeerInfo(), getPeerInfoByHandle(), getPhy() (+21 more)
+
+### Community 754 - "Community 754"
+Cohesion: 0.33
+Nodes (9): ble_ll_adv_can_chg_whitelist(), ble_ll_scan_can_chg_whitelist(), ble_ll_whitelist_add(), ble_ll_whitelist_chg_allowed(), ble_ll_whitelist_clear(), ble_ll_whitelist_match(), ble_ll_whitelist_read_size(), ble_ll_whitelist_rmv() (+1 more)
+
+### Community 755 - "Community 755"
+Cohesion: 0.08
+Nodes (31): ble_hs_sched_start(), ble_hs_stop_init(), nimble_port_get_dflt_eventq(), available(), availableForWrite(), begin(), capacity(), ChrCallbacks::onSubscribe() (+23 more)
+
+### Community 756 - "Community 756"
+Cohesion: 0.11
+Nodes (27): ble_npl_hw_enter_critical(), ble_npl_hw_exit_critical(), deepCopy(), addWaitingDevice(), begin(), clearResults(), clearWaitingList(), end() (+19 more)
+
+### Community 757 - "Community 757"
+Cohesion: 0.06
+Nodes (6): NimBLE2904(), NimBLEDescriptor(), getFeatureReport(), getInputReport(), getOutputReport(), locateReportCharacteristicByIdAndType()
+
+### Community 758 - "Community 758"
+Cohesion: 0.06
+Nodes (41): ble_npl_event_get_arg(), ble_npl_event_set_arg(), ble_att_get_default_bearer_cid(), ble_eatt_alloc(), ble_eatt_find(), ble_eatt_find_by_conn_handle(), ble_eatt_find_by_conn_handle_and_busy_op(), ble_eatt_find_not_busy() (+33 more)
+
+### Community 759 - "Community 759"
+Cohesion: 0.06
+Nodes (32): code:no-highlight (/*), code:block10 (/* check variable */), code:block11 (if (a) { /* check variable */), code:no-highlight (#ifndef _OS_CALLOUT_H), code:no-highlight (#ifdef __cplusplus), code:block14 (os_callout_init(&c)), code:block15 (callout_init(c)), code:block16 (rc = function(a)) (+24 more)
+
+### Community 760 - "Community 760"
+Cohesion: 0.25
+Nodes (3): Arduino_ILI9486(), invertDisplay(), tftInit()
+
+### Community 761 - "Community 761"
+Cohesion: 0.15
+Nodes (12): _datetime_iso(), _discord_person_from_row(), DiscordPersonRecord, _json(), _layout_profile_from_row(), LayoutProfileRecord, _loads(), _now_iso() (+4 more)
+
+### Community 762 - "Community 762"
+Cohesion: 0.25
+Nodes (3): Arduino_ILI9488_18bit(), invertDisplay(), tftInit()
+
+### Community 763 - "Community 763"
+Cohesion: 0.08
+Nodes (5): isAdvertising(), NimBLEAdvertising(), onHostSync(), reset(), stop()
+
+### Community 764 - "Community 764"
+Cohesion: 0.07
+Nodes (70): ble_addr_cmp(), ble_store_key_from_value(), ble_store_key_from_value_cccd(), ble_store_key_from_value_csfc(), ble_store_key_from_value_ead(), ble_store_key_from_value_local_irk(), ble_store_key_from_value_rpa_rec(), ble_store_key_from_value_sec() (+62 more)
+
+### Community 765 - "Community 765"
+Cohesion: 0.1
+Nodes (11): os_trace_api_u32x2(), os_trace_isr_enter(), os_trace_isr_exit(), os_trace_module_desc(), os_trace_module_register(), ble_rng_isr(), ble_ll_trace_init(), ble_ll_trace_module_send_desc() (+3 more)
+
+### Community 766 - "Community 766"
+Cohesion: 0.14
+Nodes (23): addData(), addServiceUUID(), addTxPower(), getDataLocation(), getPayload(), NimBLEAdvertisementData(), removeData(), removeServiceUUID() (+15 more)
+
+### Community 768 - "Community 768"
+Cohesion: 0.07
+Nodes (27): "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY, Browsing, Contributing, distributed with this work for additional information, External projects using NimBLE, Feature Requests, Filing Bugs, Getting Help (+19 more)
+
+### Community 769 - "Community 769"
+Cohesion: 0.19
+Nodes (19): hal_rtc_timer_irq_handler(), hal_timer_chk_queue(), hal_timer_delay(), hal_timer_irq_handler(), hal_timer_read(), hal_timer_read_bsptimer(), hal_timer_start(), hal_timer_start_at() (+11 more)
+
+### Community 770 - "Community 770"
+Cohesion: 0.1
+Nodes (16): addDescriptor(), constexpr(), create2904(), createDescriptor(), indicate(), NimBLECharacteristic(), NimBLECharacteristicCallbacks(), NimBLELocalValueAttribute() (+8 more)
+
+### Community 771 - "Community 771"
+Cohesion: 0.15
+Nodes (20): ble_ll_dtm_ctx_free(), ble_ll_dtm_enabled(), ble_ll_dtm_end_test(), ble_ll_dtm_ev_tx_resched_cb(), ble_ll_dtm_reset(), ble_ll_dtm_rx_create_ctx(), ble_ll_dtm_rx_test(), ble_ll_dtm_set_next() (+12 more)
+
+### Community 772 - "Community 772"
+Cohesion: 0.06
+Nodes (55): ble_npl_eventq_deinit(), os_trace_api_ret_u32(), ble_att_svr_entry_alloc(), ble_gap_update_entry_alloc(), STATS_NAME(), esp_nimble_hci_deinit(), esp_nimble_hci_init(), nimble_platform_mem_calloc() (+47 more)
+
+### Community 773 - "Community 773"
+Cohesion: 0.22
+Nodes (12): begin(), characteristicDiscCB(), deleteCharacteristic(), deleteCharacteristics(), end(), getCharacteristic(), getClient(), getValue() (+4 more)
+
+### Community 774 - "Community 774"
+Cohesion: 0.1
+Nodes (34): ble_rpa_get_peer_dev_records(), ble_store_config_conf_init(), ble_store_config_deserialize_arr(), ble_store_config_persist_cccds(), ble_store_config_persist_csfcs(), ble_store_config_persist_eads(), ble_store_config_persist_local_irk(), ble_store_config_persist_our_secs() (+26 more)
+
+### Community 776 - "Community 776"
+Cohesion: 0.33
+Nodes (4): ble_phy_trace_u32(), ble_phy_trace_u32x3(), ble_phy_trace_void(), os_trace_api_void()
+
+### Community 777 - "Community 777"
+Cohesion: 0.16
+Nodes (12): begin(), deleteDescriptor(), descriptorDiscCB(), end(), getClient(), getDescriptor(), getRemoteService(), retrieveDescriptors() (+4 more)
+
+### Community 778 - "Community 778"
+Cohesion: 0.1
+Nodes (14): bluetooth_loop(), changed_region(), LcdBleOutput, pack_frame(), Bluetooth LE frame output for the Waveshare Pixel OPs terminal., Use RGB565 runs when smaller; retain raw pixels for detailed images., Return native pixel bounds and packed rows for the changed rectangle., Use RGB565 runs when smaller; retain raw pixels for detailed images. (+6 more)
+
+### Community 779 - "Community 779"
+Cohesion: 0.1
+Nodes (3): hci_driver_vhci_controller_tx(), hci_driver_vhci_host_tx(), hci_driver_vhci_tx()
+
+### Community 780 - "Community 780"
+Cohesion: 0.15
+Nodes (22): ble_npl_hw_set_isr(), ble_hw_encrypt_block(), ble_hw_get_public_addr(), ble_hw_get_static_addr(), ble_hw_resolv_list_add(), ble_hw_resolv_list_clear(), ble_hw_resolv_list_match(), ble_hw_resolv_list_rmv() (+14 more)
+
+### Community 781 - "Community 781"
+Cohesion: 0.11
+Nodes (5): phy_debug_init(), phy_fem_init(), phy_debug_init(), phy_fem_init(), phy_gpiote_configure()
+
+### Community 782 - "Community 782"
+Cohesion: 0.16
+Nodes (15): atomic_add(), atomic_and(), atomic_clear(), atomic_clear_bit(), atomic_dec(), atomic_get(), atomic_inc(), atomic_or() (+7 more)
+
+### Community 783 - "Community 783"
+Cohesion: 0.05
+Nodes (5): bitSize(), fromString(), getValue(), NimBLEUUID(), operator==()
+
+### Community 785 - "Community 785"
+Cohesion: 0.15
+Nodes (16): ble_phy_get_cur_phy(), ble_phy_get_cur_rx_phy_mode(), ble_phy_rx_start_isr(), hal_timer_config(), hal_timer_set_cb(), os_cputime_delay_nsecs(), os_cputime_delay_ticks(), os_cputime_delay_usecs() (+8 more)
+
+### Community 786 - "Community 786"
+Cohesion: 0.6
+Nodes (3): available_plugins(), get_plugin(), _load_plugin()
+
+### Community 789 - "Community 789"
+Cohesion: 0.22
+Nodes (4): close(), MjpegClass(), MjpegClass(), fopen()
+
+### Community 790 - "Community 790"
+Cohesion: 0.6
+Nodes (5): discoverFirmwarePorts(), firmwareStatus(), pushFirmwareLog(), resolvePlatformioCommand(), startFirmwareOperation()
+
+### Community 792 - "Community 792"
+Cohesion: 0.4
+Nodes (5): ambient, async, candidate_limit, enabled, ai_selector
+
+### Community 793 - "Community 793"
+Cohesion: 0.11
+Nodes (18): NimBLEDescriptor(), onRead(), onWrite(), readEvent(), writeEvent(), getUUID(), setProperties(), addCharacteristic() (+10 more)
+
+### Community 794 - "Community 794"
+Cohesion: 0.36
+Nodes (8): ble_gatts_lcl_svc_foreach(), ble_gatt_show_local_chr(), ble_gatt_show_local_inc_svc(), ble_gatt_show_local_svc(), ble_gatts_flags_to_str(), ble_gatts_show_local(), ble_uuid_to_str(), operator std::string() const()
+
+### Community 795 - "Community 795"
+Cohesion: 0.5
+Nodes (3): load_replay_file_from_object(), _pcap_file(), _usbpcap_frame()
+
+### Community 796 - "Community 796"
+Cohesion: 0.5
+Nodes (4): code:cpp (display.fillCircle(x, y, r, color)), `fillCircle()`, Parameters, Syntax
+
+### Community 798 - "Community 798"
+Cohesion: 0.22
+Nodes (8): Acknowledgments, Arduino installation, code:block1 (h2zero/NimBLE-Arduino), NimBLE-Arduino, Platformio installation, Sponsors, Supported MCU's, Using
+
+### Community 799 - "Community 799"
+Cohesion: 0.33
+Nodes (6): light_model_gen_level_get(), light_model_gen_level_set(), light_model_gen_onoff_set(), light_model_light_lightness_get(), light_model_light_lightness_set(), update_light_state()
+
+### Community 802 - "Community 802"
+Cohesion: 0.25
+Nodes (7): Features, How it Works, NimBLE Stream Client Example, Serial Monitor Output, Service UUIDs, Testing, Usage
+
+### Community 804 - "Community 804"
+Cohesion: 0.29
+Nodes (6): Default UUIDs, Features, Good For, How it Works, NimBLE Stream Echo Example, Usage
+
+### Community 805 - "Community 805"
+Cohesion: 0.29
+Nodes (6): Compatible With, Features, How it Works, NimBLE Stream Server Example, Service UUIDs, Usage
+
+### Community 808 - "Community 808"
+Cohesion: 0.29
+Nodes (6): 0032 - Waveshare Bluetooth frame transport, Consequences, Context, Decision, macOS reconnect lifecycle, Partial updates (BLE v2)
+
+### Community 809 - "Community 809"
+Cohesion: 0.6
+Nodes (3): ble_ll_sched_css_get_conn_interval_us(), ble_ll_sched_css_get_period_slots(), ble_ll_sched_css_get_slot_us()
+
+### Community 810 - "Community 810"
+Cohesion: 0.8
+Nodes (4): ble_eddystone_set_adv_data_gen(), ble_eddystone_set_adv_data_uid(), ble_eddystone_set_adv_data_url(), ble_eddystone_set_svc_data_base()
+
+### Community 811 - "Community 811"
+Cohesion: 0.5
+Nodes (4): mac, NSBluetoothAlwaysUsageDescription, extendInfo, target
+
+### Community 812 - "Community 812"
+Cohesion: 0.5
+Nodes (4): nsis, createDesktopShortcut, createStartMenuShortcut, shortcutName
+
+### Community 815 - "Community 815"
+Cohesion: 0.5
+Nodes (4): [1.0.1] - 2020-09-02, Added, Changed, Fixed
+
+### Community 816 - "Community 816"
+Cohesion: 0.5
+Nodes (4): [1.1.0] - 2021-01-20, Added, Changed, Fixed
+
+### Community 817 - "Community 817"
+Cohesion: 0.5
+Nodes (4): [1.2.0] - 2021-02-08, Added, Changed, Fixed
+
+### Community 818 - "Community 818"
+Cohesion: 0.5
+Nodes (4): [1.3.0] - 2021-08-02, Added, Changed, Fixed
+
+### Community 819 - "Community 819"
+Cohesion: 0.5
+Nodes (4): [1.4.0] - 2022-07-10, Added, Changed, Fixed
+
+### Community 820 - "Community 820"
+Cohesion: 0.5
+Nodes (4): [1.4.1] - 2022-10-23, Added, Changed, Fixed
+
+### Community 821 - "Community 821"
+Cohesion: 0.5
+Nodes (4): [1.4.2] 2024-06-17, Added, Changed, Fixed
+
+### Community 824 - "Community 824"
 Cohesion: 0.67
-Nodes (3): linux, category, target
+Nodes (3): [1.3.2] - 2021-11-20, Added, Fixed
+
+### Community 825 - "Community 825"
+Cohesion: 0.67
+Nodes (3): [1.3.5] - 2022-01-14, Added, Fixed
+
+### Community 826 - "Community 826"
+Cohesion: 0.67
+Nodes (3): [1.3.6] - 2022-01-18, Changed, Fixed
+
+### Community 827 - "Community 827"
+Cohesion: 0.67
+Nodes (3): [1.3.8] - 2022-04-27, Changed, Fixed
+
+### Community 828 - "Community 828"
+Cohesion: 0.67
+Nodes (3): [1.4.3] 2024-11-27, Added, Fixed
+
+### Community 829 - "Community 829"
+Cohesion: 0.67
+Nodes (3): Added, Changed, Fixed
 
 ## Knowledge Gaps
-- **2173 isolated node(s):** `m_endTime`, `name`, `version`, `keywords`, `description` (+2168 more)
+- **2388 isolated node(s):** `m_endTime`, `name`, `version`, `keywords`, `description` (+2383 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **73 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **82 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `begin()` connect `Pokemon Map Routing` to `Community 304`, `Community 207`?**
-  _High betweenness centrality (0.055) - this node is a cross-community bridge._
-- **Why does `OverworldScene` connect `Community 692` to `AI Usage Telemetry`, `Pokemon World Loop`, `Community 235`, `JSON Config Loader`, `Community 205`, `Community 187`, `Pokemon Map Routing`, `Community 146`, `Community 148`, `Community 405`, `Community 54`, `Community 151`, `Community 56`, `Community 539`, `Community 252`, `Community 571`, `Slack Integration`?**
-  _High betweenness centrality (0.041) - this node is a cross-community bridge._
-- **Why does `spiOptionDedicated()` connect `Community 207` to `Pokemon Map Routing`?**
-  _High betweenness centrality (0.024) - this node is a cross-community bridge._
-- **Are the 50 inferred relationships involving `OverworldScene` (e.g. with `PokemonEngine` and `PokemonPlugin`) actually correct?**
-  _`OverworldScene` has 50 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 23 inferred relationships involving `VisualAndAiPluginTests` (e.g. with `AIUsageGauge` and `AIUsageSnapshot`) actually correct?**
-  _`VisualAndAiPluginTests` has 23 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 60 inferred relationships involving `WorkEvent` (e.g. with `GameEngine` and `PokemonEngine`) actually correct?**
-  _`WorkEvent` has 60 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `m_endTime`, `name`, `version` to the rest of the system?**
-  _2401 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `lock()` connect `Community 247` to `Community 140`, `Community 755`, `Slack Integration`, `Community 262`?**
+  _High betweenness centrality (0.175) - this node is a cross-community bridge._
+- **Why does `printf()` connect `Community 138` to `Community 755`, `Community 398`?**
+  _High betweenness centrality (0.121) - this node is a cross-community bridge._
+- **Why does `ble_npl_mutex_pend()` connect `Community 262` to `Community 247`, `Community 535`, `Community 719`?**
+  _High betweenness centrality (0.079) - this node is a cross-community bridge._
+- **Are the 186 inferred relationships involving `os_mbuf_free_chain()` (e.g. with `writeFragment()` and `handleDataReceivedEvent()`) actually correct?**
+  _`os_mbuf_free_chain()` has 186 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 179 inferred relationships involving `ble_hs_unlock()` (e.g. with `ble_att_tx()` and `ble_hs_conn_timer()`) actually correct?**
+  _`ble_hs_unlock()` has 179 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 177 inferred relationships involving `ble_hs_lock()` (e.g. with `ble_att_tx()` and `ble_hs_conn_timer()`) actually correct?**
+  _`ble_hs_lock()` has 177 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 146 inferred relationships involving `ble_ll_assert()` (e.g. with `ble_phy_isr()` and `ble_ll_tmr_add_u()`) actually correct?**
+  _`ble_ll_assert()` has 146 INFERRED edges - model-reasoned connections that need verification._

@@ -4,6 +4,7 @@
 #include <WebServer.h>
 #include <WiFi.h>
 #include <WiFiManager.h>
+#include "lcd_ble.h"
 
 namespace {
 constexpr uint16_t LCD_WIDTH = 172;
@@ -20,6 +21,14 @@ constexpr uint8_t BACKLIGHT_DUTY = 127;  // Waveshare recommends <= 50%.
 Arduino_DataBus *bus = new Arduino_ESP32SPI(LCD_DC, LCD_CS, LCD_SCLK, LCD_MOSI, GFX_NOT_DEFINED);
 Arduino_GFX *display = new Arduino_ST7789(bus, LCD_RST, 0, true, LCD_WIDTH, LCD_HEIGHT, 34, 0, 34, 0);
 WebServer server(80);
+WiFiManager wifiManager;
+LcdBleReceiver bleReceiver;
+bool httpStarted = false;
+bool usbReceiving = false;
+uint32_t usbLastByteAt = 0;
+uint32_t usbChecksum = 0;
+size_t usbOffset = 0;
+String usbLine;
 uint8_t *frameBuffer = nullptr;
 size_t uploadOffset = 0;
 bool uploadAccepted = false;
@@ -94,6 +103,16 @@ void handleFrameUpload() {
   }
 }
 
+void renderFrame(uint16_t x = 0, uint16_t y = 0, uint16_t width = LCD_WIDTH, uint16_t height = LCD_HEIGHT) {
+  auto *pixels = reinterpret_cast<uint16_t *>(frameBuffer);
+  for (size_t index = 0; index < size_t(width) * height; ++index) {
+    pixels[index] = __builtin_bswap16(pixels[index]);
+  }
+  display->draw16bitRGBBitmap(x, y, pixels, width, height);
+  ++framesReceived;
+  lastFrameAt = millis();
+}
+
 void finishFrameUpload() {
   if (!authorized()) {
     server.send(401, "application/json", "{\"error\":\"unauthorized\"}");
@@ -103,18 +122,79 @@ void finishFrameUpload() {
     server.send(400, "application/json", "{\"error\":\"frame must be 172x320 RGB565\"}");
     return;
   }
-  auto *pixels = reinterpret_cast<uint16_t *>(frameBuffer);
-  for (size_t index = 0; index < LCD_WIDTH * LCD_HEIGHT; ++index) {
-    pixels[index] = __builtin_bswap16(pixels[index]);
-  }
-  display->draw16bitRGBBitmap(0, 0, pixels, LCD_WIDTH, LCD_HEIGHT);
-  ++framesReceived;
-  lastFrameAt = millis();
+  renderFrame();
   server.send(204);
+}
+// USB uses the same big-endian RGB565 frame as HTTP, with CRC32 and acknowledgements.
+void serviceUsb() {
+  if (!frameBuffer) return;
+  if (usbReceiving && millis() - usbLastByteAt > 5000) {
+    usbReceiving = false;
+    Serial.println("PXOPS ERROR timeout");
+  }
+  size_t budget = 4096;
+  while (Serial.available() && budget--) {
+    const uint8_t value = Serial.read();
+    if (usbReceiving) {
+      frameBuffer[usbOffset++] = value;
+      usbLastByteAt = millis();
+      if (usbOffset == FRAME_BYTES) {
+        uint32_t crc = 0xffffffff;
+        for (size_t i = 0; i < FRAME_BYTES; ++i) {
+          crc ^= frameBuffer[i];
+          for (int bit = 0; bit < 8; ++bit) crc = (crc >> 1) ^ (0xedb88320 & (0 - (crc & 1)));
+        }
+        usbReceiving = false;
+        if ((crc ^ 0xffffffff) != usbChecksum) {
+          Serial.println("PXOPS ERROR checksum");
+        } else {
+          renderFrame();
+          Serial.println("PXOPS OK");
+        }
+      } else if (usbOffset % 1024 == 0) {
+        Serial.println("PXOPS NEXT");
+      }
+    } else if (value == '\n') {
+      if (usbLine == "PXOPS?") {
+        Serial.println("PXOPS LCD 172 320 2");
+      } else {
+        unsigned int length = 0, checksum = 0;
+        char extra;
+        if (sscanf(usbLine.c_str(), "PXOPS2 %u %x %c", &length, &checksum, &extra) == 2 && length == FRAME_BYTES) {
+          usbOffset = 0;
+          usbChecksum = checksum;
+          usbLastByteAt = millis();
+          usbReceiving = true;
+          Serial.println("PXOPS READY");
+        } else {
+          Serial.println("PXOPS ERROR header");
+        }
+      }
+      usbLine = "";
+    } else if (usbLine.length() < 80) {
+      usbLine += static_cast<char>(value);
+    } else {
+      usbLine = "";
+    }
+  }
+}
+void startHttpWhenConnected() {
+  if (httpStarted || WiFi.status() != WL_CONNECTED) return;
+  wifiManager.stopConfigPortal();
+  MDNS.begin("pixelops-lcd");
+  MDNS.addService("http", "tcp", 80);
+  const char *headers[] = {"Authorization"};
+  server.collectHeaders(headers, 1);
+  server.on("/", HTTP_GET, [] { server.sendHeader("Location", "/status"); server.send(302); });
+  server.on("/status", HTTP_GET, handleStatus);
+  server.on("/frame", HTTP_POST, finishFrameUpload, handleFrameUpload);
+  server.begin();
+  httpStarted = true;
 }
 }  // namespace
 
 void setup() {
+  Serial.setRxBufferSize(4096);
   Serial.begin(115200);
   display->begin(80000000);
   display->setRotation(0);
@@ -129,38 +209,38 @@ void setup() {
     return;
   }
 
+  bleReceiver.begin(frameBuffer, FRAME_BYTES);
+
   bool connected = false;
 #if defined(WIFI_SSID_HEX) && defined(WIFI_PASS_HEX)
   const String configuredSsid = decodeHex(WIFI_SSID_HEX);
   const String configuredPassword = decodeHex(WIFI_PASS_HEX);
   WiFi.begin(configuredSsid.c_str(), configuredPassword.c_str());
-  for (uint8_t attempt = 0; attempt < 40 && WiFi.status() != WL_CONNECTED; ++attempt) {
-    delay(500);
+  for (uint8_t attempt = 0; attempt < 200 && WiFi.status() != WL_CONNECTED; ++attempt) {
+    serviceUsb();
+    delay(10);
   }
   connected = WiFi.status() == WL_CONNECTED;
 #endif
 
-  WiFiManager wifiManager;
-  wifiManager.setConfigPortalTimeout(180);
-  if (!connected && !wifiManager.autoConnect("PixelOps-LCD-Setup")) {
-    drawMessage("WI-FI SETUP", "Connect to PixelOps-LCD-Setup");
-    delay(3000);
-    ESP.restart();
-  }
+  wifiManager.setConfigPortalBlocking(false);
+  wifiManager.setConnectTimeout(2);
+  if (!connected) wifiManager.autoConnect("PixelOps-LCD-Setup");
 
-  MDNS.begin("pixelops-lcd");
-  MDNS.addService("http", "tcp", 80);
-  const char *headers[] = {"Authorization"};
-  server.collectHeaders(headers, 1);
-  server.on("/", HTTP_GET, [] { server.sendHeader("Location", "/status"); server.send(302); });
-  server.on("/status", HTTP_GET, handleStatus);
-  server.on("/frame", HTTP_POST, finishFrameUpload, handleFrameUpload);
-  server.begin();
-  drawMessage("PIXEL OPS READY", String("http://") + WiFi.localIP().toString());
-  Serial.printf("Pixel OPs LCD ready at http://%s and http://pixelops-lcd.local\n", WiFi.localIP().toString().c_str());
+  if (framesReceived == 0) drawMessage("PIXEL OPS READY", "USB ready. Wi-Fi: PixelOps-LCD-Setup");
+
 }
 
 void loop() {
-  server.handleClient();
+  if (bleReceiver.process(!usbReceiving)) {
+    renderFrame(bleReceiver.x(), bleReceiver.y(), bleReceiver.width(), bleReceiver.height());
+    bleReceiver.complete();
+  }
+  if (!bleReceiver.busy()) serviceUsb();
+  if (!usbReceiving && !bleReceiver.busy()) {
+    wifiManager.process();
+    startHttpWhenConnected();
+    if (httpStarted) server.handleClient();
+  }
   delay(1);
 }

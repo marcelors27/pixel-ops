@@ -119,6 +119,8 @@ const integrationIcons: Record<string, IconComponent> = {
   ics: CalendarDays,
   weather: CloudSun,
   ai_usage: Activity,
+  codex_status: Activity,
+  token_usage: Activity,
   pc_stats: Cpu,
   clickup: Check,
   todoist: Check,
@@ -143,6 +145,8 @@ const layoutWindowCatalog: LayoutWindowOption[] = [
   { kind: "activity", label: "Activity", tone: "#ef846d" },
   { kind: "meetings_day", label: "Meetings Day", tone: "#9aa7ff" },
   { kind: "mana", label: "Mana", tone: "#4f9fff" },
+  { kind: "token_usage", label: "Token Activity", tone: "#4d9fff" },
+  { kind: "codex_status", label: "Codex Semaphore", tone: "#f7c948" },
   { kind: "gamification", label: "Player HP", tone: "#ef6461" },
   { kind: "crosshero_wod", label: "CrossHero WOD", tone: "#f58236" },
   { kind: "crosshero_classes", label: "CrossHero Classes", tone: "#4ac29a" },
@@ -280,6 +284,7 @@ export function App() {
   const [runtimeStatus, setRuntimeStatus] = useState<RuntimeStatus | null>(null);
   const [runtimeAutostart, setRuntimeAutostart] = useState<RuntimeAutostartStatus | null>(null);
   const [runtimeBusy, setRuntimeBusy] = useState<string | null>(null);
+  const [firmwareTarget, setFirmwareTarget] = useState("e213");
   const [firmwareStatus, setFirmwareStatus] = useState<FirmwareStatus | null>(null);
   const [firmwarePort, setFirmwarePort] = useState("");
   const [usbBusy, setUsbBusy] = useState<string | null>(null);
@@ -436,7 +441,7 @@ export function App() {
     if (action === "upload" && !window.confirm(`Instalar o firmware em ${firmwarePort}? O painel será reiniciado.`)) return;
     setError(null);
     try {
-      setFirmwareStatus(await runFirmwareAction(action, action === "upload" ? firmwarePort : undefined));
+      setFirmwareStatus(await runFirmwareAction(action, action === "upload" ? firmwarePort : undefined, firmwareTarget));
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : String(caught));
       await refreshFirmwareStatus(false);
@@ -659,6 +664,8 @@ export function App() {
         />
 
         <FirmwarePanel
+          target={firmwareTarget}
+          onTargetChange={setFirmwareTarget}
           status={firmwareStatus}
           port={firmwarePort}
           onPortChange={setFirmwarePort}
@@ -1723,9 +1730,20 @@ function DisplayOutputRow({
       ) : null}
       {isLcdOutput ? (
         <>
-          <Field label="Device URL">
-            <TextInput value={display.lcd?.url ?? "http://pixelops-lcd.local"} onChange={(value) => onChange({ ...display, lcd: { ...defaultLcdDeviceConfig(), ...(display.lcd ?? {}), url: value } })} />
+          <Field label="Ligação para atualizar dados">
+            <Select value={display.lcd?.transport ?? "http"} options={["http", "usb", "bluetooth"]} onChange={(value) => onChange({ ...display, lcd: { ...defaultLcdDeviceConfig(), ...(display.lcd ?? {}), transport: value as "http" | "usb" | "bluetooth" } })} />
           </Field>
+          {display.lcd?.transport === "usb" ? (
+            <Field label="Porta USB (vazia = deteção automática)">
+              <TextInput value={display.lcd?.port ?? ""} onChange={(value) => onChange({ ...display, lcd: { ...defaultLcdDeviceConfig(), ...(display.lcd ?? {}), port: value } })} />
+            </Field>
+          ) : display.lcd?.transport === "bluetooth" ? (
+            <Field label="Identificador Bluetooth (vazio = deteção automática)">
+              <TextInput value={display.lcd?.bluetooth_address ?? ""} onChange={(value) => onChange({ ...display, lcd: { ...defaultLcdDeviceConfig(), ...(display.lcd ?? {}), bluetooth_address: value } })} />
+            </Field>
+          ) : <Field label="Device URL">
+            <TextInput value={display.lcd?.url ?? "http://pixelops-lcd.local"} onChange={(value) => onChange({ ...display, lcd: { ...defaultLcdDeviceConfig(), ...(display.lcd ?? {}), url: value } })} />
+          </Field>}
           <Field label="Token">
             <TextInput value={display.lcd?.token ?? ""} onChange={(value) => onChange({ ...display, lcd: { ...defaultLcdDeviceConfig(), ...(display.lcd ?? {}), token: value } })} />
           </Field>
@@ -2086,6 +2104,8 @@ function RuntimePanel({
 }
 
 function FirmwarePanel({
+  target,
+  onTargetChange,
   status,
   port,
   onPortChange,
@@ -2093,6 +2113,8 @@ function FirmwarePanel({
   onBuild,
   onUpload,
 }: {
+  target: string;
+  onTargetChange: (target: string) => void;
   status: FirmwareStatus | null;
   port: string;
   onPortChange: (port: string) => void;
@@ -2106,11 +2128,18 @@ function FirmwarePanel({
       <div className="section-heading">
         <Cpu size={20} />
         <div>
-          <h2>Firmware do e-ink</h2>
+          <h2>Firmware dos painéis ESP32</h2>
           <p>{status?.busy ? busyLabel : status?.result?.message ?? "Compile e instale atualizações no ESP32 pela USB."}</p>
         </div>
       </div>
       <div className="firmware-controls">
+        <label>
+          <span>Painel</span>
+          <select value={target} disabled={Boolean(status?.busy)} onChange={(event) => onTargetChange(event.target.value)}>
+            <option value="e213">Heltec E213 e-ink</option>
+            <option value="esp32-c6-lcd-1_47">Waveshare ESP32-C6 LCD 1.47</option>
+          </select>
+        </label>
         <label>
           <span>Porta USB</span>
           <select value={port} disabled={Boolean(status?.busy)} onChange={(event) => onPortChange(event.target.value)}>
@@ -2351,6 +2380,25 @@ function IntegrationPanel({
             value={config.integrations.integrations.weather.api_key_env}
             onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.weather.api_key_env = value))}
           />
+        </Field>
+      </Panel>
+    );
+  }
+
+  if (activeKey === "codex_status") {
+    return (
+      <Panel title="Codex Semaphore" icon={Activity} subtitle="One dot per task · P: processing · A/R: approval/reply · E/I: error/interrupted · C: completed">
+        <Field label="Session ID (empty = all loaded sessions)">
+          <TextInput value={config.integrations.integrations.codex_status.thread_id}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.codex_status.thread_id = value))} />
+        </Field>
+        <Field label="Local socket path (empty = automatic)">
+          <TextInput value={config.integrations.integrations.codex_status.socket_path}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.codex_status.socket_path = value))} />
+        </Field>
+        <Field label="Poll seconds">
+          <NumberInput value={config.integrations.integrations.codex_status.poll_seconds}
+            onChange={(value) => onMutate((draft) => void (draft.integrations.integrations.codex_status.poll_seconds = clampNumber(value, 1, 5)))} />
         </Field>
       </Panel>
     );
@@ -4225,6 +4273,7 @@ function ensureConfigDefaults(config: RuntimeConfig): RuntimeConfig {
   next.integrations.integrations.weather.provider = next.integrations.integrations.weather.provider ?? "open_meteo";
   next.integrations.integrations.weather.timeout_seconds = next.integrations.integrations.weather.timeout_seconds ?? 8;
   next.integrations.integrations.weather.api_key_env = next.integrations.integrations.weather.api_key_env ?? "OPENWEATHERMAP_API_KEY";
+  next.integrations.integrations.codex_status = Object.assign({ enabled: false, socket_path: "", thread_id: "", poll_seconds: 2, timeout_seconds: 4 }, next.integrations.integrations.codex_status);
   next.integrations.integrations.pc_stats = next.integrations.integrations.pc_stats ?? {
     enabled: false,
     fields: ["cpu", "ram", "top_ram_app", "temperature", "gpu", "disk", "uptime"],

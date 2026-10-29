@@ -229,6 +229,13 @@
       },
       "poll_seconds": 10,
       "timeout_seconds": 10
+    },
+    "codex_status": {
+      "enabled": true,
+      "socket_path": "",
+      "thread_id": "",
+      "poll_seconds": 1,
+      "timeout_seconds": 4
     }
   }
 }

@@ -16,6 +16,8 @@ let runtimeProcess: ChildProcessWithoutNullStreams | null = null;
 const runtimeLogs: string[] = [];
 let firmwareProcess: ChildProcessWithoutNullStreams | null = null;
 const firmwareLogs: string[] = [];
+let firmwareTarget = "e213";
+const firmwareTargets: Record<string, string> = { e213: "firmware/heltec-e213", "esp32-c6-lcd-1_47": "firmware/esp32-c6-lcd-1.47" };
 let firmwareOperation: "build" | "upload" | null = null;
 let firmwareResult: { ok: boolean; message: string } | null = null;
 let firmwareStartedAt: string | null = null;
@@ -131,6 +133,7 @@ const integrationSidecars: Record<string, ConfigDescriptor[]> = {
 };
 
 const integrationLayoutWindows: Record<string, LayoutWindowDescriptor[]> = {
+  codex_status: [{ kind: "codex_status", label: "Codex Semaphore", tone: "#f7c948" }],
   gamification: [{ kind: "gamification", label: "Player HP", tone: "#ef6461" }],
   ai_usage: [
     { kind: "gauges", label: "AI Gauges", tone: "#7ee0bd" },
@@ -728,22 +731,25 @@ async function firmwareStatus() {
     started_at: firmwareStartedAt,
     finished_at: firmwareFinishedAt,
     ports: await discoverFirmwarePorts(),
-    environment: "e213",
-    firmware_path: "firmware/heltec-e213",
+    environment: firmwareTarget,
+    firmware_path: firmwareTargets[firmwareTarget],
     tool,
     tool_error: toolError,
     logs: firmwareLogs.slice(-120),
   };
 }
 
-async function startFirmwareOperation(operation: "build" | "upload", port?: string) {
+async function startFirmwareOperation(operation: "build" | "upload", port?: string, target = "e213") {
   if (firmwareProcess) throw new Error("Já existe uma operação de firmware em andamento.");
+  if (!Object.hasOwn(firmwareTargets, target)) throw new Error("Painel desconhecido.");
   const ports = await discoverFirmwarePorts();
   if (operation === "upload" && (!port || !ports.includes(port))) {
     throw new Error("Selecione uma porta USB detectada antes de instalar o firmware.");
   }
+  if (firmwareProcess) throw new Error("Já existe uma operação de firmware em andamento.");
   const platformio = resolvePlatformioCommand();
-  const args = [...platformio.prefix, "run", "--environment", "e213"];
+  firmwareTarget = target;
+  const args = [...platformio.prefix, "run", "--environment", target];
   if (operation === "upload") args.push("--target", "upload", "--upload-port", port as string);
   firmwareLogs.length = 0;
   firmwareOperation = operation;
@@ -752,7 +758,7 @@ async function startFirmwareOperation(operation: "build" | "upload", port?: stri
   firmwareFinishedAt = null;
   pushFirmwareLog(`${platformio.label} ${args.slice(platformio.prefix.length).join(" ")}`);
   firmwareProcess = spawn(platformio.command, args, {
-    cwd: path.join(repoRoot, "firmware/heltec-e213"),
+    cwd: path.join(repoRoot, firmwareTargets[target]),
     env: process.env,
   });
   firmwareProcess.stdout.on("data", (chunk) => pushFirmwareLog(String(chunk)));
@@ -1835,12 +1841,13 @@ function runtimeConfigApi(): Plugin {
             return;
           }
           if (req.method === "POST" && url.pathname === "/build") {
-            sendJson(res, 202, await startFirmwareOperation("build"));
+            const body = JSON.parse(await readBody(req)) as { target?: string };
+            sendJson(res, 202, await startFirmwareOperation("build", undefined, body.target));
             return;
           }
           if (req.method === "POST" && url.pathname === "/upload") {
-            const body = JSON.parse(await readBody(req)) as { port?: string };
-            sendJson(res, 202, await startFirmwareOperation("upload", body.port));
+            const body = JSON.parse(await readBody(req)) as { port?: string; target?: string };
+            sendJson(res, 202, await startFirmwareOperation("upload", body.port, body.target));
             return;
           }
           sendJson(res, 404, { error: "Firmware endpoint not found." });

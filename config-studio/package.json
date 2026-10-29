@@ -63,6 +63,8 @@
           "scripts/**",
           "tools/**",
           "firmware/heltec-e213/**",
+          "firmware/esp32-c6-lcd-1.47/**",
+          "!firmware/esp32-c6-lcd-1.47/.pio/**",
           "!firmware/heltec-e213/.pio/**",
           "!**/.git/**",
           "infra/cloudflare/pixelops-kite/**",
@@ -73,7 +75,10 @@
       }
     ],
     "mac": {
-      "target": "dmg"
+      "target": "dmg",
+      "extendInfo": {
+        "NSBluetoothAlwaysUsageDescription": "O Pixel OPs usa Bluetooth para atualizar o painel Waveshare."
+      }
     },
     "win": {
       "target": "nsis"

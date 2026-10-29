@@ -1604,6 +1604,2131 @@
     "ast_hash": "75dd41648b095cefbf91476166d0c54a",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEL2CAPServer.cpp": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "c78555b60b78b4f840373d293b524c0d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEBondMigration.h": {
+    "mtime": 1785372465.3602407,
+    "ast_hash": "1134e87faa3120ffe549404f2c6c7b0f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEL2CAPServer.h": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "ea72c688c4db1c000ffad2a2fc4b342b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEAdvertisedDevice.cpp": {
+    "mtime": 1785372465.359868,
+    "ast_hash": "09c59f1b0cfd253a397b4c145f4402ad",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEAttValue.cpp": {
+    "mtime": 1785372465.3602407,
+    "ast_hash": "548ac3df9d6fdfec4afc8773f7f3ab0a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLERemoteDescriptor.h": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "3fee631101018ff7cfb96b6e6832d8cb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEDescriptor.cpp": {
+    "mtime": 1785372465.3612406,
+    "ast_hash": "b9f4a8b6002f0efbefb162130c4937b7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEClient.cpp": {
+    "mtime": 1785372465.3612406,
+    "ast_hash": "09bd5b4dad063a72ff25fbaded448a98",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEExtAdvertising.h": {
+    "mtime": 1785372465.3612406,
+    "ast_hash": "2afc976812b5b341016aa6175be59c16",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEAdvertisedDevice.h": {
+    "mtime": 1785372465.359868,
+    "ast_hash": "6eff97d0b894aebc42880e8ae6e5a310",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEAdvertising.cpp": {
+    "mtime": 1785372465.3602407,
+    "ast_hash": "8a583327bc4492d016b6343f65e11018",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEAddress.cpp": {
+    "mtime": 1785372465.359868,
+    "ast_hash": "cfa6e33ad008d314156f7c9faf38b9bc",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEUUID.cpp": {
+    "mtime": 1785372465.3632407,
+    "ast_hash": "7d8e7e6fb89c18fb33f47b2c621b6e87",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEService.cpp": {
+    "mtime": 1785372465.3632407,
+    "ast_hash": "d9d13cd00898f6e38e1aadef6c7e4263",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEAttValue.h": {
+    "mtime": 1785372465.3602407,
+    "ast_hash": "5b02b3ffa0a6ecf82a93619d126ddd11",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimconfig_rename.h": {
+    "mtime": 1785372465.3984234,
+    "ast_hash": "207ab55d99905482c4c2dbc433c1c104",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLERemoteCharacteristic.h": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "a151ab95c27150cf69929d1c804ddd15",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEServer.h": {
+    "mtime": 1785372465.3632407,
+    "ast_hash": "99031c19b0cc1b34501284e74a48720f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEUtils.h": {
+    "mtime": 1785372465.3642406,
+    "ast_hash": "2851df409cdc1cfd6a6983732aa37b4a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLERemoteDescriptor.cpp": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "d51b4f47a92617cfda4a7050db6cb6fe",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEAdvertisementData.cpp": {
+    "mtime": 1785372465.3602407,
+    "ast_hash": "fda0fa896af180cd44353816ac2b1e35",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEScan.h": {
+    "mtime": 1785372465.3632407,
+    "ast_hash": "64e27971e228cfff13e8cbd76cdbf033",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEDevice.cpp": {
+    "mtime": 1785372465.3612406,
+    "ast_hash": "869f06a022b5b93127fb053faec0f06c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEExtAdvertising.cpp": {
+    "mtime": 1785372465.3612406,
+    "ast_hash": "68423afe8499263525678a4aa8aa8d3e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLERemoteCharacteristic.cpp": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "4f2346ba4334b851acbbfd068fb04a5e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimconfig.h": {
+    "mtime": 1785372465.3984234,
+    "ast_hash": "b31f59b8f27db71a7e8946b99bb4af07",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLERemoteService.cpp": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "37fadbaac1b2c66823c0626a99e35162",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEAttribute.h": {
+    "mtime": 1785372465.3602407,
+    "ast_hash": "5987b5056a4192966df1e3c31ee2b36f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLECharacteristic.cpp": {
+    "mtime": 1785372465.3602407,
+    "ast_hash": "a1b7fd6b2a1e21b4e9a80a62e3f9b4d8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLECharacteristic.h": {
+    "mtime": 1785372465.3602407,
+    "ast_hash": "5f6897edc844f29c527f701bb5875f41",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEValueAttribute.h": {
+    "mtime": 1785372465.3642406,
+    "ast_hash": "f2945ade062d1852be617dfe6baad2eb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEUUID.h": {
+    "mtime": 1785372465.3632407,
+    "ast_hash": "62c925f56a40ef1694b091b0df0ee9bb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLE2904.cpp": {
+    "mtime": 1785372465.359868,
+    "ast_hash": "b9bc8b5545c3f0110a77253d0e327f67",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEDevice.h": {
+    "mtime": 1785372465.3612406,
+    "ast_hash": "c41f1d16180885e631e6aeca860659b4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEAddress.h": {
+    "mtime": 1785372465.359868,
+    "ast_hash": "f9d10499dbe7f3abd738aeaab43adb47",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEBeacon.h": {
+    "mtime": 1785372465.3602407,
+    "ast_hash": "bce54e357d0de5bed92be4dbda295c61",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEScan.cpp": {
+    "mtime": 1785372465.3632407,
+    "ast_hash": "8cceceb257d33c81d63abcbfb004dd3d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLERemoteValueAttribute.cpp": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "9bc82bb5e239a1fdf864906d445822db",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLECppVersion.h": {
+    "mtime": 1785372465.3612406,
+    "ast_hash": "0a96e0da22e5d2847ebaeb5ce9198236",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEStream.cpp": {
+    "mtime": 1785372465.3632407,
+    "ast_hash": "c0f99a77fe3ec901ab653887c80afd62",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLERemoteValueAttribute.h": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "0df8deb30bd355a0fdc1a78538e6461f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEClient.h": {
+    "mtime": 1785372465.3612406,
+    "ast_hash": "0a3a7617d8c5490ff4aee9a14d49c9ac",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLELocalValueAttribute.h": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "f2313320bcaac0d865338f1421bd6298",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLE2904.h": {
+    "mtime": 1785372465.359868,
+    "ast_hash": "423c046c702ddc97a643d15c54f8e4fb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEL2CAPChannel.h": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "aa05c618c749f8219641cf217398743b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEBeacon.cpp": {
+    "mtime": 1785372465.3602407,
+    "ast_hash": "ba77a23e58db2e00d2936c75a22e003e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEEddystoneTLM.h": {
+    "mtime": 1785372465.3612406,
+    "ast_hash": "a116db949b7b8296056bae23a9240b58",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEL2CAPChannel.cpp": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "d9d5b0643f221a0db6e2b24639d033a3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLELog.h": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "95539bac8397d30cd04fc0482f4bea0e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLERemoteService.h": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "494d517e41e26efb30a6d65d7928ece5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEAdvertising.h": {
+    "mtime": 1785372465.3602407,
+    "ast_hash": "7c727e0c1dcc386dcac04af9364be5a0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEDescriptor.h": {
+    "mtime": 1785372465.3612406,
+    "ast_hash": "491ead6e5a84402d788b5b29b6fe788f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEUtils.cpp": {
+    "mtime": 1785372465.3642406,
+    "ast_hash": "36e193bd71d9cd9690cba0a5af610ced",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEStream.h": {
+    "mtime": 1785372465.3632407,
+    "ast_hash": "e43a5a0ab3235110f7324f5503ac1ccb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEHIDDevice.cpp": {
+    "mtime": 1785372465.3612406,
+    "ast_hash": "54e499411a104a45e990c418ac906cef",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEConnInfo.h": {
+    "mtime": 1785372465.3612406,
+    "ast_hash": "4f0e228714638df3b2c440309a56b2bd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLELocalAttribute.h": {
+    "mtime": 1785372465.3622406,
+    "ast_hash": "69bd8c059207e8aa4190bf8e76644f2a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/HIDTypes.h": {
+    "mtime": 1785372465.359868,
+    "ast_hash": "f78911757f8d87a6cbae74e5ead0399a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEService.h": {
+    "mtime": 1785372465.3632407,
+    "ast_hash": "70d6590aab9cf98478c11f63ad34aaa3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEHIDDevice.h": {
+    "mtime": 1785372465.3612406,
+    "ast_hash": "30aad37dd13ae13ec3c1a442a98192bc",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEServer.cpp": {
+    "mtime": 1785372465.3632407,
+    "ast_hash": "d3372731a7407743efc92c7178241503",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEEddystoneTLM.cpp": {
+    "mtime": 1785372465.3612406,
+    "ast_hash": "de60212850b7d37436cc36e8f3b1738f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/HIDKeyboardTypes.h": {
+    "mtime": 1785372465.359539,
+    "ast_hash": "2cab4e5f1941b1fbc9b76472450ca157",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/NimBLEAdvertisementData.h": {
+    "mtime": 1785372465.3602407,
+    "ast_hash": "30d676bdcca820aed892ef525b289634",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/esp_port/esp-hci/include/esp_nimble_hci.h": {
+    "mtime": 1785372465.3648865,
+    "ast_hash": "0185c4f61c4044f25136f62174c2b655",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/esp_port/esp-hci/src/esp_nimble_hci.c": {
+    "mtime": 1785372465.3648865,
+    "ast_hash": "0240e57b97f01bf747eb456c5b5e09eb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/esp_port/esp-hci/src/na_hci_driver.c": {
+    "mtime": 1785372465.36509,
+    "ast_hash": "bd0856f746f67c0510260040e35a9d14",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/esp_port/esp-hci/src/na_hci_transport.c": {
+    "mtime": 1785372465.36509,
+    "ast_hash": "d1d6de5c191c03aaa0b74e8492730fb4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/esp_port/port/transport/include/esp_hci_transport.h": {
+    "mtime": 1785372465.3658085,
+    "ast_hash": "6ec4b300f11f02066e506c5ae42bbc9b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/esp_port/port/transport/include/esp_hci_driver.h": {
+    "mtime": 1785372465.3657458,
+    "ast_hash": "b54a63e31d3faaeaefa2030c8eaaea33",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/esp_port/port/transport/include/esp_hci_internal.h": {
+    "mtime": 1785372465.3658085,
+    "ast_hash": "452009aa441b4288f4deae30f426e1c5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/esp_port/port/include/esp_nimble_mem.h": {
+    "mtime": 1785372465.3652859,
+    "ast_hash": "3fe02118fcff0d9c784f1e417306e5e9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/esp_port/port/include/esp_nimble_cfg.h": {
+    "mtime": 1785372465.3652859,
+    "ast_hash": "b19ff5c3da0aca686071dbb3ac374df7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/esp_port/port/include/bt_osi_mem.h": {
+    "mtime": 1785372465.3652272,
+    "ast_hash": "eb409c36061c3dc2b9dd3a81f807b548",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/esp_port/port/src/exp_nimble_mem.c": {
+    "mtime": 1785372465.3652859,
+    "ast_hash": "972f3a3519135f92b5e83aae8c23e862",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/utils.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "e4e08cea38d0b64734a873dbb8b61eb1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/ctr_prng.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "e5c9f04e30f2567c7c1a78f4779b82d6",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/ccm_mode.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "fbc266dd0b91fc9ed4b99e4a81991cf8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/cbc_mode.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "9b68795192679b95e43eaa6bc0a63fba",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/sha256.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "db18515ee3014c0b543bb512ba03da8a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/hmac_prng.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "0a07fbdd784312067338d920994d8951",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/ecc_dh.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "f2b0c2f03ace9e4d5e8337ccba0d2791",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/ctr_mode.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "7430c514e0513010d931f5eab15ed527",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/constants.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "cc39bee1b1711aa9dbf2250d581ace8f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/hmac.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "d78413f50403dea396739cc078163702",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/aes.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "d6bb065d995f4793e8b07d5d29a4b345",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/cmac_mode.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "8a31dd5c2d4cbdc6df9b1d437fe81bae",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/ecc.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "37f102176fac8d913b0279feed27ddf5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/ecc_platform_specific.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "d1ab464dc52cb6c1f5d9c802ba8889ca",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/include/tinycrypt/ecc_dsa.h": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "2c1b43fe4c2c5e4de8e45a6cf47a81cc",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/hmac.c": {
+    "mtime": 1785372465.367274,
+    "ast_hash": "9f00d1bdfc3f52628f698e5387ba6b8d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/ctr_mode.c": {
+    "mtime": 1785372465.367274,
+    "ast_hash": "9ed24c15d993cfe2cdd41ef636323300",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/ecc_dsa.c": {
+    "mtime": 1785372465.367274,
+    "ast_hash": "e67738dba3e096ee198a64be61c9ae20",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/ecc_platform_specific.c": {
+    "mtime": 1785372465.367274,
+    "ast_hash": "9dbd18c33758a8a7ecd2484148f86311",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/ecc.c": {
+    "mtime": 1785372465.367274,
+    "ast_hash": "1c53db36414912bc53bbb732d685e414",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/cmac_mode.c": {
+    "mtime": 1785372465.367274,
+    "ast_hash": "a8412f58e57c84b5c08243b60c4d9162",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/aes_decrypt.c": {
+    "mtime": 1785372465.3662405,
+    "ast_hash": "944e18e01416b645e33f5408b3cc697b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/ctr_prng.c": {
+    "mtime": 1785372465.367274,
+    "ast_hash": "2776ab0b83538d6a6f6319be5db195c5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/utils.c": {
+    "mtime": 1785372465.367274,
+    "ast_hash": "544cc176432dded43523ac60b0f8cdc5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/aes_encrypt.c": {
+    "mtime": 1785372465.367274,
+    "ast_hash": "673962fa753622b9ecfabf6f3842173a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/cbc_mode.c": {
+    "mtime": 1785372465.367274,
+    "ast_hash": "02754bf9f646d71f5444f2e9e5277473",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/ccm_mode.c": {
+    "mtime": 1785372465.367274,
+    "ast_hash": "72dd83ecf3b8828cc98e2c6fdaef812a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/sha256.c": {
+    "mtime": 1785372465.367274,
+    "ast_hash": "8de0bccc2e601ef68291f81b9550328e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/ecc_dh.c": {
+    "mtime": 1785372465.367274,
+    "ast_hash": "8280f520d9a6c65a50f334057d302f84",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/ext/tinycrypt/src/hmac_prng.c": {
+    "mtime": 1785372465.367274,
+    "ast_hash": "93da5afbda3604161bd4febb29f50259",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/drivers/nrf51/include/ble/xcvr.h": {
+    "mtime": 1785372465.374252,
+    "ast_hash": "6479fc8ec7b84e7ffa3c9e8ec5eb8d67",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/drivers/nrf51/src/ble_hw.c": {
+    "mtime": 1785372465.374252,
+    "ast_hash": "e87ec724537501bdc79cc8f68f2d68f1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/drivers/nrf51/src/ble_phy.c": {
+    "mtime": 1785372465.3744836,
+    "ast_hash": "b318f62865a03907c6a18ae3792aef5a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/drivers/nrf5x/include/ble/xcvr.h": {
+    "mtime": 1785372465.3747423,
+    "ast_hash": "fcbb682521bc6c4663929917a72da921",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/drivers/nrf5x/src/phy_priv.h": {
+    "mtime": 1785372465.3754797,
+    "ast_hash": "ae8ff961cfc4faf1505c9ac7fb994637",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/drivers/nrf5x/src/ble_hw.c": {
+    "mtime": 1785372465.3747423,
+    "ast_hash": "47ee9e47d7ede493cee527ca8bcd5e25",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/drivers/nrf5x/src/ble_phy_trace.c": {
+    "mtime": 1785372465.3748996,
+    "ast_hash": "122f40a97f21283dfc79aa37497c0669",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/drivers/nrf5x/src/ble_phy.c": {
+    "mtime": 1785372465.3748996,
+    "ast_hash": "0c18aa50c85bbb264381b8cd9c1b86f4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/drivers/nrf5x/src/nrf52/phy_ppi.h": {
+    "mtime": 1785372465.3752406,
+    "ast_hash": "d5df2086e49bf49879bf37d44e3e9336",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/drivers/nrf5x/src/nrf52/phy.c": {
+    "mtime": 1785372465.3752406,
+    "ast_hash": "467a23a0911fdbdce3f1e211a08c1b1d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/drivers/nrf5x/src/nrf53/phy_ppi.h": {
+    "mtime": 1785372465.3754797,
+    "ast_hash": "31be0dc45ecd7bcb60c2391289f63e8f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/drivers/nrf5x/src/nrf53/phy.c": {
+    "mtime": 1785372465.3752406,
+    "ast_hash": "1b93592138593bdb37ace8bfbb054336",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/transport/include/nimble/transport_impl.h": {
+    "mtime": 1785372465.3949158,
+    "ast_hash": "0326cb19d275bc3eee7b86862f86b93d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/transport/include/nimble/transport.h": {
+    "mtime": 1785372465.3947847,
+    "ast_hash": "085b9819bf5728049ece0692d0b970d7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/transport/include/nimble/transport/transport_ipc.h": {
+    "mtime": 1785372465.3949158,
+    "ast_hash": "360e6b03a59deb0b86ddc9f120c6eaa4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/transport/include/nimble/transport/monitor.h": {
+    "mtime": 1785372465.394856,
+    "ast_hash": "186edff459f09ec5916888ec0f88cacd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/transport/common/hci_ipc/include/nimble/transport/hci_ipc.h": {
+    "mtime": 1785372465.3943582,
+    "ast_hash": "dc21661d0371f68ea39d4e6bc2e7938a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/transport/common/hci_ipc/src/hci_ipc.c": {
+    "mtime": 1785372465.3943582,
+    "ast_hash": "a17943693434d5eca0de8ce925a27d50",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/transport/common/hci_h4/include/nimble/transport/hci_h4.h": {
+    "mtime": 1785372465.3940413,
+    "ast_hash": "feb7936771e86e4232abf5c4de666720",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/transport/common/hci_h4/src/hci_h4.c": {
+    "mtime": 1785372465.3940413,
+    "ast_hash": "4c70ccc9b8045539b3bf275d91ce490d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/transport/esp_ipc_legacy/src/hci_esp_ipc_legacy.c": {
+    "mtime": 1785372465.3946779,
+    "ast_hash": "c0a75dda947a402d6782abf4c8ea8078",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/transport/nrf5340/src/nrf5340_ble_hci.c": {
+    "mtime": 1785372465.3950856,
+    "ast_hash": "e26b9dd4641b47157ee8dbc2d9c032f7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/transport/esp_ipc/src/hci_esp_ipc.c": {
+    "mtime": 1785372465.3945713,
+    "ast_hash": "dc61f546a97609de0a46a6af10acc2c7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/transport/src/transport.c": {
+    "mtime": 1785372465.3950856,
+    "ast_hash": "f1e97f93ca8d72c8bf97f6a335da04ed",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/testing.h": {
+    "mtime": 1785372465.3782406,
+    "ast_hash": "507fb291b5058ccdbaa92e5fa0d2e5b2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/main.h": {
+    "mtime": 1785372465.3782406,
+    "ast_hash": "ebe011f5a1b849e36b0bfaeb5c6271b5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/health_srv.h": {
+    "mtime": 1785372465.377737,
+    "ast_hash": "52e4477b0068be2885fc9bbe0bb9129a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/model_srv.h": {
+    "mtime": 1785372465.3782406,
+    "ast_hash": "3d05245970b75f1c61d6e445ba21fdac",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/heartbeat.h": {
+    "mtime": 1785372465.377737,
+    "ast_hash": "c9bcf778724fe73e055d2357a9566068",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/glue.h": {
+    "mtime": 1785372465.377737,
+    "ast_hash": "0d0f239e68a4984bb898f01f477d67e5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/cfg_srv.h": {
+    "mtime": 1785372465.377737,
+    "ast_hash": "64a73259dd4711ee33a956dead06bf63",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/mesh.h": {
+    "mtime": 1785372465.3782406,
+    "ast_hash": "b3596264fb5cedf5b5e8809fa6d1afe7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/msg.h": {
+    "mtime": 1785372465.3782406,
+    "ast_hash": "008ae5eaf203db54f177586b4fb53352",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/health_cli.h": {
+    "mtime": 1785372465.377737,
+    "ast_hash": "89ccb562df6bf0203a6fba0fa1e70c6a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/proxy.h": {
+    "mtime": 1785372465.3782406,
+    "ast_hash": "4f80282816433d517dc0164a47700007",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/slist.h": {
+    "mtime": 1785372465.3782406,
+    "ast_hash": "bb17bbf7f48e88728e5dcb7a6280a2b3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/access.h": {
+    "mtime": 1785372465.3775647,
+    "ast_hash": "b5eb552d010f5212ce413d44adc0b277",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/model_cli.h": {
+    "mtime": 1785372465.3782406,
+    "ast_hash": "acb154948727c331c6e5382a33b1256e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/porting.h": {
+    "mtime": 1785372465.3782406,
+    "ast_hash": "0284eff35f907e6170577ce6dee0a99e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/cdb.h": {
+    "mtime": 1785372465.377737,
+    "ast_hash": "f388bec445c8f8d2665af919fd489492",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/cfg.h": {
+    "mtime": 1785372465.377737,
+    "ast_hash": "0864a16a953df9b4395352779645956c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/cfg_cli.h": {
+    "mtime": 1785372465.377737,
+    "ast_hash": "5dbc831114c240391b1ea64237c66855",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/include/mesh/atomic.h": {
+    "mtime": 1785372465.377737,
+    "ast_hash": "390da67a35f599cfa5bb6332145bec6e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/testing.h": {
+    "mtime": 1785372465.3832407,
+    "ast_hash": "d14141ed74b3ad39555f34c34f552208",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/proxy.c": {
+    "mtime": 1785372465.3822405,
+    "ast_hash": "a96088a374a6df31bd7fc064a0d3519c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/health_cli.c": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "68d184d74c44714df260df68a3673a08",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/msg.c": {
+    "mtime": 1785372465.3812406,
+    "ast_hash": "53dd6196e9e9678a268bc26708362f41",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/cdb_priv.h": {
+    "mtime": 1785372465.3792405,
+    "ast_hash": "d3e2334470221024a91332c8b50012cf",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/shell.h": {
+    "mtime": 1785372465.3822405,
+    "ast_hash": "fae642496d0a2938edc0fb1166eadd90",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/friend.h": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "6add8e6d4bf8a703df53e697632ebe2e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/transport.c": {
+    "mtime": 1785372465.3832407,
+    "ast_hash": "5f02e14308ab6ee0671b252f26a0ef20",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/proxy_msg.c": {
+    "mtime": 1785372465.3822405,
+    "ast_hash": "59932a096a5a68bb192c7bd3f74c31df",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/subnet.c": {
+    "mtime": 1785372465.3832407,
+    "ast_hash": "6aba0728fde6d574df82f18fe170b033",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/net.h": {
+    "mtime": 1785372465.3812406,
+    "ast_hash": "e3e44b8588d4d2670d54d82d554d785f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/beacon.h": {
+    "mtime": 1785372465.3792405,
+    "ast_hash": "6c8204335a92dd03d871a5ee9f8bc903",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/lpn.h": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "6437aa51ca113a6a0c083e2087fad333",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/model_cli.c": {
+    "mtime": 1785372465.3812406,
+    "ast_hash": "d13b1cb9502468d3a4188e45b0e60b45",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/aes-ccm.c": {
+    "mtime": 1785372465.3789566,
+    "ast_hash": "57f7ff5f1dad2dee8c8a9c179299f15d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/settings.h": {
+    "mtime": 1785372465.3822405,
+    "ast_hash": "4f0ef4e6ebda23513e1595d71323fe8e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/prov_device.c": {
+    "mtime": 1785372465.3812406,
+    "ast_hash": "f94e928ce6ab3dafd7d88a33f93c0e60",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/access.c": {
+    "mtime": 1785372465.3782406,
+    "ast_hash": "6021bf985598b859bad4ddd8b151269f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/cfg.c": {
+    "mtime": 1785372465.3792405,
+    "ast_hash": "c6d2b222ea717f2170275fc5e82fc123",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/light_model.c": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "9ef5d9318011add444c31aafc3736553",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/heartbeat.h": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "a76757e85f427694a58f21ec29f1e502",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/cdb.c": {
+    "mtime": 1785372465.3792405,
+    "ast_hash": "2d9da4ae03fbea8d5fd4423685a07c60",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/pb_gatt_srv.h": {
+    "mtime": 1785372465.3812406,
+    "ast_hash": "40c8ffcd10049fb446d9f8448706b69c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/pb_adv.c": {
+    "mtime": 1785372465.3812406,
+    "ast_hash": "96a01c00b118dff180296a89b7cce3d5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/provisioner.h": {
+    "mtime": 1785372465.3822405,
+    "ast_hash": "39bd532f18e17c2da39c7fbaba74f35c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/prov.h": {
+    "mtime": 1785372465.3812406,
+    "ast_hash": "a9d8abe57d57341917fff7d27199e0cc",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/foundation.h": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "187e1636fa1a4fe0ea6232a2deb0b367",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/app_keys.h": {
+    "mtime": 1785372465.3792405,
+    "ast_hash": "7f5c6d0f29fdc5e0270fb61fb9810077",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/rpl.h": {
+    "mtime": 1785372465.3822405,
+    "ast_hash": "78e8ba2e85ccf27228032a2110440f8a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/cfg_cli.c": {
+    "mtime": 1785372465.3792405,
+    "ast_hash": "c14399b7869be00cb55520d2757645f3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/adv.h": {
+    "mtime": 1785372465.3789566,
+    "ast_hash": "5c4556603b56b83dd229311bd6d1b1a5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/crypto.h": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "71197c19dbe2cf296a8934c80d832bba",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/shell.c": {
+    "mtime": 1785372465.3822405,
+    "ast_hash": "ef04980cfa074733f6c0d80d9066c32f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/health_srv.c": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "e787a93b47e1396649887b5c9b6434af",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/testing.c": {
+    "mtime": 1785372465.3832407,
+    "ast_hash": "875aa7959977ba257c09cbfb2c09daab",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/proxy.h": {
+    "mtime": 1785372465.3822405,
+    "ast_hash": "b839bbdcbe8610c56b6dda13043a1fbe",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/access.h": {
+    "mtime": 1785372465.3789566,
+    "ast_hash": "db5f2604ee428442ed6e2ed0d138b14c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/model_srv.c": {
+    "mtime": 1785372465.3812406,
+    "ast_hash": "fe94f7cc041c1634b119796bee4454e7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/settings.c": {
+    "mtime": 1785372465.3822405,
+    "ast_hash": "76170b35f78d3b6466671c69e0097afc",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/beacon.c": {
+    "mtime": 1785372465.3792405,
+    "ast_hash": "c31465aa4644f64aff25d53c344aced1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/net.c": {
+    "mtime": 1785372465.3812406,
+    "ast_hash": "485fe5b761d5c9a691d22833300dea2b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/subnet.h": {
+    "mtime": 1785372465.3832407,
+    "ast_hash": "aabafeade9f1b738503c2ab6c4041403",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/adv_legacy.c": {
+    "mtime": 1785372465.3789566,
+    "ast_hash": "d9c215a3b8052998b7d421f66e7b7211",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/proxy_srv.c": {
+    "mtime": 1785372465.3822405,
+    "ast_hash": "f7736820e22d44e48a2ad82577460ce5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/lpn.c": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "46dea94fb3088a99c7d32c8230212b7e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/adv_ext.c": {
+    "mtime": 1785372465.3789566,
+    "ast_hash": "e04647ab37fde2498edc5ddee3d5a7d5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/transport.h": {
+    "mtime": 1785372465.3832407,
+    "ast_hash": "654049cce150832ec3832d05049f56e9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/friend.c": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "0e3a4199df3349fd7b23a2eed14a2811",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/proxy_msg.h": {
+    "mtime": 1785372465.3822405,
+    "ast_hash": "d4319fb0ee74af4a1dd3881357ef16eb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/app_keys.c": {
+    "mtime": 1785372465.3792405,
+    "ast_hash": "86dcf07192c31f0b45e866c24bf0e147",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/prov.c": {
+    "mtime": 1785372465.3812406,
+    "ast_hash": "9c0f338678ccadb9f5e750319386d5e8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/provisioner.c": {
+    "mtime": 1785372465.3822405,
+    "ast_hash": "a770d2e8dee5c5d8df13d9cd81e7af14",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/pb_gatt.c": {
+    "mtime": 1785372465.3812406,
+    "ast_hash": "3dd130115e5144e317fdd4b84d77d2a4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/pb_gatt_srv.c": {
+    "mtime": 1785372465.3812406,
+    "ast_hash": "1336adc8fc022fa3154879d5d54ff561",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/cfg.h": {
+    "mtime": 1785372465.3792405,
+    "ast_hash": "d12c76a1a301738baf2038947425577c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/heartbeat.c": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "cfdba45e9bc98ee4373f0ee1c14b9c27",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/light_model.h": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "f10a6a3541b4a02e2c3e2220d593532a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/crypto.c": {
+    "mtime": 1785372465.3792405,
+    "ast_hash": "d0d4823775821bcfd3f27fd70c1c50ea",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/mesh.c": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "69d2d27b19c985c1d139c46e51e3caa5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/mesh_priv.h": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "0b7bde109130c2907745de4999d078c2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/adv.c": {
+    "mtime": 1785372465.3789566,
+    "ast_hash": "63964d22ab26a77de9426e0debe5786d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/cfg_srv.c": {
+    "mtime": 1785372465.3792405,
+    "ast_hash": "6fc543140e548a1252ae64c536ed7865",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/glue.c": {
+    "mtime": 1785372465.3802407,
+    "ast_hash": "0decce05569b848f68f134503ef4a30e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/rpl.c": {
+    "mtime": 1785372465.3822405,
+    "ast_hash": "273055745a85892e6414ec308b6fd7f3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/prov_bearer.h": {
+    "mtime": 1785372465.3812406,
+    "ast_hash": "979858f85a4765b9c333beda42874b05",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/mesh/src/atomic.h": {
+    "mtime": 1785372465.3792405,
+    "ast_hash": "390da67a35f599cfa5bb6332145bec6e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/util/include/host/util/util.h": {
+    "mtime": 1785372465.3931694,
+    "ast_hash": "2aafc3197e15e9ab9995927c4f95d490",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/util/src/addr.c": {
+    "mtime": 1785372465.3932407,
+    "ast_hash": "5bc018fd2d04901bcbe83d5ba2ba1fd3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_ibeacon.h": {
+    "mtime": 1785372465.3762407,
+    "ast_hash": "c834d355b5c3fcd04f07096d50befb4c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_esp_hs.h": {
+    "mtime": 1785372465.3757043,
+    "ast_hash": "8067a62b041cc86bd9f536f8c3ae308c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_hs_hci.h": {
+    "mtime": 1785372465.3762407,
+    "ast_hash": "511f0458e2d99a6f50dd529e391cd705",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_eddystone.h": {
+    "mtime": 1785372465.3757043,
+    "ast_hash": "6a856b20391418cf675de8fdba5b2c0c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_esp_gatt.h": {
+    "mtime": 1785372465.3757043,
+    "ast_hash": "3f9d7e919fac41c88290bc82a3eef241",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_aes_ccm.h": {
+    "mtime": 1785372465.3756032,
+    "ast_hash": "50769bdef0e25916f0d8e539dd2132fd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_ead.h": {
+    "mtime": 1785372465.3757043,
+    "ast_hash": "fdc365eeb785d18da85e80070dbf1c65",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_hs_stop.h": {
+    "mtime": 1785372465.3762407,
+    "ast_hash": "4fb2fede0320408b7c37290552040b0b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_uuid.h": {
+    "mtime": 1785372465.3772407,
+    "ast_hash": "6316f2a7b812196891ff0c5208ba616a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_hs_adv.h": {
+    "mtime": 1785372465.3762407,
+    "ast_hash": "0c2461d154720915973b1f96cd8f16f4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_att.h": {
+    "mtime": 1785372465.3757043,
+    "ast_hash": "28189600a90ad64538aaea3864b6e80c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_hs_pvcy.h": {
+    "mtime": 1785372465.3762407,
+    "ast_hash": "b108c245bfc434ceca45a516d104f8a1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_hs.h": {
+    "mtime": 1785372465.3762407,
+    "ast_hash": "ce0af474e1f8a90abe955e0692bfb993",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_gatt.h": {
+    "mtime": 1785372465.3762407,
+    "ast_hash": "99f7e18e6be4fb72001283debd4ce2ff",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_hs_log.h": {
+    "mtime": 1785372465.3762407,
+    "ast_hash": "8f08ee538602b30d38385287b80baf70",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_esp_gap.h": {
+    "mtime": 1785372465.3757043,
+    "ast_hash": "c59fc47e249a92b1232aa3354c423af1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_dtm.h": {
+    "mtime": 1785372465.3757043,
+    "ast_hash": "e5a1a18f66b50fd01da1ea8af94f0673",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_l2cap.h": {
+    "mtime": 1785372465.3762407,
+    "ast_hash": "47e6bfcb57b64a2751e92a61c31a6e40",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_hs_mbuf.h": {
+    "mtime": 1785372465.3762407,
+    "ast_hash": "eb46c55ae3f1259332c81c15a8415c0e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_hs_id.h": {
+    "mtime": 1785372465.3762407,
+    "ast_hash": "7cfb8cb0d0576028c51dfb3cf18de535",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_gap.h": {
+    "mtime": 1785372465.3762407,
+    "ast_hash": "21cfacd85f46d79524122d66c910d3be",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_sm.h": {
+    "mtime": 1785372465.3772407,
+    "ast_hash": "e622ded9f4e47f438cc5a0bcc02a6695",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/include/host/ble_store.h": {
+    "mtime": 1785372465.3772407,
+    "ast_hash": "c4c163e6a565e78e0f082b5fd027bb70",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/services/gatt/include/services/gatt/ble_svc_gatt.h": {
+    "mtime": 1785372465.3842406,
+    "ast_hash": "abe14d60af7bc5f1a6c55cf05ae08822",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/services/gatt/src/ble_svc_gatt.c": {
+    "mtime": 1785372465.3842406,
+    "ast_hash": "141f0b72d39b80718bbdfd871bdcde60",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/services/gap/include/services/gap/ble_svc_gap.h": {
+    "mtime": 1785372465.383914,
+    "ast_hash": "d699599ac34c1d70a5b1e0d4e5b7546d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/services/gap/src/ble_svc_gap.c": {
+    "mtime": 1785372465.383914,
+    "ast_hash": "0ef06001846144a036e3b3ffa5c1fa09",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/store/config/include/store/config/ble_store_config.h": {
+    "mtime": 1785372465.3920956,
+    "ast_hash": "99b2ef44fec016adca9ecbf9f69ec493",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/store/config/src/ble_store_nvs.c": {
+    "mtime": 1785372465.3922405,
+    "ast_hash": "e643f175045c9f89ae0f0fe9184a5bf5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/store/config/src/ble_store_config_conf.c": {
+    "mtime": 1785372465.3922405,
+    "ast_hash": "541ec1a1e69c0e685d8dddf2edfe90bf",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/store/config/src/ble_store_config.c": {
+    "mtime": 1785372465.3922405,
+    "ast_hash": "26e1738e16dbf7f75249905f5b27d3ce",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/store/config/src/ble_store_config_priv.h": {
+    "mtime": 1785372465.3922405,
+    "ast_hash": "aa821992f595b21752983f818ceeed92",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/store/ram/include/store/ram/ble_store_ram.h": {
+    "mtime": 1785372465.3927898,
+    "ast_hash": "2c272fb34cf4ac98bf0829721b18195b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/store/ram/src/ble_store_ram.c": {
+    "mtime": 1785372465.3927898,
+    "ast_hash": "a6d6b25ac3af494bcf1532f976af7650",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_atomic_priv.h": {
+    "mtime": 1785372465.3872406,
+    "ast_hash": "c1bb519687454d708e189e29929771e1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_store_util.c": {
+    "mtime": 1785372465.3912406,
+    "ast_hash": "a055d83b4280c97da6f0984d533c660e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_sm_priv.h": {
+    "mtime": 1785372465.3912406,
+    "ast_hash": "a4e5befe8d9ea0994b22cfb1a518c760",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_eatt_priv.h": {
+    "mtime": 1785372465.3852406,
+    "ast_hash": "60416a31e77334edaf3f99ae3b496eb5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_startup.c": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "5cf9edb28e259dea88b4e2caf2fc5bc6",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_att_cmd.c": {
+    "mtime": 1785372465.3845336,
+    "ast_hash": "a6a51c6673b0a8031008e68e0d48a640",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_resolv_priv.h": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "0c03db77d6d2a6ed638c2815a9921a59",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_conn.c": {
+    "mtime": 1785372465.3872406,
+    "ast_hash": "495dbcc1b05ad9518a3462d6866c5d4e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_dtm.c": {
+    "mtime": 1785372465.3845336,
+    "ast_hash": "462b947fd5dd793c834f3858b5e1050c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_l2cap.c": {
+    "mtime": 1785372465.3902407,
+    "ast_hash": "22f11f4db86f2e2742f759953751d6d2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_log.c": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "9164d9f1fc5a2926de5f05d991b1cde2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_gattc_cache_conn.c": {
+    "mtime": 1785372465.3862407,
+    "ast_hash": "c03e6f641bc8bfa246fa4da4c35fba8f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_gattc_cache.c": {
+    "mtime": 1785372465.3862407,
+    "ast_hash": "037477328524d54b3dab5bf552354d84",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs.c": {
+    "mtime": 1785372465.3872406,
+    "ast_hash": "218c20756d9301566ea934bf5a160071",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_mbuf_priv.h": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "bcb6aabb57497d7392e4cd12a023c305",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_id_priv.h": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "d973bdb9e46d49f2abd0333e8c2eece8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_l2cap_coc_priv.h": {
+    "mtime": 1785372465.3902407,
+    "ast_hash": "80da8c25c580bde9ef9d37b7ef959dae",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_resolv.c": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "aaa2fc66e6e638095f70d6e6adb0f9b8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_mbuf.c": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "8182a0c7bad233e751377cf031f83f32",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_id.c": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "f707ac3f27f9f7ea55a8a46e07f5ece9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_gap_priv.h": {
+    "mtime": 1785372465.3862407,
+    "ast_hash": "776dac37b07db67dd8ddc2bd18f4ddb2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_mqueue.c": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "06322124c73992134853ed8f0751d63c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_periodic_sync.c": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "d82da6fe49f81399401398f27d0273bf",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_att_priv.h": {
+    "mtime": 1785372465.3845336,
+    "ast_hash": "25cae5af175d65cf7e07e19afbfd9cd0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_store.c": {
+    "mtime": 1785372465.3912406,
+    "ast_hash": "b56b6e2102831b08cac08441eb751ec2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_sm.c": {
+    "mtime": 1785372465.3902407,
+    "ast_hash": "7885909fc16d602580b32b815afdb655",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_hci_priv.h": {
+    "mtime": 1785372465.3882406,
+    "ast_hash": "de4cbd8ad462fdc1acc29ba0554372fb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_cfg.c": {
+    "mtime": 1785372465.3872406,
+    "ast_hash": "8930365de2b59690715e54b2dee0dc06",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_l2cap_sig.c": {
+    "mtime": 1785372465.3902407,
+    "ast_hash": "4ae0c63c54d0e6c875d268b0d8960903",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_pvcy_priv.h": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "725ab188bbc4be0e958533aafcaab778",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_conn_priv.h": {
+    "mtime": 1785372465.3872406,
+    "ast_hash": "dbe66307cde8fb3b3135f5b7856398cf",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_gattc.c": {
+    "mtime": 1785372465.3862407,
+    "ast_hash": "fc4a11525503066c2587f25be185e011",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_flow.c": {
+    "mtime": 1785372465.3872406,
+    "ast_hash": "8a5e0f9f81dbc52e5ca313319d29ecfb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_l2cap_sig_priv.h": {
+    "mtime": 1785372465.3902407,
+    "ast_hash": "76faaf52297d92a665820908c9ff5aa1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_gap.c": {
+    "mtime": 1785372465.3852406,
+    "ast_hash": "494f52df47d3121276703b2ff2b71f32",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_flow_priv.h": {
+    "mtime": 1785372465.3872406,
+    "ast_hash": "83a39f295f5c8d1a32edb81829bcc12e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_eddystone.c": {
+    "mtime": 1785372465.3852406,
+    "ast_hash": "5cbe5696944ace8ca2eaee4cf3c1e4f1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_hci.c": {
+    "mtime": 1785372465.3882406,
+    "ast_hash": "764c111b0a6e4dd56de921d6a0fc580e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_aes_ccm.c": {
+    "mtime": 1785372465.3842406,
+    "ast_hash": "29715af8096d166dc96dc2660d00c17d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_att_clt.c": {
+    "mtime": 1785372465.3845336,
+    "ast_hash": "486ca97d0ccb6722927edf130998aedd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_hci_cmd.c": {
+    "mtime": 1785372465.3882406,
+    "ast_hash": "d93a7919d85acde3fef13ee478fe0f97",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_uuid_priv.h": {
+    "mtime": 1785372465.3912406,
+    "ast_hash": "ba905d93c60bc26fe77a1df7a180709a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_ibeacon.c": {
+    "mtime": 1785372465.3902407,
+    "ast_hash": "5aea4bc88a9b980c5f63c823e04b9ffc",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_gatt_priv.h": {
+    "mtime": 1785372465.3862407,
+    "ast_hash": "3c122509b506cd52be65d13955c41a35",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_adv_priv.h": {
+    "mtime": 1785372465.3872406,
+    "ast_hash": "29794b8acb927bfaddebe13fe7cb3764",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_misc.c": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "9074f3adc8ad2fdedf7241aa0891b1bb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_sm_cmd.c": {
+    "mtime": 1785372465.3912406,
+    "ast_hash": "5dbf5bbbc648b42296f82f903a4fce44",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_startup_priv.h": {
+    "mtime": 1785372465.3902407,
+    "ast_hash": "da8590de345694f78e0ddf857cbe8187",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_l2cap_coc.c": {
+    "mtime": 1785372465.3902407,
+    "ast_hash": "4784dd213c8d1faa7867ec20707718e0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_shutdown.c": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "e2971b497567a42076dfdbe018551e9e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_atomic.c": {
+    "mtime": 1785372465.3872406,
+    "ast_hash": "2a3e6d1f2e6d59fe382ed06a3d585532",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_sm_sc.c": {
+    "mtime": 1785372465.3912406,
+    "ast_hash": "71498f5115a02ccf4e60606571f3de47",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_sm_lgcy.c": {
+    "mtime": 1785372465.3912406,
+    "ast_hash": "01bd51691542da5fa52c9a57c177bbbf",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_att_cmd_priv.h": {
+    "mtime": 1785372465.3845336,
+    "ast_hash": "ce6dcd35195d766f526589003cb6ac54",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_adv.c": {
+    "mtime": 1785372465.3872406,
+    "ast_hash": "b65d84733575200955f6cb7d00929833",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_uuid.c": {
+    "mtime": 1785372465.3912406,
+    "ast_hash": "323f6e22e36cad1593c0fb001413e43d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_gatts_lcl.c": {
+    "mtime": 1785372465.3872406,
+    "ast_hash": "abfe30f3db2226344fda7030a21f0307",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_l2cap_priv.h": {
+    "mtime": 1785372465.3902407,
+    "ast_hash": "bc61ef463fa5c94ef9c2d8d820c5a444",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_periodic_sync_priv.h": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "196cc7278e82a75006199ba7fe1c14e1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_stop.c": {
+    "mtime": 1785372465.3902407,
+    "ast_hash": "c8b2515831feacc9907ce49ec2f7bb52",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_l2cap_sig_cmd.c": {
+    "mtime": 1785372465.3902407,
+    "ast_hash": "0c00a0b86704cd30dcd92edac9b38d9f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_hci_util.c": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "bb7cc8445055bbbd62d8380f66319662",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_priv.h": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "887ea9b4862bf98415168c376b8b0749",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_gatts.c": {
+    "mtime": 1785372465.3872406,
+    "ast_hash": "80c1a59db9fbb5f8ba90e4fd212dc82d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_ead.c": {
+    "mtime": 1785372465.3845336,
+    "ast_hash": "abb560cbb574f419c701df216bb69e4f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_hci_evt.c": {
+    "mtime": 1785372465.3882406,
+    "ast_hash": "15435416426324ac41e1da5e31e359f8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_hs_pvcy.c": {
+    "mtime": 1785372465.3892405,
+    "ast_hash": "edb295874510f56fe4b63f81f821863e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_att_svr.c": {
+    "mtime": 1785372465.3845336,
+    "ast_hash": "2bebf14e27f6f441cebfd19d4b464a32",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_eatt.c": {
+    "mtime": 1785372465.3852406,
+    "ast_hash": "0e633c2e02cf0235724999a3939e8a25",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_sm_alg.c": {
+    "mtime": 1785372465.3912406,
+    "ast_hash": "c79466298355e233bd20a71e3a73381a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_att.c": {
+    "mtime": 1785372465.3845336,
+    "ast_hash": "d7aee1277d60ebde1a4d346fca82c1d6",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/host/src/ble_gattc_cache_priv.h": {
+    "mtime": 1785372465.3862407,
+    "ast_hash": "8842def1853fa82b7b93bb21d69bbf28",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/include/nimble/ble.h": {
+    "mtime": 1785372465.3933907,
+    "ast_hash": "aae0741adaa3e82a65cae4daa3013390",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/include/nimble/hci_common.h": {
+    "mtime": 1785372465.3934937,
+    "ast_hash": "0312bc4a3b9e2a400d74e22ceafa8bdb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/include/nimble/nimble_opt.h": {
+    "mtime": 1785372465.3934937,
+    "ast_hash": "82aeea31b4aa890cd55738506b556a14",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/include/nimble/nimble_npl.h": {
+    "mtime": 1785372465.3934937,
+    "ast_hash": "54f57f2d7cce8350c10a884f9ed6cbdb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/include/nimble/nimble_opt_auto.h": {
+    "mtime": 1785372465.3934937,
+    "ast_hash": "b21e7730b14f047cab2390c9e6132045",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_rfmgmt.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "8e789a101265a276bcc5d13cf7fbb961",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_fem.h": {
+    "mtime": 1785372465.3681786,
+    "ast_hash": "435ccc3375408ab0efa3a75ae9ee6ad6",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_adv.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "8d15ec4c58d25c071fcb86816b701447",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_phy.h": {
+    "mtime": 1785372465.3692405,
+    "ast_hash": "e264a70161f209e675f00c0015e22ab5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_phy_trace.h": {
+    "mtime": 1785372465.3692405,
+    "ast_hash": "18ef4d49efc65aa10359b9ace22ab448",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_crypto.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "354a375fb3462edbe9e9187c7f482dcf",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_utils.h": {
+    "mtime": 1785372465.3692405,
+    "ast_hash": "8e6b5ac97ecd7bbe2a8dc1b2f4602170",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_scan_aux.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "ab6f02f2d68e755eb3a72d10ba210b1c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_iso.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "3c6bc9a445e5ed5fa55b08e2034a11dd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_hci.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "49cfdd633000214c52878304c9204da0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_resolv.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "da7f5b63552735a0e1fa45f3f3550ff5",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_pdu.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "8313e00eb357c1fab09c23aa5f4f01e0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_whitelist.h": {
+    "mtime": 1785372465.3692405,
+    "ast_hash": "d0c4a15481d2927b7cd1143dc262d4d1",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_sync.h": {
+    "mtime": 1785372465.3692405,
+    "ast_hash": "552abe7c65545816048900d921995c04",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_conn.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "2247a729c47946420fecbb110ee60d13",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_sched.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "b352f6d77d2ca275b5ef9172cd91bcd7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_ext.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "59a5889ebb4162720b8c28587cd1844d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_tmr.h": {
+    "mtime": 1785372465.3692405,
+    "ast_hash": "95ddb3b017030c9d08faff41a0bf23f2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_trace.h": {
+    "mtime": 1785372465.3692405,
+    "ast_hash": "94185f4c26620409d796192bf7518409",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_scan.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "9f9827eb0e6e61d9733649ca229d7b28",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_hw.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "de490aa6070cefaaa74e2161a85ceda9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "4e088012f1a549ed1eba4aa5b1c4a21b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_iso_big.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "31a6e567d53b3724b2e21d0b28c34471",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_isoal.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "a5a699ff51c2adc76c5d06a8916f4c87",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/include/controller/ble_ll_ctrl.h": {
+    "mtime": 1785372465.3682666,
+    "ast_hash": "f8c93a816ea39025ab7d9a05567ee784",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_sched.c": {
+    "mtime": 1785372465.3732407,
+    "ast_hash": "ac77d8db70191d59632320e24b8e81ce",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_conn.c": {
+    "mtime": 1785372465.3702407,
+    "ast_hash": "26f5caa494593f309088d76aed5716cc",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_scan.c": {
+    "mtime": 1785372465.3732407,
+    "ast_hash": "aa5f64999d69e2839b468c767024a136",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_trace.c": {
+    "mtime": 1785372465.3732407,
+    "ast_hash": "a29b2796a24e14d107edaaf11cc14eaa",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_dtm_priv.h": {
+    "mtime": 1785372465.3712406,
+    "ast_hash": "b0cbc0389f4a9681611d0adcf33bfb86",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_isoal.c": {
+    "mtime": 1785372465.3722405,
+    "ast_hash": "e783fe6cdd14f3df11ffbf3f1f0f5ca2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_hci_priv.h": {
+    "mtime": 1785372465.3722405,
+    "ast_hash": "aac49c00d19bb35cf5fdaf819c26e1bb",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_iso_big.c": {
+    "mtime": 1785372465.3722405,
+    "ast_hash": "ca93750e424717b8452ec16aab4cc610",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll.c": {
+    "mtime": 1785372465.3692405,
+    "ast_hash": "117ffae99d467496ffed46aa8f8817f7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_hci_vs.c": {
+    "mtime": 1785372465.3722405,
+    "ast_hash": "0de5c454f24a6465d507e8d037222b44",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_dtm.c": {
+    "mtime": 1785372465.3712406,
+    "ast_hash": "9f1945c3eed29f00dd3f039bdffcd7af",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_rand.c": {
+    "mtime": 1785372465.3722405,
+    "ast_hash": "16358c5a9b008cf784b3315a8a71252a",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_hci_supp_cmd.c": {
+    "mtime": 1785372465.3722405,
+    "ast_hash": "c4e52bf371951ca7172e814eb2405f4c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_ctrl_priv.h": {
+    "mtime": 1785372465.3712406,
+    "ast_hash": "34906569edc24e3832ea45458a64d8ae",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_ctrl.c": {
+    "mtime": 1785372465.3712406,
+    "ast_hash": "990f93e835aaa870776ac80aa621a258",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_adv.c": {
+    "mtime": 1785372465.3702407,
+    "ast_hash": "7b18f154b26fce034482f213ce6cc149",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_rfmgmt.c": {
+    "mtime": 1785372465.3722405,
+    "ast_hash": "a5d35ca36dece71868c8f44fbd0948af",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_scan_aux.c": {
+    "mtime": 1785372465.3732407,
+    "ast_hash": "65bf2afb3be0fb63f6e962ff9591cbaf",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_conn_priv.h": {
+    "mtime": 1785372465.3712406,
+    "ast_hash": "16abd2ec8046d6de8891a960662a97dc",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_utils.c": {
+    "mtime": 1785372465.3732407,
+    "ast_hash": "d59effc8695af629824bf13172f32e61",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_crypto.c": {
+    "mtime": 1785372465.3712406,
+    "ast_hash": "091307bf96bf0fd61ebdd89f15de1e23",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_priv.h": {
+    "mtime": 1785372465.3722405,
+    "ast_hash": "88bb8f55efc04fdfc9e098cb21317c7e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_resolv.c": {
+    "mtime": 1785372465.3722405,
+    "ast_hash": "890b518ded3da377ffa839b23163361c",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_iso.c": {
+    "mtime": 1785372465.3722405,
+    "ast_hash": "5173aff13ad5a1c41c07b908e063eaf0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_hci.c": {
+    "mtime": 1785372465.3712406,
+    "ast_hash": "a64af668f5102c831974f10c00773bae",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_conn_hci.c": {
+    "mtime": 1785372465.3712406,
+    "ast_hash": "361e51904c2247d8de3cdc6e1fdd6ecd",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_sync.c": {
+    "mtime": 1785372465.3732407,
+    "ast_hash": "993faf66e14a717d538e09c674f97285",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_hci_ev.c": {
+    "mtime": 1785372465.3722405,
+    "ast_hash": "63697a7fad1bc7b4396f2454fb6a4422",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_whitelist.c": {
+    "mtime": 1785372465.3732407,
+    "ast_hash": "98b5ad39ed7ccee4ef8d37769ff84816",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/nimble/controller/src/ble_ll_pdu.c": {
+    "mtime": 1785372465.3722405,
+    "ast_hash": "c23d166e9be67eefd8c0b02b8d42c323",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/console/console.h": {
+    "mtime": 1785372465.3645837,
+    "ast_hash": "d45b7d19862e7043804e88ec14969dba",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/logcfg/logcfg.h": {
+    "mtime": 1785372465.3959246,
+    "ast_hash": "3cfabdda32efdc082e98f1a8b13d7b0e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/modlog/modlog.h": {
+    "mtime": 1785372465.3959246,
+    "ast_hash": "7c7b448e13f4ef50a007e7e06acd4b4e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/sysinit/sysinit.h": {
+    "mtime": 1785372465.3972406,
+    "ast_hash": "0e4b6a7c7512a3c442f6e489f2d17032",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/hal/hal_uart.h": {
+    "mtime": 1785372465.3954835,
+    "ast_hash": "a7fe802ef056ddd5d5b1e4ac84080ba7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/hal/hal_system.h": {
+    "mtime": 1785372465.3954835,
+    "ast_hash": "25e08bc8f7b9a42d3872a23351271e77",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/hal/hal_os_tick.h": {
+    "mtime": 1785372465.3954835,
+    "ast_hash": "b38dfd3862704417c2149416d0dffe25",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/hal/hal_watchdog.h": {
+    "mtime": 1785372465.3954835,
+    "ast_hash": "05a38a2c59fcd6e51d39239c7d34b924",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/hal/hal_timer.h": {
+    "mtime": 1785372465.3954835,
+    "ast_hash": "fef618846d4347d84cc0974b37afb10f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/hal/hal_gpio.h": {
+    "mtime": 1785372465.3953705,
+    "ast_hash": "2dffb59cc0230863a302d9b894d817c7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/log_common/ignore.h": {
+    "mtime": 1785372465.3954835,
+    "ast_hash": "b466d7eacad3078ec576068a3a663d65",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/log_common/log_common.h": {
+    "mtime": 1785372465.3959246,
+    "ast_hash": "06519ca9a62b2c759d974912f21cf050",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/sysflash/sysflash.h": {
+    "mtime": 1785372465.3964667,
+    "ast_hash": "66254457beca7077050b101dc158bb3d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/log/log.h": {
+    "mtime": 1785372465.3954835,
+    "ast_hash": "b0b80edc85fd79d767bcff953f80ad01",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/os/os_mempool.h": {
+    "mtime": 1785372465.3964667,
+    "ast_hash": "64c2acf07c123f7fefb94b59dcf0b0ac",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/os/endian.h": {
+    "mtime": 1785372465.3962407,
+    "ast_hash": "43305d8ac38dc993e9483736aecbf079",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/os/os_cputime.h": {
+    "mtime": 1785372465.3964667,
+    "ast_hash": "baa0743cfa47a57907d419618623568b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/os/os.h": {
+    "mtime": 1785372465.3964667,
+    "ast_hash": "8d27dc4b5ce4e5a7e46776847eb45144",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/os/util.h": {
+    "mtime": 1785372465.3964667,
+    "ast_hash": "673170ac37a4c63042b6cb72ba8e01b2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/os/os_mbuf.h": {
+    "mtime": 1785372465.3964667,
+    "ast_hash": "aca28a807bc08727899e3da1db3ad1b4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/os/os_error.h": {
+    "mtime": 1785372465.3964667,
+    "ast_hash": "e2dfd5a502e8bc69a54e6319b92df5d8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/os/os_trace_api.h": {
+    "mtime": 1785372465.3964667,
+    "ast_hash": "76803cbbe91f647a439d0f2007d4db32",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/os/queue.h": {
+    "mtime": 1785372465.3964667,
+    "ast_hash": "2ab8da848a5e5af93a25e9eca577cdec",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/nimble/storage_port.h": {
+    "mtime": 1785372465.3962407,
+    "ast_hash": "2227b0c1853bc0a0c5c216934917a31e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/nimble/nimble_port.h": {
+    "mtime": 1785372465.3959246,
+    "ast_hash": "101490165ababfcf51328f4e7ed4a836",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/syscfg/syscfg.h": {
+    "mtime": 1785372465.3964667,
+    "ast_hash": "d51edb2ee2908465b56a7d7673df6dc3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/stats/stats.h": {
+    "mtime": 1785372465.3964667,
+    "ast_hash": "50948cd0fb4ba084009a570b74e48481",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/include/mem/mem.h": {
+    "mtime": 1785372465.3959246,
+    "ast_hash": "b6c0f8809ec74fef66b42bc1e89fedb7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/src/hal_timer.c": {
+    "mtime": 1785372465.397427,
+    "ast_hash": "fcfb806db36ba8618e7591e155ba0465",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/src/os_mbuf.c": {
+    "mtime": 1785372465.397427,
+    "ast_hash": "7eb15f902838cf36e3a4d60805d736b3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/src/nimble_port.c": {
+    "mtime": 1785372465.397427,
+    "ast_hash": "d69ab4813f2418cb796965c6126d6ebe",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/src/mem.c": {
+    "mtime": 1785372465.397427,
+    "ast_hash": "cd550807203a25e61e033e3fb9480f19",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/src/os_cputime_pwr2.c": {
+    "mtime": 1785372465.397427,
+    "ast_hash": "5c3f5a7e2fd2a7a153c60ff771932ac3",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/src/os_mempool.c": {
+    "mtime": 1785372465.397427,
+    "ast_hash": "fec60a213b50497117e446c69bdde7b9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/src/os_cputime.c": {
+    "mtime": 1785372465.397427,
+    "ast_hash": "693fff098c7cdd6ee813a32707260524",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/src/endian.c": {
+    "mtime": 1785372465.3972406,
+    "ast_hash": "528180ea811fefd5611c93c4fae884e2",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/nimble/src/os_msys_init.c": {
+    "mtime": 1785372465.397427,
+    "ast_hash": "eb602d73c389b982ff2c82fad393f9a9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/npl/freertos/include/nimble/nimble_npl_os.h": {
+    "mtime": 1785372465.398143,
+    "ast_hash": "b7f59a203538a287c52e74277fb01508",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/npl/freertos/include/nimble/npl_freertos.h": {
+    "mtime": 1785372465.398215,
+    "ast_hash": "5df5d6dbd29bb270900b672a22bb9043",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/npl/freertos/include/nimble/nimble_port_freertos.h": {
+    "mtime": 1785372465.398215,
+    "ast_hash": "60d253275298c29a23fbb4180a4a8ff9",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/npl/freertos/src/nimble_port_freertos.c": {
+    "mtime": 1785372465.3982406,
+    "ast_hash": "2d0989294c11bb1090b021dc13a7e5a7",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/porting/npl/freertos/src/npl_os_freertos.c": {
+    "mtime": 1785372465.3984234,
+    "ast_hash": "d7116677ad37bf9caf37c8cd22104e6f",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/syscfg/syscfg.h": {
+    "mtime": 1785372465.3984234,
+    "ast_hash": "bdfacdde8a66608a04e954387163cab0",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/examples/ImgViewer/ImgViewerPROGMEM/Arduino_UNO_Rev3_Ok.c": {
     "mtime": 1784346147.0,
     "ast_hash": "5b370cfe3ea8001949501b02509f3590",
@@ -2849,9 +4974,14 @@
     "ast_hash": "0b02aa849c5d7d2c992f0e91f47b9909",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/src/lcd_ble.h": {
+    "mtime": 1789115725.067737,
+    "ast_hash": "93d739175ea227963278156ec6723de6",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/src/main.cpp": {
-    "mtime": 1786749343.0580423,
-    "ast_hash": "6a9d876f0e37dd542939a164987d3335",
+    "mtime": 1789115725.0679338,
+    "ast_hash": "6988d6032cc2941114d336cbb84cc84b",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/infra/cloudflare/pixelops-kite/package.json": {
@@ -2910,8 +5040,8 @@
     "semantic_hash": "728dd70ea0c7965cc2b9c68c2049dbdb"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/main.py": {
-    "mtime": 1787711214.4029388,
-    "ast_hash": "3715b4a5c293dbbe0dc2dbb2f3815dbc",
+    "mtime": 1789113329.492573,
+    "ast_hash": "6c7c3d0867e503f0e23a64e274f2f625",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/thermalright_cli.py": {
@@ -2965,22 +5095,22 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/integrations.json": {
-    "mtime": 1787755437.290029,
-    "ast_hash": "7598bd95ded2f78a9874116ab5a6ce2a",
+    "mtime": 1789115770.37101,
+    "ast_hash": "a508ede4ad842a77a877921ffb4be24e",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/display.json": {
-    "mtime": 1787755437.2900999,
-    "ast_hash": "203b7141e4093fd1b39dc317ecfc1ca8",
+    "mtime": 1789214885.377254,
+    "ast_hash": "3e69cfe7eee2c2531f95c8714b44d1cd",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/discord_people.json": {
-    "mtime": 1787755437.288022,
+    "mtime": 1789115676.3555722,
     "ast_hash": "ad451f389326a555e8f72735c730c9eb",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/config/people.json": {
-    "mtime": 1787755437.2880137,
+    "mtime": 1789115676.355535,
     "ast_hash": "f7db92a9d1e4ad2bd31f30247f21d97e",
     "semantic_hash": ""
   },
@@ -3000,12 +5130,12 @@
     "semantic_hash": "9a8a7318e5ed0fcd20f37096ae20381f"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/companions.json": {
-    "mtime": 1787755437.288042,
+    "mtime": 1789115676.3555703,
     "ast_hash": "ba53346223bd5291b7a005fead013a10",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game.json": {
-    "mtime": 1787755437.2880332,
+    "mtime": 1789115676.3556638,
     "ast_hash": "73bbc2488584dc7cd073b549d1ceb8b6",
     "semantic_hash": ""
   },
@@ -3015,8 +5145,8 @@
     "semantic_hash": "34c3e6b60908f9fb2287229d6731d24d"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/engine.py": {
-    "mtime": 1787694729.2259598,
-    "ast_hash": "f2e6068e7add095345b6cf560601fc3d",
+    "mtime": 1788796041.8235536,
+    "ast_hash": "e9ce4b151312666ab177add4b0ab70b5",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/pokemon.py": {
@@ -3030,7 +5160,7 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/pokemon.json": {
-    "mtime": 1787755437.2880275,
+    "mtime": 1789115676.3555532,
     "ast_hash": "e7b0d141f87d260f64c1c714b8b534bd",
     "semantic_hash": ""
   },
@@ -3040,8 +5170,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/scenes/overworld_scene.py": {
-    "mtime": 1787704040.4086995,
-    "ast_hash": "771d7d6aa36dce09aaab9fdbe3a4e6f0",
+    "mtime": 1788796041.8241522,
+    "ast_hash": "04db3e5a82fb2b68dcc648179dd61423",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/scenes/entities.py": {
@@ -3115,8 +5245,8 @@
     "semantic_hash": "ebeb13b748847fa2c48ac54d72c763c0"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/map_routes.py": {
-    "mtime": 1780111296.868794,
-    "ast_hash": "1430f52d540154ff8c9ee0b817cd5e3a",
+    "mtime": 1787785524.311537,
+    "ast_hash": "3b70a11f2e4df7a5eab48d6fd7140cfd",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/pokemon/game/__init__.py": {
@@ -3185,7 +5315,7 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/spaceship/game.json": {
-    "mtime": 1787755437.2900734,
+    "mtime": 1789115676.3556066,
     "ast_hash": "73bbc2488584dc7cd073b549d1ceb8b6",
     "semantic_hash": ""
   },
@@ -3195,8 +5325,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/spaceship/scene.py": {
-    "mtime": 1787757209.0243418,
-    "ast_hash": "5ea2163de9026710155e227e7e5f8ee2",
+    "mtime": 1789214940.0645754,
+    "ast_hash": "07a4ccbecd3151ebd8b09c67deaa66e1",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/plugins/spaceship/engine.py": {
@@ -3230,8 +5360,8 @@
     "semantic_hash": "6a3edc4bfd1aec9d56174459b0a5be0e"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/render/hud.py": {
-    "mtime": 1787694022.0546308,
-    "ast_hash": "f66011653a4adbc67770af8eccc06f1f",
+    "mtime": 1789214885.375443,
+    "ast_hash": "1bfed79d2f69cd22f20eb6903abc25db",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/render/fonts.py": {
@@ -3347,6 +5477,16 @@
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/todoist/plugin.py": {
     "mtime": 1785714080.3681629,
     "ast_hash": "13d99f7d48c0e72269a7ee21d28e423b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/codex_status/__init__.py": {
+    "mtime": 1788795992.9247599,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/codex_status/plugin.py": {
+    "mtime": 1788795992.9704792,
+    "ast_hash": "167fc657e42b65d866dd6d8301102ab7",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integrations/github/__init__.py": {
@@ -3505,8 +5645,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/media.py": {
-    "mtime": 1782743618.1885183,
-    "ast_hash": "3b919f223d3e1b58c0c6b0a92d559a71",
+    "mtime": 1787791253.066824,
+    "ast_hash": "818a34c71a3e24722c057b8bc34c389d",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/tasks.py": {
@@ -3514,9 +5654,14 @@
     "ast_hash": "773f485fcfab8b79b0e549abbf40ce77",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/ai_activity.py": {
+    "mtime": 1788829368.611063,
+    "ast_hash": "16d0902146a8b7902ccf60d8aee83fb1",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/ai_usage.py": {
-    "mtime": 1780362677.0321074,
-    "ast_hash": "59d975b1f50f27ee61a3f5784d8d13dd",
+    "mtime": 1789214940.0642276,
+    "ast_hash": "a3c8dbd98d57440166ad1ea26943aa10",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/weather.py": {
@@ -3562,6 +5707,11 @@
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/projects.py": {
     "mtime": 1787693684.722614,
     "ast_hash": "bdbde2dcf9e35d52546393c409799940",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/codex_status.py": {
+    "mtime": 1788829368.6719668,
+    "ast_hash": "317bc73f5e817a60277e3a744ab50dd7",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/data_sources/availability.py": {
@@ -3635,8 +5785,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integration_plugins/registry.py": {
-    "mtime": 1787594654.393078,
-    "ast_hash": "c9e9f8a866f50e7bf53af732b731c63d",
+    "mtime": 1788796041.8232083,
+    "ast_hash": "e37f53ed32d884b33f1ea621967eab75",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/integration_plugins/__init__.py": {
@@ -3669,6 +5819,11 @@
     "ast_hash": "53b2addce5f08337946a3c27552656b8",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/lcd_usb.py": {
+    "mtime": 1789112949.9711685,
+    "ast_hash": "46654cde6503b3b3d0240f05a6380625",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/__init__.py": {
     "mtime": 1786728992.7730165,
     "ast_hash": "88ed8e41ff9e73f2c3e69068b3c37588",
@@ -3677,6 +5832,11 @@
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/lcd_http.py": {
     "mtime": 1786736372.4685364,
     "ast_hash": "fff98cd06e61a09e3a4484088e82fa03",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/lcd_ble.py": {
+    "mtime": 1789134979.7298274,
+    "ast_hash": "4171b4397092b630ff8c9415dd0d9e30",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/pixel_ops/outputs/file_gif.py": {
@@ -3702,6 +5862,11 @@
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_crosshero.py": {
     "mtime": 1787252969.247484,
     "ast_hash": "e29263f4bb89773f0083a8274555ff4d",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_codex_status.py": {
+    "mtime": 1788829416.7394903,
+    "ast_hash": "16157065327629fa4ea8d9e8025164f3",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_ai_usage.py": {
@@ -3749,6 +5914,11 @@
     "ast_hash": "68b329da9893e34099c7d8ad5cb9c940",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_lcd_usb.py": {
+    "mtime": 1789112949.9715946,
+    "ast_hash": "1f6fa7474a85dc134e75f9f09b7d5a28",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_splash.py": {
     "mtime": 1780346762.1059747,
     "ast_hash": "61bdc9efc389706f68cd7d1b8bb51bc9",
@@ -3759,19 +5929,29 @@
     "ast_hash": "15ac91115c6854d46e016ed98a5000c5",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_lcd_ble.py": {
+    "mtime": 1789134959.9598231,
+    "ast_hash": "285455b197f23897ac042d0b08f1ae18",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_integration_plugins.py": {
     "mtime": 1787594754.723456,
     "ast_hash": "872f148689f1fada72089c3e06f4465d",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_media.py": {
-    "mtime": 1782743362.4482286,
-    "ast_hash": "c106c53ea4f1a83c6dfd841ae986c70d",
+    "mtime": 1787791253.1413522,
+    "ast_hash": "2daa7213055368bee86e33d07118e899",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_token_hud.py": {
+    "mtime": 1789214940.0688257,
+    "ast_hash": "4a562fd7b7ee71a3a9caeea61c056032",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_visual_and_ai_plugins.py": {
-    "mtime": 1787693519.1793356,
-    "ast_hash": "be9f99c7d381d8c8d3d350b002b8e692",
+    "mtime": 1787785537.9791977,
+    "ast_hash": "03929b6747ee6e40b4ffd29635c04e59",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tests/test_todoist.py": {
@@ -3820,8 +6000,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/package.json": {
-    "mtime": 1787695336.1452577,
-    "ast_hash": "55b45a794097dba09ac9e721edd597a2",
+    "mtime": 1789113329.4949095,
+    "ast_hash": "d130c2c8c25e6a19ec016e6c92fd4524",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/tsconfig.json": {
@@ -3835,13 +6015,13 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/vite.config.ts": {
-    "mtime": 1787711551.819706,
-    "ast_hash": "3ddbe5e6a60ccc0a53e37ffd9c0ebbf9",
+    "mtime": 1789027301.0825446,
+    "ast_hash": "761e11cede42599ab8bad1dbbe32ea6f",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/App.tsx": {
-    "mtime": 1787757198.2185376,
-    "ast_hash": "5190db0428890e3a6b96627f3666f10f",
+    "mtime": 1789214885.375856,
+    "ast_hash": "75e09607228341ce824aeb4b8a6a105b",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/main.tsx": {
@@ -3850,8 +6030,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/types.ts": {
-    "mtime": 1787711214.4625502,
-    "ast_hash": "e7894cdb626d3f9976f225e59a27e0db",
+    "mtime": 1789113329.4927545,
+    "ast_hash": "1e3fb10d7cd0da26daca58204c301681",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/components/PixelMascot.tsx": {
@@ -3860,8 +6040,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/config-studio/src/lib/configApi.ts": {
-    "mtime": 1787694836.9993732,
-    "ast_hash": "fa6c8500cd819b53a30fc4ac99fe9963",
+    "mtime": 1789027301.081972,
+    "ast_hash": "63f536872689961e0f1a4920d522fed9",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/scripts/windows_check.py": {
@@ -3879,14 +6059,19 @@
     "ast_hash": "d44cbc43dabe54227e0510f510136f8f",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/tmp/probe_codex_status.py": {
+    "mtime": 1788796220.7836204,
+    "ast_hash": "af53bf3ac0672199776124d740c93a3e",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/requirements.txt": {
-    "mtime": 1781752885.9132967,
-    "ast_hash": "2001ab06d2b9aa1a2de49ca692c28f7b",
+    "mtime": 1789113329.492669,
+    "ast_hash": "fda28a7275253f7df2c7d64a22fe6b08",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/README.md": {
-    "mtime": 1787594907.052339,
-    "ast_hash": "4fa291a4e780488d9b6f4ffad79fadf6",
+    "mtime": 1788829452.1849723,
+    "ast_hash": "2dd4704d6cddc885ada98ad6abebd909",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/AGENTS.md": {
@@ -4045,8 +6230,8 @@
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/README.md": {
-    "mtime": 1786729090.6796854,
-    "ast_hash": "8bef973ee09393b58d96d14ac6c07694",
+    "mtime": 1789115890.9774814,
+    "ast_hash": "7f2fae47190445d49177d8edaf71bd93",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/CMakeLists.txt": {
@@ -4092,6 +6277,66 @@
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/WiFiManager/.github/workflows/cpp_lint.yml": {
     "mtime": 1709346589.0,
     "ast_hash": "744438a2472f22b2e7d031f63a089cee",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/CHANGELOG.md": {
+    "mtime": 1785372465.3557897,
+    "ast_hash": "180fcf2c471fcd3b1b7bd1d2e7d22c3b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/README.md": {
+    "mtime": 1785372465.3557897,
+    "ast_hash": "1071e91052ca47a4f4377042dcbd0eaa",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/examples/NimBLE_Stream_Server/README.md": {
+    "mtime": 1785372465.359539,
+    "ast_hash": "7513fcd53cc528ab9ef183c3ea961279",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/examples/NimBLE_Stream_Echo/README.md": {
+    "mtime": 1785372465.3592405,
+    "ast_hash": "83bbfd2461abb54caac533b9d607d0d0",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/examples/BLE_EddystoneTLM_Beacon/BLE_EddystoneTLM_Beacon.md": {
+    "mtime": 1785372465.3576891,
+    "ast_hash": "af589f94fe358d2c5bdbb131c8f2dbb4",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/examples/BLE_Beacon_Scanner/BLE_Beacon_Scanner.md": {
+    "mtime": 1785372465.3575766,
+    "ast_hash": "802ba684850a0a4cad9120a2ce656c34",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/examples/NimBLE_Stream_Client/README.md": {
+    "mtime": 1785372465.3592055,
+    "ast_hash": "00d111006a32946651ae71e1f9954613",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/.github/workflows/release.yml": {
+    "mtime": 1785372465.3557897,
+    "ast_hash": "93d81d910c3b8cc045de73c5643849aa",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/.github/workflows/build.yml": {
+    "mtime": 1785372465.3556962,
+    "ast_hash": "52eb1601fb8e49c90d6ea56347c9e5d8",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/CODING_STANDARDS.md": {
+    "mtime": 1785372465.3642406,
+    "ast_hash": "fb1fe44c6b216c00e0c16863c1a9a52b",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/README.md": {
+    "mtime": 1785372465.3645837,
+    "ast_hash": "b51c7a9a4c1897076acc4f6aedabaa52",
+    "semantic_hash": ""
+  },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/NimBLE-Arduino/src/nimble/RELEASE_NOTES.md": {
+    "mtime": 1785372465.3645837,
+    "ast_hash": "f1577516c60d05753153f8b6938f9361",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/firmware/esp32-c6-lcd-1.47/.pio/libdeps/esp32-c6-lcd-1_47/GFX Library for Arduino/README.md": {
@@ -4194,6 +6439,11 @@
     "ast_hash": "7a577ed6c11915880ff9c3a57a432927",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0031-waveshare-usb-output.md": {
+    "mtime": 1789112967.2316496,
+    "ast_hash": "4c8bc97560e74d3c0ded587c9dac13d9",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0029-screen-playlists-are-presentation-state.md": {
     "mtime": 1787711214.5883996,
     "ast_hash": "89e562d635aab655ddfa373dc354a737",
@@ -4234,6 +6484,11 @@
     "ast_hash": "d405818a511c6d34983e82c8f1157730",
     "semantic_hash": ""
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0032-waveshare-bluetooth-output.md": {
+    "mtime": 1789134999.7779107,
+    "ast_hash": "c10a31e8708208208417b32396631a1c",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0013-config-studio-discovers-plugin-configs.md": {
     "mtime": 1779577258.3697913,
     "ast_hash": "32a6f651fe684720177373b61b5b9e8b",
@@ -4244,14 +6499,19 @@
     "ast_hash": "32e6929b67a3b180ead9591a7e67d464",
     "semantic_hash": "32e6929b67a3b180ead9591a7e67d464"
   },
+  "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0030-codex-activity-is-a-neutral-observation.md": {
+    "mtime": 1788829452.1851323,
+    "ast_hash": "045c3deeea1f9a0f69f7c5a75059ac1c",
+    "semantic_hash": ""
+  },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0011-graphify-codebase-map.md": {
     "mtime": 1779063817.1581378,
     "ast_hash": "bf4417318952d58eebde39df9e4f6ea9",
     "semantic_hash": "bf4417318952d58eebde39df9e4f6ea9"
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/README.md": {
-    "mtime": 1787695086.4427986,
-    "ast_hash": "235d1a8ba55d81e34937214e86d8b066",
+    "mtime": 1789113465.592894,
+    "ast_hash": "e62e897e87ac845f92a824d221a3749a",
     "semantic_hash": ""
   },
   "/Users/marceloschmitz/Documents/Projetos/Pocs/turing-smart-screen-python/docs/adr/0014-discord-voice-companions-are-provider-state-with-visual-mapping.md": {

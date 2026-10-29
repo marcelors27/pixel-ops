@@ -11,6 +11,8 @@ from pixel_ops.plugins.spaceship.engine import SpaceshipSnapshot
 from pixel_ops.plugins.spaceship.persistence import AsteroidRecord
 from pixel_ops.render.fonts import font, font_scale_for_canvas
 from pixel_ops.render.renderer import PixelRenderer
+from pixel_ops.render.hud import draw_codex_status_panel, draw_token_usage_panel, _layout_items
+from types import SimpleNamespace
 
 
 ROOM_STEP_X = 40
@@ -104,7 +106,12 @@ class SpaceshipScene:
             asteroid_positions = self._draw_asteroids(image, draw, state)
             self._draw_mining_cycle(image, draw, state, asteroid_positions)
             self._draw_hud(image, draw, state)
-            return self._compose_presentation(image)
+            image = self._compose_presentation(image)
+            for _, box in _layout_items(self.display_layout, "codex_status"):
+                draw_codex_status_panel(ImageDraw.Draw(image), state.observations.get("ai.activity_updated"), state.now, box, SimpleNamespace(panel=self._color("panel", (8, 20, 38)), panel_shadow=self._color("panel_shadow", (2, 7, 16)), ink=self._color("text", (226, 236, 238))))
+            for _, box in _layout_items(self.display_layout, "token_usage"):
+                draw_token_usage_panel(ImageDraw.Draw(image), state.observations.get("ai.usage_updated"), state.now, box, SimpleNamespace(panel=self._color("panel", (8, 20, 38)), panel_shadow=self._color("panel_shadow", (2, 7, 16)), ink=self._color("text", (226, 236, 238))))
+            return image
 
     def set_presentation(self, layout: dict, layout_theme: str) -> None:
         self.display_layout = dict(layout) if isinstance(layout, dict) else {}

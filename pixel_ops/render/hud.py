@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 from PIL import Image, ImageDraw, ImageSequence
 
 from pixel_ops.data_sources.ai_usage import AIUsageSnapshot
+from pixel_ops.data_sources.ai_activity import AIActivitySnapshot
 from pixel_ops.data_sources.availability import status_for
 from pixel_ops.data_sources.calendar import CalendarEvent
 from pixel_ops.data_sources.crosshero import CrossHeroDaySnapshot, CrossHeroWorkoutLine, workout_display_tokens
@@ -334,6 +335,7 @@ def draw_hud(
     layout: dict | None = None,
     layout_theme: str | None = None,
     crosshero: CrossHeroDaySnapshot | None = None,
+    ai_activity: AIActivitySnapshot | None = None,
 ) -> None:
     if layout:
         _draw_configured_hud(
@@ -355,6 +357,7 @@ def draw_hud(
             layout,
             layout_theme,
             crosshero,
+            ai_activity,
         )
         return
 
@@ -409,6 +412,7 @@ def _draw_configured_hud(
     layout: dict,
     layout_theme: str | None,
     crosshero: CrossHeroDaySnapshot | None,
+    ai_activity: AIActivitySnapshot | None = None,
 ) -> None:
     small_font = font(11)
     chip_font = font(9)
@@ -444,6 +448,12 @@ def _draw_configured_hud(
 
     for raw, route_box in _layout_items(layout, "route_signal"):
         _draw_route_signal_panel(draw, event, pull_requests, ai_usage, work_events, now, route_box, item_palette(raw, "route_signal"))
+
+    for raw, status_box in _layout_items(layout, "codex_status"):
+        draw_codex_status_panel(draw, ai_activity, now, status_box, item_palette(raw, "codex_status"))
+
+    for raw, tokens_box in _layout_items(layout, "token_usage"):
+        draw_token_usage_panel(draw, ai_usage, now, tokens_box, item_palette(raw, "token_usage"))
 
     for raw, gauges_box in _layout_items(layout, "gauges"):
         _draw_ai_usage_panel(draw, ai_usage, now, gauges_box, item_palette(raw, "gauges"))
@@ -1491,6 +1501,71 @@ def _route_signal_icon(signal: str) -> tuple[str, tuple[int, int, int]]:
     return icons.get(signal, icons["CALM"])
 
 
+def draw_codex_status_panel(draw: ImageDraw.ImageDraw, snapshot: AIActivitySnapshot | None, now: datetime, box: tuple[int, int, int, int], pal) -> None:
+    """One state-colored, lettered dot per task, clipped to its HUD region."""
+    x0, y0, x1, y1 = box
+    width, height = max(1, x1 - x0), max(1, y1 - y0)
+    tile = Image.new("RGB", (width, height), pal.panel)
+    painter = ImageDraw.Draw(tile)
+    PixelRenderer.draw_panel(painter, (0, 0, width - 1, height - 1), pal.panel, pal.panel_shadow, pal.ink)
+    fresh = isinstance(snapshot, AIActivitySnapshot) and 0 <= (now - snapshot.observed_at).total_seconds() <= 15
+    entries = []
+    if fresh:
+        # Show active/waiting tasks; when idle, keep the latest known outcome.
+        entries = [(task.task_id, task.state, task.reason) for task in snapshot.tasks
+                   if task.state in ("processing", "attention", "unknown")]
+        if not entries:
+            entries = [(task.task_id, task.state, task.reason) for task in snapshot.tasks]
+        if not entries:
+            entries = [("", snapshot.state, snapshot.reason)]
+        if snapshot.state == "unknown" and snapshot.reason == "disconnected":
+            entries = [("", "unknown", "disconnected")]
+    else:
+        entries = [("", "unknown", "disconnected")]
+    entries.sort(key=lambda entry: entry[0])
+    colors = {"attention": (239, 83, 80), "processing": (247, 201, 72), "ready": (82, 198, 120)}
+    letters = {"running": "P", "approval": "A", "input": "R", "error": "E",
+               "system_error": "E", "interrupted": "I", "completed": "C",
+               "no_session": "-", "disconnected": "?"}
+    header = 14 if height >= 52 else 0
+    if header:
+        painter.text((5, 2), "CODEX", font=font(8), fill=pal.ink)
+    cell_width = 40
+    columns = max(1, (width - 8) // cell_width)
+    rows = max(1, (height - header - 6) // 44)
+    capacity = columns * rows
+    # Cycle full pages, so no task disappears when a custom HUD is narrow.
+    page_count = max(1, (len(entries) + capacity - 1) // capacity)
+    page = int(now.timestamp() // 4) % page_count
+    visible = entries[page * capacity:(page + 1) * capacity]
+    if header and page_count > 1:
+        text = f"{page + 1}/{page_count}"
+        painter.text((max(5, width - 5 - painter.textlength(text, font=font(8))), 2), text, font=font(8), fill=pal.ink)
+    slot_width = max(1, (width - 8) / columns)
+    slot_height = max(1, (height - header - 6) / rows)
+    for index, (task_id, state, reason) in enumerate(visible):
+        column, row = index % columns, index // columns
+        show_id = bool(task_id) and slot_height >= 38 and slot_width >= 32
+        diameter = max(2, min(28, int(slot_width - 6), int(slot_height - (12 if show_id else 4))))
+        cx = 4 + (column + 0.5) * slot_width
+        cy = header + 3 + row * slot_height + (slot_height - (10 if show_id else 0)) / 2
+        radius = diameter / 2
+        painter.ellipse((cx - radius, cy - radius, cx + radius, cy + radius),
+                        fill=colors.get(state, (65, 70, 80)), outline=pal.ink, width=1)
+        if diameter >= 12:
+            letter_font = font(min(14, diameter - 4))
+            letter = letters.get(reason, "?")
+            left, top, right, bottom = painter.textbbox((0, 0), letter, font=letter_font)
+            painter.text((cx - (right + left) / 2, cy - (bottom + top) / 2), letter,
+                         font=letter_font, fill=(20, 24, 32) if state in colors else (255, 255, 255))
+        if show_id:
+            label = task_id[-4:].upper()
+            label_font = font(7)
+            painter.text((cx - painter.textlength(label, font=label_font) / 2, cy + radius + 2),
+                         label, font=label_font, fill=pal.ink)
+    draw._image.paste(tile, (x0, y0))
+
+
 def _draw_ai_usage_panel(draw: ImageDraw.ImageDraw, ai_usage: AIUsageSnapshot | None, now: datetime, box: tuple[int, int, int, int], pal) -> None:
     PixelRenderer.draw_panel(draw, box, pal.panel, pal.panel_shadow, pal.ink)
     content_box = _draw_panel_title(draw, box, "AI GAUGES", pal)
@@ -2360,7 +2435,10 @@ def _pull_request_state_label(pr: PullRequestSummary) -> str:
 
 
 def _draw_ai_usage_compact(draw: ImageDraw.ImageDraw, ai_usage: AIUsageSnapshot, now: datetime, x: int, y: int, pal) -> None:
-    codex = [item for item in ai_usage.gauges if item.provider == "codex" and item.status != "quiet"]
+    codex = [
+        item for item in ai_usage.gauges
+        if item.provider == "codex" and item.status != "quiet" and item.used_percent is not None
+    ]
     codex_5h = next((item for item in codex if "5H" in item.label), None)
     codex_weekly = next((item for item in codex if "5H" not in item.label), None)
     openai_api = next((item for item in ai_usage.gauges if item.provider == "openai_api" and item.status != "quiet"), None)
@@ -2421,7 +2499,10 @@ def _draw_ai_usage_window(draw: ImageDraw.ImageDraw, ai_usage: AIUsageSnapshot, 
 
 
 def _visible_ai_usage_gauges(ai_usage: AIUsageSnapshot, now: datetime) -> list:
-    codex = [item for item in ai_usage.gauges if item.provider == "codex" and item.status != "quiet"]
+    codex = [
+        item for item in ai_usage.gauges
+        if item.provider == "codex" and item.status != "quiet" and item.used_percent is not None
+    ]
     codex_5h = next((item for item in codex if "5H" in item.label), None)
     codex_weekly = next((item for item in codex if "5H" not in item.label), None)
     openai_api = next((item for item in ai_usage.gauges if item.provider == "openai_api" and item.status != "quiet"), None)
@@ -2517,3 +2598,66 @@ def _ai_usage_label(tokens: int | None, cost: float | None) -> str:
     if tokens >= 1_000:
         return f"{tokens // 1000}k"
     return str(tokens)
+
+
+def draw_token_usage_panel(draw, snapshot: AIUsageSnapshot | None, now: datetime, box, pal) -> None:
+    """A clipped, native-resolution token calendar for the 320 x 172 LCD."""
+    from PIL import Image
+
+    x0, y0, x1, y1 = box
+    width, height = max(1, x1 - x0), max(1, y1 - y0)
+    panel = Image.new("RGB", (width, height), pal.panel)
+    canvas = ImageDraw.Draw(panel)
+    ink, muted = pal.ink, tuple((a + b) // 2 for a, b in zip(pal.ink, pal.panel))
+    accent = (77, 159, 255)
+    canvas.rounded_rectangle((0, 0, width - 1, height - 1), radius=5, outline=muted)
+    canvas.text((10, 7), "TOKENS / 30D", font=font(9), fill=ink)
+    clock = now.strftime("%H:%M")
+    canvas.text((width - 10 - _text_width(canvas, clock, font(9)), 7), clock, font=font(9), fill=muted)
+    if snapshot is None:
+        canvas.text((10, 33), "Aguardando uso de IA", font=font(10), fill=muted)
+    else:
+        today = (snapshot.updated_at or now).date()
+        start = today - timedelta(days=29)
+        daily = snapshot.daily_tokens
+        values = [daily.get((start + timedelta(days=i)).isoformat(), 0) for i in range(30)]
+        total, active = sum(values), sum(v > 0 for v in values)
+        canvas.text((10, 26), f"{_ai_usage_label(total, None) if total else '0'} tokens", font=font(17), fill=ink)
+        stats = f"{active} dias ativos  /  {snapshot.history_requests} req."
+        canvas.text((10, 49), _fit_text(canvas, stats, width - 20, font(9)), font=font(9), fill=muted)
+        # Monday at the top, oldest week on the left. Future cells stay blank.
+        monday = start - timedelta(days=start.weekday())
+        weeks = ((today - monday).days // 7) + 1
+        cell = max(2, min(8, (height - 93) // 7))
+        step = cell + 2
+        grid_y = 68
+        peak = max(values, default=0)
+        for offset in range((today - monday).days + 1):
+            day = monday + timedelta(days=offset)
+            if day < start:
+                continue
+            value = daily.get(day.isoformat(), 0)
+            strength = (0.30 + 0.70 * (value / peak) ** 0.5) if value and peak else 0.0
+            color = tuple(int(a + (b - a) * strength) for a, b in zip(pal.panel_shadow, accent))
+            x, y = 10 + (offset // 7) * step, grid_y + (offset % 7) * step
+            canvas.rectangle((x, y, x + cell - 1, y + cell - 1), fill=color, outline=ink if day == today else None)
+        tx = 20 + weeks * step
+        available = width - tx - 10
+        if available >= 60:
+            canvas.text((tx, grid_y), "MODELO MAIS USADO", font=font(7), fill=muted)
+            canvas.text((tx, grid_y + 13), _fit_text(canvas, snapshot.favorite_model or "Sem atividade", available, font(10)), font=font(10), fill=ink)
+            streak = 0
+            cursor = today if values[-1] else today - timedelta(days=1)
+            while cursor >= start and daily.get(cursor.isoformat(), 0) > 0:
+                streak += 1
+                cursor -= timedelta(days=1)
+            canvas.text((tx, grid_y + 32), f"Sequencia: {streak}d", font=font(9), fill=ink)
+            canvas.text((tx, grid_y + 47), "Menos", font=font(7), fill=muted)
+            for i in range(4):
+                color = tuple(int(a + (b - a) * i / 3) for a, b in zip(pal.panel_shadow, accent))
+                canvas.rectangle((tx + 32 + i * 9, grid_y + 48, tx + 38 + i * 9, grid_y + 54), fill=color)
+            canvas.text((tx + 72, grid_y + 47), "Mais", font=font(7), fill=muted)
+        footer = "Sem uso registrado" if not total else "Cada quadrado = 1 dia"
+        canvas.text((10, height - 17), footer, font=font(8), fill=muted)
+    # Draw onto the caller's image without allowing text to escape this HUD.
+    draw._image.paste(panel, (x0, y0))

@@ -34,11 +34,11 @@ export async function loadFirmwareStatus(): Promise<FirmwareStatus> {
   return firmwareResponse(await fetch("/api/firmware/status"));
 }
 
-export async function runFirmwareAction(action: "build" | "upload", port?: string): Promise<FirmwareStatus> {
+export async function runFirmwareAction(action: "build" | "upload", port?: string, target = "e213"): Promise<FirmwareStatus> {
   return firmwareResponse(await fetch(`/api/firmware/${action}`, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(port ? { port } : {}),
+    body: JSON.stringify({ port, target }),
   }));
 }
 

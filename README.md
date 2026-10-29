@@ -371,6 +371,20 @@ Supported sources:
 
 Pixel OPs renders this as ambient gauges and threshold events, not billing tables or token logs.
 
+### Codex Semaphore
+
+Add **Codex Semaphore** in Config Studio's layout editor. The `codex_status` integration is independent of AI usage gauges and polls local execution state every two seconds.
+
+- One dot per active task, with a short task-ID suffix underneath.
+- Yellow **P**: processing. Red **A/R/E/I**: approval, reply needed, error, interrupted.
+- Green **C**: completed, shown when no active task remains.
+- Gray **?**: unavailable or stale; **-**: no session.
+- Small HUDs cycle task pages every four seconds. Tasks are ordered by ID so their positions stay stable between polls.
+
+With multiple root sessions, live approval/input requests and system errors take priority over processing. Running work takes priority over past interruptions or failures; when idle, desktop mode shows the newest root’s outcome. Temporary/subagent sessions are excluded. Leave Session ID empty to observe all eligible root sessions, or enter one thread ID. Leave Socket Path empty for automatic mode: it observes the shared daemon and reads desktop turn metadata in read-only mode, since the desktop may execute work in a separate process. Desktop roots must be non-archived and updated within 30 minutes. An explicit Socket Path observes only that daemon. Paths resolve under `$CODEX_HOME` (default `~/.codex`); no API key is needed. Pixel OPs never starts or modifies Codex sessions. Validated on Codex 0.153.4/macOS. Desktop metadata detects execution and completion; pending approval/input flags require the live WebSocket and may appear as processing for desktop-only sessions. A question written as an ordinary final response appears as completed.
+
+The layout kind is `codex_status`; a useful initial size is 300 × 72. The HUD is configured on the Work and Pokémon screens. Hiding it does not stop collection. After installing the code change, restart an already-running Pixel OPs process; subsequent JSON edits hot reload normally.
+
 ### Slack
 
 ```json

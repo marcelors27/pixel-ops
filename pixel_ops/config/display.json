@@ -1,12 +1,12 @@
 {
   "display": {
-    "width": 2240,
-    "height": 462,
+    "width": 320,
+    "height": 172,
     "orientation": "vertical",
     "device": {
       "plugin": "pokemon",
-      "target": "thermalright",
-      "output": "thermalright",
+      "target": "lcd",
+      "output": "lcd",
       "window_scale": 2,
       "seconds": 20,
       "forever": true,
@@ -17,8 +17,8 @@
         "pid": "0x5408",
         "timeout_ms": 5000,
         "jpeg_quality": 85,
-        "image_width": 1920,
-        "image_height": 462,
+        "image_width": 320,
+        "image_height": 172,
         "min_frame_interval_ms": 100,
         "packet_delay_ms": 0,
         "packet_size": 4096,
@@ -56,29 +56,33 @@
       "lcd": {
         "url": "http://192.168.0.104",
         "token": "",
-        "timeout_seconds": 5,
-        "min_frame_interval_seconds": 0.1
+        "timeout_seconds": 15,
+        "min_frame_interval_seconds": 0.1,
+        "transport": "bluetooth",
+        "port": "",
+        "bluetooth_address": "C36B1770-466B-DFB8-D775-2C6B165DA20B",
+        "bluetooth_frame_interval_seconds": 0.1
       },
       "displays": [
         {
-          "id": "display-1",
-          "label": "Display 1",
+          "id": "display-mtria9cz-2",
+          "label": "ESP32-C6 LCD 1.47",
           "enabled": true,
-          "target": "thermalright",
-          "output": "thermalright",
-          "x": 0,
+          "target": "lcd",
+          "output": "lcd",
+          "x": 1920,
           "y": 0,
-          "width": 1920,
-          "height": 462,
-          "rotation": 0,
+          "width": 320,
+          "height": 172,
+          "rotation": 90,
           "identify_number": 1,
           "thermalright": {
             "vid": "0x0416",
             "pid": "0x5408",
             "timeout_ms": 5000,
             "jpeg_quality": 85,
-            "image_width": 1920,
-            "image_height": 462,
+            "image_width": 320,
+            "image_height": 172,
             "min_frame_interval_ms": 100,
             "packet_delay_ms": 0,
             "packet_size": 4096,
@@ -123,150 +127,39 @@
             "pull_port": 8765
           },
           "lcd": {
-            "url": "http://192.168.0.104",
-            "token": "",
-            "timeout_seconds": 5,
-            "min_frame_interval_seconds": 0.1
-          }
-        },
-        {
-          "id": "display-mstbtx9b-4",
-          "label": "ESP32-C6 LCD 1.47",
-          "enabled": true,
-          "target": "lcd",
-          "output": "lcd",
-          "x": 1920,
-          "y": 0,
-          "width": 320,
-          "height": 172,
-          "rotation": 90,
-          "identify_number": 2,
-          "thermalright": {
-            "vid": "0x0416",
-            "pid": "0x5408",
-            "timeout_ms": 5000,
-            "jpeg_quality": 85,
-            "image_width": 320,
-            "image_height": 172,
-            "min_frame_interval_ms": 100,
-            "packet_delay_ms": 0,
-            "packet_size": 4096,
-            "hard_reset_on_start": true,
-            "hard_reset_wait_ms": 1500,
-            "handshake_on_first_frame": false,
-            "require_handshake": true,
-            "send_start_init": true,
-            "read_start_ack": true,
-            "read_frame_ack": true,
-            "start_retries": 0,
-            "frame_retries": 1,
-            "debug": false
-          },
-          "turzx": {
-            "vid": "0x1a86",
-            "pid": "0x5722",
-            "serial_number": "USB35INCHIPSV2",
-            "bus": null,
-            "address": null,
-            "timeout_ms": 5000
-          },
-          "eink": {
-            "url": "http://192.168.0.14",
-            "token": "",
-            "timeout_seconds": 45,
-            "min_frame_interval_seconds": 15,
-            "full_refresh_every": 100,
-            "white_background": true,
-            "dither": false,
-            "threshold": 160,
-            "invert": false,
-            "accent_pattern": false,
-            "heartbeat_interval_seconds": 3,
-            "heartbeat_lease_seconds": 12,
-            "standalone_weather_enabled": true,
-            "standalone_latitude": -30.0346,
-            "standalone_longitude": -51.2177,
-            "standalone_utc_offset_minutes": -180,
-            "battery_powered": true,
-            "deep_sleep_seconds": 300,
-            "pull_port": 8765
-          },
-          "lcd": {
             "url": "http://192.168.0.106",
             "token": "",
-            "timeout_seconds": 5,
-            "min_frame_interval_seconds": 0.1
+            "timeout_seconds": 15,
+            "min_frame_interval_seconds": 0.1,
+            "transport": "bluetooth",
+            "port": "",
+            "bluetooth_address": "C36B1770-466B-DFB8-D775-2C6B165DA20B",
+            "bluetooth_frame_interval_seconds": 0.1
           }
         }
       ]
     },
     "layout": {
-      "pokemon_captures": {
+      "codex_status": {
+        "x": 8,
+        "y": 80,
+        "width": 304,
+        "height": 80,
+        "kind": "codex_status"
+      },
+      "gauges": {
         "x": 8,
         "y": 8,
-        "width": 760,
-        "height": 300,
-        "kind": "pokemon_captures"
-      },
-      "activity": {
-        "x": 776,
-        "y": 8,
-        "width": 560,
-        "height": 145,
-        "kind": "activity"
-      },
-      "route_signal": {
-        "x": 776,
-        "y": 161,
-        "width": 560,
-        "height": 147,
-        "kind": "route_signal"
-      },
-      "game": {
-        "x": 1448,
-        "y": 0,
-        "width": 464,
-        "height": 312,
-        "kind": "game"
-      },
-      "text_box": {
-        "x": 1448,
-        "y": 320,
-        "width": 464,
-        "height": 136,
-        "kind": "text_box"
-      },
-      "game_lcd_route": {
-        "x": 1928,
-        "y": 8,
         "width": 304,
-        "height": 160,
-        "kind": "route_signal"
+        "height": 64,
+        "kind": "gauges"
       }
     },
     "orientations": {
       "horizontal": {
         "width": 480,
         "height": 320,
-        "layout": {
-          "clock": {
-            "x": 8,
-            "y": 8,
-            "width": 120,
-            "height": 48,
-            "kind": "clock",
-            "clock_mode": "analog",
-            "clock_skin": "minimal",
-            "use_24_hour": true,
-            "show_seconds": false
-          },
-          "game": {
-            "x": 0,
-            "y": 112,
-            "width": 480,
-            "height": 112
-          }
-        }
+        "layout": {}
       }
     },
     "backend": "usb_bulk_rev_a",
@@ -303,283 +196,44 @@
         18
       ]
     },
-    "layout_theme": "pokemon",
+    "layout_theme": "ocean",
     "screens": {
       "health": {
         "label": "Health",
         "plugin": "pokemon",
         "enabled": true,
-        "duration_seconds": 30,
-        "layout_theme": "pokemon",
-        "layout": {
-          "pokemon_captures": {
-            "x": 8,
-            "y": 8,
-            "width": 760,
-            "height": 300,
-            "kind": "pokemon_captures"
-          },
-          "activity": {
-            "x": 776,
-            "y": 8,
-            "width": 560,
-            "height": 145,
-            "kind": "activity"
-          },
-          "route_signal": {
-            "x": 776,
-            "y": 160,
-            "width": 160,
-            "height": 80,
-            "kind": "route_signal"
-          },
-          "game": {
-            "x": 1448,
-            "y": 0,
-            "width": 464,
-            "height": 312,
-            "kind": "game"
-          },
-          "text_box": {
-            "x": 1448,
-            "y": 320,
-            "width": 472,
-            "height": 136,
-            "kind": "text_box"
-          },
-          "game_lcd_weather": {
-            "x": 1928,
-            "y": 8,
-            "width": 304,
-            "height": 160,
-            "kind": "weather"
-          }
-        }
-      },
-      "projects": {
-        "label": "Projects",
-        "plugin": "pokemon",
-        "enabled": true,
-        "duration_seconds": 35,
+        "duration_seconds": 300,
         "layout_theme": "ocean",
         "layout": {
-          "project_radar": {
+          "codex_status": {
             "x": 8,
-            "y": 8,
-            "width": 1050,
-            "height": 446,
-            "kind": "project_radar"
-          },
-          "project_focus_radar": {
-            "x": 1066,
-            "y": 8,
-            "width": 500,
-            "height": 446,
-            "kind": "project_focus_radar"
-          },
-          "activity": {
-            "x": 1574,
-            "y": 8,
-            "width": 338,
-            "height": 180,
-            "kind": "activity"
-          },
-          "route_signal": {
-            "x": 1574,
-            "y": 196,
-            "width": 338,
-            "height": 120,
-            "kind": "route_signal"
-          },
-          "project_tasks": {
-            "x": 1574,
-            "y": 324,
-            "width": 338,
-            "height": 130,
-            "kind": "tasks"
-          },
-          "projects_lcd": {
-            "x": 1928,
-            "y": 8,
-            "width": 312,
-            "height": 160,
-            "kind": "activity"
-          }
-        }
-      },
-      "work": {
-        "label": "Work",
-        "plugin": "pokemon",
-        "enabled": true,
-        "duration_seconds": 35,
-        "layout_theme": "pokemon",
-        "layout": {
-          "pokemon_captures": {
-            "x": 8,
-            "y": 8,
-            "width": 760,
-            "height": 300,
-            "kind": "pokemon_captures"
-          },
-          "activity": {
-            "x": 776,
-            "y": 8,
-            "width": 560,
-            "height": 145,
-            "kind": "activity"
-          },
-          "route_signal": {
-            "x": 776,
-            "y": 160,
-            "width": 160,
+            "y": 80,
+            "width": 304,
             "height": 80,
-            "kind": "route_signal"
+            "kind": "codex_status"
           },
-          "game": {
-            "x": 1448,
-            "y": 0,
-            "width": 464,
-            "height": 312,
-            "kind": "game"
-          },
-          "text_box": {
-            "x": 1448,
-            "y": 320,
-            "width": 472,
-            "height": 136,
-            "kind": "text_box"
-          },
-          "game_lcd_weather": {
-            "x": 1928,
-            "y": 8,
-            "width": 304,
-            "height": 160,
-            "kind": "weather"
-          }
-        }
-      },
-      "game": {
-        "label": "Pokemon",
-        "plugin": "pokemon",
-        "enabled": true,
-        "duration_seconds": 45,
-        "layout_theme": "pokemon",
-        "layout": {
-          "pokemon_captures": {
-            "x": 8,
-            "y": 8,
-            "width": 760,
-            "height": 300,
-            "kind": "pokemon_captures"
-          },
-          "activity": {
-            "x": 776,
-            "y": 8,
-            "width": 560,
-            "height": 145,
-            "kind": "activity"
-          },
-          "route_signal": {
-            "x": 776,
-            "y": 161,
-            "width": 560,
-            "height": 147,
-            "kind": "route_signal"
-          },
-          "game": {
-            "x": 1448,
-            "y": 0,
-            "width": 464,
-            "height": 312,
-            "kind": "game"
-          },
-          "text_box": {
-            "x": 1448,
-            "y": 320,
-            "width": 464,
-            "height": 136,
-            "kind": "text_box"
-          },
-          "game_lcd_route": {
-            "x": 1928,
-            "y": 8,
-            "width": 304,
-            "height": 160,
-            "kind": "route_signal"
-          }
-        }
-      },
-      "spaceship": {
-        "label": "Spaceship",
-        "plugin": "spaceship",
-        "enabled": true,
-        "duration_seconds": 45,
-        "layout_theme": "terminal",
-        "layout": {
-          "spaceship_hud": {
-            "x": 8,
-            "y": 8,
-            "width": 1904,
-            "height": 448,
-            "kind": "spaceship_hud"
-          },
-          "spaceship_lcd": {
-            "x": 1928,
-            "y": 8,
-            "width": 312,
-            "height": 160,
-            "kind": "spaceship_hud"
-          }
-        }
-      },
-      "specs": {
-        "label": "Specs & AI",
-        "plugin": "pokemon",
-        "enabled": true,
-        "duration_seconds": 25,
-        "layout_theme": "terminal",
-        "layout": {
           "gauges": {
-            "x": 916,
-            "y": 8,
-            "width": 500,
-            "height": 214,
-            "kind": "gauges"
-          },
-          "mana": {
-            "x": 916,
-            "y": 230,
-            "width": 500,
-            "height": 224,
-            "kind": "mana"
-          },
-          "weather_forecast": {
-            "x": 1424,
-            "y": 8,
-            "width": 488,
-            "height": 72,
-            "kind": "weather_forecast"
-          },
-          "specs_activity": {
-            "x": 1424,
-            "y": 88,
-            "width": 320,
-            "height": 360,
-            "kind": "activity"
-          },
-          "specs_lcd_ai": {
-            "x": 1928,
+            "x": 8,
             "y": 8,
             "width": 304,
-            "height": 160,
+            "height": 64,
             "kind": "gauges"
-          },
-          "specs_lcd_pc": {
-            "x": 1752,
-            "y": 88,
-            "width": 160,
-            "height": 176,
-            "kind": "pc_stats"
+          }
+        }
+      },
+      "tokens": {
+        "label": "Tokens",
+        "plugin": "pokemon",
+        "enabled": true,
+        "duration_seconds": 30,
+        "layout_theme": "terminal",
+        "layout": {
+          "token_usage": {
+            "x": 4,
+            "y": 2,
+            "width": 312,
+            "height": 168,
+            "kind": "token_usage"
           }
         }
       }
@@ -588,14 +242,10 @@
       "enabled": true,
       "order": [
         "health",
-        "projects",
-        "work",
-        "game",
-        "spaceship",
-        "specs"
+        "tokens"
       ],
       "initial_screen": "work",
-      "default_duration_seconds": 30
+      "default_duration_seconds": 300
     },
     "screen_control": {
       "port": 8766

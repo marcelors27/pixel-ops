@@ -720,6 +720,18 @@ class VisualAndAiPluginTests(unittest.TestCase):
         self.assertEqual(img.getpixel((171, 28)), pal.red)
         self.assertIn("250k 100% used | 2h 0m reset", _ai_usage_gauge_value(gauge, 100, now))
 
+    def test_mana_uses_weekly_quota_when_five_hour_limit_is_unavailable(self):
+        from pixel_ops.render.hud import _mana_usage_gauge, _ai_mana_percent
+
+        weekly = AIUsageGauge(provider="codex", label="Codex W", used_percent=4)
+        snapshot = AIUsageSnapshot(gauges=[
+            AIUsageGauge(provider="codex", label="Codex 5H", total_tokens=500_000),
+            weekly,
+        ])
+        selected = _mana_usage_gauge(snapshot, datetime(2026, 10, 20, tzinfo=ZoneInfo("UTC")))
+        self.assertIs(selected, weekly)
+        self.assertEqual(_ai_mana_percent(selected), 96)
+
     def test_ai_usage_percent_does_not_infer_codex_from_tokens(self):
         gauge = AIUsageGauge(provider="codex", label="Codex 5H", total_tokens=500_000)
 
